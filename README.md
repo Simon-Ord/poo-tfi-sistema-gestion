@@ -20,6 +20,7 @@ El sistema propuesto tiene como objetivo digitalizar estos procesos básicos, of
 
 El sistema será una aplicación funcional y extensible que permita a la casa de computación:
 - Mantener un inventario actualizado de productos.
+-  Automatizar procesos y reducir personal necesario.
 - Registrar ventas de manera estructurada y confiable.
 - Administrar datos de clientes en un repositorio centralizado.
 
