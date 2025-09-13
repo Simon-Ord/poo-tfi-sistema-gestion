@@ -39,7 +39,7 @@ El sistema propuesto tiene como objetivo digitalizar estos procesos básicos, of
 - Utilización de base de datos para persistencia de la informaciónn.
 
   
-### ADICIONALES 
+### Funcionalidades Opcionales / Futuras Extensiones 
 ##### Sistema de autogestion para el cliente
 ##### Sistema de registro service
 
