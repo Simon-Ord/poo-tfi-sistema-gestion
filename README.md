@@ -54,14 +54,13 @@ Con un diseño modular para posibilitar la incorporación de nuevas funcionalida
 - Interfaz dedicada al cliente para realizar compras de forma autónoma, permitiendo seleccionar productos, generar un ticket y presentarlo en caja para completar el pago.
 ##### Sistema de registro service
 Permite registrar y administrar los servicios ofrecidos por la casa de computación, incluyendo:
-
-Equipos ingresados con su diagnóstico inicial.
-Estado del servicio: pendiente, en proceso o finalizado.
-Historial de servicios por cliente.
+- Equipos ingresados con su diagnóstico inicial.
+- Estado del servicio: pendiente, en proceso o finalizado.
+- Historial de servicios por cliente.
 
 Tipos de servicios contemplados:
-Reparación.
-Mantenimiento.
-Armado de PC.
+- Reparación.
+- Mantenimiento.
+- Armado de PC.
 
 
