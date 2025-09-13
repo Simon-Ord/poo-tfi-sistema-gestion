@@ -53,10 +53,15 @@ Con un diseño modular para posibilitar la incorporación de nuevas funcionalida
 ##### Sistema de autogestion para el cliente
 - Interfaz dedicada al cliente para realizar compras de forma autónoma, permitiendo seleccionar productos, generar un ticket y presentarlo en caja para completar el pago.
 ##### Sistema de registro service
-- Módulo de gestion para servicios ofrecidos por la casa de computación, registrando equipos ingresados, diagnóstico inicial, estado del servicio (pendiente, en proceso, finalizado) y generar un historial de servicios por cliente;
--- reparación 
--- mantenimiento
--- armado de pc
+Permite registrar y administrar los servicios ofrecidos por la casa de computación, incluyendo:
 
+Equipos ingresados con su diagnóstico inicial.
+Estado del servicio: pendiente, en proceso o finalizado.
+Historial de servicios por cliente.
+
+Tipos de servicios contemplados:
+Reparación.
+Mantenimiento.
+Armado de PC.
 
 
