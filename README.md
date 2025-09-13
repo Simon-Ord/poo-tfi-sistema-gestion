@@ -1,9 +1,10 @@
 # poo-tfi-sistema-gestion
 
 ## 1. Integrantes del equipo
-Ordeig, Simon.
-coronel,Alexis.
-Vilte, Elias.
+- Caseres, David Marcos.
+- Coronel,Alexis.
+- Ordeig, Simon.
+- Vilte, Elias.
 
 ## 2. Dominio y Alcance del Sistema 
 
