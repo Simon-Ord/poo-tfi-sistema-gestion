@@ -23,7 +23,7 @@ El sistema propuesto tiene como objetivo digitalizar estos procesos básicos, of
 - Consulta del stock disponible
 
 ##### Gestion de clientes
-- Registro de datos básicos de clientes (DNI, nombre, teléfono, correo).
+- Registro/modificación de datos básicos de clientes (DNI, nombre, teléfono, correo).
 - Consulta de clientes registrados.
 
 ##### Gestion de ventas
@@ -36,9 +36,8 @@ El sistema propuesto tiene como objetivo digitalizar estos procesos básicos, of
 - Tablas y formularios para visualizar y cargar información de forma clara.
 
 ##### Persistencia
-- Almacenamiento inicial en memoria (listas).
-- Posibilidad de evolución hacia persistencia en archivos o base de datos.
-
+- Utilización de base de datos
+- 
 ### ADICIONALES 
 ##### Sistema de autogestion para el cliente
 ##### Sistema de registro service
