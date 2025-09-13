@@ -16,7 +16,16 @@ Actualmente, estas tareas suelen realizarse de manera manual, lo que dificulta e
 
 El sistema propuesto tiene como objetivo digitalizar estos procesos básicos, ofreciendo una herramienta que centralice la información y facilite la gestión diaria del negocio.
 
-### Funcionalidades Principales (Features) 
+### Objetivo del Sistema
+
+El sistema será una aplicación funcional y extensible que permita a la casa de computación:
+- Mantener un inventario actualizado de productos.
+- Registrar ventas de manera estructurada y confiable.
+- Administrar datos de clientes en un repositorio centralizado.
+
+El diseño será modular para posibilitar la incorporación de nuevas funcionalidades en el futuro —como un sistema de autogestión de ventas o el registro de servicios técnicos—, aplicando rigurosamente los conceptos del paradigma orientado a objetos.
+
+### Descripcion funcionalidades Principales (Features) 
 
 ##### Sistema de gestion de Inventario 
 - Alta, baja y modificación de productos.
