@@ -23,7 +23,7 @@ El sistema será una aplicación funcional y extensible que permita a la casa de
 - Registrar ventas de manera estructurada y confiable.
 - Administrar datos de clientes en un repositorio centralizado.
 
-El diseño será modular para posibilitar la incorporación de nuevas funcionalidades en el futuro —como un sistema de autogestión de ventas o el registro de servicios técnicos—, aplicando rigurosamente los conceptos del paradigma orientado a objetos.
+Con un diseño modular para posibilitar la incorporación de nuevas funcionalidades en el futuro.
 
 ### Descripcion funcionalidades Principales (Features) 
 
