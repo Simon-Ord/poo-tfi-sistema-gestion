@@ -10,3 +10,10 @@ Vilte, Elias.
 ### Descripción del Problema 
 
 ### Funcionalidades Principales (Features) 
+
+## Alcance minimo del software 
+# Sistema de gestion de Inventario 
+# Interfaz Grafica (IGU)
+
+## Sistema de autogestion para el cliente
+
