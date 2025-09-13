@@ -51,6 +51,7 @@ Con un diseño modular para posibilitar la incorporación de nuevas funcionalida
   
 ### Funcionalidades Opcionales / Futuras Extensiones 
 ##### Sistema de autogestion para el cliente
+- Interfaz dedicada al cliente para realizar compras de forma autónoma, permitiendo seleccionar productos, generar un ticket y presentarlo en caja para completar el pago.
 ##### Sistema de registro service
 
 
