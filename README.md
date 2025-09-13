@@ -11,8 +11,13 @@ Vilte, Elias.
 
 ### Funcionalidades Principales (Features) 
 
-#### Alcance minimo del software 
 ##### Sistema de gestion de Inventario 
+- agregar productos
+- quitar productos
+- modificar productos
+- consultar productos
+##### Gestion de ventas
+
 ##### Interfaz Grafica (IGU)
 
 #### Sistema de autogestion para el cliente
