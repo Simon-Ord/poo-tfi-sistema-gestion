@@ -36,7 +36,7 @@ El sistema propuesto tiene como objetivo digitalizar estos procesos básicos, of
 - Tablas y formularios para visualizar y cargar información de forma clara.
 
 ##### Persistencia
-- Utilización de base de datos para persistencia de la informaciónn.
+- Utilización de base de datos para persistencia de la información.
 
   
 ### Funcionalidades Opcionales / Futuras Extensiones 
