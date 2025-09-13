@@ -54,7 +54,7 @@ Con un diseño modular para posibilitar la incorporación de nuevas funcionalida
 - Interfaz dedicada al cliente para realizar compras de forma autónoma, permitiendo seleccionar productos, generar un ticket y presentarlo en caja para completar el pago.
 ##### Sistema de registro service
 - Módulo de gestion para servicios ofrecidos por la casa de computación, registrando equipos ingresados, diagnóstico inicial, estado del servicio (pendiente, en proceso, finalizado) y generar un historial de servicios por cliente;
-= reparación 
+* reparación 
 * mantenimiento
 * armado de pc
 
