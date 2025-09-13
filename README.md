@@ -19,13 +19,26 @@ El sistema propuesto tiene como objetivo digitalizar estos procesos básicos, of
 ### Funcionalidades Principales (Features) 
 
 ##### Sistema de gestion de Inventario 
-- agregar productos
-- quitar productos
-- modificar productos
-- consultar productos
+- Alta, baja y modificación de productos.
+- Consulta del stock disponible
+
+##### Gestion de clientes
+- Registro de datos básicos de clientes (DNI, nombre, teléfono, correo).
+- Consulta de clientes registrados.
+
 ##### Gestion de ventas
+- Registrar una nueva venta asociada a un cliente.
+- Selección de productos vendidos y actualización automática de stock.
+
 
 ##### Interfaz Grafica (IGU)
+- Ventana principal intuitiva para la interacción con el sistema.
+- Tablas y formularios para visualizar y cargar información de forma clara.
 
-#### Sistema de autogestion para el cliente
+##### Persistencia
+- Almacenamiento inicial en memoria (listas).
+- Posibilidad de evolución hacia persistencia en archivos o base de datos.
+
+### ADICIONALES 
+##### Sistema de autogestion para el cliente
 
