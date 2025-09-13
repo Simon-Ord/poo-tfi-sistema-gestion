@@ -2,7 +2,7 @@
 
 ## 1. Integrantes del equipo
 - Caseres, David Marcos.
-- Coronel,Alexis.
+- Coronel, Alexis.
 - Ordeig, Simon.
 - Vilte, Elias.
 
