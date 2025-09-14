@@ -1,7 +1,7 @@
 # poo-tfi-sistema-gestion
 
 ## 1. Integrantes del equipo
-- Caseres, David Marcos.
+- Caseres, Marcos David.
 - Coronel, Alexis.
 - Ordeig, Simon.
 - Vilte, Elias.
