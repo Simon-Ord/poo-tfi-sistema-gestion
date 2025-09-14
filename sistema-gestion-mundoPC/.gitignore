@@ -1,1 +1,22 @@
-/target/ 
+# Ignorar carpeta de compilación
+/target/
+
+# Ignorar configuraciones del IDE
+/nbproject/private/
+/build/
+/dist/
+/out/
+
+# Archivos de sistema
+*.log
+*.class
+*.jar
+*.war
+*.ear
+
+# Archivos de backup temporales
+*.iml
+*.ipr
+*.iws
+.DS_Store
+Thumbs.db
