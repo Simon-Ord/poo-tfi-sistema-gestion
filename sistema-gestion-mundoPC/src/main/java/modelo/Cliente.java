@@ -5,7 +5,7 @@ public class Cliente {
 private String dni;
 private String nombre;
 private String apellido;
-private String telefono;
+private String telefono; //hola
 private String correo; 
 
     // Constructor
