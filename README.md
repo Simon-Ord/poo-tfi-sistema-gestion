@@ -45,9 +45,6 @@ Con un diseño modular para posibilitar la incorporación de nuevas funcionalida
 - Ventana principal intuitiva para la interacción con el sistema.
 - Tablas y formularios para visualizar y cargar información de forma clara.
 
-##### Persistencia
-- Utilización de base de datos para persistencia de la información.
-
   
 ### Funcionalidades Opcionales / Futuras Extensiones 
 ##### Sistema de autogestion para el cliente
