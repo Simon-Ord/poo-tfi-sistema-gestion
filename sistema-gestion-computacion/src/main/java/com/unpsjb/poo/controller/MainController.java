@@ -13,3 +13,4 @@ public class MainController {
         lblMensaje.setText("¡Funciona el FXML con CSS en NetBeans!");
     }
 }
+
