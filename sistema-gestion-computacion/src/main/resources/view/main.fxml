@@ -18,7 +18,7 @@
               AnchorPane.rightAnchor="20.0"
               AnchorPane.topAnchor="20.0">
             
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="agregadoScene" />
+            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="cambieElFXML" />
             <Label fx:id="lblMensaje" styleClass="titulo" text="Hola, Mundo desde FXML!" />
             <Button onAction="#onClickBoton" text="Probar Acción" />
         </VBox>

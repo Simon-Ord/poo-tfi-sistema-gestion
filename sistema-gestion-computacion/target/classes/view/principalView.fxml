@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.net.URL?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.effect.Blend?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane id="AnchorPane" prefHeight="348.0" prefWidth="509.0" styleClass="mainFxmlClass" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.unpsjb.poo.controller.PrincipalViewController">
+    <stylesheets>
+        <URL value="@styles.css" />
+    </stylesheets>
+   <children>
+      <Label alignment="TOP_CENTER" contentDisplay="CENTER" layoutX="100.0" layoutY="20.0" prefHeight="43.0" prefWidth="309.0" text="VENTANA PRINCIPAL" textFill="#a83838" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0">
+         <font>
+            <Font name="System Bold" size="29.0" />
+         </font>
+         <effect>
+         </effect></Label>
+      <Button alignment="CENTER" cancelButton="true" layoutX="49.0" layoutY="74.0" mnemonicParsing="false" prefHeight="74.0" prefWidth="83.0" text="boton1" textFill="#e83b3b">
+         <font>
+            <Font size="15.0" />
+         </font>
+      </Button>
+      <Button fx:id="btnCancelar" alignment="CENTER" contentDisplay="GRAPHIC_ONLY" layoutX="49.0" layoutY="164.0" mnemonicParsing="false" onAction="#eventBtn" prefHeight="76.0" prefWidth="69.0" text="cancelar">
+         <graphic>
+            <ImageView fitHeight="68.0" fitWidth="111.0" pickOnBounds="true" preserveRatio="true">
+               <image>
+                  <Image url="@../images/cancel2.png" />
+               </image>
+               <effect>
+                  <Blend />
+               </effect>
+            </ImageView>
+         </graphic>
+      </Button>
+<!--      <VBox layoutX="314.0" layoutY="76.0" prefHeight="253.0" prefWidth="152.0" AnchorPane.leftAnchor="314.0" AnchorPane.rightAnchor="43.0">
+         <children>
+            <TextField fx:id="txt1" onAction="#txt1" onKeyTyped="#eventKey" promptText="ejem:" />
+         </children>
+      </VBox>-->
+   </children>
+</AnchorPane>

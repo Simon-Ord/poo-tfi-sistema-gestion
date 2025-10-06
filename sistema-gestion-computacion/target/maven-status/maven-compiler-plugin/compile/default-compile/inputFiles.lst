@@ -1,5 +1,9 @@
-E:\Universidad\uni 2025\POO\zzz cosas mias\IntentoProyecto\sistema-gestion-computacion\src\main\java\com\unpsjb\poo\Main.java
-E:\Universidad\uni 2025\POO\zzz cosas mias\IntentoProyecto\sistema-gestion-computacion\src\main\java\com\unpsjb\poo\model\Usuario.java
-E:\Universidad\uni 2025\POO\zzz cosas mias\IntentoProyecto\sistema-gestion-computacion\src\main\java\com\unpsjb\poo\persistence\GestorDeConexion.java
-E:\Universidad\uni 2025\POO\zzz cosas mias\IntentoProyecto\sistema-gestion-computacion\src\main\java\com\unpsjb\poo\model\Producto.java
-E:\Universidad\uni 2025\POO\zzz cosas mias\IntentoProyecto\sistema-gestion-computacion\src\main\java\com\unpsjb\poo\controller\MainController.java
+E:\Universidad\uni 2025\POO\Trabajo Final\poo-tfi-sistema-gestion\sistema-gestion-computacion\src\main\java\com\unpsjb\poo\persistence\dao\ProductoDAO.java
+E:\Universidad\uni 2025\POO\Trabajo Final\poo-tfi-sistema-gestion\sistema-gestion-computacion\src\main\java\com\unpsjb\poo\persistence\dao\impl\ProductoDAOImpl.java
+E:\Universidad\uni 2025\POO\Trabajo Final\poo-tfi-sistema-gestion\sistema-gestion-computacion\src\main\java\com\unpsjb\poo\persistence\GestorDeConexion.java
+E:\Universidad\uni 2025\POO\Trabajo Final\poo-tfi-sistema-gestion\sistema-gestion-computacion\src\main\java\com\unpsjb\poo\model\Usuario.java
+E:\Universidad\uni 2025\POO\Trabajo Final\poo-tfi-sistema-gestion\sistema-gestion-computacion\src\main\java\com\unpsjb\poo\Main.java
+E:\Universidad\uni 2025\POO\Trabajo Final\poo-tfi-sistema-gestion\sistema-gestion-computacion\src\main\java\com\unpsjb\poo\controller\LoginViewController.java
+E:\Universidad\uni 2025\POO\Trabajo Final\poo-tfi-sistema-gestion\sistema-gestion-computacion\src\main\java\com\unpsjb\poo\controller\MainController.java
+E:\Universidad\uni 2025\POO\Trabajo Final\poo-tfi-sistema-gestion\sistema-gestion-computacion\src\main\java\com\unpsjb\poo\model\Producto.java
+E:\Universidad\uni 2025\POO\Trabajo Final\poo-tfi-sistema-gestion\sistema-gestion-computacion\src\main\java\com\unpsjb\poo\controller\PrincipalViewController.java
