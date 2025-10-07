@@ -1,9 +1,11 @@
-E:\Universidad\uni 2025\POO\Trabajo Final\poo-tfi-sistema-gestion\sistema-gestion-computacion\src\main\java\com\unpsjb\poo\persistence\dao\ProductoDAO.java
-E:\Universidad\uni 2025\POO\Trabajo Final\poo-tfi-sistema-gestion\sistema-gestion-computacion\src\main\java\com\unpsjb\poo\persistence\dao\impl\ProductoDAOImpl.java
-E:\Universidad\uni 2025\POO\Trabajo Final\poo-tfi-sistema-gestion\sistema-gestion-computacion\src\main\java\com\unpsjb\poo\persistence\GestorDeConexion.java
-E:\Universidad\uni 2025\POO\Trabajo Final\poo-tfi-sistema-gestion\sistema-gestion-computacion\src\main\java\com\unpsjb\poo\model\Usuario.java
-E:\Universidad\uni 2025\POO\Trabajo Final\poo-tfi-sistema-gestion\sistema-gestion-computacion\src\main\java\com\unpsjb\poo\Main.java
-E:\Universidad\uni 2025\POO\Trabajo Final\poo-tfi-sistema-gestion\sistema-gestion-computacion\src\main\java\com\unpsjb\poo\controller\LoginViewController.java
-E:\Universidad\uni 2025\POO\Trabajo Final\poo-tfi-sistema-gestion\sistema-gestion-computacion\src\main\java\com\unpsjb\poo\controller\MainController.java
-E:\Universidad\uni 2025\POO\Trabajo Final\poo-tfi-sistema-gestion\sistema-gestion-computacion\src\main\java\com\unpsjb\poo\model\Producto.java
-E:\Universidad\uni 2025\POO\Trabajo Final\poo-tfi-sistema-gestion\sistema-gestion-computacion\src\main\java\com\unpsjb\poo\controller\PrincipalViewController.java
+C:\Users\Usuario\Desktop\poo-tfi-sistema-gestion\sistema-gestion-computacion\src\main\java\com\unpsjb\poo\model\Usuario.java
+C:\Users\Usuario\Desktop\poo-tfi-sistema-gestion\sistema-gestion-computacion\src\main\java\com\unpsjb\poo\persistence\dao\impl\UsuarioDAOImpl.java
+C:\Users\Usuario\Desktop\poo-tfi-sistema-gestion\sistema-gestion-computacion\src\main\java\com\unpsjb\poo\persistence\GestorDeConexion.java
+C:\Users\Usuario\Desktop\poo-tfi-sistema-gestion\sistema-gestion-computacion\src\main\java\com\unpsjb\poo\controller\LoginViewController.java
+C:\Users\Usuario\Desktop\poo-tfi-sistema-gestion\sistema-gestion-computacion\src\main\java\com\unpsjb\poo\persistence\dao\impl\ProductoDAOImpl.java
+C:\Users\Usuario\Desktop\poo-tfi-sistema-gestion\sistema-gestion-computacion\src\main\java\com\unpsjb\poo\controller\PrincipalViewController.java
+C:\Users\Usuario\Desktop\poo-tfi-sistema-gestion\sistema-gestion-computacion\src\main\java\com\unpsjb\poo\persistence\dao\ProductoDAO.java
+C:\Users\Usuario\Desktop\poo-tfi-sistema-gestion\sistema-gestion-computacion\src\main\java\com\unpsjb\poo\controller\MainController.java
+C:\Users\Usuario\Desktop\poo-tfi-sistema-gestion\sistema-gestion-computacion\src\main\java\com\unpsjb\poo\Main.java
+C:\Users\Usuario\Desktop\poo-tfi-sistema-gestion\sistema-gestion-computacion\src\main\java\com\unpsjb\poo\persistence\dao\UsuarioDAO.java
+C:\Users\Usuario\Desktop\poo-tfi-sistema-gestion\sistema-gestion-computacion\src\main\java\com\unpsjb\poo\model\Producto.java

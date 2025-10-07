@@ -1,4 +1,10 @@
+com\unpsjb\poo\model\Producto.class
+com\unpsjb\poo\persistence\dao\impl\UsuarioDAOImpl.class
+com\unpsjb\poo\persistence\dao\UsuarioDAO.class
 com\unpsjb\poo\model\Usuario.class
 com\unpsjb\poo\Main.class
 com\unpsjb\poo\controller\MainController.class
 com\unpsjb\poo\persistence\GestorDeConexion.class
+com\unpsjb\poo\controller\LoginViewController.class
+com\unpsjb\poo\controller\PrincipalViewController.class
+com\unpsjb\poo\persistence\dao\ProductoDAO.class
