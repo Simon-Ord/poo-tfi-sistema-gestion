@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<BorderPane xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.unpsjb.poo.controller.UsuariosController">
+
+    <center>
+        <VBox spacing="10">
+            <padding>
+                <Insets top="20" right="20" bottom="20" left="20"/>
+            </padding>
+
+            <Label text="Gestión de Usuarios" style="-fx-font-size: 22px; -fx-font-weight: bold;"/>
+
+            <!-- Tabla de usuarios -->
+            <TableView fx:id="tablaUsuarios" prefHeight="300">
+                <columns>
+                    <TableColumn fx:id="colId" text="ID" prefWidth="50"/>
+                    <TableColumn fx:id="colNombre" text="Nombre" prefWidth="150"/>
+                    <TableColumn fx:id="colUsuario" text="Usuario" prefWidth="150"/>
+                    <TableColumn fx:id="colRol" text="Rol" prefWidth="100"/>
+                    <TableColumn fx:id="colContrasena" text="Contraseña" prefWidth="150.0" />
+                    <TableColumn fx:id="colEstado" text="Activo" prefWidth="80"/>
+                </columns>
+            </TableView>
+
+            <!-- Botones -->
+            <HBox spacing="10">
+                <Button text="Agregar Usuario" onAction="#agregarUsuario"/>
+                <Button text="Modificar Usuario" onAction="#modificarUsuario"/>
+                <Button text="Eliminar Usuario" onAction="#eliminarUsuario"/>
+                <Button text="Refrescar" onAction="#cargarUsuarios"/>
+            </HBox>
+        </VBox>
+    </center>
+</BorderPane>

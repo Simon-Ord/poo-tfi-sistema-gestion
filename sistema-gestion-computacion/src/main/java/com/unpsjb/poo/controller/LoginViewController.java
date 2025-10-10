@@ -7,14 +7,11 @@ import java.util.ResourceBundle;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.PasswordField;
-import javafx.scene.control.TextField;
-import javax.swing.JOptionPane;
+import javafx.scene.control.*;
 
- // FXML Controller class
+import com.unpsjb.poo.model.Usuario;
+import com.unpsjb.poo.persistence.dao.impl.UsuarioDAOImpl;
+
 public class LoginViewController implements Initializable {
 
     @FXML
@@ -26,10 +23,8 @@ public class LoginViewController implements Initializable {
     @FXML
     private Label lblError;
 
-    // Datos de conexión a la base de datos
-    private final String URL = "jdbc:postgresql://localhost:5432/tienda_computacion";
-    private final String USER = "postgres"; // tu usuario de PostgreSQL
-    private final String PASSWORD = "alexis1213"; 
+    // 🔹 DAO para manejar los usuarios (usa tu conexión GestorDeConexion)
+    private final UsuarioDAOImpl usuarioDAO = new UsuarioDAOImpl();
 
     @FXML
     private void eventKey(KeyEvent event) {
@@ -62,25 +57,20 @@ public class LoginViewController implements Initializable {
     }
 
     private void verificarLogin(String usuario, String contrasena) {
-        String sql = "SELECT rol FROM usuarios WHERE usuario = ? AND contraseña = ? AND estado = TRUE";
+        Usuario u = usuarioDAO.verificarLogin(usuario, contrasena);
 
-        try (Connection conn = DriverManager.getConnection(URL, USER, PASSWORD);
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        if (u != null) {
+            mostrarAlerta("Ingreso correcto", "Bienvenido " + u.getNombre() + " (" + u.getRol() + ")", Alert.AlertType.INFORMATION);
 
-            stmt.setString(1, usuario);
-            stmt.setString(2, contrasena);
+            // 🔹 Ejemplo: según rol podrías abrir otra vista
+            // if (u instanceof Admin) {
+            //     abrirVentanaAdmin();
+            // } else if (u instanceof Empleado) {
+            //     abrirVentanaEmpleado();
+            // }
 
-            ResultSet rs = stmt.executeQuery();
-
-            if (rs.next()) {
-                String rol = rs.getString("rol");
-                mostrarAlerta("Ingreso correcto", "Bienvenido, tu rol es: " + rol, Alert.AlertType.INFORMATION);
-            } else {
-                mostrarAlerta("Error", "Usuario o contraseña incorrectos.", Alert.AlertType.ERROR);
-            }
-
-        } catch (SQLException e) {
-            mostrarAlerta("Error de conexión", e.getMessage(), Alert.AlertType.ERROR);
+        } else {
+            mostrarAlerta("Error", "Usuario o contraseña incorrectos.", Alert.AlertType.ERROR);
         }
     }
 
@@ -94,6 +84,6 @@ public class LoginViewController implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // Inicialización si hace falta
+        // Nada especial por ahora
     }
 }

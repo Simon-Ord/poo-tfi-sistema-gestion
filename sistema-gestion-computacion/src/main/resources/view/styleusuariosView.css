@@ -1,0 +1,111 @@
+/* ======= Fondo General ======= */
+.root {
+    -fx-background-color: linear-gradient(to bottom right, #f8f9fb, #dfe6ec);
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-size: 14px;
+}
+
+/* ======= Título Principal ======= */
+.label {
+    -fx-text-fill: #2c3e50;
+    -fx-font-size: 22px;
+    -fx-font-weight: bold;
+}
+
+/* ======= Tabla ======= */
+.table-view {
+    -fx-background-color: rgb(173, 173, 173);
+    -fx-border-color: #d0d3d4;
+    -fx-border-radius: 10;
+    -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 8, 0, 0, 2);
+    -fx-padding: 5;
+}
+
+/* Encabezado de la tabla */
+.table-view .column-header-background {
+    -fx-background-color: linear-gradient(to bottom, #34495e, #2c3e50);
+    -fx-background-radius: 10 10 0 0;
+}
+
+.table-view .column-header, 
+.table-view .column-header .label {
+    
+    -fx-text-fill: rgb(5, 5, 5);
+    -fx-font-weight: bold;
+    -fx-alignment: CENTER;
+    -fx-font-size: 13px;
+}
+
+/* Filas alternadas */
+.table-row-cell:odd {
+    -fx-background-color: #f4f6f8;
+}
+.table-row-cell:even {
+    -fx-background-color: #ffffff;
+}
+
+/* Fila seleccionada */
+.table-row-cell:selected {
+    -fx-background-color: #3498db;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+}
+
+/* ======= Botones ======= */
+.button {
+    -fx-background-color: linear-gradient(to bottom, #3498db, #2c80b9);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-padding: 8 16 8 16;
+    -fx-font-size: 13px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 4, 0, 0, 1);
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+}
+
+.button:hover {
+    -fx-background-color: linear-gradient(to bottom, #4aa3e0, #2471a3);
+}
+
+.button:pressed {
+    -fx-background-color: #1f618d;
+}
+
+/* ======= Contenedores ======= */
+.vbox {
+    -fx-spacing: 12;
+    -fx-alignment: center;
+}
+
+.hbox {
+    -fx-alignment: center;
+    -fx-spacing: 10;
+    -fx-padding: 12;
+}
+
+/* ======= Scrollbar ======= */
+.table-view .scroll-bar:vertical,
+.table-view .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+}
+
+.table-view .thumb {
+    -fx-background-color: #95a5a6;
+    -fx-background-radius: 5;
+}
+
+/* ======= Ajustes del texto de tabla ======= */
+.table-cell {
+    -fx-text-fill: #2c3e50;
+    -fx-font-size: 13px;
+    -fx-alignment: CENTER_LEFT;
+}
+
+/* ======= Mensaje vacío ======= */
+.table-view .placeholder .label {
+    -fx-text-fill: #7f8c8d;
+    -fx-font-size: 14px;
+    -fx-font-style: italic;
+}
