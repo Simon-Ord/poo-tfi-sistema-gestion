@@ -14,7 +14,7 @@ public class Main extends Application {
     public void start(Stage stage) throws Exception {
 
         // ------------------------------------------
-        // LOGIN (comentado temporalmente)
+        // LOGIN 
         // ------------------------------------------
         /*
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/loginView.fxml"));
@@ -28,13 +28,14 @@ public class Main extends Application {
         stage.setScene(scene);
         stage.setResizable(false);
         stage.show();
-        */
+        
 
         // ------------------------------------------
-        //  VENTANA DE USUARIOS (temporal)
+        //  VENTANA DE USUARIOS (comentado temporalmente)
         // -----------------------------------------
         // lo puse porque asi entra ahi n usuario 
         //pero hay que terminal el principal.....lo digo en whasaapp
+        /*
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/usuariosView.fxml"));
         Scene sceneUsuarios = new Scene(loader.load(), 750, 450);
 
@@ -50,6 +51,12 @@ public class Main extends Application {
         stage.setScene(sceneUsuarios);
         stage.setResizable(false);
         stage.show();
+        */
+    
+    
+    // PRUEBA EN BASE A LA CLASE 12
+    
+    
     }
 
     public static void main(String[] args) {

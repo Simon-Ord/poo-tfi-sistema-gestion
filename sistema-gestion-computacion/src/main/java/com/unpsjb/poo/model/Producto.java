@@ -1,76 +1,116 @@
 package com.unpsjb.poo.model;
+
+import java.math.BigDecimal;
+
 public class Producto {
+	private int idProducto;
+	private String nombreProducto;
+	private String descripcionProducto;
+	private int stockProducto;
+	private BigDecimal precioProducto;
+	private String categoriaProducto;
+	private String fabricanteProducto;
+	private int codigoProducto;
+	
+	public Producto() {
+	//Constructor por defecto, necesario para el metodo Read en el DAO	
+	}
+	
+	public Producto(int idProducto,String nombreProducto,String descripcionProducto,int stockProducto,BigDecimal precioProducto,String categoriaProducto,String fabricanteProducto,int codigoProducto) {
+		this.idProducto = idProducto;
+		this.nombreProducto = nombreProducto;
+		this.descripcionProducto = descripcionProducto;
+		this.stockProducto = stockProducto;
+		this.precioProducto = precioProducto;
+		this.categoriaProducto = categoriaProducto;
+		this.fabricanteProducto = fabricanteProducto;
+		this.codigoProducto = codigoProducto;
+	}
 
-    // Atributos privados (encapsulamiento)
-    private int id;
-    private String nombre;
-    private String descripcion;
-    private double precio;
-    private int stock;
+	
+public int getId() {
+	return idProducto;
+}
 
-    // Constructor vacío (necesario para frameworks y FXML)
-    public Producto() {
-    }
+public void setId(int idProducto) {
+	this.idProducto = idProducto;
+}
 
-    // Constructor con parámetros
-    public Producto(int id, String nombre, String descripcion, double precio, int stock) {
-        this.id = id;
-        this.nombre = nombre;
-        this.descripcion = descripcion;
-        this.precio = precio;
-        this.stock = stock;
-    }
 
-    // Getters y Setters (acceso controlado a los atributos)
-    public int getId() {
-        return id;
-    }
+public String getNombreProducto () {
+	return nombreProducto;
+}
 
-    public void setId(int id) {
-        this.id = id;
-    }
+public void setNombreProducto (String nombreProducto) {
+	this.nombreProducto = nombreProducto;
+}
 
-    public String getNombre() {
-        return nombre;
-    }
 
-    public void setNombre(String nombre) {
-        this.nombre = nombre;
-    }
+public String getDescripcionProducto () {
+	return descripcionProducto;
+}
 
-    public String getDescripcion() {
-        return descripcion;
-    }
+public void setDescripcionProducto(String descripcionProducto) {
+	this.descripcionProducto = descripcionProducto;
+}
 
-    public void setDescripcion(String descripcion) {
-        this.descripcion = descripcion;
-    }
 
-    public double getPrecio() {
-        return precio;
-    }
+public int getStockProducto() {
+	return stockProducto;
+}
 
-    public void setPrecio(double precio) {
-        this.precio = precio;
-    }
+public void setStockProducto(int stockProducto) {
+	this.stockProducto = stockProducto;
+}
 
-    public int getStock() {
-        return stock;
-    }
 
-    public void setStock(int stock) {
-        this.stock = stock;
-    }
+public BigDecimal getPrecioProducto() {
+	return precioProducto;
+}
 
-    // Método toString (útil para mostrar productos en listas o depurar)
-    @Override
-    public String toString() {
-        return "Producto{" +
-                "id=" + id +
-                ", nombre='" + nombre + '\'' +
-                ", descripcion='" + descripcion + '\'' +
-                ", precio=" + precio +
-                ", stock=" + stock +
-                '}';
-    }
+public void setPrecioProducto(BigDecimal precioProducto) {
+	this.precioProducto = precioProducto;
+}
+
+
+public String getCategoriaProducto() {
+	return categoriaProducto;
+}
+
+public void setCategoriaProducto(String categoriaProducto) {
+	this.categoriaProducto = categoriaProducto;
+}
+
+
+public String getFabricanteProducto() {
+	return fabricanteProducto;
+}
+
+public void setFabricanteProducto(String fabricanteProducto) {
+	this.fabricanteProducto = fabricanteProducto;
+}
+
+public int getCodigoProducto() {
+	return codigoProducto;
+}
+
+public void setCodigoProducto (int codigoProducto) {
+	this.codigoProducto = codigoProducto;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+	
+	
+
 }
