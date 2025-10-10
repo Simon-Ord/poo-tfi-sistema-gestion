@@ -1,0 +1,75 @@
+# ===========================
+# ☕ Proyecto Java / Maven / JavaFX
+# ===========================
+
+# Compilados y builds
+/target/
+/out/
+/bin/
+/build/
+*.class
+*.jar
+*.war
+*.ear
+
+# ===========================
+# 🎨 Recursos JavaFX
+# (NO ignorar archivos .fxml reales, solo sus temporales)
+# ===========================
+*.fxml~
+*.bak
+*.tmp
+*.swp
+
+# ===========================
+# 🧰 IDEs
+# ===========================
+# --- NetBeans ---
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+/nbactions.xml.save*
+
+# --- Visual Studio Code ---
+.vscode/
+.history/
+
+# --- IntelliJ IDEA ---
+.idea/
+*.iml
+*.iws
+
+# ===========================
+# 🧪 Logs y temporales
+# ===========================
+*.log
+*.tmp
+*.bak
+
+# ===========================
+# 🗄️ Base de datos local
+# ===========================
+*.db
+*.sqlite
+*.sqlite3
+
+# ===========================
+# 🔐 Credenciales (si se agregan)
+# ===========================
+*.env
+*.key
+*.pem
+
+# ===========================
+# 🧱 Sistema Operativo
+# ===========================
+# macOS
+.DS_Store
+# Windows
+Thumbs.db
+Desktop.ini
+# Linux
+*~
+
