@@ -16,7 +16,7 @@ public class Main extends Application {
         // ------------------------------------------
         // LOGIN 
         // ------------------------------------------
-        /*
+        
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/loginView.fxml"));
         Scene scene = new Scene(loader.load(), 675, 406);
         // Cargar CSS
