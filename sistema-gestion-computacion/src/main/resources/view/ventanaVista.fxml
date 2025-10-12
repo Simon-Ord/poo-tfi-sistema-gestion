@@ -1,6 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.geometry.*?>
+<AnchorPane xmlns="http://javafx.com/javafx/21"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.unpsjb.poo.controller.VentanaVistaControlador"
+            prefWidth="420" prefHeight="280"
+            style="-fx-background-color: -fx-base; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,.25), 12, 0, 0, 3);">
+    <!-- Barra de título -->
+    <HBox fx:id="titleBar" spacing="8" alignment="CENTER_LEFT"
+          style="-fx-background-color: -fx-background; -fx-padding: 8 10; -fx-background-radius: 10 10 0 0;"
+          AnchorPane.topAnchor="0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0">
+        <Label fx:id="titleLabel" text="Ventana" style="-fx-font-weight: bold;"/>
+        <Pane HBox.hgrow="ALWAYS"/>
+        <Button fx:id="btnMin" text="—" focusTraversable="false" minWidth="28"/>
+        <Button fx:id="btnMax" text="□" focusTraversable="false" minWidth="28"/>
+        <Button fx:id="btnClose" text="✕" focusTraversable="false" minWidth="28"/>
+    </HBox>
 
-<?import javafx.scene.layout.BorderPane?>
+    <!-- Contenido -->
+    <StackPane fx:id="contentArea"
+               style="-fx-background-color: -fx-control-inner-background; -fx-background-radius: 0 0 10 10;"
+               AnchorPane.topAnchor="40" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0"/>
 
+    <!-- Grips de redimensionado (regiones transparentes con cursores) -->
+    <Region fx:id="gripE"  prefWidth="6"  AnchorPane.leftAnchor="0"  AnchorPane.topAnchor="6"  AnchorPane.bottomAnchor="6"  style="-fx-cursor: e-resize; -fx-background-color: transparent;"/>
+    <Region fx:id="gripW"  prefWidth="6"  AnchorPane.rightAnchor="0" AnchorPane.topAnchor="6"  AnchorPane.bottomAnchor="6"  style="-fx-cursor: w-resize; -fx-background-color: transparent;"/>
+    <Region fx:id="gripS"  prefHeight="6" AnchorPane.leftAnchor="6" AnchorPane.rightAnchor="6" AnchorPane.topAnchor="0"  style="-fx-cursor: s-resize; -fx-background-color: transparent;"/>
+    <Region fx:id="gripN"  prefHeight="6" AnchorPane.leftAnchor="6" AnchorPane.rightAnchor="6" AnchorPane.bottomAnchor="0" style="-fx-cursor: n-resize; -fx-background-color: transparent;"/>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" />
+    <Region fx:id="gripSE" prefWidth="10" prefHeight="10" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0"  style="-fx-cursor: se-resize; -fx-background-color: transparent;"/>
+    <Region fx:id="gripNE" prefWidth="10" prefHeight="10" AnchorPane.rightAnchor="0" AnchorPane.bottomAnchor="0" style="-fx-cursor: ne-resize; -fx-background-color: transparent;"/>
+    <Region fx:id="gripSW" prefWidth="10" prefHeight="10" AnchorPane.leftAnchor="0"  AnchorPane.topAnchor="0"  style="-fx-cursor: sw-resize; -fx-background-color: transparent;"/>
+    <Region fx:id="gripNW" prefWidth="10" prefHeight="10" AnchorPane.leftAnchor="0"  AnchorPane.bottomAnchor="0" style="-fx-cursor: nw-resize; -fx-background-color: transparent;"/>
+</AnchorPane>

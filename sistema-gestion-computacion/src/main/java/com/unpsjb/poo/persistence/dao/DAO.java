@@ -1,4 +1,4 @@
-package com.unpsjb.poo.model;
+package com.unpsjb.poo.persistence.dao;
 
 import java.util.List;
 import java.util.Optional;

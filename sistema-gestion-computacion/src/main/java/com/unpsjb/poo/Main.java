@@ -1,8 +1,8 @@
 package com.unpsjb.poo;
 
 import java.util.Objects;
+
 import javafx.application.Application;
-import static javafx.application.Application.launch;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Scene;
 import javafx.scene.image.Image;
@@ -51,12 +51,25 @@ public class Main extends Application {
         stage.setScene(sceneUsuarios);
         stage.setResizable(false);
         stage.show();
+        
+    
+    
+     // ------------------------------------------
+        // Vista Principal
+        // ------------------------------------------
+        
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/principalView.fxml"));
+        Scene scene = new Scene(loader.load(), 1200, 700);
+        // Cargar CSS
+        //scene.getStylesheets().add(getClass().getResource("/view/styleLogin.css").toExternalForm());
+        // Contenidos de la ventana Stage
+        stage.setTitle("Login - MundoPC");
+        stage.getIcons().add(new Image(Objects.requireNonNull(
+                getClass().getResource("/images/logoMundoPC.png"), "null").toExternalForm()));
+        stage.setScene(scene);
+        stage.setResizable(false);
+        stage.show();
         */
-    
-    
-    // PRUEBA EN BASE A LA CLASE 12
-    
-    
     }
 
     public static void main(String[] args) {

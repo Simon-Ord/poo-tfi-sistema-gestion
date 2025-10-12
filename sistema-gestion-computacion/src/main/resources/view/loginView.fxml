@@ -11,7 +11,8 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<HBox fx:id="hboxLogin" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="406.0" prefWidth="675.0" stylesheets="@styleLogin.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.unpsjb.poo.controller.LoginViewController">
+<HBox fx:id="hboxLogin" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="406.0" prefWidth="675.0" 
+      stylesheets="@styleLogin.css" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.unpsjb.poo.controller.LoginViewController">
    <children> 
       <VBox alignment="CENTER" prefHeight="400.0" prefWidth="251.0" HBox.hgrow="ALWAYS">
          <children>
@@ -43,7 +44,7 @@
                      </font>
                   </Label>
                   <PasswordField fx:id="txtPassword" onKeyTyped="#eventKey" />
-                  <Button fx:id="btnLogin" maxWidth="-Infinity" mnemonicParsing="false" onAction="#eventAction" prefHeight="33.0" prefWidth="71.0" text="Ingresar">
+                  <Button fx:id="btnLogin" maxWidth="-Infinity" mnemonicParsing="false" onAction="#btnLoginAction" prefHeight="33.0" prefWidth="71.0" text="Ingresar">
                      <VBox.margin>
                         <Insets top="15.0" />
                      </VBox.margin>

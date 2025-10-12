@@ -1,89 +1,67 @@
 package com.unpsjb.poo.controller;
 
-import javafx.scene.input.KeyEvent;
-import java.net.URL;
-import java.sql.*;
-import java.util.ResourceBundle;
+import java.io.IOException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
 
-import com.unpsjb.poo.model.Usuario;
-import com.unpsjb.poo.persistence.dao.impl.UsuarioDAOImpl;
+public class LoginViewController {
 
-public class LoginViewController implements Initializable {
+    @FXML private Button btnLogin;
+    @FXML private PasswordField txtPassword;
+    @FXML private TextField txtUser;
+    
+    @FXML void eventKey(ActionEvent event) {}
+    
+    
+    // BOTON LOGIN //
+    @FXML void btnLoginAction(ActionEvent event) {
+    try {
+        // Validación: no dejar campos vacíos
+        String usuario = txtUser.getText().trim();
+        String password = txtPassword.getText().trim();
 
-    @FXML
-    private PasswordField txtPassword;
-    @FXML
-    private TextField txtUser;
-    @FXML
-    private Button btnLogin;
-    @FXML
-    private Label lblError;
-
-    // 🔹 DAO para manejar los usuarios (usa tu conexión GestorDeConexion)
-    private final UsuarioDAOImpl usuarioDAO = new UsuarioDAOImpl();
-
-    @FXML
-    private void eventKey(KeyEvent event) {
-        Object evt = event.getSource();
-
-        // Evitar espacios
-        if (evt.equals(txtUser) || evt.equals(txtPassword)) {
-            if (event.getCharacter().equals(" ")) {
-                event.consume();
-            }
+        if (usuario.isEmpty() || password.isEmpty()) {
+            // Mostrar alerta si alguno está vacío
+            javafx.scene.control.Alert alerta = new javafx.scene.control.Alert(
+                    javafx.scene.control.Alert.AlertType.WARNING);
+            alerta.setTitle("Campos vacíos");
+            alerta.setHeaderText(null);
+            alerta.setContentText("ERROR: complete usuario y contraseña.");
+            alerta.showAndWait();
+            return; // detiene la ejecución
         }
-    }
 
-    @FXML
-    private void eventAction(ActionEvent event) {
-        Object evt = event.getSource();
+        // Si pasa la validación, continúa
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/principalView.fxml"));
+        Parent root = loader.load();
 
-        if (evt.equals(btnLogin)) {
-            String usuario = txtUser.getText().trim();
-            String contrasena = txtPassword.getText().trim();
+        // Crear la nueva ventana
+        Stage stage = new Stage();
+        stage.setTitle("Sistema de Gestión - Menú Principal");
+        stage.setScene(new Scene(root));
+        stage.setMaximized(true);
+        stage.show();
 
-            if (usuario.isEmpty() || contrasena.isEmpty()) {
-                mostrarAlerta("Error", "Debe ingresar usuario y contraseña.", Alert.AlertType.ERROR);
-                return;
-            }
+        // Cerrar la ventana de login
+        Stage loginStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        loginStage.close();
 
-            // Llamamos al método de verificación
-            verificarLogin(usuario, contrasena);
-        }
-    }
-
-    private void verificarLogin(String usuario, String contrasena) {
-        Usuario u = usuarioDAO.verificarLogin(usuario, contrasena);
-
-        if (u != null) {
-            mostrarAlerta("Ingreso correcto", "Bienvenido " + u.getNombre() + " (" + u.getRol() + ")", Alert.AlertType.INFORMATION);
-
-            // 🔹 Ejemplo: según rol podrías abrir otra vista
-            // if (u instanceof Admin) {
-            //     abrirVentanaAdmin();
-            // } else if (u instanceof Empleado) {
-            //     abrirVentanaEmpleado();
-            // }
-
-        } else {
-            mostrarAlerta("Error", "Usuario o contraseña incorrectos.", Alert.AlertType.ERROR);
-        }
-    }
-
-    private void mostrarAlerta(String titulo, String mensaje, Alert.AlertType tipo) {
-        Alert alert = new Alert(tipo);
-        alert.setTitle(titulo);
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
-    }
-
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        // Nada especial por ahora
+    } catch (IOException e) {
+        e.printStackTrace();
     }
 }
+
+}
+
+
+

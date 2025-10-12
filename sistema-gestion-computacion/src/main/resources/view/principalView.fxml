@@ -9,7 +9,8 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="585.0" prefWidth="830.0" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.unpsjb.poo.controller.PrincipalVistaControlador">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="585.0" prefWidth="830.0" 
+            stylesheets="@css/stylePrincipal.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.unpsjb.poo.controller.PrincipalVistaControlador">
    <top>
       <HBox prefHeight="43.0" prefWidth="600.0" BorderPane.alignment="CENTER" HBox.hgrow="ALWAYS">
          <children>
@@ -38,7 +39,7 @@
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </HBox.margin>
             </Button>
-            <Button fx:id="btnCerrarSesion" alignment="CENTER" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#cerrarSesionAction" prefHeight="37.0" prefWidth="99.0" text="Cerrar Sesión" textAlignment="RIGHT">
+            <Button fx:id="btnCerrarSesion" alignment="CENTER" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#cerrarSesionAction" prefHeight="37.0" text="Cerrar Sesión" textAlignment="RIGHT">
                <HBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </HBox.margin>
@@ -65,6 +66,6 @@
       <Insets bottom="5.0" top="5.0" />
    </HBox.margin>
    <center>
-      <Pane prefHeight="465.0" prefWidth="797.0" BorderPane.alignment="CENTER" />
+      <Pane fx:id="desktop" prefHeight="465.0" prefWidth="797.0" BorderPane.alignment="CENTER" />
    </center>
 </BorderPane>

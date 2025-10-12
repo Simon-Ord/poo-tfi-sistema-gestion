@@ -6,13 +6,13 @@ com\unpsjb\poo\Main.class
 com\unpsjb\poo\controller\ProductosVistaControlador.class
 com\unpsjb\poo\controller\MainControlador.class
 com\unpsjb\poo\model\Producto.class
-com\unpsjb\poo\model\DAO.class
 com\unpsjb\poo\util\UsuarioFactory.class
 com\unpsjb\poo\controller\PrincipalVistaControlador.class
 com\unpsjb\poo\controller\VentanaVistaControlador.class
+com\unpsjb\poo\persistence\dao\impl\ProductoDAOImpl.class
 com\unpsjb\poo\model\Admin.class
 com\unpsjb\poo\controller\UsuariosController.class
+com\unpsjb\poo\persistence\dao\DAO.class
 com\unpsjb\poo\persistence\GestorDeConexion.class
 com\unpsjb\poo\controller\LoginViewController.class
-com\unpsjb\poo\model\ProductoDAOImpl.class
 com\unpsjb\poo\persistence\dao\ProductoDAO.class
