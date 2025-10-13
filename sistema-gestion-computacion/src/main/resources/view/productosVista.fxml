@@ -14,8 +14,16 @@
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="456.0" prefWidth="874.0" 
-            stylesheets="@css/styleProductos.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.unpsjb.poo.controller.ProductosVistaControlador">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
+            prefHeight="456.0" prefWidth="874.0"
+            stylesheets="@css/styleProductos.css"
+            xmlns="http://javafx.com/javafx/24.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.unpsjb.poo.controller.ProductosVistaControlador">
+
+   <!-- ====================================================== -->
+   <!-- SECCIÓN IZQUIERDA: Tabla y buscador -->
+   <!-- ====================================================== -->
    <left>
       <VBox alignment="TOP_CENTER" prefHeight="456.0" prefWidth="550.0" BorderPane.alignment="CENTER">
          <children>
@@ -29,30 +37,33 @@
                         <Insets bottom="5.0" left="5.0" top="5.0" />
                      </HBox.margin>
                   </ImageView>
-                  <TextField prefHeight="25.0" prefWidth="133.0">
+                  <TextField fx:id="txtBuscar" promptText="Buscar producto..." prefHeight="25.0" prefWidth="133.0">
                      <HBox.margin>
                         <Insets left="5.0" right="5.0" top="5.0" />
                      </HBox.margin>
                   </TextField>
                </children>
-               <VBox.margin>
-                  <Insets />
-               </VBox.margin>
             </HBox>
-            <TableView prefHeight="456.0" prefWidth="526.0" VBox.vgrow="ALWAYS">
+
+            <!-- 🔹 Tabla con fx:id y columnas configuradas -->
+            <TableView fx:id="tablaProductos" prefHeight="456.0" prefWidth="526.0" VBox.vgrow="ALWAYS">
               <columns>
-                  <TableColumn prefWidth="60.0" text="Codigo" />
-                <TableColumn prefWidth="90.0" text="Nombre " />
-                <TableColumn prefWidth="68.0" text="Precio" />
-                  <TableColumn prefWidth="68.0" text="Cantidad" />
-                  <TableColumn prefWidth="123.0" text="Descripción" />
-                  <TableColumn prefWidth="64.0" text="Categoria" />
-                  <TableColumn prefWidth="76.0" text="Fabricante" />
+                  <TableColumn fx:id="colCodigo" prefWidth="60.0" text="Código" />
+                  <TableColumn fx:id="colNombre" prefWidth="90.0" text="Nombre" />
+                  <TableColumn fx:id="colPrecio" prefWidth="68.0" text="Precio" />
+                  <TableColumn fx:id="colCantidad" prefWidth="68.0" text="Cantidad" />
+                  <TableColumn fx:id="colDescripcion" prefWidth="123.0" text="Descripción" />
+                  <TableColumn fx:id="colCategoria" prefWidth="64.0" text="Categoría" />
+                  <TableColumn fx:id="colFabricante" prefWidth="76.0" text="Fabricante" />
               </columns>
             </TableView>
          </children>
       </VBox>
    </left>
+
+   <!-- ====================================================== -->
+   <!-- SECCIÓN DERECHA: Formulario -->
+   <!-- ====================================================== -->
    <right>
       <BorderPane prefHeight="456.0" prefWidth="401.0" BorderPane.alignment="CENTER">
          <top>
@@ -63,117 +74,47 @@
                         <Font name="System Bold" size="20.0" />
                      </font>
                   </Label>
+
                   <HBox alignment="CENTER" prefHeight="41.0" prefWidth="303.0">
                      <children>
-                        <Button fx:id="btnRegistrar" mnemonicParsing="false" onAction="#btnRegistrarAction" text="Registrar">
-                           <HBox.margin>
-                              <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
-                           </HBox.margin>
-                        </Button>
-                        <Button fx:id="btnModificar" mnemonicParsing="false" onAction="#btnModificarAction" text="Modificar">
-                           <HBox.margin>
-                              <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
-                           </HBox.margin>
-                        </Button>
-                        <Button fx:id="btnEliminar" mnemonicParsing="false" onAction="#btnEliminarAction" text="Eliminar">
-                           <HBox.margin>
-                              <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
-                           </HBox.margin>
-                        </Button>
-                        <Button fx:id="btnCancelar" mnemonicParsing="false" onAction="#btnCancelarAction" text="Cancelar">
-                           <HBox.margin>
-                              <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
-                           </HBox.margin>
-                        </Button>
+                        <Button fx:id="btnRegistrar" mnemonicParsing="false" onAction="#btnRegistrarAction" text="Registrar" />
+                        <Button fx:id="btnModificar" mnemonicParsing="false" onAction="#btnModificarAction" text="Modificar" />
+                        <Button fx:id="btnEliminar" mnemonicParsing="false" onAction="#btnEliminarAction" text="Eliminar" />
+                        <Button fx:id="btnCancelar" mnemonicParsing="false" onAction="#btnCancelarAction" text="Cancelar" />
                      </children>
                   </HBox>
                </children>
             </VBox>
          </top>
+
+         <!-- 🔹 Formulario de carga -->
          <center>
             <VBox prefHeight="386.0" prefWidth="326.0" BorderPane.alignment="TOP_LEFT">
                <children>
-                  <Label text="Codigo">
-                     <font>
-                        <Font name="System Bold" size="12.0" />
-                     </font>
-                     <VBox.margin>
-                        <Insets left="1.0" />
-                     </VBox.margin></Label>
-                  <TextField fx:id="txtCodigo">
-                     <VBox.margin>
-                        <Insets left="1.0" right="5.0" />
-                     </VBox.margin>
-                  </TextField>
-                  <Label text="Nombre">
-                     <VBox.margin>
-                        <Insets left="1.0" />
-                     </VBox.margin>
-                     <font>
-                        <Font name="System Bold" size="12.0" />
-                     </font></Label>
-                  <TextField fx:id="txtNombre">
-                     <VBox.margin>
-                        <Insets left="1.0" right="5.0" />
-                     </VBox.margin></TextField>
-                  <Label text="Precio">
-                     <VBox.margin>
-                        <Insets left="1.0" />
-                     </VBox.margin>
-                     <font>
-                        <Font name="System Bold" size="12.0" />
-                     </font></Label>
-                  <TextField fx:id="txtPrecio">
-                     <VBox.margin>
-                        <Insets left="1.0" right="5.0" />
-                     </VBox.margin></TextField>
-                  <Label text="Cantidad">
-                     <VBox.margin>
-                        <Insets left="1.0" />
-                     </VBox.margin>
-                     <font>
-                        <Font name="System Bold" size="12.0" />
-                     </font></Label>
-                  <TextField fx:id="txtCantidad">
-                     <VBox.margin>
-                        <Insets left="1.0" right="5.0" />
-                     </VBox.margin></TextField>
-                  <Label text="Descripcón">
-                     <VBox.margin>
-                        <Insets left="1.0" />
-                     </VBox.margin>
-                     <font>
-                        <Font name="System Bold" size="12.0" />
-                     </font></Label>
-                  <TextField fx:id="txtDescripcion">
-                     <VBox.margin>
-                        <Insets left="1.0" right="5.0" />
-                     </VBox.margin></TextField>
-                  <Label text="Fabricante">
-                     <VBox.margin>
-                        <Insets left="1.0" />
-                     </VBox.margin>
-                     <font>
-                        <Font name="System Bold" size="12.0" />
-                     </font></Label>
-                  <TextField fx:id="txtFabricante">
-                     <VBox.margin>
-                        <Insets left="1.0" right="5.0" />
-                     </VBox.margin></TextField>
+                  <Label text="Código" />
+                  <TextField fx:id="txtCodigo" />
+
+                  <Label text="Nombre" />
+                  <TextField fx:id="txtNombre" />
+
+                  <Label text="Precio" />
+                  <TextField fx:id="txtPrecio" />
+
+                  <Label text="Cantidad" />
+                  <TextField fx:id="txtCantidad" />
+
+                  <Label text="Descripción" />
+                  <TextField fx:id="txtDescripcion" />
+
+                  <Label text="Fabricante" />
+                  <TextField fx:id="txtFabricante" />
+
                   <HBox alignment="CENTER" prefHeight="37.0" prefWidth="309.0">
                      <children>
-                        <ComboBox prefWidth="111.0" promptText="Categoria">
-                           <HBox.margin>
-                              <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
-                           </HBox.margin>
-                        </ComboBox>
+                        <ComboBox fx:id="comboCategoria" prefWidth="111.0" promptText="Categoría" />
                         <Button fx:id="btnAgregarCategoria" mnemonicParsing="false" onAction="#AgregarCategoriaAction" prefHeight="20.0" prefWidth="28.0" text="+" />
-                        <ComboBox prefWidth="111.0" promptText="Fabricante">
-                           <HBox.margin>
-                              <Insets bottom="3.0" left="3.0" right="3.0" top="3.0" />
-                           </HBox.margin>
-                        </ComboBox>
-                        <Button fx:id="btnAgregarFabricante" layoutX="154.0" layoutY="16.0" mnemonicParsing="false" onAction="#AgregarFabricanteAction" text="+" />
+                        <ComboBox fx:id="comboFabricante" prefWidth="111.0" promptText="Fabricante" />
+                        <Button fx:id="btnAgregarFabricante" mnemonicParsing="false" onAction="#AgregarFabricanteAction" prefHeight="20.0" prefWidth="28.0" text="+" />
                      </children>
                   </HBox>
                </children>
