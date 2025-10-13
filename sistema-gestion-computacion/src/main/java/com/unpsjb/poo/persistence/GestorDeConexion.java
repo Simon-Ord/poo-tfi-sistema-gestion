@@ -1,11 +1,11 @@
 package com.unpsjb.poo.persistence;
 
+import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
-import java.io.InputStream;
 import java.util.Properties;
-
 /**
  * Gestor de conexión a la base de datos (patrón Singleton).
  * Se encarga de leer las credenciales desde config.properties y mantener
