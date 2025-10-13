@@ -1,187 +1,151 @@
 package com.unpsjb.poo.controller;
 
-import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.StackPane;
+import javafx.scene.layout.*;
 
-import java.net.URL;
-import java.util.ResourceBundle;
+public class VentanaVistaControlador extends Region {
 
-public class VentanaVistaControlador implements Initializable {
+    private static final double HEADER_HEIGHT = 34;
+    private static final double MIN_W = 360;
+    private static final double MIN_H = 220;
+    private static final double RESIZE_MARGIN = 8;
 
-    // Root es el AnchorPane del FXML (la “ventana interna”)
-    @FXML private AnchorPane root;
-    @FXML private StackPane contentArea;
-    @FXML private Label titleLabel;
-    @FXML private Region gripE, gripW, gripS, gripN, gripSE, gripNE, gripSW, gripNW;
-    @FXML private Node titleBar;
-    @FXML private Button btnMin, btnMax, btnClose;
+    private final BorderPane frame = new BorderPane();
+    private final HBox titleBar = new HBox(8);
+    private final Label titleLbl = new Label();
+    private final Button btnMin = new Button("—");
+    private final Button btnClose = new Button("✕");
+    private final StackPane contentHolder = new StackPane();
 
-    // Drag
+    private boolean minimized = false;
+
+    // para arrastre
     private double dragOffsetX, dragOffsetY;
 
-    // Estado maximizado/restaurado
-    private boolean maximized = false;
-    private double prevX, prevY, prevW, prevH; // bounds previos
+    public VentanaVistaControlador(String title, Node content) {
+        // Título + botones
+        titleLbl.setText(title);
 
-    // Medidas mínimas
-    private static final double MIN_W = 260;
-    private static final double MIN_H = 140;
-    private static final double TITLE_H = 40;
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
 
-    @Override
-    public void initialize(URL url, ResourceBundle resourceBundle) {
-        setupMove();
-        setupResize();
-        setupButtons();
-        // Traer al frente al hacer click
-        root.addEventFilter(MouseEvent.MOUSE_PRESSED, e -> root.toFront());
-    }
+        titleBar.getChildren().addAll(titleLbl, spacer, btnMin, btnClose);
+        titleBar.setAlignment(Pos.CENTER_LEFT);
+        titleBar.setPadding(new Insets(0, 8, 0, 12));
+        titleBar.setMinHeight(HEADER_HEIGHT);
+        titleBar.setPrefHeight(HEADER_HEIGHT);
+        titleBar.setMaxHeight(HEADER_HEIGHT);
 
-    /* ========= API pública para usar desde afuera ========= */
+        // Contenido
+        contentHolder.getChildren().add(content);
+        contentHolder.setPadding(new Insets(12));
 
-    /** Cambia el título en la barra. */
-    public void setTitle(String title) { titleLabel.setText(title); }
+        frame.setTop(titleBar);
+        frame.setCenter(contentHolder);
 
-    /** Inyecta un nodo como contenido de la ventana. */
-    public void setContent(Node node) {
-        contentArea.getChildren().setAll(node);
-    }
+        getChildren().add(frame);
 
-    /** Devuelve el nodo raíz para agregar al “escritorio”. */
-    public Parent getRoot() { return root; }
+        // ============================================================
+        // === APLICACIÓN DE CSS PROPIO DE LA VENTANA INTERNA ===
+        // ============================================================
+        /*
+        // Clase raíz y carga del archivo de estilos
+        getStyleClass().add("internal-window");
+        getStylesheets().add(getClass().getResource("/view/view.css/VentanaVista.css").toExternalForm()
+        );
 
-    /* ================== Movimiento ================== */
-    private void setupMove() {
-        titleBar.setOnMousePressed(e -> {
-            if (maximized) return; // no mover estando maximizada
-            dragOffsetX = e.getSceneX() - root.getLayoutX();
-            dragOffsetY = e.getSceneY() - root.getLayoutY();
-            root.setCursor(Cursor.MOVE);
-        });
-        titleBar.setOnMouseDragged(e -> {
-            if (maximized) return;
-            Parent parent = root.getParent();
-            if (parent == null) return;
+        // Clases específicas para los elementos internos
+        titleBar.getStyleClass().add("iw-titlebar");
+        titleLbl.getStyleClass().add("iw-title");
+        contentHolder.getStyleClass().add("iw-content");
+        btnMin.getStyleClass().addAll("iw-btn");
+        btnClose.getStyleClass().addAll("iw-btn", "danger");
+        */
+        // ============================================================
 
-            double newX = e.getSceneX() - dragOffsetX;
-            double newY = e.getSceneY() - dragOffsetY;
+        enableDrag();
+        enableResize();
 
-            // Limites dentro del contenedor
-            double maxX = ((Region) parent).getWidth()  - root.getWidth();
-            double maxY = ((Region) parent).getHeight() - root.getHeight();
-
-            root.setLayoutX(clamp(newX, 0, Math.max(0, maxX)));
-            root.setLayoutY(clamp(newY, 0, Math.max(0, maxY)));
-        });
-        titleBar.setOnMouseReleased(e -> root.setCursor(Cursor.DEFAULT));
-    }
-
-    /* ================== Redimensionado ================== */
-    private void setupResize() {
-        // Lados
-        gripE.setOnMouseDragged(e -> resizeFromLeft(e.getSceneX() - (root.getLayoutX() + root.getWidth())));
-        gripW.setOnMouseDragged(e -> resizeFromRight((root.getLayoutX()) - e.getSceneX()));
-        gripS.setOnMouseDragged(e -> resizeFromTop(e.getSceneY() - (root.getLayoutY() + root.getHeight())));
-        gripN.setOnMouseDragged(e -> resizeFromBottom((root.getLayoutY()) - e.getSceneY()));
-
-        // Esquinas (combinaciones)
-        gripSE.setOnMouseDragged(e -> { resizeFromTop(e.getSceneY() - (root.getLayoutY() + root.getHeight())); resizeFromLeft(e.getSceneX() - (root.getLayoutX() + root.getWidth())); });
-        gripNE.setOnMouseDragged(e -> { resizeFromBottom((root.getLayoutY()) - e.getSceneY());             resizeFromLeft(e.getSceneX() - (root.getLayoutX() + root.getWidth())); });
-        gripSW.setOnMouseDragged(e -> { resizeFromTop(e.getSceneY() - (root.getLayoutY() + root.getHeight())); resizeFromRight((root.getLayoutX()) - e.getSceneX()); });
-        gripNW.setOnMouseDragged(e -> { resizeFromBottom((root.getLayoutY()) - e.getSceneY());             resizeFromRight((root.getLayoutX()) - e.getSceneX()); });
-
-        // Cambiar cursor en enter/exit ya lo hace el CSS, aquí basta con límites mínimos
-    }
-
-    private void resizeFromLeft(double delta) {
-        if (maximized) return;
-        double newW = clamp(root.getWidth() + delta, MIN_W, 10000);
-        root.setPrefWidth(newW);
-    }
-    private void resizeFromRight(double delta) {
-        if (maximized) return;
-        double newW = clamp(root.getWidth() + delta, MIN_W, 10000);
-        // mover X hacia la izquierda cuando “tira” desde el borde izquierdo
-        root.setLayoutX(root.getLayoutX() - delta);
-        root.setPrefWidth(newW);
-    }
-    private void resizeFromTop(double delta) {
-        if (maximized) return;
-        double newH = clamp(root.getHeight() + delta, MIN_H, 10000);
-        root.setPrefHeight(newH);
-    }
-    private void resizeFromBottom(double delta) {
-        if (maximized) return;
-        double newH = clamp(root.getHeight() + delta, MIN_H, 10000);
-        root.setLayoutY(root.getLayoutY() - delta);
-        root.setPrefHeight(newH);
-    }
-
-    /* ================== Botones ================== */
-    private void setupButtons() {
-        btnClose.setOnAction(e -> {
-            if (root.getParent() instanceof AnchorPane pane) {
-                pane.getChildren().remove(root);
-            } else if (root.getParent() instanceof Region r) {
-                ((Region) r).getChildrenUnmodifiable().remove(root); // fallback
-            }
-        });
-
+        btnClose.setOnAction(e -> ((Pane) getParent()).getChildren().remove(this));
         btnMin.setOnAction(e -> toggleMinimize());
-        btnMax.setOnAction(e -> toggleMaximize());
+
+        // Al clickear, traer al frente
+        addEventHandler(MouseEvent.MOUSE_PRESSED, e -> toFront());
+
+        setMinSize(MIN_W, MIN_H);
+        setPrefSize(640, 420);
     }
 
     private void toggleMinimize() {
-        boolean minimized = contentArea.isManaged();
-        if (minimized) {
-            // Minimizar: oculto contenido y dejo solo barra
-            contentArea.setManaged(false);
-            contentArea.setVisible(false);
-            root.setPrefHeight(TITLE_H);
-        } else {
-            // Restaurar altura mínima
-            contentArea.setManaged(true);
-            contentArea.setVisible(true);
-            root.setPrefHeight(Math.max(root.getPrefHeight(), 220));
-        }
+        minimized = !minimized;
+        contentHolder.setVisible(!minimized);
+        contentHolder.setManaged(!minimized);
+        // ajustar altura cuando se minimiza
+        requestLayout();
     }
 
-    private void toggleMaximize() {
-        Parent parent = root.getParent();
-        if (!(parent instanceof Region desktop)) return;
-
-        if (!maximized) {
-            // Guardar bounds actuales
-            prevX = root.getLayoutX();
-            prevY = root.getLayoutY();
-            prevW = root.getWidth();
-            prevH = root.getHeight();
-
-            // Expandir a todo el contenedor
-            root.setLayoutX(0);
-            root.setLayoutY(0);
-            root.setPrefWidth(desktop.getWidth());
-            root.setPrefHeight(desktop.getHeight());
-            maximized = true;
-        } else {
-            // Restaurar
-            root.setLayoutX(prevX);
-            root.setLayoutY(prevY);
-            root.setPrefWidth(prevW);
-            root.setPrefHeight(prevH);
-            maximized = false;
-        }
+    private void enableDrag() {
+        titleBar.setOnMousePressed(e -> {
+            dragOffsetX = e.getSceneX() - getLayoutX();
+            dragOffsetY = e.getSceneY() - getLayoutY();
+            setCursor(Cursor.MOVE);
+            toFront();
+        });
+        titleBar.setOnMouseDragged(e -> {
+            double nx = e.getSceneX() - dragOffsetX;
+            double ny = e.getSceneY() - dragOffsetY;
+            relocate(nx, ny);
+        });
+        titleBar.setOnMouseReleased(e -> setCursor(Cursor.DEFAULT));
     }
 
-    /* ================== Utils ================== */
-    private double clamp(double v, double min, double max) { return Math.max(min, Math.min(max, v)); }
+    private void enableResize() {
+        // Solo borde inferior-derecho para simplificar
+        setOnMouseMoved(e -> {
+            if (isInResizeZone(e.getX(), e.getY())) setCursor(Cursor.SE_RESIZE);
+            else setCursor(Cursor.DEFAULT);
+        });
+
+        final Delta resizeDelta = new Delta();
+        setOnMousePressed(e -> {
+            if (isInResizeZone(e.getX(), e.getY())) {
+                resizeDelta.x = getWidth() - e.getX();
+                resizeDelta.y = getHeight() - e.getY();
+                e.consume();
+            }
+        });
+        setOnMouseDragged(e -> {
+            if (getCursor() == Cursor.SE_RESIZE) {
+                double nw = Math.max(MIN_W, e.getX() + resizeDelta.x);
+                double nh = Math.max(minimized ? HEADER_HEIGHT : MIN_H, e.getY() + resizeDelta.y);
+                setPrefSize(nw, nh);
+                e.consume();
+            }
+        });
+    }
+
+    private boolean isInResizeZone(double x, double y) {
+        return x > getWidth() - RESIZE_MARGIN && y > getHeight() - RESIZE_MARGIN;
+    }
+
+    @Override
+    protected void layoutChildren() {
+        double w = getWidth();
+        double h = getHeight();
+
+        // altura cuando está minimizado
+        double wantedH = minimized ? HEADER_HEIGHT : h;
+
+        frame.resizeRelocate(0, 0, w, wantedH);
+    }
+
+    private static class Delta { double x, y; }
+
 }
+

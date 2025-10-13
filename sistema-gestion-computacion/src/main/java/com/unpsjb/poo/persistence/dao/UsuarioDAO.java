@@ -1,7 +1,8 @@
 package com.unpsjb.poo.persistence.dao;
 
-import com.unpsjb.poo.model.Usuario;
 import java.util.List;
+
+import com.unpsjb.poo.model.Usuario;
 
 public interface UsuarioDAO {
 

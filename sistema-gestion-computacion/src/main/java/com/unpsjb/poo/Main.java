@@ -13,10 +13,9 @@ public class Main extends Application {
     @Override
     public void start(Stage stage) throws Exception {
 
-        // ------------------------------------------
+          // ------------------------------------------
         // LOGIN 
         // ------------------------------------------
-        
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/loginView.fxml"));
         Scene scene = new Scene(loader.load(), 675, 406);
         // Cargar CSS
@@ -54,7 +53,7 @@ public class Main extends Application {
         
     
     
-     // ------------------------------------------
+        // ------------------------------------------
         // Vista Principal
         // ------------------------------------------
         

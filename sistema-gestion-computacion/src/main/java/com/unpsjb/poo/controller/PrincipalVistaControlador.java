@@ -12,9 +12,11 @@ import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 
@@ -26,8 +28,30 @@ public class PrincipalVistaControlador implements Initializable {
         @Override
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
-    }         
+    }    
     
+    
+    // Helpers para abrir// ventanas internas
+    private void openInternal(String title, Node content, double w, double h) {
+        VentanaVistaControlador win = new VentanaVistaControlador(title, content);
+        win.setPrefSize(w, h);
+        int count = desktop.getChildren().size();
+        win.relocate(30 + 24 * count, 30 + 18 * count);
+        desktop.getChildren().add(win);
+        win.toFront();
+    }
+    private Node loadView(String resource) {
+        try {
+            return FXMLLoader.load(getClass().getResource(resource));
+        } catch (Exception ex) {
+            new Alert(Alert.AlertType.ERROR, "Error cargando " + resource + ": " + ex.getMessage()).showAndWait();
+            throw new RuntimeException(ex);
+        }
+    }
+
+
+
+    @FXML private Pane desktop; 
     @FXML private Button btnUsuarios;
     @FXML private Button btnClientes;
     @FXML private Button btnProductos;
@@ -45,12 +69,11 @@ public class PrincipalVistaControlador implements Initializable {
     @FXML private void clientesAction (ActionEvent event){}
     
     // BOTON PRODUCTOS //
-    @FXML private void productosAction (ActionEvent event) throws IOException {
-        
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/productosVista.fxml"));
-        Parent root = loader.load();
-        Stage stage = new Stage(); stage.setScene(new Scene(root)); stage.show(); // Crear la nueva ventana
+    @FXML private void productosAction() {
+    Node view = loadView("/view/productosVista.fxml");
+    openInternal("Productos", view, 800, 500);
     }
+    
     
     @FXML private void facturarAction (ActionEvent event){}
     @FXML private void reportesAction (ActionEvent event){}

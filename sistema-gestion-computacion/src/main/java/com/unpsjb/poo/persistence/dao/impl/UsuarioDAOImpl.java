@@ -1,13 +1,17 @@
 package com.unpsjb.poo.persistence.dao.impl;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.List; //  Importa correctamente el Factory
 
 import com.unpsjb.poo.model.Usuario;
 import com.unpsjb.poo.persistence.GestorDeConexion;
 import com.unpsjb.poo.persistence.dao.UsuarioDAO;
-import com.unpsjb.poo.util.UsuarioFactory; //  Importa correctamente el Factory
+import com.unpsjb.poo.util.UsuarioFactory;
 
 public class UsuarioDAOImpl implements UsuarioDAO {
 
