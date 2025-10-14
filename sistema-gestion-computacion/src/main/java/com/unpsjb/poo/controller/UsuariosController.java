@@ -63,16 +63,6 @@ public class UsuariosController {
     }
 
 
-
-
-
-
-
-
-
-
-
-
     @FXML
     private void modificarUsuario() {
         Usuario seleccionado = tablaUsuarios.getSelectionModel().getSelectedItem();

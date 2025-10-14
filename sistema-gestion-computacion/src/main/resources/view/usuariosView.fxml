@@ -4,12 +4,11 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane xmlns="http://javafx.com/javafx/24.0.1"
-            xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.unpsjb.poo.controller.UsuariosController"
-            stylesheets="@styleUsuarios.css">
+<BorderPane xmlns="http://javafx.com/javafx/21" 
+xmlns:fx="http://javafx.com/fxml/1" 
+fx:controller="com.unpsjb.poo.controller.UsuariosController">
 
-    <!-- 🔝 Título superior -->
+    <!-- Título superior -->
     <top>
         <Label text="Gestión de Usuarios"
                style="-fx-font-size: 22px; -fx-font-weight: bold;"
@@ -20,14 +19,14 @@
         </Label>
     </top>
 
-    <!-- 📋 Centro: tabla + botones -->
+    <!--  Centro: tabla + botones -->
     <center>
         <VBox spacing="15" prefWidth="750" alignment="CENTER">
             <padding>
                 <Insets top="20" right="20" bottom="20" left="20" />
             </padding>
 
-            <!-- 🔹 Tabla de usuarios -->
+            <!--  Tabla de usuarios -->
             <TableView fx:id="tablaUsuarios" prefHeight="330" prefWidth="700">
                 <columns>
                     <TableColumn fx:id="colId" text="ID" prefWidth="50" />
@@ -40,7 +39,7 @@
                 </columns>
             </TableView>
 
-            <!-- 🔘 Botones -->
+            <!--  Botones -->
             <HBox spacing="8" alignment="CENTER">
                 <Button text="Agregar Usuario" onAction="#agregarUsuario" />
                 <Button text="Modificar Usuario" onAction="#modificarUsuario" />

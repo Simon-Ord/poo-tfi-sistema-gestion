@@ -1,12 +1,13 @@
 package com.unpsjb.poo.persistence.dao;
 
-import com.unpsjb.poo.model.Usuario;
 import java.util.List;
 
 /**
  * Interfaz que define las operaciones CRUD
  * sobre la tabla usuarios.
  */
+import com.unpsjb.poo.model.Usuario;
+
 public interface UsuarioDAO {
 
     // Verifica usuario y contraseña (login)

@@ -42,10 +42,10 @@ public class GestorDeConexion {
 
             // Cargar el driver de PostgreSQL
             Class.forName("org.postgresql.Driver");
-            System.out.println("✅ Configuración de PostgreSQL cargada correctamente.");
+            System.out.println("Configuración de PostgreSQL cargada correctamente.");
 
         } catch (IOException | ClassNotFoundException e) {
-            System.err.println("⚠️ Error cargando configuración: " + e.getMessage());
+            System.err.println(" Error cargando configuración: " + e.getMessage());
         }
     }
 
@@ -61,10 +61,10 @@ public class GestorDeConexion {
     public Connection getConexion() {
         try {
             Connection conn = DriverManager.getConnection(URL, user, password);
-            System.out.println("🔗 Conexión abierta con PostgreSQL.");
+            System.out.println(" Conexión abierta con PostgreSQL.");
             return conn;
         } catch (SQLException e) {
-            System.err.println("❌ Error al abrir la conexión: " + e.getMessage());
+            System.err.println(" Error al abrir la conexión: " + e.getMessage());
             return null;
         }
     }

@@ -1,7 +1,7 @@
 package com.unpsjb.poo.persistence.dao;//package com.unpsjb.poo.persistence.dao;
-import com.unpsjb.poo.model.Producto;//importa la clase Producto
-import java.sql.SQLException;// importa la clase SQLException que maneja las excepciones SQL
-import java.util.List;// importa la clase List que representa una lista de objetos
+import java.util.List;// importa la clase SQLException que maneja las excepciones SQL
+
+import com.unpsjb.poo.model.Producto;// importa la clase List que representa una lista de objetos
 
 
 public interface ProductoDAO {

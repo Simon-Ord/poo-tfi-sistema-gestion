@@ -1,0 +1,96 @@
+/* ==============================================
+   ESTILO PRINCIPAL OSCURO - stylePrincipal.css
+   Basado en styleLogin.css
+   ============================================== */
+
+.root {
+    -fx-font-family: "Segoe UI", "Roboto", "Arial";
+    -fx-background-color: linear-gradient(to bottom, #1c1f2b, #242a3a);
+}
+
+/* ========== BARRA SUPERIOR ========== */
+#topBar, .hbox {
+    -fx-background-color: linear-gradient(to right, #2b3042, #353b52);
+    -fx-padding: 8 12;
+    -fx-alignment: CENTER_LEFT;
+    -fx-spacing: 10;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 10, 0, 0, 3);
+}
+
+/* ========== BOTONES DEL MENÚ SUPERIOR ========== */
+.button {
+    -fx-background-color: linear-gradient(to bottom, #3e4561, #2f3548);
+    -fx-text-fill: #e6e9f0;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+    -fx-pref-height: 34;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.25), 5, 0, 0, 2);
+    -fx-border-color: transparent;
+}
+
+.button:hover {
+    -fx-background-color: linear-gradient(to bottom, #4a6fff, #364fd9);
+    -fx-text-fill: #ffffff;
+}
+
+/* Botón "Cerrar Sesión" en rojo suave */
+#btnCerrarSesion {
+    -fx-background-color: linear-gradient(to bottom, #d64045, #a83235);
+    -fx-text-fill: #ffffff;
+}
+
+#btnCerrarSesion:hover {
+    -fx-background-color: linear-gradient(to bottom, #ff5c5c, #d64045);
+}
+
+/* ========== ETIQUETA DE USUARIO ========== */
+#lblNombreUsuario {
+    -fx-text-fill: #aab3c7;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+}
+
+/* ========== PANEL CENTRAL ("escritorio") ========== */
+#desktop, .pane, .border-pane, .anchor-pane {
+    -fx-background-color: #2f3548;
+    -fx-background-radius: 12;
+    -fx-padding: 20;
+}
+
+/* ========== TABLAS, CAMPOS Y CONTENEDORES INTERNOS ========== */
+.table-view, .text-field, .combo-box, .choice-box {
+    -fx-background-color: #3b4255;
+    -fx-border-color: #4f5872;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-text-fill: #e6e9f0;
+}
+
+/* Hover y Focus */
+.text-field:hover, .combo-box:hover {
+    -fx-effect: dropshadow(three-pass-box, rgba(109,140,255,0.2), 5, 0, 0, 2);
+}
+.text-field:focused, .combo-box:focused {
+    -fx-border-color: #6d8cff;
+    -fx-background-color: #444b60;
+}
+
+/* ========== SCROLLBARS ========== */
+.scroll-bar:vertical, .scroll-bar:horizontal {
+    -fx-background-color: transparent;
+}
+.scroll-bar .thumb {
+    -fx-background-color: #4f5872;
+    -fx-background-radius: 5;
+}
+.scroll-bar .thumb:hover {
+    -fx-background-color: #6d8cff;
+}
+
+/* ========== IMÁGENES Y ICONOS ========== */
+.image-view {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 10, 0, 0, 3);
+}
+

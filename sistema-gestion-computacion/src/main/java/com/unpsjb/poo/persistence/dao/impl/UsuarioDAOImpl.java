@@ -1,8 +1,12 @@
 package com.unpsjb.poo.persistence.dao.impl;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
-import java.util.List;
+import java.util.List; //  Importa correctamente el Factory
 
 import com.unpsjb.poo.model.Usuario;
 import com.unpsjb.poo.persistence.GestorDeConexion;
@@ -11,7 +15,7 @@ import com.unpsjb.poo.persistence.dao.UsuarioDAO;
 public class UsuarioDAOImpl implements UsuarioDAO {
 
     // ================================
-    // ✅ Verificar login
+    //  Verificar login
     // ================================
     @Override
     public Usuario verificarLogin(String usuario, String contraseña) {
@@ -38,14 +42,14 @@ public class UsuarioDAOImpl implements UsuarioDAO {
             }
 
         } catch (SQLException e) {
-            System.err.println("⚠️ Error al verificar login: " + e.getMessage());
+            System.err.println(" Error al verificar login: " + e.getMessage());
         }
 
         return null;
     }
 
     // ================================
-    // ✅ Obtener todos los usuarios
+    //  Obtener todos los usuarios
     // ================================
     @Override
     public List<Usuario> obtenerTodos() {
@@ -69,14 +73,14 @@ public class UsuarioDAOImpl implements UsuarioDAO {
             }
 
         } catch (SQLException e) {
-            System.err.println("⚠️ Error al obtener usuarios: " + e.getMessage());
+            System.err.println(" Error al obtener usuarios: " + e.getMessage());
         }
 
         return lista;
     }
 
     // ================================
-    // ✅ Insertar usuario
+    // Insertar usuario
     // ================================
     @Override
     public boolean insertar(Usuario usuario) {
@@ -93,13 +97,13 @@ public class UsuarioDAOImpl implements UsuarioDAO {
             return stmt.executeUpdate() > 0;
 
         } catch (SQLException e) {
-            System.err.println("⚠️ Error al insertar usuario: " + e.getMessage());
+            System.err.println("Error al insertar usuario: " + e.getMessage());
         }
         return false;
     }
 
     // ================================
-    // ✅ Modificar usuario
+    //  Modificar usuario
     // ================================
     @Override
     public boolean modificar(Usuario usuario) {
@@ -118,13 +122,13 @@ public class UsuarioDAOImpl implements UsuarioDAO {
             return stmt.executeUpdate() > 0;
 
         } catch (SQLException e) {
-            System.err.println("⚠️ Error al modificar usuario: " + e.getMessage());
+            System.err.println(" Error al modificar usuario: " + e.getMessage());
         }
         return false;
     }
 
     // ================================
-    // ✅ Eliminar usuario
+    //  Eliminar usuario
     // ================================
     @Override
     public boolean eliminar(int id) {
@@ -135,12 +139,12 @@ public class UsuarioDAOImpl implements UsuarioDAO {
             stmt.setInt(1, id);
             int filas = stmt.executeUpdate();
             if (filas == 0) {
-                System.out.println("ℹ️ No se encontró ningún usuario con id=" + id);
+                System.out.println("No se encontró ningún usuario con id=" + id);
             }
             return filas > 0;
 
         } catch (SQLException e) {
-            System.err.println("⚠️ Error al eliminar usuario: " + e.getMessage());
+            System.err.println("Error al eliminar usuario: " + e.getMessage());
         }
         return false;
     }

@@ -9,8 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.unpsjb.poo.persistence.GestorDeConexion;
 import com.unpsjb.poo.model.Producto;
+import com.unpsjb.poo.persistence.GestorDeConexion;
 import com.unpsjb.poo.persistence.dao.DAO;
 
 /**
@@ -140,6 +140,5 @@ public class ProductoDAOImpl implements DAO<Producto> {
         } catch (SQLException e) {
             System.err.println("Error al encontrar todos los productos: " + e.getMessage());
         }
-        return productos;
-    }
+        return productos;}
 }

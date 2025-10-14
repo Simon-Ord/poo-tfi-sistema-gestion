@@ -1,0 +1,65 @@
+/* === Estilo base de la ventana interna === */
+.internal-window {
+    -fx-background-color: #2b2f3a;          /* Fondo oscuro neutro */
+    -fx-background-radius: 12;              /* Bordes redondeados */
+    -fx-border-color: rgba(255,255,255,0.08);
+    -fx-border-radius: 12;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 18, 0.25, 0, 6);
+}
+
+/* === Barra de título === */
+.iw-titlebar {
+    -fx-background-color: linear-gradient(to bottom,
+        rgba(255,255,255,0.06),
+        rgba(0,0,0,0.18));
+    -fx-background-radius: 12 12 0 0;
+    -fx-padding: 6 10;
+    -fx-alignment: CENTER_LEFT;
+    -fx-spacing: 8;
+}
+
+/* === Texto del título === */
+.iw-title {
+    -fx-text-fill: #e6e9ef;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+/* === Contenido interno === */
+.iw-content {
+    -fx-background-color: rgba(0,0,0,0.05);
+    -fx-padding: 10;
+}
+
+/* === Botones de la barra === */
+.iw-btn {
+    -fx-background-color: transparent;
+    -fx-text-fill: #c8cbd2;
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+    -fx-padding: 4 8;
+    -fx-cursor: hand;
+    -fx-border-color: transparent;
+}
+
+.iw-btn:hover {
+    -fx-background-color: rgba(255,255,255,0.10);
+}
+
+.iw-btn:pressed {
+    -fx-background-color: rgba(255,255,255,0.18);
+}
+
+/* === Botón de cierre (rojo al pasar) === */
+.iw-btn.danger:hover {
+    -fx-background-color: rgba(255,60,60,0.25);
+    -fx-text-fill: #ff7070;
+}
+
+/* === Animación sutil de entrada (opcional) === */
+.internal-window {
+    -fx-opacity: 0.95;
+    -fx-transition: all 0.3s ease;
+}
+

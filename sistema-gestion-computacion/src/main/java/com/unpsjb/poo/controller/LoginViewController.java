@@ -1,127 +1,67 @@
 package com.unpsjb.poo.controller;
 
-// Importaciones de JavaFX
-import javafx.scene.input.KeyEvent;
-import java.net.URL;
-import java.util.ResourceBundle;
+import java.io.IOException;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.fxml.Initializable;
-import javafx.scene.control.*;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.HBox;
+import javafx.stage.Stage;
 
-// Importaciones del modelo y DAO
-import com.unpsjb.poo.model.Usuario;
-import com.unpsjb.poo.persistence.dao.impl.UsuarioDAOImpl;
+public class LoginViewController {
 
-/**
- * Controlador para la pantalla de login.
- * Esta clase se encarga de manejar los eventos del formulario
- * y verificar si el usuario y contraseña son correctos en la base de datos.
- */
-public class LoginViewController implements Initializable {
+    @FXML private Button btnLogin;
+    @FXML private PasswordField txtPassword;
+    @FXML private TextField txtUser;
+    
+    @FXML void eventKey(ActionEvent event) {}
+    
+    
+    // BOTON LOGIN //
+    @FXML void btnLoginAction(ActionEvent event) {
+    try {
+        // Validación: no dejar campos vacíos
+        String usuario = txtUser.getText().trim();
+        String password = txtPassword.getText().trim();
 
-    // ================================
-    // 🔹 Elementos del formulario (FXML)
-    // ================================
-    @FXML
-    private PasswordField txtPassword; // Campo para contraseña
-
-    @FXML
-    private TextField txtUser; // Campo para usuario
-
-    @FXML
-    private Button btnLogin; // Botón para iniciar sesión
-
-    @FXML
-    private Label lblError; // Etiqueta para mostrar mensajes de error
-
-    // ================================
-    // 🔹 Objeto DAO (acceso a la base de datos)
-    // ================================
-    private final UsuarioDAOImpl usuarioDAO = new UsuarioDAOImpl();
-
-    // ================================
-    // 🔹 Método para evitar espacios en los campos
-    // ================================
-    @FXML
-    private void eventKey(KeyEvent event) {
-        Object evt = event.getSource();
-
-        // Evitar que se escriban espacios en los campos de texto
-        if (evt.equals(txtUser) || evt.equals(txtPassword)) {
-            if (event.getCharacter().equals(" ")) {
-                event.consume(); // Ignora la tecla presionada
-            }
+        if (usuario.isEmpty() || password.isEmpty()) {
+            // Mostrar alerta si alguno está vacío
+            javafx.scene.control.Alert alerta = new javafx.scene.control.Alert(
+                    javafx.scene.control.Alert.AlertType.WARNING);
+            alerta.setTitle("Campos vacíos");
+            alerta.setHeaderText(null);
+            alerta.setContentText("ERROR: complete usuario y contraseña.");
+            alerta.showAndWait();
+            return; // detiene la ejecución
         }
-    }
 
-    // ================================
-    // 🔹 Evento que se ejecuta al presionar el botón "Login"
-    // ================================
-    @FXML
-    private void eventAction(ActionEvent event) {
-        Object evt = event.getSource();
+        // Si pasa la validación, continúa
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/principalView.fxml"));
+        Parent root = loader.load();
 
-        // Si el evento fue generado por el botón de login...
-        if (evt.equals(btnLogin)) {
-            String usuario = txtUser.getText().trim();      // Obtiene el texto sin espacios
-            String contrasena = txtPassword.getText().trim();
+        // Crear la nueva ventana
+        Stage stage = new Stage();
+        stage.setTitle("Sistema de Gestión - Menú Principal");
+        stage.setScene(new Scene(root));
+        stage.setMaximized(true);
+        stage.show();
 
-            // Validar que no estén vacíos
-            if (usuario.isEmpty() || contrasena.isEmpty()) {
-                mostrarAlerta("Error", "Debe ingresar usuario y contraseña.", Alert.AlertType.ERROR);
-                return;
-            }
+        // Cerrar la ventana de login
+        Stage loginStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+        loginStage.close();
 
-            // Llama al método para verificar el login
-            verificarLogin(usuario, contrasena);
-        }
-    }
-
-    // ================================
-    // 🔹 Verificar usuario y contraseña en la base de datos
-    // ================================
-    private void verificarLogin(String usuario, String contrasena) {
-        // Consulta al DAO para buscar al usuario
-        Usuario u = usuarioDAO.verificarLogin(usuario, contrasena);
-
-        if (u != null) {
-            // Si se encontró, muestra mensaje de bienvenida
-            mostrarAlerta("Ingreso correcto", 
-                          "Bienvenido " + u.getNombre() + " (" + u.getRol() + ")", 
-                          Alert.AlertType.INFORMATION);
-
-            // 🔹 Dependiendo del rol, podrías abrir distintas pantallas
-            // Ejemplo:
-            // if (u.getRol().equalsIgnoreCase("ADMIN")) {
-            //     abrirVentanaAdmin();
-            // } else if (u.getRol().equalsIgnoreCase("RECEPCION")) {
-            //     abrirVentanaRecepcion();
-            // }
-
-        } else {
-            // Si no existe el usuario o la contraseña es incorrecta
-            mostrarAlerta("Error", "Usuario o contraseña incorrectos.", Alert.AlertType.ERROR);
-        }
-    }
-
-    // ================================
-    // 🔹 Método auxiliar para mostrar alertas (ventanas emergentes)
-    // ================================
-    private void mostrarAlerta(String titulo, String mensaje, Alert.AlertType tipo) {
-        Alert alert = new Alert(tipo);
-        alert.setTitle(titulo);
-        alert.setHeaderText(null); // No muestra encabezado adicional
-        alert.setContentText(mensaje);
-        alert.showAndWait(); // Muestra la alerta y espera que el usuario la cierre
-    }
-
-    // ================================
-    // 🔹 Inicialización del controlador
-    // ================================
-    @Override
-    public void initialize(URL url, ResourceBundle rb) {
-        // Este método se ejecuta automáticamente cuando se carga el FXML.
-        // Por ahora no necesitamos inicializar nada aquí.
+    } catch (IOException e) {
+        e.printStackTrace();
     }
 }
+
+}
+
+
+
