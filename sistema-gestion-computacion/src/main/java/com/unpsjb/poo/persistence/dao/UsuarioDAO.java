@@ -3,14 +3,24 @@ package com.unpsjb.poo.persistence.dao;
 import com.unpsjb.poo.model.Usuario;
 import java.util.List;
 
+/**
+ * Interfaz que define las operaciones CRUD
+ * sobre la tabla usuarios.
+ */
 public interface UsuarioDAO {
 
-    // 🔹 Método que ya tenías y sigue igual (lo usa el Login)
+    // Verifica usuario y contraseña (login)
     Usuario verificarLogin(String usuario, String contraseña);
 
-    // 🔹 Métodos nuevos para el ABM de usuarios
-    List<Usuario> obtenerTodos();                // Ver todos los usuarios
-    boolean insertar(Usuario usuario);           // Agregar nuevo usuario
-    boolean modificar(Usuario usuario);          // Modificar un usuario existente
-    boolean eliminar(int id);                    // Eliminar usuario por ID
+    // Devuelve todos los usuarios
+    List<Usuario> obtenerTodos();
+
+    // Inserta un nuevo usuario
+    boolean insertar(Usuario usuario);
+
+    // Modifica un usuario existente
+    boolean modificar(Usuario usuario);
+
+    // Elimina un usuario por su ID
+    boolean eliminar(int id);
 }

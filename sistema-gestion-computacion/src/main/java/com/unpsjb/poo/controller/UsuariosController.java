@@ -1,12 +1,17 @@
 package com.unpsjb.poo.controller;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.collections.*;
+import javafx.stage.Stage;
+
 import com.unpsjb.poo.model.Usuario;
 import com.unpsjb.poo.persistence.dao.impl.UsuarioDAOImpl;
+
 import java.util.List;
-import javafx.scene.control.Alert;
 
 public class UsuariosController {
 
@@ -14,10 +19,10 @@ public class UsuariosController {
     @FXML private TableColumn<Usuario, Integer> colId;
     @FXML private TableColumn<Usuario, String> colNombre;
     @FXML private TableColumn<Usuario, String> colUsuario;
-    @FXML private TableColumn<Usuario, String> colContrasena; 
+    @FXML private TableColumn<Usuario, String> colContrasena;
     @FXML private TableColumn<Usuario, String> colRol;
     @FXML private TableColumn<Usuario, Boolean> colEstado;
-// aqui llama al dao para usar los metodos
+
     private final UsuarioDAOImpl usuarioDAO = new UsuarioDAOImpl();
 
     @FXML
@@ -25,12 +30,7 @@ public class UsuariosController {
         colId.setCellValueFactory(c -> new javafx.beans.property.SimpleObjectProperty<>(c.getValue().getId()));
         colNombre.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getNombre()));
         colUsuario.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getUsuario()));
-
-        //  COLUMNA DE CONTRASEÑA (MOSTRAR TEXTO)
-        colContrasena.setCellValueFactory(c -> 
-            new javafx.beans.property.SimpleStringProperty(c.getValue().getContraseña()));
-
-        // Si se quisiera mostrar la contraseña encriptada, usar:
+        colContrasena.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getContraseña()));
         colRol.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getRol()));
         colEstado.setCellValueFactory(c -> new javafx.beans.property.SimpleObjectProperty<>(c.getValue().isEstado()));
 
@@ -44,26 +44,43 @@ public class UsuariosController {
         tablaUsuarios.setItems(obsList);
     }
 
+    // NUEVO MÉTODO: abrir ventana para agregar usuario
     @FXML
     private void agregarUsuario() {
-        mostrarAlerta("Función agregar usuario en desarrollo...");
-        // Más adelante abriremos una ventana FXML para registrar nuevos usuarios
-        // Al cerrar esa ventana, recargar la tabla con cargarUsuarios()
-        // Por ahora solo mostramos una alerta
-    
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/usuarioForm.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Agregar Nuevo Usuario");
+            stage.setScene(new Scene(root));
+            stage.showAndWait(); // Espera a que se cierre la ventana
+
+            cargarUsuarios(); // Recargar tabla después de agregar
+        } catch (Exception e) {
+            e.printStackTrace();
+            mostrarAlerta("Error al abrir el formulario de usuario: " + e.getMessage());
+        }
     }
 
+
+
+
+
+
+
+
+
+
+
+
     @FXML
-    // Función para modificar usuario (en desarrollo)
     private void modificarUsuario() {
         Usuario seleccionado = tablaUsuarios.getSelectionModel().getSelectedItem();
         if (seleccionado == null) {
             mostrarAlerta("Seleccione un usuario para modificar");
             return;
         }
-        // Aquí abriríamos una ventana para modificar el usuario seleccionado
-        // Al cerrar esa ventana, recargar la tabla con cargarUsuarios()
-        mostrarAlerta("Función modificar usuario en desarrollo por ahora despues lo pongo");
+        mostrarAlerta("Función modificar usuario en desarrollo");
     }
 
     @FXML
@@ -73,17 +90,16 @@ public class UsuariosController {
             mostrarAlerta("Seleccione un usuario para eliminar");
             return;
         }
-        // Confirmar eliminación en la base de datos y recargar la tabla si se elimina correctamente
+
         boolean ok = usuarioDAO.eliminar(seleccionado.getId());
         if (ok) {
             mostrarAlerta("Usuario eliminado correctamente");
-            cargarUsuarios(); // Recargar la tabla después de eliminar el usuario
+            cargarUsuarios();
         } else {
-            mostrarAlerta("Error al eliminar el usuario"); // Mensaje de error si no se pudo eliminar
+            mostrarAlerta("Error al eliminar el usuario");
         }
     }
 
-    // Mostrar alertas informativas
     private void mostrarAlerta(String msg) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setHeaderText(null);

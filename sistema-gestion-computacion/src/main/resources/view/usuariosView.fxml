@@ -1,49 +1,51 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 
-<BorderPane xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.unpsjb.poo.controller.UsuariosController">
+<BorderPane xmlns="http://javafx.com/javafx/24.0.1"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.unpsjb.poo.controller.UsuariosController"
+            stylesheets="@styleUsuarios.css">
 
+    <!-- 🔝 Título superior -->
+    <top>
+        <Label text="Gestión de Usuarios"
+               style="-fx-font-size: 22px; -fx-font-weight: bold;"
+               BorderPane.alignment="CENTER">
+            <BorderPane.margin>
+                <Insets top="10" bottom="10" />
+            </BorderPane.margin>
+        </Label>
+    </top>
+
+    <!-- 📋 Centro: tabla + botones -->
     <center>
-        <VBox prefWidth="722.0" spacing="10">
+        <VBox spacing="15" prefWidth="750" alignment="CENTER">
             <padding>
-                <Insets bottom="20" left="20" right="20" top="20" />
+                <Insets top="20" right="20" bottom="20" left="20" />
             </padding>
 
-            <!-- Tabla de usuarios -->
-            <TableView fx:id="tablaUsuarios" prefHeight="305.0" prefWidth="682.0">
+            <!-- 🔹 Tabla de usuarios -->
+            <TableView fx:id="tablaUsuarios" prefHeight="330" prefWidth="700">
                 <columns>
-                    <TableColumn fx:id="colId" prefWidth="50" text="ID" />
-                    <TableColumn fx:id="colNombre" prefWidth="150" text="Nombre" />
-                    <TableColumn fx:id="colUsuario" prefWidth="150" text="Usuario" />
-                    <TableColumn fx:id="colRol" prefWidth="100" text="Rol" />
-                    <TableColumn fx:id="colContrasena" prefWidth="150.0" text="Contraseña" />
-                    <TableColumn fx:id="colEstado" prefWidth="80" text="Activo" />
+                    <TableColumn fx:id="colId" text="ID" prefWidth="50" />
+                    <TableColumn fx:id="colLegajo" text="Legajo" prefWidth="100" />
+                    <TableColumn fx:id="colNombre" text="Nombre" prefWidth="150" />
+                    <TableColumn fx:id="colUsuario" text="Usuario" prefWidth="150" />
+                    <TableColumn fx:id="colRol" text="Rol" prefWidth="100" />
+                    <TableColumn fx:id="colContrasena" text="Contraseña" prefWidth="150" />
+                    <TableColumn fx:id="colEstado" text="Activo" prefWidth="80" />
                 </columns>
             </TableView>
 
-            <!-- Botones -->
-            <HBox spacing="10">
-                <Button onAction="#agregarUsuario" text="Agregar Usuario" />
-                <Button onAction="#modificarUsuario" text="Modificar Usuario" />
-                <Button onAction="#eliminarUsuario" text="Eliminar Usuario" />
-                <Button onAction="#cargarUsuarios" text="Refrescar" />
+            <!-- 🔘 Botones -->
+            <HBox spacing="8" alignment="CENTER">
+                <Button text="Agregar Usuario" onAction="#agregarUsuario" />
+                <Button text="Modificar Usuario" onAction="#modificarUsuario" />
+                <Button text="Eliminar Usuario" onAction="#eliminarUsuario" />
             </HBox>
         </VBox>
     </center>
-   <top>
-
-            <Label style="-fx-font-size: 22px; -fx-font-weight: bold;" text="Gestión de Usuarios" BorderPane.alignment="CENTER">
-         <BorderPane.margin>
-            <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
-         </BorderPane.margin>
-      </Label>
-   </top>
 </BorderPane>

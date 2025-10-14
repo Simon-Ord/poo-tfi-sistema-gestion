@@ -42,7 +42,7 @@
     <dependency>
       <groupId>org.postgresql</groupId>
       <artifactId>postgresql</artifactId>
-      <version>42.7.3</version>
+      <version>42.7.5</version>
     </dependency>
 
     <!-- 🧪 JUnit 5 para tests -->
@@ -53,11 +53,7 @@
       <scope>test</scope>
     </dependency>
     
-    <dependency>
-  <groupId>org.postgresql</groupId>
-  <artifactId>postgresql</artifactId>
-  <version>42.7.3</version>
-</dependency>
+
 
   </dependencies>
 
@@ -89,6 +85,16 @@
         <version>3.2.5</version>
         <configuration>
           <useModulePath>false</useModulePath>
+        </configuration>
+      </plugin>
+
+      <!-- ▶️ Ejecutar clase principal desde Maven -->
+      <plugin>
+        <groupId>org.codehaus.mojo</groupId>
+        <artifactId>exec-maven-plugin</artifactId>
+        <version>3.1.0</version>
+        <configuration>
+          <mainClass>com.unpsjb.poo.Mainp</mainClass>
         </configuration>
       </plugin>
     </plugins>
