@@ -15,6 +15,8 @@ import java.util.List;
 
 public class UsuariosController {
 
+    // ============ Componentes FXML ============
+
     @FXML private TableView<Usuario> tablaUsuarios;
     @FXML private TableColumn<Usuario, Integer> colId;
     @FXML private TableColumn<Usuario, String> colLegajo;
@@ -26,6 +28,8 @@ public class UsuariosController {
     private final UsuarioDAOImpl usuarioDAO = new UsuarioDAOImpl();
 
     // ============ Inicialización =============
+    // esto es para que se ejecute al cargar la vista FXML
+    // cuando entre se cargan los datos en la tabla directamente
     @FXML
     public void initialize() {
         colId.setCellValueFactory(c -> new javafx.beans.property.SimpleObjectProperty<>(c.getValue().getId()));
@@ -35,9 +39,11 @@ public class UsuariosController {
         colContraseña.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getContraseña()));
         colRol.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getRol()));
 
+
         cargarUsuarios();
     }
-
+// ============ Cargar usuarios en la tabla ============
+// Llama al DAO para obtener la lista y la muestra en la tabla
     private void cargarUsuarios() {
         List<Usuario> lista = usuarioDAO.obtenerTodos();
         ObservableList<Usuario> obsList = FXCollections.observableArrayList(lista);

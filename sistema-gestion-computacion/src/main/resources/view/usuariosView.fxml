@@ -29,6 +29,8 @@
             <!-- Tabla de usuarios -->
             <TableView fx:id="tablaUsuarios" prefHeight="330" prefWidth="700">
                 <columns>
+ 
+                
                     <TableColumn fx:id="colId" text="ID" prefWidth="50" />
                     <TableColumn fx:id="colLegajo" text="Legajo" prefWidth="100" />
                     <TableColumn fx:id="colNombre" text="Nombre" prefWidth="150" />
