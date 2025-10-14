@@ -16,6 +16,7 @@ public class Main extends Application {
 
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/principalView.fxml"));
         Scene scene = new Scene(loader.load(), 1200, 700);
+        stage.setMaximized(true);
         stage.setTitle("Login - MundoPC");
         stage.getIcons().add(new Image(Objects.requireNonNull(
                 getClass().getResource("/images/logoMundoPC.png"), "null").toExternalForm()));
