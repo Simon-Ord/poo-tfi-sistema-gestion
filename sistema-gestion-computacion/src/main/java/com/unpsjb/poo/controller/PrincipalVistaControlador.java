@@ -3,9 +3,10 @@ package com.unpsjb.poo.controller;
 
 
 import java.io.IOException;
-import javafx.event.ActionEvent;
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -15,7 +16,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
@@ -29,14 +29,13 @@ public class PrincipalVistaControlador implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         // TODO
     }    
-    
-    
+ 
     // Helpers para abrir// ventanas internas
     private void openInternal(String title, Node content, double w, double h) {
         VentanaVistaControlador win = new VentanaVistaControlador(title, content);
         win.setPrefSize(w, h);
         int count = desktop.getChildren().size();
-        win.relocate(30 + 24 * count, 30 + 18 * count);
+        //win.relocate(30 + 24 * count, 30 + 18 * count);
         desktop.getChildren().add(win);
         win.toFront();
     }
@@ -72,6 +71,7 @@ public class PrincipalVistaControlador implements Initializable {
     @FXML private void productosAction() {
     Node view = loadView("/view/productosVista.fxml");
     openInternal("Productos", view, 800, 500);
+
     }
     
     

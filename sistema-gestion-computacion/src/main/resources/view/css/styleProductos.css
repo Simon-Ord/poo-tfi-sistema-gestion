@@ -1,139 +1,74 @@
-/* ==============================================
-   ESTILO VISTA PRODUCTOS (scope por IDs/clases)
-   ============================================== */
+/* ===== Productos: ajuste mínimo y claro ===== */
 
-/* Root de la vista de productos (poné id="productosRoot" en el root del FXML) */
-#productosRoot {
-    -fx-background-color: transparent; /* que se vea el fondo del desktop */
-    -fx-padding: 10;
-    -fx-spacing: 10;
-}
+/* Texto general */
+.label { -fx-font-size: 13px; }
+#tablaProductos .column-header .label { -fx-font-weight: 600; }
 
-/* Barra de acciones (asigná styleClass="toolbar" al HBox/VBox de botones) */
-.toolbar {
-    -fx-background-color: linear-gradient(to right, #2b3042, #353b52);
-    -fx-background-radius: 10;
-    -fx-padding: 8 10;
-    -fx-spacing: 8;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.25), 8, 0, 0, 3);
+/* ----- Tabla ----- */
+#tablaProductos {
+  -fx-background-color: white;
+  -fx-background-radius: 6;
+  -fx-border-color: #dcdcdc;
+  -fx-border-radius: 6;
 }
-
-/* Botones dentro de Productos (heredan base del principal) */
-#productosRoot .button {
-    -fx-background-color: linear-gradient(to bottom, #3e4561, #2f3548);
-    -fx-text-fill: #e6e9f0;
-    -fx-font-weight: bold;
-    -fx-background-radius: 8;
-    -fx-cursor: hand;
-    -fx-pref-height: 32;
+#tablaProductos .column-header-background {
+  -fx-background-color: #f4f6f8;
+  -fx-background-radius: 6 6 0 0;
 }
-#productosRoot .button:hover {
-    -fx-background-color: linear-gradient(to bottom, #4a6fff, #364fd9);
-    -fx-text-fill: white;
+#tablaProductos .table-row-cell {
+  -fx-cell-size: 26px;
+}
+#tablaProductos .table-row-cell:odd {
+  -fx-background-color: #fbfcfd;
+}
+#tablaProductos .table-row-cell:selected {
+  -fx-background-color: #e6f0ff;
+}
+#tablaProductos .table-cell {
+  -fx-padding: 0 8 0 8;
 }
 
-/* Variantes semánticas opcionales (agregá estas styleClass a cada botón) */
-#productosRoot .button.primary {  -fx-background-color: linear-gradient(to bottom, #4a6fff, #364fd9); -fx-text-fill: white; }
-#productosRoot .button.danger  {  -fx-background-color: linear-gradient(to bottom, #d64045, #a83235); -fx-text-fill: white; }
-#productosRoot .button.warning {  -fx-background-color: linear-gradient(to bottom, #e9a334, #c48215); -fx-text-fill: #1c1f2b; }
-
-/* Buscador (poné fx:id="txtBuscar" o styleClass="search-field") */
-#txtBuscar, .search-field {
-    -fx-background-color: #3b4255;
-    -fx-border-color: #4f5872;
-    -fx-border-radius: 8;
-    -fx-background-radius: 8;
-    -fx-text-fill: #e6e9f0;
-    -fx-pref-height: 32;
-    -fx-padding: 0 10;
+/* Scrollbar discreta dentro de la tabla */
+#tablaProductos .scroll-bar:horizontal, 
+#tablaProductos .scroll-bar:vertical {
+  -fx-background-color: transparent;
 }
-#txtBuscar:focused, .search-field:focused {
-    -fx-border-color: #6d8cff;
-    -fx-background-color: #444b60;
+#tablaProductos .thumb { 
+  -fx-background-color: #c7ced6; 
+  -fx-background-radius: 6; 
 }
 
-/* Wrapper de la tabla (poné un StackPane/VBox alrededor con id="tablaCard") */
-#tablaCard {
-    -fx-background-color: #2f3548;
-    -fx-background-radius: 12;
-    -fx-padding: 8;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.25), 10, 0, 0, 4);
+/* ----- Inputs (leve redondeo/borde gris) ----- */
+.text-field, .combo-box-base {
+  -fx-background-radius: 6;
+  -fx-border-radius: 6;
+  -fx-border-color: #dcdcdc;
+  -fx-background-insets: 0, 1;
+  -fx-padding: 6 8;
+}
+.text-field:focused, .combo-box-base:focused {
+  -fx-border-color: #7aa7ff;
 }
 
-/* Tabla (poné fx:id="tblProductos") */
-#tblProductos {
-    -fx-background-color: transparent;
-    -fx-background-insets: 0;
-    -fx-padding: 0;
-    -fx-border-color: #404864;
-    -fx-border-radius: 10;
+/* ----- Botones (consistentes, sin cambio de color fuerte) ----- */
+#btnRegistrar, #btnModificar, #btnEliminar, #btnCancelar,
+#btnAgregarCategoria, #btnAgregarFabricante {
+  -fx-background-color: linear-gradient(#ffffff, #f2f4f7);
+  -fx-border-color: #d0d5db;
+  -fx-background-radius: 6;
+  -fx-border-radius: 6;
+  -fx-padding: 6 12;
 }
-#tblProductos .column-header-background {
-    -fx-background-color: linear-gradient(to bottom, #353b52, #2b3042);
-    -fx-background-radius: 10 10 0 0;
-}
-#tblProductos .column-header, #tblProductos .filler {
-    -fx-size: 34px;
-    -fx-border-color: transparent;
-}
-#tblProductos .column-header .label {
-    -fx-text-fill: #aab3c7;
-    -fx-font-weight: bold;
-}
-#tblProductos .table-row-cell {
-    -fx-background-color: #2f3548;
-}
-#tblProductos .table-row-cell:odd {
-    -fx-background-color: #31374d;
-}
-#tblProductos .table-row-cell:hover {
-    -fx-background-color: #3a4158;
-}
-#tblProductos .table-row-cell:selected {
-    -fx-background-color: #445088;
-}
-#tblProductos .table-cell {
-    -fx-text-fill: #e6e9f0;
-    -fx-padding: 6 8;
+#btnRegistrar { -fx-background-color: linear-gradient(#e9f2ff, #dfeaff); -fx-border-color:#b8c9ff; }
+#btnEliminar  { -fx-background-color: linear-gradient(#ffe9e9, #ffdede); -fx-border-color:#ffc5c5; }
+
+#btnRegistrar:hover, #btnModificar:hover, #btnEliminar:hover, #btnCancelar:hover,
+#btnAgregarCategoria:hover, #btnAgregarFabricante:hover {
+  -fx-background-color: linear-gradient(#ffffff, #e9edf2);
 }
 
-/* Formulario (poné id="formGrid" a la GridPane) */
-#formGrid .label {
-    -fx-text-fill: #aab3c7;
-    -fx-font-weight: bold;
-}
+/* Botones “+” más compactos */
+#btnAgregarCategoria, #btnAgregarFabricante { -fx-padding: 4 8; }
 
-/* Inputs del formulario bajo productosRoot para no tocar otras vistas */
-#productosRoot .text-field,
-#productosRoot .combo-box,
-#productosRoot .spinner,
-#productosRoot .date-picker {
-    -fx-background-color: #3b4255;
-    -fx-border-color: #4f5872;
-    -fx-border-radius: 8;
-    -fx-background-radius: 8;
-    -fx-text-fill: #e6e9f0;
-    -fx-pref-height: 32;
-}
-#productosRoot .text-field:focused,
-#productosRoot .combo-box:focused,
-#productosRoot .spinner:focused,
-#productosRoot .date-picker:focused {
-    -fx-border-color: #6d8cff;
-    -fx-background-color: #444b60;
-}
-
-/* ComboBoxes chicos + botones (+) de al lado */
-.small {
-    -fx-pref-height: 30;
-    -fx-pref-width: 160;
-}
-#productosRoot .button.mini {
-    -fx-pref-width: 34;
-    -fx-pref-height: 30;
-    -fx-background-radius: 8;
-}
-
-/* Scrollbars discretos en esta vista */
-#productosRoot .scroll-bar .thumb { -fx-background-color: #4f5872; -fx-background-radius: 5; }
-#productosRoot .scroll-bar .thumb:hover { -fx-background-color: #6d8cff; }
+/* Placeholders un poquito más visibles */
+.text-field:focused .text, .combo-box-base:focused .text { }
