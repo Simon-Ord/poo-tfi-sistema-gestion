@@ -7,7 +7,12 @@ import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.*;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 
 public class VentanaVistaControlador extends Region {
 
@@ -50,25 +55,6 @@ public class VentanaVistaControlador extends Region {
         frame.setCenter(contentHolder);
 
         getChildren().add(frame);
-
-        // ============================================================
-        // === APLICACIÓN DE CSS PROPIO DE LA VENTANA INTERNA ===
-        // ============================================================
-        /*
-        // Clase raíz y carga del archivo de estilos
-        getStyleClass().add("internal-window");
-        getStylesheets().add(getClass().getResource("/view/view.css/VentanaVista.css").toExternalForm()
-        );
-
-        // Clases específicas para los elementos internos
-        titleBar.getStyleClass().add("iw-titlebar");
-        titleLbl.getStyleClass().add("iw-title");
-        contentHolder.getStyleClass().add("iw-content");
-        btnMin.getStyleClass().addAll("iw-btn");
-        btnClose.getStyleClass().addAll("iw-btn", "danger");
-        */
-        // ============================================================
-
         enableDrag();
         enableResize();
 

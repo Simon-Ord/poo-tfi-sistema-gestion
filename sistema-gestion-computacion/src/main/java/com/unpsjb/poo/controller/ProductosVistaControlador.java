@@ -17,6 +17,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 
+
 public class ProductosVistaControlador {
 
     // === VISTA ===
@@ -72,7 +73,7 @@ public class ProductosVistaControlador {
         try {
             if (txtNombre.getText().isEmpty() || txtPrecio.getText().isEmpty() ||
                 txtCantidad.getText().isEmpty() || txtCodigo.getText().isEmpty()) {
-                mostrarAlerta("⚠️ Todos los campos obligatorios deben completarse (Código, Nombre, Precio, Cantidad).");
+                mostrarAlerta("Todos los campos obligatorios deben completarse (Código, Nombre, Precio, Cantidad).");
                 return;
             }
 
@@ -86,13 +87,13 @@ public class ProductosVistaControlador {
             p.setFabricanteProducto(txtFabricante.getText());
 
             productoDAO.create(p);
-            mostrarAlerta("✅ Producto registrado correctamente.");
+            mostrarAlerta("Producto registrado correctamente.");
             limpiarCampos();
             cargarProductos();
 
         } catch (Exception e) {
             e.printStackTrace();
-            mostrarAlerta("❌ Error al registrar producto: " + e.getMessage());
+            mostrarAlerta("Error al registrar producto: " + e.getMessage());
         }
     }
 
@@ -112,13 +113,13 @@ public class ProductosVistaControlador {
             seleccionado.setFabricanteProducto(txtFabricante.getText());
 
             productoDAO.update(seleccionado);
-            mostrarAlerta("✅ Producto actualizado correctamente.");
+            mostrarAlerta("Producto actualizado correctamente.");
             limpiarCampos();
             cargarProductos();
 
         } catch (Exception e) {
             e.printStackTrace();
-            mostrarAlerta("❌ Error al modificar producto: " + e.getMessage());
+            mostrarAlerta("Error al modificar producto: " + e.getMessage());
         }
     }
 
@@ -165,4 +166,5 @@ public class ProductosVistaControlador {
         alert.setContentText(msg);
         alert.showAndWait();
     }
+    
 }
