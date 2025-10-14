@@ -1,12 +1,8 @@
 package com.unpsjb.poo.persistence.dao.impl;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
-import java.util.List; //  Importa correctamente el Factory
+import java.util.List;
 
 import com.unpsjb.poo.model.Usuario;
 import com.unpsjb.poo.persistence.GestorDeConexion;
@@ -19,14 +15,13 @@ public class UsuarioDAOImpl implements UsuarioDAO {
     // ================================
     @Override
     public Usuario verificarLogin(String usuario, String contraseña) {
-        String sql = "SELECT * FROM usuarios WHERE usuario = ? AND contraseña = ? AND estado = TRUE";
+        String sql = "SELECT * FROM usuarios WHERE usuario = ? AND contraseña = ?";
 
         try (Connection conn = GestorDeConexion.getInstancia().getConexion();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, usuario);
             stmt.setString(2, contraseña);
-
             ResultSet rs = stmt.executeQuery();
 
             if (rs.next()) {
@@ -35,14 +30,14 @@ public class UsuarioDAOImpl implements UsuarioDAO {
                 u.setLegajo(rs.getString("legajo"));
                 u.setNombre(rs.getString("nombre"));
                 u.setUsuario(rs.getString("usuario"));
-                u.setContraseña(rs.getString("contraseña"));
+                u.setContraseña(rs.getString("contraseña")); 
                 u.setRol(rs.getString("rol"));
-                u.setEstado(rs.getBoolean("estado"));
                 return u;
             }
 
         } catch (SQLException e) {
             System.err.println(" Error al verificar login: " + e.getMessage());
+            e.printStackTrace();
         }
 
         return null;
@@ -68,23 +63,24 @@ public class UsuarioDAOImpl implements UsuarioDAO {
                 u.setUsuario(rs.getString("usuario"));
                 u.setContraseña(rs.getString("contraseña"));
                 u.setRol(rs.getString("rol"));
-                u.setEstado(rs.getBoolean("estado"));
                 lista.add(u);
             }
 
         } catch (SQLException e) {
             System.err.println(" Error al obtener usuarios: " + e.getMessage());
+            e.printStackTrace();
         }
 
         return lista;
     }
 
     // ================================
-    // Insertar usuario
+    //  Insertar usuario
     // ================================
     @Override
     public boolean insertar(Usuario usuario) {
-        String sql = "INSERT INTO usuarios (legajo, nombre, usuario, contraseña, rol, estado) VALUES (?, ?, ?, ?, ?, TRUE)";
+        String sql = "INSERT INTO usuarios (legajo, nombre, usuario, contraseña, rol) VALUES (?, ?, ?, ?, ?)";
+
         try (Connection conn = GestorDeConexion.getInstancia().getConexion();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -94,12 +90,15 @@ public class UsuarioDAOImpl implements UsuarioDAO {
             stmt.setString(4, usuario.getContraseña());
             stmt.setString(5, usuario.getRol());
 
-            return stmt.executeUpdate() > 0;
+            int filas = stmt.executeUpdate();
+            System.out.println(" Usuario insertado correctamente. Filas afectadas: " + filas);
+            return true;
 
         } catch (SQLException e) {
-            System.err.println("Error al insertar usuario: " + e.getMessage());
+            System.err.println(" Error SQL al insertar usuario: " + e.getMessage());
+            e.printStackTrace();
+            return false;
         }
-        return false;
     }
 
     // ================================
@@ -107,7 +106,8 @@ public class UsuarioDAOImpl implements UsuarioDAO {
     // ================================
     @Override
     public boolean modificar(Usuario usuario) {
-        String sql = "UPDATE usuarios SET legajo = ?, nombre = ?, usuario = ?, contraseña = ?, rol = ?, estado = ? WHERE id = ?";
+        String sql = "UPDATE usuarios SET legajo = ?, nombre = ?, usuario = ?, contraseña = ?, rol = ? WHERE id = ?";
+
         try (Connection conn = GestorDeConexion.getInstancia().getConexion();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -116,15 +116,16 @@ public class UsuarioDAOImpl implements UsuarioDAO {
             stmt.setString(3, usuario.getUsuario());
             stmt.setString(4, usuario.getContraseña());
             stmt.setString(5, usuario.getRol());
-            stmt.setBoolean(6, usuario.isEstado());
-            stmt.setInt(7, usuario.getId());
+            stmt.setInt(6, usuario.getId());
 
-            return stmt.executeUpdate() > 0;
+            int filas = stmt.executeUpdate();
+            return filas > 0;
 
         } catch (SQLException e) {
             System.err.println(" Error al modificar usuario: " + e.getMessage());
+            e.printStackTrace();
+            return false;
         }
-        return false;
     }
 
     // ================================
@@ -133,19 +134,19 @@ public class UsuarioDAOImpl implements UsuarioDAO {
     @Override
     public boolean eliminar(int id) {
         String sql = "DELETE FROM usuarios WHERE id = ?";
+
         try (Connection conn = GestorDeConexion.getInstancia().getConexion();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setInt(1, id);
             int filas = stmt.executeUpdate();
-            if (filas == 0) {
-                System.out.println("No se encontró ningún usuario con id=" + id);
-            }
+            System.out.println(" Usuario eliminado. Filas afectadas: " + filas);
             return filas > 0;
 
         } catch (SQLException e) {
-            System.err.println("Error al eliminar usuario: " + e.getMessage());
+            System.err.println(" Error al eliminar usuario: " + e.getMessage());
+            e.printStackTrace();
+            return false;
         }
-        return false;
     }
 }

@@ -17,76 +17,81 @@ public class UsuariosController {
 
     @FXML private TableView<Usuario> tablaUsuarios;
     @FXML private TableColumn<Usuario, Integer> colId;
+    @FXML private TableColumn<Usuario, String> colLegajo;
     @FXML private TableColumn<Usuario, String> colNombre;
     @FXML private TableColumn<Usuario, String> colUsuario;
-    @FXML private TableColumn<Usuario, String> colContrasena;
+    @FXML private TableColumn<Usuario, String> colContraseña;
     @FXML private TableColumn<Usuario, String> colRol;
-    @FXML private TableColumn<Usuario, Boolean> colEstado;
 
     private final UsuarioDAOImpl usuarioDAO = new UsuarioDAOImpl();
 
+    // ============ Inicialización =============
     @FXML
     public void initialize() {
         colId.setCellValueFactory(c -> new javafx.beans.property.SimpleObjectProperty<>(c.getValue().getId()));
+        colLegajo.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getLegajo()));
         colNombre.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getNombre()));
         colUsuario.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getUsuario()));
-        colContrasena.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getContraseña()));
+        colContraseña.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getContraseña()));
         colRol.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getRol()));
-        colEstado.setCellValueFactory(c -> new javafx.beans.property.SimpleObjectProperty<>(c.getValue().isEstado()));
 
         cargarUsuarios();
     }
 
-    @FXML
     private void cargarUsuarios() {
         List<Usuario> lista = usuarioDAO.obtenerTodos();
         ObservableList<Usuario> obsList = FXCollections.observableArrayList(lista);
         tablaUsuarios.setItems(obsList);
     }
 
-    // NUEVO MÉTODO: abrir ventana para agregar usuario
+    // ============ BOTÓN "Agregar Usuario" =============
     @FXML
     private void agregarUsuario() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/usuarioForm.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/UsuarioForm.fxml"));
             Parent root = loader.load();
+
             Stage stage = new Stage();
             stage.setTitle("Agregar Nuevo Usuario");
             stage.setScene(new Scene(root));
-            stage.showAndWait(); // Espera a que se cierre la ventana
+            stage.setResizable(false);
+            stage.showAndWait();
 
-            cargarUsuarios(); // Recargar tabla después de agregar
+            // Recargar tabla después de agregar
+            cargarUsuarios();
+
         } catch (Exception e) {
             e.printStackTrace();
             mostrarAlerta("Error al abrir el formulario de usuario: " + e.getMessage());
         }
     }
 
-
+    // ============ BOTÓN "Modificar" ============
     @FXML
     private void modificarUsuario() {
         Usuario seleccionado = tablaUsuarios.getSelectionModel().getSelectedItem();
         if (seleccionado == null) {
-            mostrarAlerta("Seleccione un usuario para modificar");
+            mostrarAlerta("Seleccione un usuario para modificar.");
             return;
         }
-        mostrarAlerta("Función modificar usuario en desarrollo");
+        mostrarAlerta("Función de modificar usuario en desarrollo.");
     }
 
+    // ============ BOTÓN "Eliminar" ============
     @FXML
     private void eliminarUsuario() {
         Usuario seleccionado = tablaUsuarios.getSelectionModel().getSelectedItem();
         if (seleccionado == null) {
-            mostrarAlerta("Seleccione un usuario para eliminar");
+            mostrarAlerta("Seleccione un usuario para eliminar.");
             return;
         }
 
         boolean ok = usuarioDAO.eliminar(seleccionado.getId());
         if (ok) {
-            mostrarAlerta("Usuario eliminado correctamente");
+            mostrarAlerta("Usuario eliminado correctamente.");
             cargarUsuarios();
         } else {
-            mostrarAlerta("Error al eliminar el usuario");
+            mostrarAlerta("Error al eliminar el usuario.");
         }
     }
 

@@ -11,7 +11,10 @@ CREATE TABLE  usuarios (
     usuario VARCHAR(50) UNIQUE NOT NULL,
     contraseña VARCHAR(100) NOT NULL,
     rol VARCHAR(20) NOT NULL,
-    estado BOOLEAN DEFAULT TRUE
+  
 );
 
-SELECT * FROM usuarios;
+INSERT INTO usuarios (legajo, nombre, usuario, contraseña, rol) VALUES
+('1001', 'Admin User', 'admin', 'admin123', 'ADMIN'),
+('1002', 'John Doe', 'jdoe', 'password1', 'USER'),
+('1003', 'Jane Smith', 'jsmith', 'password2', 'USER');
