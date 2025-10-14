@@ -45,14 +45,6 @@ public class ProductosVistaControlador {
     // === MÉTODOS DE INICIALIZACIÓN ===
     @FXML
     public void initialize() {
-        configurarTabla();
-        cargarProductos();
-
-        cbCategoria.getItems().addAll("Periféricos", "Monitores", "Almacenamiento", "Componentes", "Otros");
-        cbFabricante.getItems().addAll("Logitech", "Redragon", "Kingston", "Samsung", "Otros");
-    }
-
-    private void configurarTabla() {
         colCodigo.setCellValueFactory(c -> new javafx.beans.property.SimpleObjectProperty<>(c.getValue().getCodigoProducto()));
         colNombre.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getNombreProducto()));
         colPrecio.setCellValueFactory(c -> new javafx.beans.property.SimpleObjectProperty<>(c.getValue().getPrecioProducto()));
@@ -60,6 +52,11 @@ public class ProductosVistaControlador {
         colDescripcion.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getDescripcionProducto()));
         colCategoria.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getCategoriaProducto()));
         colFabricante.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getFabricanteProducto()));
+   
+        cargarProductos();
+
+        cbCategoria.getItems().addAll("Periféricos", "Monitores", "Almacenamiento", "Componentes", "Otros");
+        cbFabricante.getItems().addAll("Logitech", "Redragon", "Kingston", "Samsung", "Otros");
     }
 
     private void cargarProductos() {
@@ -68,7 +65,8 @@ public class ProductosVistaControlador {
         tablaProductos.setItems(obsList);
     }
 
-    // === BOTONES ===
+
+    // ============ BOTÓN "Registrar Producto" =============
     @FXML private void btnRegistrarAction() {
         try {
             if (txtNombre.getText().isEmpty() || txtPrecio.getText().isEmpty() ||
@@ -97,6 +95,7 @@ public class ProductosVistaControlador {
         }
     }
 
+    // ============ BOTÓN "Modificar Producto" =============
     @FXML private void btnModificarAction() {
         Producto seleccionado = tablaProductos.getSelectionModel().getSelectedItem();
         if (seleccionado == null) {
@@ -123,6 +122,7 @@ public class ProductosVistaControlador {
         }
     }
 
+    // ============ BOTÓN "Eliminar Producto" =============
     @FXML private void btnEliminarAction() {
         Producto seleccionado = tablaProductos.getSelectionModel().getSelectedItem();
         if (seleccionado == null) {
@@ -143,12 +143,12 @@ public class ProductosVistaControlador {
         limpiarCampos();
         tablaProductos.getSelectionModel().clearSelection();
     }
-    // INCOMPLETOS
+
+    // ============ INCOMPLETOS =============
     @FXML private void AgregarCategoriaAction(){}
     @FXML private void AgregarFabricanteAction(){}
 
-    // === UTILIDADES ===
-
+    // ============ UTILIDADES =============
     private void limpiarCampos() {
         txtCodigo.clear();
         txtNombre.clear();

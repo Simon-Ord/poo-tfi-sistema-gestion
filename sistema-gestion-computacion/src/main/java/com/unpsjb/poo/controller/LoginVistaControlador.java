@@ -13,7 +13,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
-public class LoginViewController {
+public class LoginVistaControlador {
 
     @FXML private Button btnLogin;
     @FXML private PasswordField txtPassword;
@@ -25,18 +25,7 @@ public class LoginViewController {
     // BOTON LOGIN //
     @FXML void btnLoginAction(ActionEvent event) {
     try {
-        // Validacion: no dejar campos vacios
-        if (txtUser.getText().isEmpty() || txtPassword.getText().isEmpty()) {
-            // Mostrar alerta si alguno está vacio
-            javafx.scene.control.Alert alerta = new javafx.scene.control.Alert(
-            javafx.scene.control.Alert.AlertType.WARNING);
-            alerta.setTitle("Campos vacíos");
-            alerta.setHeaderText(null);
-            alerta.setContentText("ERROR: complete usuario y contraseña.");
-            alerta.showAndWait();
-            return; // detiene la ejecucion
-        }
-        // Si los campos no estan vacios sigue
+        System.out.println("Boton Login presionado");
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/principalView.fxml"));
         Parent root = loader.load();
         // Crear la nueva ventana
