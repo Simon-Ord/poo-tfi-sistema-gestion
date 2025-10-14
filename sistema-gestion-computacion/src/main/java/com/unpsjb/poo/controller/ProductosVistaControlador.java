@@ -17,6 +17,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 
+
 public class ProductosVistaControlador {
 
     // === VISTA ===
@@ -44,14 +45,6 @@ public class ProductosVistaControlador {
     // === MÉTODOS DE INICIALIZACIÓN ===
     @FXML
     public void initialize() {
-        configurarTabla();
-        cargarProductos();
-
-        cbCategoria.getItems().addAll("Periféricos", "Monitores", "Almacenamiento", "Componentes", "Otros");
-        cbFabricante.getItems().addAll("Logitech", "Redragon", "Kingston", "Samsung", "Otros");
-    }
-
-    private void configurarTabla() {
         colCodigo.setCellValueFactory(c -> new javafx.beans.property.SimpleObjectProperty<>(c.getValue().getCodigoProducto()));
         colNombre.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getNombreProducto()));
         colPrecio.setCellValueFactory(c -> new javafx.beans.property.SimpleObjectProperty<>(c.getValue().getPrecioProducto()));
@@ -59,6 +52,11 @@ public class ProductosVistaControlador {
         colDescripcion.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getDescripcionProducto()));
         colCategoria.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getCategoriaProducto()));
         colFabricante.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getFabricanteProducto()));
+   
+        cargarProductos();
+
+        cbCategoria.getItems().addAll("Periféricos", "Monitores", "Almacenamiento", "Componentes", "Otros");
+        cbFabricante.getItems().addAll("Logitech", "Redragon", "Kingston", "Samsung", "Otros");
     }
 
     private void cargarProductos() {
@@ -67,12 +65,13 @@ public class ProductosVistaControlador {
         tablaProductos.setItems(obsList);
     }
 
-    // === BOTONES ===
+
+    // ============ BOTÓN "Registrar Producto" =============
     @FXML private void btnRegistrarAction() {
         try {
             if (txtNombre.getText().isEmpty() || txtPrecio.getText().isEmpty() ||
                 txtCantidad.getText().isEmpty() || txtCodigo.getText().isEmpty()) {
-                mostrarAlerta("⚠️ Todos los campos obligatorios deben completarse (Código, Nombre, Precio, Cantidad).");
+                mostrarAlerta("Todos los campos obligatorios deben completarse (Código, Nombre, Precio, Cantidad).");
                 return;
             }
 
@@ -86,16 +85,17 @@ public class ProductosVistaControlador {
             p.setFabricanteProducto(txtFabricante.getText());
 
             productoDAO.create(p);
-            mostrarAlerta("✅ Producto registrado correctamente.");
+            mostrarAlerta("Producto registrado correctamente.");
             limpiarCampos();
             cargarProductos();
 
         } catch (Exception e) {
             e.printStackTrace();
-            mostrarAlerta("❌ Error al registrar producto: " + e.getMessage());
+            mostrarAlerta("Error al registrar producto: " + e.getMessage());
         }
     }
 
+    // ============ BOTÓN "Modificar Producto" =============
     @FXML private void btnModificarAction() {
         Producto seleccionado = tablaProductos.getSelectionModel().getSelectedItem();
         if (seleccionado == null) {
@@ -112,16 +112,17 @@ public class ProductosVistaControlador {
             seleccionado.setFabricanteProducto(txtFabricante.getText());
 
             productoDAO.update(seleccionado);
-            mostrarAlerta("✅ Producto actualizado correctamente.");
+            mostrarAlerta("Producto actualizado correctamente.");
             limpiarCampos();
             cargarProductos();
 
         } catch (Exception e) {
             e.printStackTrace();
-            mostrarAlerta("❌ Error al modificar producto: " + e.getMessage());
+            mostrarAlerta("Error al modificar producto: " + e.getMessage());
         }
     }
 
+    // ============ BOTÓN "Eliminar Producto" =============
     @FXML private void btnEliminarAction() {
         Producto seleccionado = tablaProductos.getSelectionModel().getSelectedItem();
         if (seleccionado == null) {
@@ -142,12 +143,12 @@ public class ProductosVistaControlador {
         limpiarCampos();
         tablaProductos.getSelectionModel().clearSelection();
     }
-    // INCOMPLETOS
+
+    // ============ INCOMPLETOS =============
     @FXML private void AgregarCategoriaAction(){}
     @FXML private void AgregarFabricanteAction(){}
 
-    // === UTILIDADES ===
-
+    // ============ UTILIDADES =============
     private void limpiarCampos() {
         txtCodigo.clear();
         txtNombre.clear();
@@ -165,4 +166,5 @@ public class ProductosVistaControlador {
         alert.setContentText(msg);
         alert.showAndWait();
     }
+    
 }
