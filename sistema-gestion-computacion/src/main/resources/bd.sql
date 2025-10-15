@@ -1,7 +1,7 @@
 -- Crear la base de datos (solo si no existe)
 CREATE DATABASE tienda_computacion;
 
-\c tienda_computacion; -- conectar a la base de datos
+ \c tienda_computacion; -- conectar a la base de datos 
 SELECT current_database(); -- Verificar que estamos en la base de datos correcta
 
 -----------------------
