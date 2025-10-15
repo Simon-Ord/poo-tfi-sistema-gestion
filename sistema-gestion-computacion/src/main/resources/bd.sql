@@ -29,7 +29,11 @@ VALUES
 ------------------------
 -- TABLA DE PRODUCTOS --
 ------------------------
+<<<<<<< HEAD
+CREATE TABLE productos (
+=======
 CREATE TABLE IF NOT EXISTS productos (
+>>>>>>> b0f1eeaff4775a466d15ab0af2055eba7b65ee49
     id_producto SERIAL PRIMARY KEY,
     nombre_producto VARCHAR(100) NOT NULL,
     descripcion_producto TEXT,
@@ -49,4 +53,8 @@ VALUES
 ('Mouse Inalámbrico HP', 'Mouse inalámbrico ergonómico con alta precisión', 25, 29.99, 'Periféricos', 'HP', 1004),
 ('Impresora Canon Pixma', 'Impresora multifuncional con conectividad Wi-Fi', 8, 199.99, 'Impresoras', 'Canon', 1005);
 -- VERIFICAR CONTENIDO DE LA TABLA
+<<<<<<< HEAD
 SELECT * FROM productos;
+=======
+SELECT * FROM productos;
+>>>>>>> b0f1eeaff4775a466d15ab0af2055eba7b65ee49

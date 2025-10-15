@@ -1,9 +1,10 @@
 package com.unpsjb.poo.controller;
 
 import java.io.IOException;
-import javafx.event.ActionEvent;
 import java.net.URL;
 import java.util.ResourceBundle;
+
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -28,7 +29,7 @@ public class PrincipalVistaControlador implements Initializable {
         VentanaVistaControlador win = new VentanaVistaControlador(title, content);
         win.setPrefSize(w, h);
         int count = desktop.getChildren().size();
-        win.relocate(30 + 24 * count, 30 + 18 * count);
+        win.relocate(30 + 24 * count, 30 + 18 * count); 
         desktop.getChildren().add(win);
         win.toFront();
     }
@@ -53,7 +54,7 @@ public class PrincipalVistaControlador implements Initializable {
     @FXML private Label lblNombreUsuario;
 
     // ========== ACCIONES ==========
-    // BOTÓN USUARIOS - abre la ventana con la tabla
+    // BOTON USUARIOS - abre la ventana con la tabla
     @FXML
     private void usuariosAction(ActionEvent event) {
         try {
@@ -64,8 +65,6 @@ public class PrincipalVistaControlador implements Initializable {
             new Alert(Alert.AlertType.ERROR, "Error al abrir la gestión de usuarios: " + e.getMessage()).showAndWait();
         }
     }
-
-
     // BOTÓN PRODUCTOS
     @FXML
     private void productosAction(ActionEvent event) {
@@ -77,7 +76,7 @@ public class PrincipalVistaControlador implements Initializable {
     @FXML private void facturarAction(ActionEvent event) {}
     @FXML private void reportesAction(ActionEvent event) {}
 
-    // BOTÓN CERRAR SESIÓN
+    // BOTON CERRAR SESION
     @FXML
     private void cerrarSesionAction(ActionEvent event) {
         try {
@@ -88,6 +87,7 @@ public class PrincipalVistaControlador implements Initializable {
             stage.setScene(loginScene);
             stage.setTitle("Inicio de Sesión");
             stage.setMaximized(false);
+            stage.sizeToScene();
             stage.centerOnScreen();
             stage.show();
         } catch (IOException e) {
