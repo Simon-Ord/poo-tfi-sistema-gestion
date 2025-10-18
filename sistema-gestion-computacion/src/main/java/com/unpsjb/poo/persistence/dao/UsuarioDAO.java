@@ -2,10 +2,6 @@ package com.unpsjb.poo.persistence.dao;
 
 import java.util.List;
 
-/**
- * Interfaz que define las operaciones CRUD
- * sobre la tabla usuarios.
- */
 import com.unpsjb.poo.model.Usuario;
 
 public interface UsuarioDAO {
@@ -24,4 +20,5 @@ public interface UsuarioDAO {
 
     // Elimina un usuario por su ID
     boolean eliminar(int id);
+
 }

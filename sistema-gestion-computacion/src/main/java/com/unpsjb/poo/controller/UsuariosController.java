@@ -1,17 +1,20 @@
 package com.unpsjb.poo.controller;
 
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
-import javafx.scene.control.*;
-import javafx.collections.*;
-import javafx.stage.Stage;
+import java.util.List;
 
 import com.unpsjb.poo.model.Usuario;
 import com.unpsjb.poo.persistence.dao.impl.UsuarioDAOImpl;
 
-import java.util.List;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.Alert;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.stage.Stage;
 
 public class UsuariosController {
 
@@ -49,6 +52,7 @@ public class UsuariosController {
         ObservableList<Usuario> obsList = FXCollections.observableArrayList(lista);
         tablaUsuarios.setItems(obsList);
     }
+
 
     // ============ BOTÓN "Agregar Usuario" =============
     @FXML
