@@ -56,7 +56,7 @@
     -fx-font-weight: bold;
     -fx-font-size: 14px;
     -fx-background-radius: 10;
-    -fx-pref-width: 120;
+    -fx-pref-width: 180;
     -fx-pref-height: 38;
     -fx-cursor: hand;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.25), 8, 0, 0, 3);
@@ -81,4 +81,35 @@
 /* Sombra leve al pasar por los campos */
 .text-field:hover, .password-field:hover {
     -fx-effect: dropshadow(three-pass-box, rgba(109,140,255,0.15), 5, 0, 0, 2);
+}
+
+
+/* ================================
+   BOTONES LOGIN (IGUALES)
+   ================================ */
+
+/* Aplica el mismo estilo a ambos botones */
+#btnLogin, #btnCambiarDatos {
+    -fx-background-color: linear-gradient(to bottom, #4a6fff, #364fd9);
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-background-radius: 10;
+    -fx-pref-width: 100;
+    -fx-pref-height: 38;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.25), 8, 0, 0, 3);
+    -fx-transition: all 0.3s ease;
+    -fx-border-color: transparent;
+}
+
+/* Efecto hover igual para ambos */
+#btnLogin:hover, #btnCambiarDatos:hover {
+    -fx-background-color: linear-gradient(to bottom, #6d8cff, #4a6fff);
+}
+
+/* Si querés un toque distinto para el botón secundario */
+#btnCambiarDatos {
+    -fx-pref-width: 170;
+
 }

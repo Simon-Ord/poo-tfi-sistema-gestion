@@ -1,21 +1,17 @@
 package com.unpsjb.poo.model;
 
 public class Usuario {
-    private int id;
-    private String legajo; 
+    private String dni;
     private String nombre;
     private String usuario;
     private String contraseña;
     private String rol;
     private boolean estado;
 
-    // Constructor vacío
     public Usuario() {}
 
-    // Constructor completo
-    public Usuario(int id, String legajo, String nombre, String usuario, String contraseña, String rol, boolean estado) {
-        this.id = id;
-        this.legajo = legajo;
+    public Usuario(String dni, String nombre, String usuario, String contraseña, String rol, boolean estado) {
+        this.dni = dni;
         this.nombre = nombre;
         this.usuario = usuario;
         this.contraseña = contraseña;
@@ -23,12 +19,8 @@ public class Usuario {
         this.estado = estado;
     }
 
-    // --- Getters & Setters ---
-    public int getId() { return id; }
-    public void setId(int id) { this.id = id; }
-
-    public String getLegajo() { return legajo; }
-    public void setLegajo(String legajo) { this.legajo = legajo; }
+    public String getDni() { return dni; }
+    public void setDni(String dni) { this.dni = dni; }
 
     public String getNombre() { return nombre; }
     public void setNombre(String nombre) { this.nombre = nombre; }
@@ -44,16 +36,4 @@ public class Usuario {
 
     public boolean isEstado() { return estado; }
     public void setEstado(boolean estado) { this.estado = estado; }
-
-    @Override
-    public String toString() {
-        return "Usuario{" +
-                "id=" + id +
-                ", legajo='" + legajo + '\'' +
-                ", nombre='" + nombre + '\'' +
-                ", usuario='" + usuario + '\'' +
-                ", rol='" + rol + '\'' +
-                ", estado=" + estado +
-                '}';
-    }
 }

@@ -19,25 +19,19 @@ import javafx.stage.Stage;
 public class UsuariosController {
 
     @FXML private TableView<Usuario> tablaUsuarios;
-    @FXML private TableColumn<Usuario, Integer> colId;
-    @FXML private TableColumn<Usuario, String> colLegajo;
+    @FXML private TableColumn<Usuario, String> colDni;
     @FXML private TableColumn<Usuario, String> colNombre;
-    @FXML private TableColumn<Usuario, String> colUsuario;
-    @FXML private TableColumn<Usuario, String> colContraseña;
     @FXML private TableColumn<Usuario, String> colRol;
+    @FXML private TableColumn<Usuario, Boolean> colActivo;
 
     private final UsuarioDAOImpl usuarioDAO = new UsuarioDAOImpl();
 
-    // ============ Inicialización =============
     @FXML
     public void initialize() {
-        colId.setCellValueFactory(c -> new javafx.beans.property.SimpleObjectProperty<>(c.getValue().getId()));
-        colLegajo.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getLegajo()));
+        colDni.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getDni()));
         colNombre.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getNombre()));
-        colUsuario.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getUsuario()));
-        colContraseña.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getContraseña()));
         colRol.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getRol()));
-
+        colActivo.setCellValueFactory(c -> new javafx.beans.property.SimpleObjectProperty<>(c.getValue().isEstado()));
         cargarUsuarios();
     }
 
@@ -47,55 +41,41 @@ public class UsuariosController {
         tablaUsuarios.setItems(obsList);
     }
 
-
-    // ============ BOTÓN "Agregar Usuario" =============
     @FXML
     private void agregarUsuario() {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/UsuarioForm.fxml"));
             Parent root = loader.load();
-
             Stage stage = new Stage();
             stage.setTitle("Agregar Nuevo Usuario");
             stage.setScene(new Scene(root));
             stage.setResizable(false);
             stage.showAndWait();
-
-            // Recargar tabla después de agregar
             cargarUsuarios();
-
         } catch (Exception e) {
             e.printStackTrace();
-            mostrarAlerta("Error al abrir el formulario de usuario: " + e.getMessage());
+            mostrarAlerta("Error al abrir el formulario: " + e.getMessage());
         }
     }
 
-    // ============ BOTÓN "Modificar" ============
     @FXML
-    private void modificarUsuario() {
+    private void cambiarEstadoUsuario() {
         Usuario seleccionado = tablaUsuarios.getSelectionModel().getSelectedItem();
         if (seleccionado == null) {
-            mostrarAlerta("Seleccione un usuario para modificar.");
-            return;
-        }
-        mostrarAlerta("Función de modificar usuario en desarrollo.");
-    }
-
-    // ============ BOTÓN "Eliminar" ============
-    @FXML
-    private void eliminarUsuario() {
-        Usuario seleccionado = tablaUsuarios.getSelectionModel().getSelectedItem();
-        if (seleccionado == null) {
-            mostrarAlerta("Seleccione un usuario para eliminar.");
+            mostrarAlerta("Seleccione un usuario para cambiar su estado.");
             return;
         }
 
-        boolean ok = usuarioDAO.eliminar(seleccionado.getId());
+        boolean nuevoEstado = !seleccionado.isEstado();
+        seleccionado.setEstado(nuevoEstado);
+
+        boolean ok = usuarioDAO.modificar(seleccionado);
+
         if (ok) {
-            mostrarAlerta("Usuario eliminado correctamente.");
+            mostrarAlerta(nuevoEstado ? "Usuario activado correctamente." : "Usuario desactivado correctamente.");
             cargarUsuarios();
         } else {
-            mostrarAlerta("Error al eliminar el usuario.");
+            mostrarAlerta("Error al cambiar el estado del usuario.");
         }
     }
 

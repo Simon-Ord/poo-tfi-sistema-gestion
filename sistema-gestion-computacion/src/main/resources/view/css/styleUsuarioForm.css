@@ -1,102 +1,110 @@
-/* ==============================
-   ESTILOS GENERALES FORMULARIO USUARIO
-   ============================== */
+/* ================================
+   ESTILO FORMULARIO USUARIO
+   Basado en el estilo del login
+   ================================ */
 
 .root {
-    -fx-background-color: #f9fafb;
-    -fx-font-family: "Segoe UI", "Arial";
-}
-
-/* ---------- TÍTULO ---------- */
-.label {
-    -fx-text-fill: #333333;
-}
-
-.label:focused {
-    -fx-text-fill: #1a73e8;
-}
-
-.label[style*="bold"] {
-    -fx-text-fill: #2b2b2b;
-    -fx-font-size: 18px;
-    -fx-font-weight: bold;
-}
-
-/* ---------- CAMPOS DE TEXTO ---------- */
-.text-field, .password-field, .choice-box {
-    -fx-pref-width: 200px;
-    -fx-background-color: white;
-    -fx-border-color: #d1d5db;
-    -fx-border-radius: 5px;
-    -fx-background-radius: 5px;
-    -fx-padding: 5 8 5 8;
-    -fx-font-size: 14px;
-    -fx-text-fill: #333;
-}
-
-.text-field:focused, .password-field:focused, .choice-box:focused {
-    -fx-border-color: #1a73e8;
-    -fx-border-width: 1.5px;
-    -fx-effect: dropshadow(three-pass-box, rgba(26,115,232,0.2), 4, 0, 0, 0);
-}
-
-/* ---------- BOTONES ---------- */
-.button {
-    -fx-font-weight: bold;
-    -fx-font-size: 14px;
-    -fx-text-fill: white;
-    -fx-background-color: #1a73e8;
-    -fx-background-radius: 6px;
-    -fx-cursor: hand;
-    -fx-padding: 6 15 6 15;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 3, 0, 0, 2);
-}
-
-.button:hover {
-    -fx-background-color: #1669d6;
-}
-
-.button:pressed {
-    -fx-background-color: #0f57c0;
-}
-
-/* ---------- BOTÓN CANCELAR ---------- */
-.button[text="Cancelar"] {
-    -fx-background-color: #d1d5db;
-    -fx-text-fill: #333;
-}
-
-.button[text="Cancelar"]:hover {
-    -fx-background-color: #bfc3ca;
-}
-
-/* ---------- GRID Y ESPACIADOS ---------- */
-.grid-pane {
-    -fx-padding: 15;
-    -fx-hgap: 10;
-    -fx-vgap: 10;
-}
-
-.hbox {
-    -fx-spacing: 12;
-    -fx-padding: 10;
-}
-
-.vbox {
-    -fx-alignment: center;
-}
-
-/* ---------- EFECTO SOMBRA ---------- */
-.vbox {
-    -fx-background-color: white;
-    -fx-border-color: #e5e7eb;
-    -fx-border-radius: 8px;
-    -fx-background-radius: 8px;
-    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 4);
+    -fx-background-color: linear-gradient(to bottom right, #1c1f2b, #242a3a);
+    -fx-font-family: "Segoe UI", "Roboto", "Arial";
+    -fx-text-fill: #e5e9f0;
     -fx-padding: 20;
 }
 
-/* ---------- CHOICEBOX ---------- */
-.choice-box {
-    -fx-mark-color: #1a73e8;
+/* =======================
+   TÍTULO
+   ======================= */
+.label {
+    -fx-text-fill: #e5e9f0;
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+}
+
+.label:first-of-type {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+    -fx-padding: 0 0 10 0;
+}
+
+/* =======================
+   CAMPOS DE TEXTO
+   ======================= */
+.text-field, .password-field, .choice-box {
+    -fx-pref-width: 250;
+    -fx-pref-height: 35;
+    -fx-background-color: #3b4255;
+    -fx-border-color: #4f5872;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 0 10;
+    -fx-font-size: 14px;
+    -fx-text-fill: #e6e9f0;
+}
+
+.text-field:focused, .password-field:focused, .choice-box:focused {
+    -fx-border-color: #6d8cff;
+    -fx-background-color: #444b60;
+    -fx-effect: dropshadow(three-pass-box, rgba(109,140,255,0.3), 5, 0, 0, 3);
+}
+
+/* =======================
+   BOTONES
+   ======================= */
+.button {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10;
+    -fx-cursor: hand;
+    -fx-pref-width: 120;
+    -fx-pref-height: 38;
+}
+
+/* BOTÓN GUARDAR */
+.button:first-of-type {
+    -fx-background-color: linear-gradient(to bottom, #4a6fff, #364fd9);
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.25), 8, 0, 0, 3);
+}
+
+.button:first-of-type:hover {
+    -fx-background-color: linear-gradient(to bottom, #6d8cff, #4a6fff);
+}
+
+/* BOTÓN CANCELAR */
+.button:last-of-type {
+    -fx-background-color: #4f5872;
+    -fx-text-fill: #e6e9f0;
+}
+
+.button:last-of-type:hover {
+    -fx-background-color: #5d6789;
+}
+
+/* =======================
+   CHECKBOX (Activo)
+   ======================= */
+.check-box {
+    -fx-text-fill: #e6e9f0;
+}
+
+.check-box .box {
+    -fx-background-color: #3b4255;
+    -fx-border-color: #6d8cff;
+    -fx-border-radius: 4;
+}
+
+.check-box:selected .box {
+    -fx-background-color: #4a6fff;
+    -fx-border-color: #364fd9;
+}
+
+.check-box .mark {
+    -fx-background-color: white;
+}
+
+.titulo {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+    -fx-padding: 0 0 15 0;
 }
