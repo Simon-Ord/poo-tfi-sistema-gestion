@@ -9,7 +9,6 @@ import com.unpsjb.poo.persistence.GestorDeConexion;
 import com.unpsjb.poo.persistence.dao.UsuarioDAO;
 
 public class UsuarioDAOImpl implements UsuarioDAO {
-
     @Override
     public Usuario verificarLogin(String usuario, String contraseña) {
         String sql = "SELECT * FROM usuarios WHERE usuario = ? AND contraseña = ? AND estado = TRUE";
