@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.HBox?>
+
+<AnchorPane prefHeight="550.0" prefWidth="750.0" style="-fx-padding: 20;"
+            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+    
+    <VBox spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" 
+          AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+
+        <Label style="-fx-font-size: 18pt; -fx-font-weight: bold;" text="2. Seleccionar Tipo de Factura" />
+
+        <VBox spacing="10.0" style="-fx-border-color: #ccc; -fx-padding: 10;">
+            <Label style="-fx-font-size: 14pt;" text="Seleccione el Tipo de Factura:" />
+            <CheckBox fx:id="cbFacturaA" text="Factura A (Responsable Inscripto)" onAction="#handleFacturaASelected"/>
+            <CheckBox fx:id="cbFacturaB" text="Factura B (Consumidor Final)" onAction="#handleFacturaBSelected"/>
+        </VBox>
+        
+        <VBox fx:id="panelDatosCliente" spacing="10.0" visible="false" style="-fx-border-color: #007bff; -fx-padding: 15;">
+            <Label style="-fx-font-size: 14pt;" text="Datos del Cliente (Requerido para Factura A):" />
+            <GridPane hgap="10.0" vgap="10.0">
+                <Label text="CUIT/DNI:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                <TextField fx:id="txtCuitDni" promptText="CUIT/DNI" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+                
+                <Label text="Nombre/Razón Social:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                <TextField fx:id="txtRazonSocial" promptText="Nombre o Razón Social" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+                <Button text="Cargar Cliente" onAction="#handleCargarCliente" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+            </GridPane>
+            <Label fx:id="lblEstadoCliente" style="-fx-text-fill: green;" text="Cliente Cargado Exitosamente." visible="false"/>
+        </VBox>
+        
+        <Label fx:id="lblTotalVenta" style="-fx-font-size: 16pt;" text="Total de Venta: $ 0.00" />
+        
+    </VBox>
+</AnchorPane>

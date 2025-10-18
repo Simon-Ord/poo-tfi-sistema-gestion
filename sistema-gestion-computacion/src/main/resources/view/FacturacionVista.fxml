@@ -1,0 +1,19 @@
+<BorderPane xmlns:fx="http://javafx.com/fxml/1" 
+            fx:controller="com.unpsjb.poo.controller.FacturacionController">
+    
+    <center>
+        <StackPane fx:id="contentStackPane">
+            <fx:include fx:id="agregarProductosView" source="agregarProductosView.fxml" visible="true" />
+            <fx:include fx:id="seleccionarFacturaView" source="seleccionarFacturaView.fxml" visible="false" />
+            <fx:include fx:id="confirmarVentaView" source="confirmarVentaView.fxml" visible="false" />
+        </StackPane>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER" spacing="20">
+            <Button text="Cancelar Venta" onAction="#handleCancelarVenta"/>
+            <Button text="Atrás" onAction="#handleVolverPaso"/>
+            <Button text="Siguiente" onAction="#handleSiguientePaso"/>
+        </HBox>
+    </bottom>
+</BorderPane>

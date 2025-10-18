@@ -37,6 +37,10 @@ public BigDecimal getTotal() {
     return total;
 }
 
+public void vaciarCarrito() {
+    items.clear();
+}
+
 //Getters
 
 public List<ItemCarrito> getItems() {
