@@ -54,7 +54,7 @@
 
 /* ========== PANEL CENTRAL ("escritorio") ========== */
 #desktop, .pane, .border-pane, .anchor-pane {
-    -fx-background-color: #8f7233;
+    -fx-background-color: #8699d8;
     -fx-background-radius: 12;
     -fx-padding: 20;
 }

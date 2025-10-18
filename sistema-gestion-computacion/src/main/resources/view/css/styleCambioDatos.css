@@ -1,0 +1,62 @@
+.root {
+    -fx-background-color: linear-gradient(to bottom right, #1c1f2b, #242a3a);
+    -fx-font-family: "Segoe UI", "Roboto", "Arial";
+}
+
+.titulo {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffffff;
+    -fx-padding: 0 0 10 0;
+}
+
+.label {
+    -fx-text-fill: #e0e5f5;
+    -fx-font-weight: bold;
+}
+
+.text-field, .password-field {
+    -fx-pref-width: 230;
+    -fx-pref-height: 32;
+    -fx-background-color: #3b4255;
+    -fx-border-color: #4f5872;
+    -fx-border-radius: 8;
+    -fx-background-radius: 8;
+    -fx-padding: 0 10;
+    -fx-font-size: 14px;
+    -fx-text-fill: #e6e9f0;
+}
+
+.text-field:focused, .password-field:focused {
+    -fx-border-color: #6d8cff;
+    -fx-background-color: #444b60;
+    -fx-effect: dropshadow(three-pass-box, rgba(109,140,255,0.3), 5, 0, 0, 3);
+}
+
+.btn-principal {
+    -fx-background-color: linear-gradient(to bottom, #4a6fff, #364fd9);
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10;
+    -fx-pref-width: 150;
+    -fx-pref-height: 38;
+    -fx-cursor: hand;
+}
+
+.btn-principal:hover {
+    -fx-background-color: linear-gradient(to bottom, #6d8cff, #4a6fff);
+}
+
+.btn-secundario {
+    -fx-background-color: #4f5872;
+    -fx-text-fill: #e6e9f0;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10;
+    -fx-pref-width: 120;
+    -fx-pref-height: 38;
+    -fx-cursor: hand;
+}
+
+.btn-secundario:hover {
+    -fx-background-color: #5d6789;
+}

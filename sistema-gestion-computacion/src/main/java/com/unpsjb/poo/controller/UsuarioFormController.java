@@ -8,24 +8,26 @@ import com.unpsjb.poo.persistence.dao.impl.UsuarioDAOImpl;
 
 public class UsuarioFormController {
 
-    @FXML private TextField txtLegajo;
+    @FXML private TextField txtDni;
     @FXML private TextField txtNombre;
     @FXML private TextField txtUsuario;
     @FXML private PasswordField txtContraseña;
     @FXML private ChoiceBox<String> cbRol;
+    @FXML private CheckBox chkActivo;
 
     private final UsuarioDAOImpl usuarioDAO = new UsuarioDAOImpl();
 
     @FXML
     private void initialize() {
         cbRol.getItems().addAll("ADMINISTRADOR", "EMPLEADO");
+        chkActivo.setSelected(true); // Por defecto, el nuevo usuario está activo
     }
 
     @FXML
     private void guardarUsuario() {
         try {
             // Validación de campos vacíos
-            if (txtLegajo.getText().isEmpty() || txtNombre.getText().isEmpty()
+            if (txtDni.getText().isEmpty() || txtNombre.getText().isEmpty()
                     || txtUsuario.getText().isEmpty() || txtContraseña.getText().isEmpty()
                     || cbRol.getValue() == null) {
                 mostrarAlerta("Todos los campos son obligatorios.");
@@ -34,11 +36,12 @@ public class UsuarioFormController {
 
             // Crear el objeto usuario
             Usuario nuevo = new Usuario();
-            nuevo.setLegajo(txtLegajo.getText().trim());
+            nuevo.setDni(txtDni.getText().trim());
             nuevo.setNombre(txtNombre.getText().trim());
             nuevo.setUsuario(txtUsuario.getText().trim());
             nuevo.setContraseña(txtContraseña.getText().trim());
             nuevo.setRol(cbRol.getValue());
+            nuevo.setEstado(chkActivo.isSelected());
 
             // Intentar guardar en la base de datos
             boolean ok = usuarioDAO.insertar(nuevo);

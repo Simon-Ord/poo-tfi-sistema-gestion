@@ -1,38 +1,57 @@
-/* Fondo general (opcional, si querés gris claro detrás) */
+/* === Fondo general === */
 .root {
-    -fx-background-color: #f5f6f8;
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-background-color: linear-gradient(to bottom right, #1c1f2b, #242a3a);
 }
 
-/* Tarjeta blanca */
-.content-card {
-    -fx-background-color: white;
-    -fx-background-radius: 12;
-    -fx-border-radius: 12;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.15), 18, 0.2, 0, 4);
-}
-
-/* Tabla: bordes suaves */
+/* === Tabla === */
 .table-view {
     -fx-background-color: transparent;
-    -fx-background-insets: 0;
-    -fx-padding: 0;
-}
-.table-view > .column-header-background {
-    -fx-background-color: linear-gradient(to bottom, #ffffff, #f1f1f1);
-    -fx-background-radius: 8 8 0 0;
-}
-.table-row-cell {
-    -fx-background-color: white;
-}
-.table-row-cell:odd {
-    -fx-background-color: #fafafa;
-}
-.table-row-cell:selected {
-    -fx-background-color: #e6f0ff;
+    -fx-text-fill: white;
 }
 
-/* Botones */
-.button {
-    -fx-background-radius: 8;
-    -fx-padding: 8 14 8 14;
+.table-view .column-header-background {
+    -fx-background-color: rgba(255,255,255,0.1);
+}
+
+.table-view .column-header, .table-view .filler {
+    -fx-border-color: rgba(255,255,255,0.1);
+}
+
+.table-view .table-row-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: rgba(255,255,255,0.05);
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #4a6fff;
+}
+
+/* === Botones === */
+.button, .btn-accion {
+    -fx-background-color: linear-gradient(to bottom, #4a6fff, #364fd9);
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-background-radius: 10;
+    -fx-padding: 8 20 8 20;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 8, 0.3, 0, 2);
+    -fx-font-size: 14px;
+}
+
+.button:hover, .btn-accion:hover {
+    -fx-background-color: linear-gradient(to bottom, #6d8cff, #4a6fff);
+}
+
+.button:pressed, .btn-accion:pressed {
+    -fx-background-color: #2d3fb2;
+}
+
+/* === Texto === */
+.label {
+    -fx-text-fill: white;
 }
