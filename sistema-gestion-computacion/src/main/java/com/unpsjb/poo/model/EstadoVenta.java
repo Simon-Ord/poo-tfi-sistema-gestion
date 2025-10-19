@@ -1,3 +1,5 @@
+
+/* 
 package com.unpsjb.poo.model;
 
 public interface EstadoVenta {
@@ -6,3 +8,5 @@ public interface EstadoVenta {
 	String getNombreEstado();
 	String getVistaID();  //Agregado para vincular con la vista correspondiente
 }
+
+*/

@@ -1,4 +1,4 @@
-package com.unpsjb.poo.model;
+/*package com.unpsjb.poo.model;
 
 public class Venta {
 
@@ -54,3 +54,4 @@ public void guardarVentaBD() {
 }
 
 }
+*/

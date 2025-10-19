@@ -1,4 +1,4 @@
-package com.unpsjb.poo.model;
+/*package com.unpsjb.poo.model;
 
 public class EstadoAgregarProductos implements EstadoVenta {
     
@@ -26,4 +26,4 @@ public class EstadoAgregarProductos implements EstadoVenta {
         return "AgregarProductosVista";
     }
     
-}
+}*/
