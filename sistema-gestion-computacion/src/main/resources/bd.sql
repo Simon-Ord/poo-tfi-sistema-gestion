@@ -23,19 +23,21 @@ CREATE TABLE clientes (
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 📦 TABLA DE PRODUCTOS (CORREGIDA para incluir 'categoria' y 'fabricante')
+-- 📦 TABLA DE PRODUCTOS (ACTUALIZADA con la estructura del modelo Java)
+-- 📦 TABLA DE PRODUCTOS (Recomendación con fecha_creacion)
 CREATE TABLE productos (
-    id SERIAL PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL,
-    descripcion VARCHAR(255),
-    precio DECIMAL(10,2) NOT NULL,
-    stock INT DEFAULT 0,
-    categoria VARCHAR(100),            -- Nuevo campo
-    fabricante VARCHAR(100),           -- Nuevo campo
+    id_producto SERIAL PRIMARY KEY,
+    nombre_producto VARCHAR(100) NOT NULL,
+    descripcion_producto TEXT,
+    stock_producto INT NOT NULL DEFAULT 0,
+    precio_producto NUMERIC(10,2) NOT NULL,
+    categoria_producto VARCHAR(50),
+    fabricante_producto VARCHAR(100),
+    codigo_producto INT UNIQUE NOT NULL,
     estado BOOLEAN DEFAULT TRUE,
-    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    activo BOOLEAN DEFAULT TRUE,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- <--- CAMPO AÑADIDO
 );
-
 -- 💰 TABLA DE FACTURAS (simplificada)
 CREATE TABLE facturas (
     id SERIAL PRIMARY KEY,
@@ -49,12 +51,13 @@ CREATE TABLE facturas (
 CREATE TABLE detalle_factura (
     id SERIAL PRIMARY KEY,
     factura_id INT,
-    producto_id INT,
+    producto_id INT, -- Referencia a la clave primaria de productos
     cantidad INT NOT NULL,
     precio_unitario DECIMAL(10,2) NOT NULL,
     subtotal DECIMAL(12,2) NOT NULL,
     FOREIGN KEY (factura_id) REFERENCES facturas(id),
-    FOREIGN KEY (producto_id) REFERENCES productos(id)
+    -- CORREGIDO: Ahora referencia id_producto de la tabla productos
+    FOREIGN KEY (producto_id) REFERENCES productos(id_producto) 
 );
 
 -- 🕵️‍♂️ TABLA DE AUDITORÍA
@@ -75,28 +78,10 @@ CREATE TABLE auditoria (
 -- =============================================================
 INSERT INTO usuarios (dni, nombre, usuario, contraseña, rol, estado)
 VALUES
-('12345678', 'Admin User', 'admin', 'adminpass', 'ADMIN', TRUE),
+('12345678', 'Admin User', 'admin', 'admin', 'ADMINISTRADOR', TRUE),
 ('87654321', 'John Doe', 'johndoe', 'password123', 'USER', TRUE),
 ('11223344', 'Jane Smith', 'janesmith', 'mypassword', 'USER', FALSE);
--- VERIFICAR CONTENIDO DE LA TABLA
-SELECT * FROM usuarios;
 
-
-------------------------
--- TABLA DE PRODUCTOS --
-------------------------
-CREATE TABLE productos (
-    id_producto SERIAL PRIMARY KEY,
-    nombre_producto VARCHAR(100) NOT NULL,
-    descripcion_producto TEXT,
-    stock_producto INT NOT NULL DEFAULT 0,
-    precio_producto NUMERIC(10,2) NOT NULL,
-    categoria_producto VARCHAR(50),
-    fabricante_producto VARCHAR(100),
-    codigo_producto INT UNIQUE NOT NULL,
-    estado BOOLEAN DEFAULT TRUE,
-    activo BOOLEAN DEFAULT TRUE
-);
 -- Insertar productos de ejemplo
 INSERT INTO productos (nombre_producto, descripcion_producto, stock_producto, precio_producto, categoria_producto, fabricante_producto, codigo_producto, estado, activo)
 VALUES
@@ -104,19 +89,21 @@ VALUES
 ('Mouse Inalámbrico', 'Mouse ergonómico inalámbrico', 50, 25.99, 'Periféricos', 'GadgetPro', 1002, TRUE, TRUE),
 ('Teclado Mecánico', 'Teclado mecánico retroiluminado', 30, 75.50, 'Periféricos', 'KeyMasters', 1003, TRUE, TRUE);
 
--- VERIFICAR CONTENIDO DE LA TABLA
-SELECT * FROM productos;
-VALUES ('12345678', 'Admin User', 'admin', 'admin', 'ADMINISTRADOR', TRUE);
-
 -- =============================================================
--- ✅ FUNCIONES Y TRIGGERS DE AUDITORÍA PARA PRODUCTOS
+-- ✅ FUNCIONES Y TRIGGERS DE AUDITORÍA PARA PRODUCTOS (CORREGIDOS)
 -- =============================================================
 
--- Función para registrar INSERT de productos
+-- Función para registrar INSERT de productos (CORREGIDA)
 CREATE OR REPLACE FUNCTION log_producto_insert() RETURNS TRIGGER AS $$
 BEGIN
     INSERT INTO auditoria (usuario, accion, descripcion, entidad_afectada, id_referencia)
-    VALUES (CURRENT_USER, 'CREAR PRODUCTO', CONCAT('Se creó el producto: ', NEW.nombre), 'producto', NEW.id);
+    VALUES (
+        CURRENT_USER, 
+        'CREAR PRODUCTO', 
+        CONCAT('Se creó el producto: ', NEW.nombre_producto), 
+        'producto', 
+        NEW.id_producto
+    );
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
@@ -126,11 +113,17 @@ AFTER INSERT ON productos
 FOR EACH ROW
 EXECUTE FUNCTION log_producto_insert();
 
--- Función para registrar UPDATE de productos
+-- Función para registrar UPDATE de productos (CORREGIDA)
 CREATE OR REPLACE FUNCTION log_producto_update() RETURNS TRIGGER AS $$
 BEGIN
     INSERT INTO auditoria (usuario, accion, descripcion, entidad_afectada, id_referencia)
-    VALUES (CURRENT_USER, 'MODIFICAR PRODUCTO', CONCAT('Se modificó el producto: ', NEW.nombre), 'producto', NEW.id);
+    VALUES (
+        CURRENT_USER, 
+        'MODIFICAR PRODUCTO', 
+        CONCAT('Se modificó el producto: ', NEW.nombre_producto), 
+        'producto', 
+        NEW.id_producto
+    );
     RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
@@ -138,13 +131,20 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER trg_producto_update
 AFTER UPDATE ON productos
 FOR EACH ROW
+WHEN (OLD.* IS DISTINCT FROM NEW.*) -- Optimización: solo dispara si hay algún cambio real
 EXECUTE FUNCTION log_producto_update();
 
--- Función para registrar DELETE de productos
+-- Función para registrar DELETE de productos (CORREGIDA)
 CREATE OR REPLACE FUNCTION log_producto_delete() RETURNS TRIGGER AS $$
 BEGIN
     INSERT INTO auditoria (usuario, accion, descripcion, entidad_afectada, id_referencia)
-    VALUES (CURRENT_USER, 'ELIMINAR PRODUCTO', CONCAT('Se eliminó el producto: ', OLD.nombre), 'producto', OLD.id);
+    VALUES (
+        CURRENT_USER, 
+        'ELIMINAR PRODUCTO', 
+        CONCAT('Se eliminó el producto: ', OLD.nombre_producto), 
+        'producto', 
+        OLD.id_producto
+    );
     RETURN OLD;
 END;
 $$ LANGUAGE plpgsql;
@@ -154,35 +154,9 @@ AFTER DELETE ON productos
 FOR EACH ROW
 EXECUTE FUNCTION log_producto_delete();
 
--- =============================================================
--- ✅ FUNCIÓN Y TRIGGER DE AUDITORÍA PARA PRODUCTOS (DELETE)
--- =============================================================
-
--- 1. Función para registrar la ELIMINACIÓN física de un producto
-CREATE OR REPLACE FUNCTION log_producto_delete() RETURNS TRIGGER AS $$
-BEGIN
-    -- Utiliza OLD.* para acceder a los datos antes de ser eliminados
-    INSERT INTO auditoria (usuario, accion, descripcion, entidad_afectada, id_referencia)
-    VALUES (
-        CURRENT_USER, 
-        'ELIMINAR PRODUCTO', 
-        CONCAT('Se eliminó el producto: ', OLD.nombre, ' (ID: ', OLD.id, ')'), 
-        'producto', 
-        OLD.id
-    );
-    -- Los triggers AFTER DELETE deben retornar OLD
-    RETURN OLD; 
-END;
-$$ LANGUAGE plpgsql;
-
--- 2. Trigger que se ejecuta DESPUÉS de una operación DELETE
-CREATE TRIGGER trg_producto_delete
-AFTER DELETE ON productos
-FOR EACH ROW
-EXECUTE FUNCTION log_producto_delete();
 
 -- =============================================================
--- ✅ FUNCIONES Y TRIGGERS DE AUDITORÍA PARA USUARIOS
+-- ✅ FUNCIONES Y TRIGGERS DE AUDITORÍA PARA USUARIOS (SIN CAMBIOS)
 -- =============================================================
 
 -- Función para registrar INSERT de usuarios
@@ -243,27 +217,5 @@ $$ LANGUAGE plpgsql;
 CREATE TRIGGER trg_usuario_update
 AFTER UPDATE ON usuarios
 FOR EACH ROW
-WHEN (OLD.* IS DISTINCT FROM NEW.*) -- Optimización: solo dispara si hay algún cambio real
+WHEN (OLD.* IS DISTINCT FROM NEW.*) 
 EXECUTE FUNCTION log_usuario_update();
-
--- =============================================================
--- 📊 CONSULTAS DE EJEMPLO PARA REPORTES
--- =============================================================
-
--- Últimas 20 acciones realizadas
-SELECT * FROM auditoria ORDER BY fecha_hora DESC LIMIT 20;
-
--- Acciones por tipo
-SELECT accion, COUNT(*) AS cantidad
-FROM auditoria
-GROUP BY accion
-ORDER BY cantidad DESC;
-
--- Acciones por usuario
-SELECT usuario, COUNT(*) AS cantidad
-FROM auditoria
-GROUP BY usuario
-ORDER BY cantidad DESC;
-
-
-SELECT * FROM productos;

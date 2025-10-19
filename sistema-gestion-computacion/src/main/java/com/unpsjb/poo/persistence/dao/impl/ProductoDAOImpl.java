@@ -16,20 +16,11 @@ import com.unpsjb.poo.persistence.dao.DAO;
 public class ProductoDAOImpl implements DAO<Producto> {
 
     @Override
-<<<<<<< HEAD
-    public void create(Producto producto) {
-        // COLUMNAS CORREGIDAS: Usando los nombres de la tabla 'productos' (id, nombre, stock, etc.)
-        String sql = """
-            INSERT INTO productos 
-            (nombre, descripcion, stock, precio, categoria, fabricante) 
-            VALUES (?, ?, ?, ?, ?, ?)
-=======
     public boolean create(Producto producto) {
         String sql = """
             INSERT INTO productos 
             (nombre_producto, descripcion_producto, stock_producto, precio_producto, categoria_producto, fabricante_producto, codigo_producto, estado, activo)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
->>>>>>> 695152ef167516d2770ea2b0f47545d50ff740a2
             """;
         // Nota: La columna 'id' (código_producto) es SERIAL, se genera sola. No se debe incluir aquí.
         // Si tienes una columna 'codigo' separada de 'id', debes incluirla. Asumo que usas 'id' como código.
@@ -42,18 +33,6 @@ public class ProductoDAOImpl implements DAO<Producto> {
             pstmt.setBigDecimal(4, producto.getPrecioProducto());
             pstmt.setString(5, producto.getCategoriaProducto());
             pstmt.setString(6, producto.getFabricanteProducto());
-<<<<<<< HEAD
-            
-            // Si el campo 'codigo_producto' de tu modelo es el 'id' de la DB, NO debe setearse aquí.
-            // Si tienes un campo 'codigo' separado de 'id', entonces ajusta el SQL y el índice.
-            // pstmt.setInt(7, producto.getCodigoProducto()); // Línea eliminada/comentada por ser serial.
-            
-            pstmt.executeUpdate();
-
-        } catch (SQLException e) {
-            System.err.println("Error al insertar el producto: " + e.getMessage());
-            e.printStackTrace(); // Añade esto para ver el detalle exacto del error.
-=======
             pstmt.setInt(7, producto.getCodigoProducto());
             pstmt.setBoolean(8, producto.isEstado());
             pstmt.setBoolean(9, producto.isActivo()); 
@@ -64,7 +43,6 @@ public class ProductoDAOImpl implements DAO<Producto> {
         } catch (SQLException e) {
             System.err.println("Error al insertar el producto: " + e.getMessage());
             return false;
->>>>>>> 695152ef167516d2770ea2b0f47545d50ff740a2
         }
     }
 
@@ -95,22 +73,12 @@ public class ProductoDAOImpl implements DAO<Producto> {
     //  Actualizar producto
     // ================================
     @Override
-<<<<<<< HEAD
-    public void update(Producto producto) {
-        // COLUMNAS CORREGIDAS: Usando nombres de la DB y 'id' en el WHERE
-        String sql = """
-            UPDATE productos 
-            SET nombre = ?, descripcion = ?, stock = ?, precio = ?, 
-                categoria = ?, fabricante = ?
-            WHERE id = ?
-=======
     public boolean update (Producto producto) {
         String sql = """
             UPDATE productos 
             SET nombre_producto = ?, descripcion_producto = ?, stock_producto = ?, precio_producto = ?, 
                 categoria_producto = ?, fabricante_producto = ?, codigo_producto = ?, estado = ?, activo = ?
             WHERE id_producto = ?
->>>>>>> 695152ef167516d2770ea2b0f47545d50ff740a2
             """;
         // Nota: Si 'codigo_producto' es el mismo que 'id', no tiene sentido actualizarlo
         // SET nombre = ?, ..., id = ? (solo si el id no es la PK). Asumo que actualizas por id.
@@ -123,16 +91,10 @@ public class ProductoDAOImpl implements DAO<Producto> {
             pstmt.setBigDecimal(4, producto.getPrecioProducto());
             pstmt.setString(5, producto.getCategoriaProducto());
             pstmt.setString(6, producto.getFabricanteProducto());
-<<<<<<< HEAD
-            pstmt.setInt(7, producto.getIdProducto()); // Se usa para el WHERE id = ?
-            
-            pstmt.executeUpdate();
-=======
             pstmt.setInt(7, producto.getCodigoProducto());
             pstmt.setBoolean(8, producto.isEstado());
             pstmt.setBoolean(9, producto.isActivo());
             pstmt.setInt(10, producto.getIdProducto());
->>>>>>> 695152ef167516d2770ea2b0f47545d50ff740a2
 
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -141,31 +103,6 @@ public class ProductoDAOImpl implements DAO<Producto> {
         return false;
     }
 
-<<<<<<< HEAD
-    // ================================
-    //  Eliminar producto
-    // ================================
-    @Override
-    public void delete(int id) {
-        // COLUMNA CORREGIDA: Usando 'id' en lugar de 'id_producto'
-        String sql = "DELETE FROM productos WHERE id = ?"; 
-        try (Connection conexion = GestorDeConexion.getInstancia().getConexion();
-             PreparedStatement pstmt = conexion.prepareStatement(sql)) {
-            pstmt.setInt(1, id);
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            System.err.println("Error al eliminar el producto: " + e.getMessage());
-        }
-    }
-    // ================================
-    //  Listar todos los productos
-    // ================================
-    @Override
-    public List<Producto> findAll() {
-        List<Producto> productos = new ArrayList<>();
-        // COLUMNA CORREGIDA: Usando 'id' en lugar de 'id_producto'
-        String sql = "SELECT * FROM productos ORDER BY id";
-=======
     // ===================================
     //  Eliminar producto (estado = false)
     // ===================================
@@ -190,7 +127,6 @@ public boolean delete(int id) {
     public List<Producto> findAll() {
         List<Producto> productos = new ArrayList<>();
         String sql = "SELECT * FROM productos WHERE estado = TRUE ORDER BY nombre_producto";
->>>>>>> 695152ef167516d2770ea2b0f47545d50ff740a2
         try (Connection conexion = GestorDeConexion.getInstancia().getConexion();
              Statement stmt = conexion.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
@@ -202,9 +138,6 @@ public boolean delete(int id) {
         }
         return productos;
     }
-<<<<<<< HEAD
-    
-=======
     // =====================================================
     //  Comprueba si un producto esta activo (activo = true)
     // =====================================================
@@ -238,24 +171,11 @@ public boolean reactivar(int id) {
         return false;
     }
 }
->>>>>>> 695152ef167516d2770ea2b0f47545d50ff740a2
     // ---------------------------
     // Método auxiliar de mapeo - ¡CORREGIDO!
     // ---------------------------
     private Producto mapResultSet(ResultSet rs) throws SQLException {
         Producto p = new Producto();
-<<<<<<< HEAD
-        // Mapeo corregido a nombres de columna de la DB (id, nombre, stock, etc.)
-        p.setIdProducto(rs.getInt("id")); 
-        p.setNombreProducto(rs.getString("nombre"));
-        p.setDescripcionProducto(rs.getString("descripcion"));
-        p.setStockProducto(rs.getInt("stock"));
-        p.setPrecioProducto(rs.getBigDecimal("precio"));
-        p.setCategoriaProducto(rs.getString("categoria"));
-        p.setFabricanteProducto(rs.getString("fabricante"));
-        // Si tu modelo tiene getCodigoProducto, asumo que mapea al mismo 'id' (serial PK)
-        p.setCodigoProducto(rs.getInt("id")); 
-=======
         p.setIdProducto(rs.getInt("id_producto"));
         p.setNombreProducto(rs.getString("nombre_producto"));
         p.setDescripcionProducto(rs.getString("descripcion_producto"));
@@ -274,7 +194,6 @@ public boolean reactivar(int id) {
         } catch (SQLException e) {
             p.setActivo(true);
         }
->>>>>>> 695152ef167516d2770ea2b0f47545d50ff740a2
         return p;
     }
 }

@@ -17,6 +17,7 @@ import java.util.List;
 
 public class ReportesControlador {
 
+    // ========== REFERENCIAS FXML ==========
     @FXML private TextField txtUsuario;
     @FXML private TextField txtEntidad;
     @FXML private TextField txtAccion;
@@ -30,10 +31,14 @@ public class ReportesControlador {
     private final ReportesDAO dao = new ReportesDAO();
     private List<EventoAuditoria> resultados;
     
-    // Formato de fecha
+    // Formato de fecha para la tabla 
     private static final java.text.SimpleDateFormat DATE_FORMAT = 
         new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
+
+        // ========== MÉTODOS DE INICIALIZACIÓN Y CONFIGURACIÓN ==========
+        // Configura las columnas de la tabla y carga datos iniciales
+        // Llamado automáticamente tras cargar el FXML
     @FXML
     public void initialize() {
         // Formatear la fecha
@@ -53,12 +58,10 @@ public class ReportesControlador {
 
         // Cargar datos iniciales
         buscar();
-
-        // ⚠️ CORRECCIÓN DE CSS: Solo verifica la existencia del archivo, evita el error fatal
         try {
             java.net.URL cssUrl = getClass().getResource("/css/reportes.css");
             if (cssUrl == null) {
-                 System.out.println("⚠️ No se encontró el CSS de reportes. Ruta esperada: src/main/resources/css/reportes.css");
+                 System.out.println(" No se encontró el CSS de reportes. Ruta esperada: src/main/resources/css/reportes.css");
             } else {
                  // Si la Scene está disponible, intenta aplicar el CSS
                  if (tablaReportes.getScene() != null) {
@@ -74,6 +77,7 @@ public class ReportesControlador {
     @FXML
     private void buscar() {
         // Llama al DAO con los filtros de los TextField
+        // Si un campo está vacío, se pasa una cadena vacía para no filtrar por ese campo
         resultados = dao.obtenerEventos(txtUsuario.getText(), txtEntidad.getText(), txtAccion.getText());
         
         // Actualiza la tabla
@@ -85,8 +89,9 @@ public class ReportesControlador {
     }
 
     @FXML
-    // MÉTODO RENOMBRADO, AUNQUE EL FXML DEBERÍA CAMBIARSE TAMBIÉN.
-    // Si mantienes el FXML como está, DEBES llamar al método 'exportarCSV' aquí.
+// Exporta los resultados actuales a un archivo PDF
+// Usa la clase PDFExporter para generar el archivo
+// Muestra un diálogo para elegir la ubicación del archivo
     public void exportarPDF() { 
         if (resultados == null || resultados.isEmpty()) {
             mostrarAlerta("No hay datos cargados o filtrados para exportar.");
