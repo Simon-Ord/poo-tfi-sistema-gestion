@@ -8,7 +8,8 @@ import javafx.stage.Stage;
 
 import com.unpsjb.poo.model.EventoAuditoria;
 import com.unpsjb.poo.persistence.dao.ReportesDAO;
-import com.unpsjb.poo.util.PDFExporter; 
+import com.unpsjb.poo.util.PDFExporter;
+import com.unpsjb.poo.util.PDFReporte;
 
 import java.io.File;
 import java.sql.Timestamp;
@@ -88,35 +89,32 @@ public class ReportesControlador {
         }
     }
 
-    @FXML
-// Exporta los resultados actuales a un archivo PDF
-// Usa la clase PDFExporter para generar el archivo
-// Muestra un diálogo para elegir la ubicación del archivo
-    public void exportarPDF() { 
-        if (resultados == null || resultados.isEmpty()) {
-            mostrarAlerta("No hay datos cargados o filtrados para exportar.");
-            return;
-        }
-
-        FileChooser fc = new FileChooser();
-        fc.setTitle("Guardar Reporte de Auditoría (PDF)");
-        // El filtro es para PDF
-        fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivo PDF", "*.pdf")); 
-        
-        // Obtiene la Stage actual
-        Stage stage = (Stage) tablaReportes.getScene().getWindow();
-        File file = fc.showSaveDialog(stage);
-        
-        if (file != null) {
-            // Llamamos a la clase PDFExporter
-            boolean ok = PDFExporter.exportAuditEventsToPDF(resultados, file.getAbsolutePath());
-            
-            mostrarAlerta(ok 
-                ? "Exportación a PDF completada correctamente en:\n" + file.getAbsolutePath() 
-                : "Error al exportar el PDF. Revisa la consola para más detalles.");
-        }
+@FXML
+public void exportarPDF() { 
+    if (resultados == null || resultados.isEmpty()) {
+        mostrarAlerta("No hay datos cargados o filtrados para exportar.");
+        return;
     }
 
+    FileChooser fc = new FileChooser();
+    fc.setTitle("Guardar Reporte de Auditoría (PDF)");
+    fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivo PDF", "*.pdf")); 
+
+    Stage stage = (Stage) tablaReportes.getScene().getWindow();
+    File file = fc.showSaveDialog(stage);
+
+    if (file != null) {
+        // Usamos la clase polimórfica asi que puede ser PDFReporte u otra futura implementación de PDFExporter
+        PDFExporter pdf = new PDFReporte(resultados);
+        boolean ok = pdf.export(file.getAbsolutePath());// Genera el PDF en la ruta indicada 
+
+        mostrarAlerta(ok 
+            ? "Exportación completada correctamente \nUbicación: " + file.getAbsolutePath()
+            : "Error al exportar el PDF ");
+    }
+}
+
+// Muestra una alerta informativa con el mensaje dado
     private void mostrarAlerta(String msg) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setHeaderText(null);
