@@ -54,8 +54,9 @@ public class PrincipalVistaControlador implements Initializable {
     @FXML private Label lblNombreUsuario;
 
     // ========== ACCIONES ==========
+
     // BOTON USUARIOS - abre la ventana con la tabla
-    @FXML
+   @FXML
     private void usuariosAction(ActionEvent event) {
         try {
             Node view = loadView("/view/usuariosView.fxml");
@@ -64,7 +65,7 @@ public class PrincipalVistaControlador implements Initializable {
             e.printStackTrace();
             new Alert(Alert.AlertType.ERROR, "Error al abrir la gestión de usuarios: " + e.getMessage()).showAndWait();
         }
-    }
+    } 
     // BOTÓN PRODUCTOS
     @FXML
     private void productosAction(ActionEvent event) {
@@ -74,7 +75,26 @@ public class PrincipalVistaControlador implements Initializable {
 
     @FXML private void clientesAction(ActionEvent event) {}
     @FXML private void facturarAction(ActionEvent event) {}
-    @FXML private void reportesAction(ActionEvent event) {}
+
+   // --- Reportes ---
+
+   @FXML
+private void reportesAction(ActionEvent event) {
+    try {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/reportesView.fxml"));
+        Node view = loader.load();
+        ReportesController controller = loader.getController();
+
+        openInternal("Reportes del Sistema", view, 900, 600);
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        new Alert(Alert.AlertType.ERROR, "Error al abrir reportes: " + e.getMessage()).showAndWait();
+    }
+}
+
+
+    
 
     // BOTON CERRAR SESION
     @FXML
