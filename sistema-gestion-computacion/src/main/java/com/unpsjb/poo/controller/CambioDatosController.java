@@ -2,8 +2,11 @@ package com.unpsjb.poo.controller;
 
 import com.unpsjb.poo.model.Usuario;
 import com.unpsjb.poo.persistence.dao.impl.UsuarioDAOImpl;
+
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 
 public class CambioDatosController {

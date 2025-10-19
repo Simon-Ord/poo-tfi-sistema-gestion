@@ -16,11 +16,11 @@ import com.unpsjb.poo.persistence.dao.DAO;
 public class ProductoDAOImpl implements DAO<Producto> {
 
     @Override
-    public void create(Producto producto) {
+    public boolean create(Producto producto) {
         String sql = """
             INSERT INTO productos 
-            (nombre_producto, descripcion_producto, stock_producto, precio_producto, categoria_producto, fabricante_producto, codigo_producto)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            (nombre_producto, descripcion_producto, stock_producto, precio_producto, categoria_producto, fabricante_producto, codigo_producto, estado, activo)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             """;
         try (Connection conexion = GestorDeConexion.getInstancia().getConexion();
              PreparedStatement pstmt = conexion.prepareStatement(sql)) {
@@ -32,10 +32,15 @@ public class ProductoDAOImpl implements DAO<Producto> {
             pstmt.setString(5, producto.getCategoriaProducto());
             pstmt.setString(6, producto.getFabricanteProducto());
             pstmt.setInt(7, producto.getCodigoProducto());
-            pstmt.executeUpdate();
+            pstmt.setBoolean(8, producto.isEstado());
+            pstmt.setBoolean(9, producto.isActivo()); 
+            int filas = pstmt.executeUpdate();
+
+            return filas > 0;
 
         } catch (SQLException e) {
             System.err.println("Error al insertar el producto: " + e.getMessage());
+            return false;
         }
     }
 
@@ -65,11 +70,11 @@ public class ProductoDAOImpl implements DAO<Producto> {
     //  Actualizar producto
     // ================================
     @Override
-    public void update(Producto producto) {
+    public boolean update (Producto producto) {
         String sql = """
             UPDATE productos 
             SET nombre_producto = ?, descripcion_producto = ?, stock_producto = ?, precio_producto = ?, 
-                categoria_producto = ?, fabricante_producto = ?, codigo_producto = ?
+                categoria_producto = ?, fabricante_producto = ?, codigo_producto = ?, estado = ?, activo = ?
             WHERE id_producto = ?
             """;
         try (Connection conexion = GestorDeConexion.getInstancia().getConexion();
@@ -82,35 +87,41 @@ public class ProductoDAOImpl implements DAO<Producto> {
             pstmt.setString(5, producto.getCategoriaProducto());
             pstmt.setString(6, producto.getFabricanteProducto());
             pstmt.setInt(7, producto.getCodigoProducto());
-            pstmt.setInt(8, producto.getIdProducto());
-            pstmt.executeUpdate();
+            pstmt.setBoolean(8, producto.isEstado());
+            pstmt.setBoolean(9, producto.isActivo());
+            pstmt.setInt(10, producto.getIdProducto());
 
+            return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
             System.err.println("Error al actualizar el producto: " + e.getMessage());
         }
+        return false;
     }
 
-    // ================================
-    //  Eliminar producto
-    // ================================
-    @Override
-    public void delete(int id) {
-        String sql = "DELETE FROM productos WHERE id_producto = ?";
-        try (Connection conexion = GestorDeConexion.getInstancia().getConexion();
-             PreparedStatement pstmt = conexion.prepareStatement(sql)) {
-            pstmt.setInt(1, id);
-            pstmt.executeUpdate();
-        } catch (SQLException e) {
-            System.err.println("Error al eliminar el producto: " + e.getMessage());
-        }
+    // ===================================
+    //  Eliminar producto (estado = false)
+    // ===================================
+@Override
+public boolean delete(int id) {
+    // Para "eliminar" del sistema sin borrar la fila, marcamos estado = FALSE
+    String sql = "UPDATE productos SET estado = FALSE WHERE id_producto = ?";
+    try (Connection conexion = GestorDeConexion.getInstancia().getConexion();
+         PreparedStatement pstmt = conexion.prepareStatement(sql)) {
+        pstmt.setInt(1, id);
+        int filas = pstmt.executeUpdate();
+        return filas > 0;
+    } catch (SQLException e) {
+        System.err.println("Error al desactivar el producto: " + e.getMessage());
+        return false;
     }
-    // ================================
-    //  Listar todos los productos
-    // ================================
+}
+    // ============================
+    //  Listar todos los productos 
+    // ============================
     @Override
     public List<Producto> findAll() {
         List<Producto> productos = new ArrayList<>();
-        String sql = "SELECT * FROM productos ORDER BY id_producto";
+        String sql = "SELECT * FROM productos WHERE estado = TRUE ORDER BY nombre_producto";
         try (Connection conexion = GestorDeConexion.getInstancia().getConexion();
              Statement stmt = conexion.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
@@ -122,6 +133,39 @@ public class ProductoDAOImpl implements DAO<Producto> {
         }
         return productos;
     }
+    // =====================================================
+    //  Comprueba si un producto esta activo (activo = true)
+    // =====================================================
+public boolean estaActivo(int id) {
+    String sql = "SELECT activo FROM productos WHERE id_producto = ?";
+    try (Connection conexion = GestorDeConexion.getInstancia().getConexion();
+         PreparedStatement pstmt = conexion.prepareStatement(sql)) {
+        pstmt.setInt(1, id);
+        try (ResultSet rs = pstmt.executeQuery()) {
+            if (rs.next()) {
+                return rs.getBoolean("activo");
+            }
+        }
+    } catch (SQLException e) {
+        System.err.println("Error al comprobar si esta activo el producto: " + e.getMessage());
+    }
+    return false;
+}
+    // =====================================
+    //  Reactiva un producto (activo = true)
+    // =====================================
+public boolean reactivar(int id) {
+    String sql = "UPDATE productos SET activo = TRUE WHERE id_producto = ?";
+    try (Connection conexion = GestorDeConexion.getInstancia().getConexion();
+         PreparedStatement pstmt = conexion.prepareStatement(sql)) {
+        pstmt.setInt(1, id);
+        int filas = pstmt.executeUpdate();
+        return filas > 0;
+    } catch (SQLException e) {
+        System.err.println("Error al reactivar el producto: " + e.getMessage());
+        return false;
+    }
+}
     // ---------------------------
     // Método auxiliar de mapeo 
     // ---------------------------
@@ -135,6 +179,16 @@ public class ProductoDAOImpl implements DAO<Producto> {
         p.setCategoriaProducto(rs.getString("categoria_producto"));
         p.setFabricanteProducto(rs.getString("fabricante_producto"));
         p.setCodigoProducto(rs.getInt("codigo_producto"));
+        try {
+            p.setEstado(rs.getBoolean("estado"));
+        } catch (SQLException e) {
+            p.setEstado(true);
+        }
+        try {
+            p.setActivo(rs.getBoolean("activo"));
+        } catch (SQLException e) {
+            p.setActivo(true);
+        }
         return p;
     }
 }

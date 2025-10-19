@@ -6,7 +6,7 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/21"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.unpsjb.poo.controller.UsuariosController"
+            fx:controller="com.unpsjb.poo.controller.UsuariosVistaControlador"
             stylesheets="@../css/styleUsuariosDark.css"
             style="-fx-background-color: linear-gradient(to bottom right, #1c1f2b, #242a3a);">
 

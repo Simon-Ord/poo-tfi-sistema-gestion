@@ -5,9 +5,8 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import com.unpsjb.poo.model.EstadoAgregarProductos;
 import com.unpsjb.poo.model.Venta;
-import com.unpsjb.poo.model.EstadoVenta; // Interfaz
-import com.unpsjb.poo.model.EstadoAgregarProductos; // Un ejemplo de Estado
 
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;

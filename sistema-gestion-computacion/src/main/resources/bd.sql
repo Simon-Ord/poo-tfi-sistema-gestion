@@ -37,16 +37,16 @@ CREATE TABLE productos (
     precio_producto NUMERIC(10,2) NOT NULL,
     categoria_producto VARCHAR(50),
     fabricante_producto VARCHAR(100),
-    codigo_producto INT UNIQUE NOT NULL
+    codigo_producto INT UNIQUE NOT NULL,
+    estado BOOLEAN DEFAULT TRUE,
+    activo BOOLEAN DEFAULT TRUE
 );
 -- Insertar productos de ejemplo
-INSERT INTO productos (nombre_producto, descripcion_producto, stock_producto, precio_producto, categoria_producto,
-fabricante_producto, codigo_producto)
+INSERT INTO productos (nombre_producto, descripcion_producto, stock_producto, precio_producto, categoria_producto, fabricante_producto, codigo_producto, estado, activo)
 VALUES
-('Laptop Dell XPS 13', 'Laptop ultradelgada con pantalla de 13 pulgadas', 10, 999.99, 'Laptops', 'Dell', 1001),
-('Monitor Samsung 24"', 'Monitor LED de 24 pulgadas con resolución Full HD', 15, 149.99, 'Monitores', 'Samsung', 1002),
-('Teclado Mecánico Logitech', 'Teclado mecánico retroiluminado para gaming', 20, 89.99, 'Periféricos', 'Logitech', 1003),
-('Mouse Inalámbrico HP', 'Mouse inalámbrico ergonómico con alta precisión', 25, 29.99, 'Periféricos', 'HP', 1004),
-('Impresora Canon Pixma', 'Impresora multifuncional con conectividad Wi-Fi', 8, 199.99, 'Impresoras', 'Canon', 1005);
+('Laptop XYZ', 'Laptop de alto rendimiento', 10, 1500.00, 'Computadoras', 'TechCorp', 1001, TRUE, TRUE),
+('Mouse Inalámbrico', 'Mouse ergonómico inalámbrico', 50, 25.99, 'Periféricos', 'GadgetPro', 1002, TRUE, TRUE),
+('Teclado Mecánico', 'Teclado mecánico retroiluminado', 30, 75.50, 'Periféricos', 'KeyMasters', 1003, TRUE, TRUE);
+
 -- VERIFICAR CONTENIDO DE LA TABLA
 SELECT * FROM productos;

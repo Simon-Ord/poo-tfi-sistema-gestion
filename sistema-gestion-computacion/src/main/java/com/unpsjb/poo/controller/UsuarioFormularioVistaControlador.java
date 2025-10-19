@@ -6,7 +6,7 @@ import javafx.stage.Stage;
 import com.unpsjb.poo.model.Usuario;
 import com.unpsjb.poo.persistence.dao.impl.UsuarioDAOImpl;
 
-public class UsuarioFormController {
+public class UsuarioFormularioVistaControlador {
 
     @FXML private TextField txtDni;
     @FXML private TextField txtNombre;

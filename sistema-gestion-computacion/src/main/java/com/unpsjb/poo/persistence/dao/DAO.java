@@ -13,8 +13,9 @@ public interface DAO<T> {
     /**
      * Inserta una nueva entidad en la base de datos.
      * @param t La entidad a crear.
+     * @return true si la operación fue exitosa, false en caso contrario.
      */
-    void create(T t);
+    boolean create(T t);
 
     /**
      * Busca y devuelve una entidad por su identificador único.
@@ -26,12 +27,13 @@ public interface DAO<T> {
      * Actualiza una entidad existente en la base de datos.
      * @param t La entidad con los datos actualizados.
      */
-    void update(T t);
+    boolean update(T t);
     /**
      * Elimina una entidad de la base de datos por su identificador único.
      * @param id El ID de la entidad a eliminar.
-     */
-    void delete(int id);
+    * @return true si la eliminación (o desactivación) fue exitosa, false en caso contrario.
+    */
+    boolean delete(int id);
     /**
      * Devuelve una lista con todas las entidades de la tabla.
      * @return Una lista de todas las entidades.
