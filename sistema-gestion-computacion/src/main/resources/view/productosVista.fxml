@@ -2,142 +2,61 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
-<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.image.Image?>
-<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
-<BorderPane prefHeight="456.0" prefWidth="874.0" style="-fx-background-color: #9CADFF; -fx-background-radius: 12; -fx-border-color: #dcdfe6; -fx-border-radius: 12; -fx-padding: 12; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.18), 18, 0.2, 0, 4);" 
-xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.unpsjb.poo.controller.ProductosVistaControlador">
+<BorderPane style="-fx-background-color: linear-gradient(to bottom right, #1c1f2b, #242a3a);" stylesheets="@../css/styleUsuariosDark.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.unpsjb.poo.controller.ProductosVistaControlador">
 
-    <left>
-        <VBox alignment="TOP_CENTER" prefHeight="456.0" prefWidth="550.0" BorderPane.alignment="CENTER">
-            <children>
-                <HBox alignment="CENTER_LEFT" prefHeight="0.0" prefWidth="526.0">
-                    <children>
-                        <ImageView fitHeight="26.0" fitWidth="28.0" pickOnBounds="true" preserveRatio="true">
-                            <image>
-                                <Image url="@../images/lupa.png" />
-                            </image>
-                            <HBox.margin>
-                                <Insets bottom="5.0" left="5.0" top="5.0" />
-                            </HBox.margin>
-                        </ImageView>
-                        <TextField prefHeight="25.0" prefWidth="133.0">
-                            <HBox.margin>
-                                <Insets left="5.0" right="5.0" top="5.0" />
-                            </HBox.margin>
-                        </TextField>
-                    </children>
+    <!-- 🔹 Encabezado -->
+    <top>
+        <HBox alignment="CENTER" style="-fx-padding: 20;">
+            <Label style="-fx-font-size: 26px; -fx-text-fill: white; -fx-font-weight: bold;" text="Gestión de Productos" />
+        </HBox>
+    </top>
+
+    <!-- 🔹 Contenido central -->
+    <center>
+        <VBox alignment="CENTER" spacing="20">
+            <padding>
+                <Insets bottom="20" left="20" right="20" top="10" />
+            </padding>
+
+            <!-- Contenedor tipo tarjeta -->
+            <VBox alignment="CENTER" prefWidth="900" spacing="15" style="-fx-background-color: rgba(255,255,255,0.1);                          -fx-background-radius: 15;                          -fx-border-color: rgba(255,255,255,0.2);                          -fx-border-radius: 15;                          -fx-padding: 25;                          -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 15, 0.3, 0, 4);">
+
+                <!-- (Opcional) Barra de búsqueda -->
+                <HBox alignment="CENTER_RIGHT" prefWidth="820" spacing="10">
+                    <TextField fx:id="txtBuscar" prefWidth="300" promptText="Buscar por nombre o código" />
+                    <Button onAction="#buscarProductos" styleClass="btn-accion" text="Buscar" />
+                    <Button onAction="#limpiarBusqueda" styleClass="btn-secundario" text="Limpiar" />
                 </HBox>
 
-                <TableView fx:id="tablaProductos" prefHeight="456.0" prefWidth="526.0" VBox.vgrow="ALWAYS">
+                <!-- Tabla -->
+                <TableView fx:id="tablaProductos" prefHeight="360" prefWidth="820" style="-fx-background-color: transparent;">
                     <columns>
-                        <TableColumn fx:id="colCodigo" text="Codigo" />
-                        <TableColumn fx:id="colNombre" text="Nombre" />
-                        <TableColumn fx:id="colPrecio" text="Precio" />
-                        <TableColumn fx:id="colCantidad" text="Cantidad" />
-                        <TableColumn fx:id="colDescripcion" text="Descripción" />
-                        <TableColumn fx:id="colCategoria" text="Categoria" />
-                        <TableColumn fx:id="colFabricante" text="Fabricante" />
+                        <TableColumn fx:id="colCodigo" prefWidth="58.0" text="Código" />
+                        <TableColumn fx:id="colNombre" prefWidth="127.0" text="Nombre" />
+                        <TableColumn fx:id="colDescripcion" prefWidth="249.0" text="Descripción" />
+                        <TableColumn fx:id="colCategoria" prefWidth="124.0" text="Categoría" />
+                        <TableColumn fx:id="colFabricante" prefWidth="109.0" text="Fabricante" />
+                        <TableColumn fx:id="colPrecio" minWidth="0.0" prefWidth="67.0" text="Precio" />
+                        <TableColumn fx:id="colCantidad" prefWidth="57.0" text="Stock" />
+                  <TableColumn fx:id="colActivo" prefWidth="56.0" text="Activo" />
                     </columns>
                 </TableView>
-            </children>
+
+                <!-- Botones -->
+                <HBox alignment="CENTER" spacing="15">
+                    <Button onAction="#agregarProducto" styleClass="btn-accion" text="Agregar Producto" />
+               <Button fx:id="btnEliminarProducto" mnemonicParsing="false" onAction="#eliminarProducto" text="Eliminar Producto" />
+                    <Button onAction="#cambiarEstadoProducto" styleClass="btn-accion" text="Activar/Desactivar Producto" />
+                </HBox>
+            </VBox>
         </VBox>
-    </left>
-
-    <right>
-        <BorderPane prefHeight="456.0" prefWidth="401.0" BorderPane.alignment="CENTER">
-            <top>
-                <VBox alignment="TOP_CENTER" prefHeight="70.0" prefWidth="309.0" BorderPane.alignment="CENTER">
-                    <children>
-                        <Label text="Productos">
-                            <font>
-                                <Font name="System Bold" size="20.0" />
-                            </font>
-                        </Label>
-                        <HBox alignment="CENTER" prefHeight="41.0" prefWidth="303.0">
-                            <children>
-                                <Button fx:id="btnRegistrar" mnemonicParsing="false" onAction="#btnRegistrarAction" text="Registrar" />
-                                <Button fx:id="btnModificar" mnemonicParsing="false" onAction="#btnModificarAction" text="Modificar" />
-                                <Button fx:id="btnEliminar" mnemonicParsing="false" onAction="#btnEliminarAction" text="Eliminar" />
-                                <Button fx:id="btnCancelar" mnemonicParsing="false" onAction="#btnCancelarAction" text="Cancelar" />
-                            </children>
-                        </HBox>
-                    </children>
-                </VBox>
-            </top>
-
-            <center>
-                <VBox prefHeight="386.0" prefWidth="326.0" BorderPane.alignment="TOP_LEFT">
-                    <children>
-                        <Label text="Codigo">
-                            <font><Font name="System Bold" size="12.0" /></font>
-                            <VBox.margin><Insets left="1.0" /></VBox.margin>
-                        </Label>
-                        <TextField fx:id="txtCodigo">
-                            <VBox.margin><Insets left="1.0" right="5.0" /></VBox.margin>
-                        </TextField>
-
-                        <Label text="Nombre">
-                            <font><Font name="System Bold" size="12.0" /></font>
-                            <VBox.margin><Insets left="1.0" /></VBox.margin>
-                        </Label>
-                        <TextField fx:id="txtNombre">
-                            <VBox.margin><Insets left="1.0" right="5.0" /></VBox.margin>
-                        </TextField>
-
-                        <Label text="Precio">
-                            <font><Font name="System Bold" size="12.0" /></font>
-                            <VBox.margin><Insets left="1.0" /></VBox.margin>
-                        </Label>
-                        <TextField fx:id="txtPrecio">
-                            <VBox.margin><Insets left="1.0" right="5.0" /></VBox.margin>
-                        </TextField>
-
-                        <Label text="Cantidad">
-                            <font><Font name="System Bold" size="12.0" /></font>
-                            <VBox.margin><Insets left="1.0" /></VBox.margin>
-                        </Label>
-                        <TextField fx:id="txtCantidad">
-                            <VBox.margin><Insets left="1.0" right="5.0" /></VBox.margin>
-                        </TextField>
-
-                        <Label text="Descripcón">
-                            <font><Font name="System Bold" size="12.0" /></font>
-                            <VBox.margin><Insets left="1.0" /></VBox.margin>
-                        </Label>
-                        <TextField fx:id="txtDescripcion">
-                            <VBox.margin><Insets left="1.0" right="5.0" /></VBox.margin>
-                        </TextField>
-
-                        <Label text="Fabricante">
-                            <font><Font name="System Bold" size="12.0" /></font>
-                            <VBox.margin><Insets left="1.0" /></VBox.margin>
-                        </Label>
-                        <TextField fx:id="txtFabricante">
-                            <VBox.margin><Insets left="1.0" right="5.0" /></VBox.margin>
-                        </TextField>
-
-                        <HBox alignment="CENTER" prefHeight="37.0" prefWidth="309.0">
-                            <children>
-                                <ComboBox fx:id="cbCategoria" prefWidth="111.0" promptText="Categoria" />
-                                <Button fx:id="btnAgregarCategoria" mnemonicParsing="false" onAction="#AgregarCategoriaAction" prefHeight="20.0" prefWidth="28.0" text="+" />
-
-                                <ComboBox fx:id="cbFabricante" prefWidth="111.0" promptText="Fabricante" />
-                                <Button fx:id="btnAgregarFabricante" mnemonicParsing="false" onAction="#AgregarFabricanteAction" text="+" />
-                            </children>
-                        </HBox>
-                    </children>
-                </VBox>
-            </center>
-        </BorderPane>
-    </right>
+    </center>
 </BorderPane>

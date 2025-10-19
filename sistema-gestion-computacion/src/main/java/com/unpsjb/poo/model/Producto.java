@@ -11,12 +11,14 @@ public class Producto {
 	private String categoriaProducto;
 	private String fabricanteProducto;
 	private int codigoProducto;
+	private boolean estado; // Para borrarlo del sistema sin eliminarlo de la BD
+	private boolean activo; 
 	
 	public Producto() {
 	//Constructor por defecto, necesario para el metodo Read en el DAO	
 	}
 	
-	public Producto(int idProducto,String nombreProducto,String descripcionProducto,int stockProducto,BigDecimal precioProducto,String categoriaProducto,String fabricanteProducto,int codigoProducto) {
+	public Producto(int idProducto,String nombreProducto,String descripcionProducto,int stockProducto,BigDecimal precioProducto,String categoriaProducto,String fabricanteProducto,int codigoProducto, boolean estado) {
 		this.idProducto = idProducto;
 		this.nombreProducto = nombreProducto;
 		this.descripcionProducto = descripcionProducto;
@@ -25,7 +27,22 @@ public class Producto {
 		this.categoriaProducto = categoriaProducto;
 		this.fabricanteProducto = fabricanteProducto;
 		this.codigoProducto = codigoProducto;
+		this.estado = estado;
+		this.activo = activo;
 	}
+
+	// Constructor compatible con versiones anteriores (por defecto estado = true)
+	public Producto(int idProducto,String nombreProducto,String descripcionProducto,int stockProducto,BigDecimal precioProducto,String categoriaProducto,String fabricanteProducto,int codigoProducto) {
+		this(idProducto, nombreProducto, descripcionProducto, stockProducto, precioProducto, categoriaProducto, fabricanteProducto, codigoProducto, true);
+	}
+
+		public boolean isEstado() {
+				return estado;
+		}
+
+		public void setEstado(boolean estado) {
+				this.estado = estado;
+		}
 
 	
 public int getIdProducto() {
@@ -96,6 +113,14 @@ public int getCodigoProducto() {
 
 public void setCodigoProducto (int codigoProducto) {
 	this.codigoProducto = codigoProducto;
+}
+
+public boolean isActivo() {
+	return activo;
+}
+
+public void setActivo(boolean activo) {
+	this.activo = activo;
 }
 
 

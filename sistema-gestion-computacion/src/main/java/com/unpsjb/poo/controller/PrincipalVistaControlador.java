@@ -70,7 +70,7 @@ public class PrincipalVistaControlador implements Initializable {
     @FXML
     private void productosAction(ActionEvent event) {
         Node view = loadView("/view/productosVista.fxml");
-        openInternal("Productos", view, 800, 500);
+        openInternal("Productos", view, 1000, 500);
     }
 
     @FXML private void clientesAction(ActionEvent event) {}

@@ -13,7 +13,7 @@ public class EstadoDatosFactura implements EstadoVenta {
             return;  // Esto bloquea el avance
         }
 
-        venta.setEstado(new EstadoConfirmacionPago());
+        //venta.setEstado(new EstadoConfirmacionPago());
 }
 
     @Override

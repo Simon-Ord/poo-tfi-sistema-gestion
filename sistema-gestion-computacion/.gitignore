@@ -72,4 +72,6 @@ Thumbs.db
 Desktop.ini
 # Linux
 *~
+# Ignorar configuraciones locales
+src/main/resources/config.properties
 

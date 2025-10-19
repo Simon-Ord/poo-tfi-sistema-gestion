@@ -16,7 +16,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.stage.Stage;
 
-public class UsuariosController {
+public class UsuariosVistaControlador {
 
     @FXML private TableView<Usuario> tablaUsuarios;
     @FXML private TableColumn<Usuario, String> colDni;
