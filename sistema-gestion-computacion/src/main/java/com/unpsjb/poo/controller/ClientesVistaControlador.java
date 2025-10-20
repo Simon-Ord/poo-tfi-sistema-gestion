@@ -1,22 +1,16 @@
 package com.unpsjb.poo.controller;
 
-import java.io.IOException;
+import java.util.List;
 
 import com.unpsjb.poo.model.Cliente;
+import com.unpsjb.poo.persistence.dao.impl.ClienteDAOImpl;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
-
-
 
 public class ClientesVistaControlador {
 
@@ -28,66 +22,83 @@ public class ClientesVistaControlador {
     @FXML private TableColumn<Cliente, String> colEmail;
     @FXML private TableColumn<Cliente, String> colTipo;
 
+    private final ClienteDAOImpl clienteDAO = new ClienteDAOImpl();
     private final ObservableList<Cliente> listaClientes = FXCollections.observableArrayList();
 
     @FXML
     public void initialize() {
-        // Vincular columnas con atributos del modelo Cliente
+        // Vincular columnas
         colId.setCellValueFactory(data -> new javafx.beans.property.SimpleObjectProperty<>(data.getValue().getId()));
         colNombre.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getNombre()));
         colCuit.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getCuit()));
         colTelefono.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getTelefono()));
         colEmail.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getEmail()));
-        colTipo.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(
-                data.getValue().esConsumidorFinal() ? "Consumidor Final" : "Responsable Inscripto"));
+        colTipo.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getTipo()));
 
-        // Cargar datos de prueba o desde DAO
-        cargarClientesDemo();
+        cargarClientesDesdeBD();
+    }
+
+    private void cargarClientesDesdeBD() {
+        listaClientes.clear();
+        List<Cliente> clientesBD = clienteDAO.obtenerTodos();
+        listaClientes.addAll(clientesBD);
         tablaClientes.setItems(listaClientes);
     }
 
-    private void cargarClientesDemo() {
-        listaClientes.addAll(
-            new Cliente(1, "Juan Pérez", "20123456789", "2975001111", "Calle 1", "juan@mail.com", "Responsable Inscripto"),
-            new Cliente(2, "María López", null, "2974223344", "Calle 2", "maria@mail.com", "Consumidor Final"),
-            new Cliente(3, "Carlos Gómez", "27333444555", "2974332211", "Calle 3", "carlos@mail.com", "Monotributista")
-);
+    // Botón: Agregar cliente
+    @FXML
+    private void agregarCliente() {
+        try {
+            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/view/ClienteForm.fxml"));
+            javafx.scene.Parent root = loader.load();
 
+            javafx.stage.Stage stage = new javafx.stage.Stage();
+            stage.setTitle("Agregar Cliente");
+            stage.setScene(new javafx.scene.Scene(root));
+            stage.showAndWait();
+
+            // 🔁 Refrescar después de cerrar el formulario
+            cargarClientesDesdeBD();
+
+        } catch (Exception e) {
+            mostrarAlerta("No se pudo abrir el formulario de cliente: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
 
-    // Botón: Agregar cliente
+    // Botón: Editar cliente
    @FXML
-private void agregarCliente() {
-    try {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/ClienteForm.fxml"));
-        Parent root = loader.load();
+private void editarCliente() {
+    Cliente seleccionado = tablaClientes.getSelectionModel().getSelectedItem();
+    if (seleccionado == null) {
+        mostrarAlerta("Debe seleccionar un cliente para editar.");
+        return;
+    }
 
-        Stage stage = new Stage();
-        stage.setTitle("Agregar Cliente");
-        stage.setScene(new Scene(root));
-        stage.initModality(Modality.APPLICATION_MODAL); // bloquea ventana principal
+    try {
+        // Cargar el formulario
+        javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/view/ClienteForm.fxml"));
+        javafx.scene.Parent root = loader.load();
+
+        // Obtener el controlador del formulario
+        ClienteFormularioVistaControlador controlador = loader.getController();
+        controlador.setClienteEditable(seleccionado); // ⚡ Le pasamos el cliente seleccionado
+
+        // Mostrar ventana
+        javafx.stage.Stage stage = new javafx.stage.Stage();
+        stage.setTitle("Editar Cliente");
+        stage.setScene(new javafx.scene.Scene(root));
         stage.showAndWait();
 
-        // 🔁 Si más adelante cargamos desde la BD, esto refrescará la tabla:
-        // cargarClientesDesdeBD();
+        // Refrescar la tabla
+        cargarClientesDesdeBD();
 
-    } catch (IOException e) {
+    } catch (Exception e) {
+        mostrarAlerta("No se pudo abrir el formulario de edición: " + e.getMessage());
         e.printStackTrace();
-        mostrarAlerta("No se pudo abrir el formulario de cliente: " + e.getMessage());
     }
 }
 
-
-    // Botón: Editar cliente
-    @FXML
-    private void editarCliente() {
-        Cliente seleccionado = tablaClientes.getSelectionModel().getSelectedItem();
-        if (seleccionado == null) {
-            mostrarAlerta("Debe seleccionar un cliente para editar.");
-            return;
-        }
-        System.out.println("Editar cliente: " + seleccionado.getNombre());
-    }
 
     // Botón: Eliminar cliente
     @FXML
@@ -97,7 +108,13 @@ private void agregarCliente() {
             mostrarAlerta("Debe seleccionar un cliente para eliminar.");
             return;
         }
-        listaClientes.remove(seleccionado);
+        boolean eliminado = clienteDAO.eliminar(seleccionado.getId());
+        if (eliminado) {
+            mostrarAlerta("Cliente eliminado correctamente.");
+            cargarClientesDesdeBD();
+        } else {
+            mostrarAlerta("No se pudo eliminar el cliente.");
+        }
     }
 
     private void mostrarAlerta(String mensaje) {

@@ -22,47 +22,51 @@ public class ClienteFormularioVistaControlador {
     @FXML private Button btnCancelar;
 
     private final ClienteDAOImpl clienteDAO = new ClienteDAOImpl();
+    private Cliente clienteEditable = null; // ⚡ si es null = modo agregar, si no = editar
 
     @FXML
-    private void initialize() {
-        cbTipoCliente.getItems().addAll(
-            "Consumidor Final",
-            "Monotributista",
-            "Responsable Inscripto"
-        );
-        cbTipoCliente.setValue("Consumidor Final");
+    public void initialize() {
+        cbTipoCliente.getItems().addAll("Consumidor Final", "Responsable Inscripto", "Monotributista");
     }
 
     @FXML
     private void guardarCliente() {
         try {
-            Cliente nuevo = new Cliente();
-            nuevo.setNombre(txtNombre.getText());
-            nuevo.setCuit(txtCuit.getText());
-            nuevo.setTelefono(txtTelefono.getText());
-            nuevo.setDireccion(txtDireccion.getText());
-            nuevo.setEmail(txtEmail.getText());
-            nuevo.setTipo(cbTipoCliente.getValue());
+            if (clienteEditable == null) {
+                // === MODO AGREGAR ===
+                Cliente nuevo = new Cliente();
+                nuevo.setNombre(txtNombre.getText());
+                nuevo.setCuit(txtCuit.getText());
+                nuevo.setTelefono(txtTelefono.getText());
+                nuevo.setDireccion(txtDireccion.getText());
+                nuevo.setEmail(txtEmail.getText());
+                nuevo.setTipo(cbTipoCliente.getValue());
 
-            boolean exito = clienteDAO.insertar(nuevo);
-
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Agregar Cliente");
-            alert.setHeaderText(null);
-
-            if (exito) {
-                alert.setContentText("✅ Cliente guardado correctamente en la base de datos.");
+                if (clienteDAO.insertar(nuevo)) {
+                    mostrarAlerta("Cliente guardado correctamente.");
+                } else {
+                    mostrarAlerta("No se pudo guardar el cliente.");
+                }
             } else {
-                alert.setContentText("⚠️ No se pudo guardar el cliente. Revisá la conexión o los datos.");
+                // === MODO EDITAR ===
+                clienteEditable.setNombre(txtNombre.getText());
+                clienteEditable.setCuit(txtCuit.getText());
+                clienteEditable.setTelefono(txtTelefono.getText());
+                clienteEditable.setDireccion(txtDireccion.getText());
+                clienteEditable.setEmail(txtEmail.getText());
+                clienteEditable.setTipo(cbTipoCliente.getValue());
+
+                if (clienteDAO.modificar(clienteEditable)) {
+                    mostrarAlerta("Cliente actualizado correctamente.");
+                } else {
+                    mostrarAlerta("No se pudo actualizar el cliente.");
+                }
             }
 
-            alert.showAndWait();
             cerrarVentana();
 
-        } catch (IllegalArgumentException e) {
-            mostrarAlerta("Error en los datos: " + e.getMessage());
         } catch (Exception e) {
-            mostrarAlerta("Error inesperado: " + e.getMessage());
+            mostrarAlerta("Error al guardar: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -78,10 +82,24 @@ public class ClienteFormularioVistaControlador {
     }
 
     private void mostrarAlerta(String mensaje) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Gestión de Clientes");
         alert.setHeaderText(null);
         alert.setContentText(mensaje);
         alert.showAndWait();
+    }
+
+    // 🔹 Método para precargar datos cuando se edita un cliente
+    public void setClienteEditable(Cliente cliente) {
+        this.clienteEditable = cliente;
+
+        txtNombre.setText(cliente.getNombre());
+        txtCuit.setText(cliente.getCuit());
+        txtTelefono.setText(cliente.getTelefono());
+        txtDireccion.setText(cliente.getDireccion());
+        txtEmail.setText(cliente.getEmail());
+        cbTipoCliente.setValue(cliente.getTipo());
+
+        btnGuardar.setText("Guardar Cambios");
     }
 }
