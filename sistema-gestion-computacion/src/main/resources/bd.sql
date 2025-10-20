@@ -28,15 +28,27 @@ CREATE TABLE clientes (
 -- 📦  TABLA DE PRODUCTOS
 -- =============================================================
 CREATE TABLE productos (
-    id SERIAL PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL,
-    descripcion VARCHAR(255),
-    precio DECIMAL(10,2) NOT NULL,
-    stock INT DEFAULT 0,
+    id_producto SERIAL PRIMARY KEY,
+    nombre_producto VARCHAR(100) NOT NULL,
+    descripcion_producto TEXT,
+    stock_producto INT NOT NULL DEFAULT 0,
+    precio_producto NUMERIC(10,2) NOT NULL,
+    categoria_producto VARCHAR(50),
+    fabricante_producto VARCHAR(100),
+    codigo_producto INT UNIQUE NOT NULL,
     estado BOOLEAN DEFAULT TRUE,
-    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    activo BOOLEAN DEFAULT TRUE
 );
-
+-- Insertar productos de ejemplo
+INSERT INTO productos (nombre_producto, descripcion_producto, stock_producto, precio_producto, categoria_producto, fabricante_producto, codigo_producto, estado, activo)
+VALUES
+('Laptop XYZ', 'Laptop de alta gama con 16GB RAM y 512GB SSD', 10, 1200.00, 'Electrónica', 'TechCorp', 1001, TRUE, TRUE),
+('Smartphone ABC', 'Smartphone con cámara de 48MP y pantalla OLED', 25, 800.00, 'Electrónica', 'PhoneMakers', 1002, TRUE, TRUE),
+('Auriculares Inalámbricos', 'Auriculares con cancelación de ruido y Bluetooth 5.0', 50, 150.00, 'Accesorios', 'SoundWave', 1003, TRUE, TRUE),
+('Monitor 4K Ultra HD', 'Monitor de 27 pulgadas con resolución 4K y HDR', 15, 400.00, 'Electrónica', 'DisplayTech', 1004, TRUE, TRUE),
+('Teclado Mecánico RGB', 'Teclado mecánico con retroiluminación RGB y switches táctiles', 30, 100.00, 'Accesorios', 'KeyMasters', 1005, TRUE, TRUE);
+-- VERIFICAR CONTENIDO DE LA TABLA
+SELECT * FROM productos;
 -- =============================================================
 -- 💰  TABLA DE FACTURAS (simplificada)
 -- =============================================================
@@ -54,7 +66,7 @@ CREATE TABLE facturas (
 CREATE TABLE detalle_factura (
     id SERIAL PRIMARY KEY,
     factura_id INT,
-    producto_id INT,
+    id_producto INT,
     cantidad INT NOT NULL,
     precio_unitario DECIMAL(10,2) NOT NULL,
     subtotal DECIMAL(12,2) NOT NULL,
@@ -89,31 +101,8 @@ VALUES
 SELECT * FROM usuarios;
 
 
-------------------------
--- TABLA DE PRODUCTOS --
-------------------------
-CREATE TABLE productos (
-    id_producto SERIAL PRIMARY KEY,
-    nombre_producto VARCHAR(100) NOT NULL,
-    descripcion_producto TEXT,
-    stock_producto INT NOT NULL DEFAULT 0,
-    precio_producto NUMERIC(10,2) NOT NULL,
-    categoria_producto VARCHAR(50),
-    fabricante_producto VARCHAR(100),
-    codigo_producto INT UNIQUE NOT NULL,
-    estado BOOLEAN DEFAULT TRUE,
-    activo BOOLEAN DEFAULT TRUE
-);
--- Insertar productos de ejemplo
-INSERT INTO productos (nombre_producto, descripcion_producto, stock_producto, precio_producto, categoria_producto, fabricante_producto, codigo_producto, estado, activo)
-VALUES
-('Laptop XYZ', 'Laptop de alto rendimiento', 10, 1500.00, 'Computadoras', 'TechCorp', 1001, TRUE, TRUE),
-('Mouse Inalámbrico', 'Mouse ergonómico inalámbrico', 50, 25.99, 'Periféricos', 'GadgetPro', 1002, TRUE, TRUE),
-('Teclado Mecánico', 'Teclado mecánico retroiluminado', 30, 75.50, 'Periféricos', 'KeyMasters', 1003, TRUE, TRUE);
 
--- VERIFICAR CONTENIDO DE LA TABLA
-SELECT * FROM productos;
-VALUES ('12345678', 'Admin User', 'admin', 'admin', 'ADMINISTRADOR', TRUE);
+
 
 -- =============================================================
 -- ✅  TRIGGERS DE AUDITORÍA OPCIONALES (para automatizar)
