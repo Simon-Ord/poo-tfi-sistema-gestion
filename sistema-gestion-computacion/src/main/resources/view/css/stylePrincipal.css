@@ -86,7 +86,7 @@
     -fx-background-radius: 5;
 }
 .scroll-bar .thumb:hover {
-    -fx-background-color: #6d8cff;
+    -fx-background-color: #000c36;
 }
 
 /* ========== IMÁGENES Y ICONOS ========== */

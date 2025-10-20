@@ -1,3 +1,5 @@
+/*
+
 package com.unpsjb.poo.model;
 
 public class EstadoDatosFactura implements EstadoVenta {
@@ -33,3 +35,4 @@ public class EstadoDatosFactura implements EstadoVenta {
 
     
 }
+ */

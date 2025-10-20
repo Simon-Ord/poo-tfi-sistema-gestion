@@ -22,6 +22,8 @@ public class ProductoDAOImpl implements DAO<Producto> {
             (nombre_producto, descripcion_producto, stock_producto, precio_producto, categoria_producto, fabricante_producto, codigo_producto, estado, activo)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
             """;
+        // Nota: La columna 'id' (código_producto) es SERIAL, se genera sola. No se debe incluir aquí.
+        // Si tienes una columna 'codigo' separada de 'id', debes incluirla. Asumo que usas 'id' como código.
         try (Connection conexion = GestorDeConexion.getInstancia().getConexion();
              PreparedStatement pstmt = conexion.prepareStatement(sql)) {
 
@@ -45,11 +47,12 @@ public class ProductoDAOImpl implements DAO<Producto> {
     }
 
     // ================================
-    //  Leer producto por ID
+    //  Leer producto por ID
     // ================================
     @Override
     public Optional<Producto> read(int id) {
-        String sql = "SELECT * FROM productos WHERE id_producto = ?";
+        // COLUMNA CORREGIDA: Usando 'id' en lugar de 'id_producto'
+        String sql = "SELECT * FROM productos WHERE id = ?"; 
         Producto producto = null;
         try (Connection conexion = GestorDeConexion.getInstancia().getConexion();
              PreparedStatement pstmt = conexion.prepareStatement(sql)) {
@@ -67,7 +70,7 @@ public class ProductoDAOImpl implements DAO<Producto> {
     }
 
     // ================================
-    //  Actualizar producto
+    //  Actualizar producto
     // ================================
     @Override
     public boolean update (Producto producto) {
@@ -77,6 +80,8 @@ public class ProductoDAOImpl implements DAO<Producto> {
                 categoria_producto = ?, fabricante_producto = ?, codigo_producto = ?, estado = ?, activo = ?
             WHERE id_producto = ?
             """;
+        // Nota: Si 'codigo_producto' es el mismo que 'id', no tiene sentido actualizarlo
+        // SET nombre = ?, ..., id = ? (solo si el id no es la PK). Asumo que actualizas por id.
         try (Connection conexion = GestorDeConexion.getInstancia().getConexion();
              PreparedStatement pstmt = conexion.prepareStatement(sql)) {
 
@@ -167,7 +172,7 @@ public boolean reactivar(int id) {
     }
 }
     // ---------------------------
-    // Método auxiliar de mapeo 
+    // Método auxiliar de mapeo - ¡CORREGIDO!
     // ---------------------------
     private Producto mapResultSet(ResultSet rs) throws SQLException {
         Producto p = new Producto();

@@ -76,23 +76,25 @@ public class PrincipalVistaControlador implements Initializable {
     @FXML private void clientesAction(ActionEvent event) {}
     @FXML private void facturarAction(ActionEvent event) {}
 
-   // --- Reportes ---
+@FXML
+    private void reportesAction(ActionEvent event) {
+        try {
+            // Carga manual del FXML y obtención del controlador. 
+            // La ruta DEBE coincidir con el recurso empaquetado.
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/reportesView.fxml"));
+            Node view = loader.load();
+            
+            // Asumiendo que tu controlador se llama ReportesControlador.java
+            ReportesControlador controller = loader.getController(); 
 
-   @FXML
-private void reportesAction(ActionEvent event) {
-    try {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/reportesView.fxml"));
-        Node view = loader.load();
-        ReportesController controller = loader.getController();
+            openInternal("Reportes del Sistema", view, 900, 600);
 
-        openInternal("Reportes del Sistema", view, 900, 600);
-
-    } catch (Exception e) {
-        e.printStackTrace();
-        new Alert(Alert.AlertType.ERROR, "Error al abrir reportes: " + e.getMessage()).showAndWait();
+        } catch (Exception e) {
+            // ESTE ES EL CATCH QUE MUESTRA EL ERROR QUE VISTE
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Error al abrir reportes: " + e.getMessage()).showAndWait();
+        }
     }
-}
-
 
     
 

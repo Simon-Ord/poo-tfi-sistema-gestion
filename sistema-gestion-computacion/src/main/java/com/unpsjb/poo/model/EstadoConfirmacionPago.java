@@ -1,4 +1,4 @@
-package com.unpsjb.poo.model;
+/*package com.unpsjb.poo.model;
 
 public class EstadoConfirmacionPago implements EstadoVenta {
 
@@ -23,3 +23,4 @@ public class EstadoConfirmacionPago implements EstadoVenta {
         return "ConfirmacionPagoVista";
     }
 }
+*/

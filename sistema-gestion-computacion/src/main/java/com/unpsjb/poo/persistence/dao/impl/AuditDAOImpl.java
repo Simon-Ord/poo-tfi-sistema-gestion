@@ -5,7 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 
 import com.unpsjb.poo.persistence.GestorDeConexion;
-public class AuditDAO {
+public class AuditDAOImpl {
 
     public static boolean logEvent(String username, String action, String entity,
                                    String entityId, String details) {

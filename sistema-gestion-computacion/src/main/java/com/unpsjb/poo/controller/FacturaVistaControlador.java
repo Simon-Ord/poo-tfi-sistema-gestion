@@ -1,3 +1,5 @@
+/****
+
 package com.unpsjb.poo.controller;
 
 import java.net.URL;
@@ -45,13 +47,15 @@ public class FacturaVistaControlador implements Initializable {
         actualizarVisibilidadVistas(miVenta.getEstadoActual().getVistaID());
     }
     
+ /*
     // --- Lógica de la Vista ---
 
-    /**
+    /*
      * Muestra la vista FXML que corresponde al ID devuelto por el Estado.
      * @param nuevaVistaID El ID de la vista (ej: "FacturaAgregarProductos.fxml")
      */
-    public void actualizarVisibilidadVistas(String nuevaVistaID) {
+   /* 
+     public void actualizarVisibilidadVistas(String nuevaVistaID) {
         // 1. Ocultar todas las vistas
         for (Node view : vistaMap.values()) {
             view.setVisible(false);
@@ -71,7 +75,13 @@ public class FacturaVistaControlador implements Initializable {
     /**
      * Llamado por el botón "Siguiente" en el BorderPane.
      */
-    @FXML
+    
+    
+    /* 
+    
+    
+    
+     @FXML
     public void handleSiguientePaso() {
         // 1. El Modelo (Venta) avanza de estado y ejecuta la lógica de validación
         miVenta.siguientePaso(); 
@@ -83,7 +93,7 @@ public class FacturaVistaControlador implements Initializable {
     
     /**
      * Llamado por el botón "Atrás" en el BorderPane.
-     */
+     *//* 
     @FXML
     public void handleVolverPaso() {
         // En este caso, asumiremos que Venta tiene un método para retroceder
@@ -97,7 +107,7 @@ public class FacturaVistaControlador implements Initializable {
 
     /**
      * Llamado por el botón "Cancelar Venta" en el BorderPane.
-     */
+     *
     @FXML
     public void handleCancelarVenta() {
         // Aquí puedes reiniciar el proceso o simplemente cerrar la vista de facturación
@@ -117,4 +127,3 @@ public class FacturaVistaControlador implements Initializable {
     
     // NOTA: Los métodos para AGREGAR PRODUCTOS van en el código del archivo 
     // FacturaAgregarProductosController, si decides separarlo, o aquí mismo.
-}
