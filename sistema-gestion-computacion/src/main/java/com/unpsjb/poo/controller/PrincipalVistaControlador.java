@@ -17,14 +17,14 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
-// 🟩 Importaciones nuevas para la auditoría y sesión
+//  Importaciones nuevas para la auditoría y sesión
 import com.unpsjb.poo.model.EventoAuditoria;
 import com.unpsjb.poo.persistence.dao.ReportesDAO;
 import com.unpsjb.poo.util.Sesion;
 
 public class PrincipalVistaControlador implements Initializable {
 
-    private final ReportesDAO reportesDAO = new ReportesDAO(); // 🟩 Para registrar el evento de cierre de sesión
+    private final ReportesDAO reportesDAO = new ReportesDAO(); //  Para registrar el evento de cierre de sesión
 
     @FXML private Pane desktop;
     @FXML private Button btnUsuarios;
@@ -88,19 +88,7 @@ public class PrincipalVistaControlador implements Initializable {
         openInternal("Productos", view, 1000, 500);
     }
 
-    @FXML
-    private void clientesAction(ActionEvent event) {
-        try {
-            Node view = loadView("/view/ClientesView.fxml");
-            openInternal("Gestión de Clientes", view, 800, 500);
-        } catch (Exception e) {
-            e.printStackTrace();
-            new Alert(Alert.AlertType.ERROR, "Error al abrir la gestión de clientes: " + e.getMessage()).showAndWait();
-        }
-}
-
-
-
+    @FXML private void clientesAction(ActionEvent event) {}
     @FXML private void facturarAction(ActionEvent event) {}
 
     @FXML
@@ -124,7 +112,7 @@ public class PrincipalVistaControlador implements Initializable {
     @FXML
     private void cerrarSesionAction(ActionEvent event) {
         try {
-            // 🟩 BLOQUE NUEVO: Registrar evento de auditoría
+            //  BLOQUE NUEVO: Registrar evento de auditoría
             if (Sesion.getUsuarioActual() != null) {
                 try {
                     EventoAuditoria evento = new EventoAuditoria();
@@ -134,7 +122,7 @@ public class PrincipalVistaControlador implements Initializable {
                     evento.setDetalles("El usuario " + Sesion.getUsuarioActual().getNombre() + " cerró sesión.");
                     reportesDAO.registrarEvento(evento);
                 } catch (Exception ex) {
-                    System.err.println("⚠️ Error al registrar el cierre de sesión: " + ex.getMessage());
+                    System.err.println(" Error al registrar el cierre de sesión: " + ex.getMessage());
                 }
             }
 
