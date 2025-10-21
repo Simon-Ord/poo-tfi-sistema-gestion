@@ -1,12 +1,14 @@
 package com.unpsjb.poo.controller;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import com.unpsjb.poo.model.Producto;
+import com.unpsjb.poo.model.EventoAuditoria;
 import com.unpsjb.poo.persistence.dao.impl.ProductoDAOImpl;
+import com.unpsjb.poo.persistence.dao.ReportesDAO;
+import com.unpsjb.poo.util.Sesion;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -19,13 +21,16 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class ProductosVistaControlador {
 
-    // ====== VISTA (IDs deben coincidir con el FXML) ======
     @FXML private TableView<Producto> tablaProductos;
+    @FXML private TableColumn<Producto, Integer> colCodigo;
+    @FXML private TableColumn<Producto, String> colNombre;
+    @FXML private TableColumn<Producto, String> colDescripcion;
+    @FXML private TableColumn<Producto, String> colCategoria;
+    @FXML private TableColumn<Producto, String> colFabricante;
     @FXML private TableColumn<Producto, Integer> colCodigo;
     @FXML private TableColumn<Producto, String> colNombre;
     @FXML private TableColumn<Producto, String> colDescripcion;
@@ -34,12 +39,12 @@ public class ProductosVistaControlador {
     @FXML private TableColumn<Producto, BigDecimal> colPrecio;
     @FXML private TableColumn<Producto, Integer> colCantidad;
 
-    // barra de búsqueda del FXML nuevo
     @FXML private TextField txtBuscar;
     // Checkbox para mostrar productos inactivos
     @FXML private CheckBox chBoxInactivos;
 
     private final ProductoDAOImpl productoDAO = new ProductoDAOImpl();
+    private final ReportesDAO reportesDAO = new ReportesDAO(); //  NUEVO: para registrar auditorías
     private ObservableList<Producto> backingList = FXCollections.observableArrayList();
 
     @FXML
@@ -100,6 +105,9 @@ public class ProductosVistaControlador {
         cargarProductos();
     }
 
+    // ==========================
+    // ➕ AGREGAR PRODUCTO
+    // ==========================
     @FXML
     private void agregarProducto() {
         try {
@@ -111,6 +119,10 @@ public class ProductosVistaControlador {
             stage.setResizable(false);
             stage.showAndWait();
             cargarProductos();
+
+            //  REGISTRO DE AUDITORÍA
+            registrarEvento("AGREGAR PRODUCTO", "Producto", "Se agregó un nuevo producto al sistema");
+
         } catch (Exception e) {
             e.printStackTrace();
             mostrarAlerta("Error al abrir el formulario: " + e.getMessage());
@@ -184,6 +196,3 @@ public class ProductosVistaControlador {
         alert.showAndWait();
     }
 }
-
-
-

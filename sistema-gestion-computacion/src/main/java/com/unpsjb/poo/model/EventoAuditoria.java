@@ -16,8 +16,7 @@ public class EventoAuditoria {
     private String entidad;             // Entidad afectada (usuarios, productos, etc.)
     private String idEntidad;           // ID de la entidad afectada
     private String detalles;            // Descripción del evento
-    private String ip;                  // Dirección IP del usuario
-    private String severidad;           // Nivel de severidad (INFO, WARNING, ERROR)
+
 
     // --- Getters y Setters ---
     public long getId() { return id; }
@@ -41,12 +40,6 @@ public class EventoAuditoria {
     public String getDetalles() { return detalles; }
     public void setDetalles(String detalles) { this.detalles = detalles; }
 
-    public String getIp() { return ip; }
-    public void setIp(String ip) { this.ip = ip; }
-
-    public String getSeveridad() { return severidad; }
-    public void setSeveridad(String severidad) { this.severidad = severidad; }
-
     @Override
     public String toString() {
         return "EventoAuditoria{" +
@@ -57,8 +50,6 @@ public class EventoAuditoria {
                 ", entidad='" + entidad + '\'' +
                 ", idEntidad='" + idEntidad + '\'' +
                 ", detalles='" + detalles + '\'' +
-                ", ip='" + ip + '\'' +
-                ", severidad='" + severidad + '\'' +
                 '}';
     }
 }

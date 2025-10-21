@@ -62,8 +62,6 @@ public class ReportesControlador {
         try {
             java.net.URL cssUrl = getClass().getResource("/css/reportes.css");
             if (cssUrl == null) {
-                 System.out.println(" No se encontró el CSS de reportes. Ruta esperada: src/main/resources/css/reportes.css");
-            } else {
                  // Si la Scene está disponible, intenta aplicar el CSS
                  if (tablaReportes.getScene() != null) {
                      tablaReportes.getScene().getStylesheets().add(cssUrl.toExternalForm());

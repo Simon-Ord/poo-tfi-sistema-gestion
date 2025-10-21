@@ -1,7 +1,10 @@
 package com.unpsjb.poo.controller;
 
 import com.unpsjb.poo.model.Usuario;
+import com.unpsjb.poo.model.EventoAuditoria;
 import com.unpsjb.poo.persistence.dao.impl.UsuarioDAOImpl;
+import com.unpsjb.poo.persistence.dao.ReportesDAO;
+import com.unpsjb.poo.util.Sesion;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -19,6 +22,7 @@ public class CambioDatosController {
     @FXML private PasswordField txtNuevaContrasena;
 
     private final UsuarioDAOImpl usuarioDAO = new UsuarioDAOImpl();
+    private final ReportesDAO reportesDAO = new ReportesDAO(); //  Agregado para registrar eventos
 
     @FXML
     private void guardarCambios() {
@@ -60,10 +64,31 @@ public class CambioDatosController {
             boolean ok = usuarioDAO.modificar(user);
 
             if (ok) {
-                mostrarAlerta(" Datos actualizados correctamente.");
+                mostrarAlerta("Datos actualizados correctamente.");
+
+                //  NUEVO BLOQUE: Registrar evento de auditoría
+                try {
+                    String nombreLogueado = (Sesion.getUsuarioActual() != null)
+                            ? Sesion.getUsuarioActual().getNombre()
+                            : "Sistema";
+
+                    EventoAuditoria evento = new EventoAuditoria();
+                    evento.setUsuario(nombreLogueado); //  guarda el nombre y apellido del usuario logueado
+                    evento.setAccion("MODIFICAR DATOS");
+                    evento.setEntidad("usuario");
+                    evento.setDetalles("El usuario modificó sus datos personales.");
+                    
+                    //  Se registra el evento en la BD
+                    reportesDAO.registrarEvento(evento);
+
+                } catch (Exception e) {
+                    System.err.println("Error al registrar evento de auditoría: " + e.getMessage());
+                }
+
                 cerrarVentana();
+
             } else {
-                mostrarAlerta(" Error al actualizar los datos.");
+                mostrarAlerta("Error al actualizar los datos.");
             }
 
         } catch (Exception e) {
