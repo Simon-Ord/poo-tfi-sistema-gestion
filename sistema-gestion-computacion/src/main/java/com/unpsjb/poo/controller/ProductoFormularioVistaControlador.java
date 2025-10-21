@@ -27,24 +27,31 @@ public class ProductoFormularioVistaControlador {
     @FXML private CheckBox chkActivo;
 
     private final ProductoDAOImpl productoDAO = new ProductoDAOImpl();
-<<<<<<< HEAD
-    private final ReportesDAO reportesDAO = new ReportesDAO(); // 🟢 Nuevo: para registrar eventos de auditoría
+    private final ReportesDAO reportesDAO = new ReportesDAO(); // Nuevo: para registrar eventos de auditoría
     private Producto editing; // null = alta
-=======
-    private Producto productoAEditar;
->>>>>>> 96994ef3a83f7c6aad22d560e4f2fadd36b1ae55
 
     @FXML
     private void initialize() {
-        // HAY QUE CAMBIAR ESTO, CREANDO NUEVAS TABLAS DE CATEGORIAS Y FABRICANTES
         cbCategoria.getItems().addAll("Periféricos", "Monitores", "Almacenamiento", "Componentes", "Otros");
         cbFabricante.getItems().addAll("Logitech", "Redragon", "Kingston", "Samsung", "Otros");
         chkActivo.setSelected(true); // Por defecto, el nuevo producto está activo
     }
-    // Guardar producto (crear o actualizar)
+
+    public void setProducto(Producto p) {
+        this.editing = p;
+        if (p != null) {
+            txtCodigo.setText(String.valueOf(p.getCodigoProducto()));
+            txtNombre.setText(p.getNombreProducto());
+            txtDescripcion.setText(p.getDescripcionProducto());
+            cbCategoria.setValue(p.getCategoriaProducto());
+            cbFabricante.setValue(p.getFabricanteProducto());
+            txtPrecio.setText(p.getPrecioProducto() != null ? p.getPrecioProducto().toPlainString() : "");
+            txtStock.setText(String.valueOf(p.getStockProducto()));
+        }
+    }
+
     @FXML
     private void guardarProducto() {
-<<<<<<< HEAD
         try {
             if (txtCodigo.getText().isEmpty() || txtNombre.getText().isEmpty()
                     || txtPrecio.getText().isEmpty() || txtStock.getText().isEmpty()
@@ -68,7 +75,7 @@ public class ProductoFormularioVistaControlador {
 
             if (ok) {
                 mostrarAlerta("Producto agregado correctamente.");
-                registrarEventoAuditoria(nuevo); // 🟢 Nuevo: registra en la tabla auditoria quién lo hizo
+                registrarEventoAuditoria(nuevo); //  Nuevo: registra en la tabla auditoria quién lo hizo
                 cerrarVentana();
             } else {
                 mostrarAlerta("Error al guardar el producto. Revisa la consola para más detalles.");
@@ -85,110 +92,20 @@ public class ProductoFormularioVistaControlador {
         cerrarVentana();
     }
 
-=======
-    try {
-        // Validar campos obligatorios
-        if (txtCodigo.getText().isEmpty() || txtNombre.getText().isEmpty()
-                || txtPrecio.getText().isEmpty() || txtStock.getText().isEmpty()
-                || cbCategoria.getValue() == null || cbFabricante.getValue() == null) {
-            mostrarAlerta("Todos los campos son obligatorios.");
-            return;
-        }
-        boolean ok;
-        if (productoAEditar != null) {
-            // ====== EDITAR ======
-            setProducto(productoAEditar);           
-            ok = productoDAO.update(productoAEditar); 
-            if (ok) {
-                mostrarAlerta("Producto actualizado correctamente.");
-                cerrarVentana();
-            } else {
-                mostrarAlerta("Error al actualizar el producto. Revisá la consola.");
-            }
-        } else {
-            // ====== CREAR ======
-            Producto nuevo = new Producto();
-            setProducto(nuevo);
-            nuevo.setEstado(true);
-            ok = productoDAO.create(nuevo);
-            if (ok) {
-                mostrarAlerta("Producto agregado correctamente.");
-                cerrarVentana();
-            } else {
-                mostrarAlerta("Error al guardar el producto. Revisá la consola.");
-            }
-        }
-        } catch (Exception e) {
-            e.printStackTrace();
-            mostrarAlerta("Error inesperado: " + e.getMessage());
-        }
-    }
-    // Carga los datos de la UI en el objeto Producto
-    private void setProducto(Producto p) {
-        p.setCodigoProducto(Integer.parseInt(txtCodigo.getText().trim()));
-        p.setNombreProducto(txtNombre.getText().trim());
-        p.setDescripcionProducto(txtDescripcion.getText() == null ? null : txtDescripcion.getText().trim());
-        p.setStockProducto(Integer.parseInt(txtStock.getText().trim()));
-        p.setPrecioProducto(new BigDecimal(txtPrecio.getText().trim().replace(',', '.')));
-        p.setCategoriaProducto(cbCategoria.getValue());
-        p.setFabricanteProducto(cbFabricante.getValue());
-        p.setActivo(chkActivo.isSelected());
-    }
-    // Carga los datos del producto a editar en los campos de la UI (el contrario al anterior digamos)
-    private void cargarDatosEnCampos(Producto productoAEditar) {
-        if (productoAEditar != null) {
-            txtNombre.setText(productoAEditar.getNombreProducto());
-            txtDescripcion.setText(productoAEditar.getDescripcionProducto());
-            txtStock.setText(String.valueOf(productoAEditar.getStockProducto()));
-            txtPrecio.setText(productoAEditar.getPrecioProducto().toString());
-            cbCategoria.setValue(productoAEditar.getCategoriaProducto());
-            cbFabricante.setValue(productoAEditar.getFabricanteProducto());
-            txtCodigo.setText(String.valueOf(productoAEditar.getCodigoProducto()));
-        }
-    }
-    // Setter para el producto a editar
-    public void setProductoAEditar(Producto producto) {
-        this.productoAEditar = producto;
-        cargarDatosEnCampos(producto);
-    }
-    // Metodo para cancelar y cerrar la ventana
-    @FXML private void cancelar() { cerrarVentana(); }
->>>>>>> 96994ef3a83f7c6aad22d560e4f2fadd36b1ae55
     private void cerrarVentana() {
         Stage stage = (Stage) txtNombre.getScene().getWindow();
         stage.close();
     }
-<<<<<<< HEAD
 
-=======
-    // Metodo para mostrar alertas
->>>>>>> 96994ef3a83f7c6aad22d560e4f2fadd36b1ae55
     private void mostrarAlerta(String mensaje) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setHeaderText(null);
         alert.setContentText(mensaje);
         alert.showAndWait();
     }
-<<<<<<< HEAD
-=======
-
-
-
-
-
-
-
-
-
-
-
-
-
-
->>>>>>> 96994ef3a83f7c6aad22d560e4f2fadd36b1ae55
 
     /**
-     * 🟢 Método nuevo:
+     *  Método nuevo:
      * Registra en la tabla de auditoría quién creó el producto.
      */
     private void registrarEventoAuditoria(Producto producto) {
@@ -207,7 +124,7 @@ public class ProductoFormularioVistaControlador {
             reportesDAO.registrarEvento(evento);
 
         } catch (Exception e) {
-            System.err.println("⚠️ Error al registrar evento de producto: " + e.getMessage());
+            System.err.println(" Error al registrar evento de producto: " + e.getMessage());
         }
     }
 }

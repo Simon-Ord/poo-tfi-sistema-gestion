@@ -22,7 +22,7 @@ public class CambioDatosController {
     @FXML private PasswordField txtNuevaContrasena;
 
     private final UsuarioDAOImpl usuarioDAO = new UsuarioDAOImpl();
-    private final ReportesDAO reportesDAO = new ReportesDAO(); // 🟩 Agregado para registrar eventos
+    private final ReportesDAO reportesDAO = new ReportesDAO(); //  Agregado para registrar eventos
 
     @FXML
     private void guardarCambios() {
@@ -66,19 +66,19 @@ public class CambioDatosController {
             if (ok) {
                 mostrarAlerta("Datos actualizados correctamente.");
 
-                // 🟩 NUEVO BLOQUE: Registrar evento de auditoría
+                //  NUEVO BLOQUE: Registrar evento de auditoría
                 try {
                     String nombreLogueado = (Sesion.getUsuarioActual() != null)
                             ? Sesion.getUsuarioActual().getNombre()
                             : "Sistema";
 
                     EventoAuditoria evento = new EventoAuditoria();
-                    evento.setUsuario(nombreLogueado); // 🟩 guarda el nombre y apellido del usuario logueado
+                    evento.setUsuario(nombreLogueado); //  guarda el nombre y apellido del usuario logueado
                     evento.setAccion("MODIFICAR DATOS");
                     evento.setEntidad("usuario");
                     evento.setDetalles("El usuario modificó sus datos personales.");
                     
-                    // 🟩 Se registra el evento en la BD
+                    //  Se registra el evento en la BD
                     reportesDAO.registrarEvento(evento);
 
                 } catch (Exception e) {

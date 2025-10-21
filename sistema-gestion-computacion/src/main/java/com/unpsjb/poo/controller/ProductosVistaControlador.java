@@ -1,6 +1,5 @@
 package com.unpsjb.poo.controller;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -21,7 +20,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class ProductosVistaControlador {
@@ -39,7 +37,7 @@ public class ProductosVistaControlador {
     @FXML private TextField txtBuscar;
 
     private final ProductoDAOImpl productoDAO = new ProductoDAOImpl();
-    private final ReportesDAO reportesDAO = new ReportesDAO(); // 🟢 NUEVO: para registrar auditorías
+    private final ReportesDAO reportesDAO = new ReportesDAO(); //  NUEVO: para registrar auditorías
     private ObservableList<Producto> backingList = FXCollections.observableArrayList();
 
     @FXML
@@ -104,7 +102,7 @@ public class ProductosVistaControlador {
             stage.showAndWait();
             cargarProductos();
 
-            // 🟢 REGISTRO DE AUDITORÍA
+            //  REGISTRO DE AUDITORÍA
             registrarEvento("AGREGAR PRODUCTO", "Producto", "Se agregó un nuevo producto al sistema");
 
         } catch (Exception e) {
@@ -114,7 +112,7 @@ public class ProductosVistaControlador {
     }
 
     // ==========================
-    // ❌ ELIMINAR PRODUCTO (desactivar)
+    //  ELIMINAR PRODUCTO (desactivar)
     // ==========================
     @FXML
     private void eliminarProducto() {
@@ -131,7 +129,7 @@ public class ProductosVistaControlador {
             mostrarAlerta("Producto eliminado correctamente.");
             cargarProductos();
 
-            // 🟢 REGISTRO DE AUDITORÍA
+            //  REGISTRO DE AUDITORÍA
             registrarEvento("ELIMINAR PRODUCTO", "Producto",
                 "El usuario eliminó el producto: " + seleccionado.getNombreProducto());
 
@@ -139,34 +137,9 @@ public class ProductosVistaControlador {
             mostrarAlerta("Error al eliminar el producto.");
         }
     }
-    @FXML
-private void modificarProducto() {
-    Producto productoSeleccionado = tablaProductos.getSelectionModel().getSelectedItem();
-    if (productoSeleccionado == null) {
-        mostrarAlerta("Debe seleccionar un producto para modificarlo.");
-        return;
-    }
-    try {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/productoForm.fxml"));
-        Parent root = loader.load();
-        ProductoFormularioVistaControlador controlador = loader.getController();
-        controlador.setProductoAEditar(productoSeleccionado);
-
-        Stage stage = new Stage();
-        stage.setTitle("Modificar Producto");
-        stage.setScene(new Scene(root));
-        stage.setResizable(false);
-        stage.initModality(Modality.APPLICATION_MODAL);
-        stage.showAndWait();
-
-        cargarProductos();
-    } catch (IOException e) {
-        e.printStackTrace();
-    }
-}
 
     // ==========================
-    // 🔄 CAMBIAR ESTADO (activar/desactivar)
+    //  CAMBIAR ESTADO (activar/desactivar)
     // ==========================
     @FXML
     private void cambiarEstadoProducto() {
@@ -174,7 +147,6 @@ private void modificarProducto() {
         if (seleccionado == null) {
             mostrarAlerta("Seleccione un producto para cambiar su estado.");
             return;
-<<<<<<< HEAD
         }
 
         boolean nuevoEstado = !seleccionado.isActivo();
@@ -186,26 +158,17 @@ private void modificarProducto() {
             mostrarAlerta(nuevoEstado ? "Producto activado correctamente." : "Producto desactivado correctamente.");
             cargarProductos();
 
-            // 🟢 REGISTRO DE AUDITORÍA
+            //  REGISTRO DE AUDITORÍA
             registrarEvento("CAMBIAR ESTADO PRODUCTO", "Producto",
                 "El usuario cambió el estado del producto: " + seleccionado.getNombreProducto() +
                 " a " + (nuevoEstado ? "Activo" : "Inactivo"));
-=======
-            }
-        seleccionado.setActivo(!seleccionado.isActivo());
-        boolean ok = productoDAO.update(seleccionado);
-        if (ok) {
-            mostrarAlerta("El producto cambio al estado: " + (seleccionado.isActivo() ? "Activo" : "Inactivo"));
-            cargarProductos();
->>>>>>> 96994ef3a83f7c6aad22d560e4f2fadd36b1ae55
         } else {
             mostrarAlerta("Error al cambiar el estado del producto.");
         }
     }
-<<<<<<< HEAD
 
     // ==========================
-    // 🧾 REGISTRAR EVENTOS (Método nuevo)
+    //  REGISTRAR EVENTOS (Método nuevo)
     // ==========================
     private void registrarEvento(String accion, String entidad, String descripcion) {
         try {
@@ -221,15 +184,13 @@ private void modificarProducto() {
 
             reportesDAO.registrarEvento(evento);
         } catch (Exception e) {
-            System.err.println("⚠️ Error al registrar evento: " + e.getMessage());
+            System.err.println(" Error al registrar evento: " + e.getMessage());
         }
     }
 
     // ==========================
-    // ⚠️ UTILIDADES
+    //  UTILIDADES
     // ==========================
-=======
->>>>>>> 96994ef3a83f7c6aad22d560e4f2fadd36b1ae55
     private void mostrarAlerta(String msg) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setHeaderText(null);
