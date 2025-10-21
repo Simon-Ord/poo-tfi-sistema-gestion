@@ -1,14 +1,13 @@
 package com.unpsjb.poo.controller;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import com.unpsjb.poo.model.Producto;
-import com.unpsjb.poo.model.EventoAuditoria;
-import com.unpsjb.poo.persistence.dao.impl.ProductoDAOImpl;
 import com.unpsjb.poo.persistence.dao.ReportesDAO;
-import com.unpsjb.poo.util.Sesion;
+import com.unpsjb.poo.persistence.dao.impl.ProductoDAOImpl;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -21,16 +20,12 @@ import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class ProductosVistaControlador {
 
     @FXML private TableView<Producto> tablaProductos;
-    @FXML private TableColumn<Producto, Integer> colCodigo;
-    @FXML private TableColumn<Producto, String> colNombre;
-    @FXML private TableColumn<Producto, String> colDescripcion;
-    @FXML private TableColumn<Producto, String> colCategoria;
-    @FXML private TableColumn<Producto, String> colFabricante;
     @FXML private TableColumn<Producto, Integer> colCodigo;
     @FXML private TableColumn<Producto, String> colNombre;
     @FXML private TableColumn<Producto, String> colDescripcion;
@@ -121,7 +116,7 @@ public class ProductosVistaControlador {
             cargarProductos();
 
             //  REGISTRO DE AUDITORÍA
-            registrarEvento("AGREGAR PRODUCTO", "Producto", "Se agregó un nuevo producto al sistema");
+            //registrarEvento("AGREGAR PRODUCTO", "Producto", "Se agregó un nuevo producto al sistema");
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -188,6 +183,8 @@ public class ProductosVistaControlador {
             tablaProductos.setItems(backingList);
         }
     }
+    @FXML private void detallesProducto(){}
+
     // Metodo para mostrar alertas
     private void mostrarAlerta(String msg) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);

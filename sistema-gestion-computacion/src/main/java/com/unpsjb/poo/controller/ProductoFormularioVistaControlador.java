@@ -2,10 +2,10 @@ package com.unpsjb.poo.controller;
 
 import java.math.BigDecimal;
 
-import com.unpsjb.poo.model.Producto;
 import com.unpsjb.poo.model.EventoAuditoria;
-import com.unpsjb.poo.persistence.dao.impl.ProductoDAOImpl;
+import com.unpsjb.poo.model.Producto;
 import com.unpsjb.poo.persistence.dao.ReportesDAO;
+import com.unpsjb.poo.persistence.dao.impl.ProductoDAOImpl;
 import com.unpsjb.poo.util.Sesion;
 
 import javafx.fxml.FXML;
@@ -26,7 +26,7 @@ public class ProductoFormularioVistaControlador {
 
     private final ProductoDAOImpl productoDAO = new ProductoDAOImpl();
     private final ReportesDAO reportesDAO = new ReportesDAO(); // Nuevo: para registrar eventos de auditoría
-    private Producto editing; // null = alta
+    private Producto productoAEditar; 
 
     @FXML
     private void initialize() {
@@ -48,7 +48,7 @@ public class ProductoFormularioVistaControlador {
             Producto nuevo = new Producto();
             setProducto(nuevo);
             nuevo.setActivo(true);
-            ok = productoDAO.create(nuevo);
+            boolean ok = productoDAO.create(nuevo);
             if (ok) {
                 mostrarAlerta("Producto agregado correctamente.");
                 registrarEventoAuditoria(nuevo); //  Nuevo: registra en la tabla auditoria quién lo hizo
@@ -86,7 +86,7 @@ public class ProductoFormularioVistaControlador {
     }
     // Setter para el producto a editar
     public void setProductoAEditar(Producto producto) {
-        this.productoAEditar = producto;
+        this.productoAEditar = producto; 
         cargarDatosEnCampos(producto);
     }
     // Metodo para cancelar y cerrar la ventana
