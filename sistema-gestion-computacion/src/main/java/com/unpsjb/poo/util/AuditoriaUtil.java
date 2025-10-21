@@ -1,17 +1,13 @@
 package com.unpsjb.poo.util;
 
 import com.unpsjb.poo.model.EventoAuditoria;
-import com.unpsjb.poo.model.productos.Producto;
+import com.unpsjb.poo.model.Producto;
 import com.unpsjb.poo.persistence.dao.ReportesDAO;
 
 /**
  * Clase utilitaria para registrar eventos de auditoría
  * y evitar repetir código en los controladores.
- *
- * 📘 Conceptos POO aplicados:
- * - Abstracción: los controladores no saben cómo se guarda la auditoría.
- * - Encapsulamiento: toda la lógica de registro está protegida aquí.
- * - Reutilización: se usa en todo el sistema.
+ 
  */
 public class AuditoriaUtil {
 
@@ -47,6 +43,10 @@ public class AuditoriaUtil {
             if (!original.getCategoriaProducto().equals(modificado.getCategoriaProducto()))
                 cambios.append("Categoría: '").append(original.getCategoriaProducto())
                         .append("' → '").append(modificado.getCategoriaProducto()).append("'. ");
+
+            if (!original.getFabricanteProducto().equals(modificado.getFabricanteProducto()))
+                cambios.append("Fabricante: '").append(original.getFabricanteProducto())
+                        .append("' → '").append(modificado.getFabricanteProducto()).append("'. ");
 
             if (original.getPrecioProducto().compareTo(modificado.getPrecioProducto()) != 0)
                 cambios.append("Precio: ").append(original.getPrecioProducto())

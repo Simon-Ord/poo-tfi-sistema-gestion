@@ -1,10 +1,11 @@
 package com.unpsjb.poo.controller;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.unpsjb.poo.model.productos.Producto;
+import com.unpsjb.poo.model.Producto;
 import com.unpsjb.poo.persistence.dao.ReportesDAO;
 import com.unpsjb.poo.persistence.dao.impl.ProductoDAOImpl;
 
@@ -29,6 +30,7 @@ public class ProductosVistaControlador {
     @FXML private TableColumn<Producto, String> colNombre;
     @FXML private TableColumn<Producto, String> colDescripcion;
     @FXML private TableColumn<Producto, String> colCategoria;
+    @FXML private TableColumn<Producto, String> colFabricante;
     @FXML private TableColumn<Producto, BigDecimal> colPrecio;
     @FXML private TableColumn<Producto, Integer> colCantidad;
 
@@ -45,7 +47,8 @@ public class ProductosVistaControlador {
         colCodigo.setCellValueFactory(c -> new javafx.beans.property.SimpleObjectProperty<>(c.getValue().getCodigoProducto()));
         colNombre.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getNombreProducto()));
         colDescripcion.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getDescripcionProducto()));
-        colCategoria.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getCategoria() != null ? c.getValue().getCategoria().getNombre() : "Sin Categoría"));
+        colCategoria.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getCategoriaProducto()));
+        colFabricante.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getFabricanteProducto()));
         colPrecio.setCellValueFactory(c -> new javafx.beans.property.SimpleObjectProperty<>(c.getValue().getPrecioProducto()));
         colCantidad.setCellValueFactory(c -> new javafx.beans.property.SimpleObjectProperty<>(c.getValue().getStockProducto()));
 
@@ -67,25 +70,28 @@ public class ProductosVistaControlador {
                 ? txtBuscar.getText().trim().toLowerCase()
                 : "";
 
-    if (q.isEmpty()) {
-        tablaProductos.setItems(backingList);
-        return;
-    }
-    List<Producto> resultados = backingList.stream()
-        .filter(p -> {
-            String nombre = p.getNombreProducto() != null ? p.getNombreProducto().toLowerCase() : "";
-            String descripcion = p.getDescripcionProducto() != null ? p.getDescripcionProducto().toLowerCase() : "";
-            String categoria = p.getCategoria() != null ? p.getCategoria().getNombre().toLowerCase() : "";
-            String codigo = String.valueOf(p.getCodigoProducto());
+        if (q.isEmpty()) {
+            tablaProductos.setItems(backingList);
+            return;
+        }
 
-            return nombre.contains(q)
-                || descripcion.contains(q)
-                || categoria.contains(q)
-                || codigo.contains(q);
-        })
-        .collect(Collectors.toList());
-    tablaProductos.setItems(FXCollections.observableArrayList(resultados));
-}
+        List<Producto> resultados = backingList.stream()
+                .filter(p -> {
+                    String nombre = p.getNombreProducto() != null ? p.getNombreProducto().toLowerCase() : "";
+                    String descripcion = p.getDescripcionProducto() != null ? p.getDescripcionProducto().toLowerCase() : "";
+                    String categoria = p.getCategoriaProducto() != null ? p.getCategoriaProducto().toLowerCase() : "";
+                    String fabricante = p.getFabricanteProducto() != null ? p.getFabricanteProducto().toLowerCase() : "";
+                    String codigo = String.valueOf(p.getCodigoProducto());
+
+                    return nombre.contains(q)
+                            || descripcion.contains(q)
+                            || categoria.contains(q)
+                            || fabricante.contains(q)
+                            || codigo.contains(q);
+                })
+                .collect(Collectors.toList());
+        tablaProductos.setItems(FXCollections.observableArrayList(resultados));
+    }
 
     /** Limpia el campo de búsqueda */
     @FXML
@@ -112,38 +118,37 @@ public class ProductosVistaControlador {
             mostrarAlerta("Error al abrir el formulario: " + e.getMessage());
         }
     }
+
     /** Modificar un producto existente */
     @FXML
     private void modificarProducto() {
-    Producto productoSeleccionado = tablaProductos.getSelectionModel().getSelectedItem();
-    if (productoSeleccionado == null) {
-        mostrarAlerta("Debe seleccionar un producto para modificarlo.");
-        return;
+        Producto productoSeleccionado = tablaProductos.getSelectionModel().getSelectedItem();
+        if (productoSeleccionado == null) {
+            mostrarAlerta("Debe seleccionar un producto para modificarlo.");
+            return;
+        }
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/productoForm.fxml"));
+            Parent root = loader.load();
+
+            com.unpsjb.poo.controller.ProductoFormularioVistaControlador controlador = loader.getController();
+            controlador.setProducto(productoSeleccionado);
+
+            Stage stage = new Stage();
+            stage.setTitle("Modificar Producto");
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+
+            cargarProductos();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            mostrarAlerta("Error al abrir el formulario de modificación: " + e.getMessage());
+        }
     }
-
-    try {
-        System.out.println(" Intentando abrir formulario...");
-        System.out.println("Ruta FXML: " + getClass().getResource("/view/productoForm.fxml"));
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/productoForm.fxml"));
-        Parent root = loader.load();
-
-    ProductoFormularioVistaControlador controlador = loader.getController();
-    controlador.setProductoAEditar(productoSeleccionado);
-
-        Stage stage = new Stage();
-        stage.setTitle("Modificar Producto");
-        stage.setScene(new Scene(root));
-        stage.setResizable(false);
-        stage.initModality(Modality.APPLICATION_MODAL);
-        stage.showAndWait();
-
-        cargarProductos();
-
-    } catch (Exception e) {
-        e.printStackTrace();
-        mostrarAlerta("Error al abrir el formulario de modificación: " + e.getMessage());
-    }
-}
 
     /** Cambiar el estado (activo/inactivo) de un producto */
     @FXML
@@ -153,6 +158,7 @@ public class ProductosVistaControlador {
             mostrarAlerta("Seleccione un producto para cambiar su estado.");
             return;
         }
+
         String nuevoEstado = seleccionado.isActivo() ? "inactivo" : "activo";
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Confirmar cambio de estado");
@@ -170,6 +176,7 @@ public class ProductosVistaControlador {
             }
         }
     }
+
     /** Mostrar productos inactivos */
     @FXML
     private void MostrarProductosInactivos() {

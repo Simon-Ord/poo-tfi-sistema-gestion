@@ -1,22 +1,15 @@
 package com.unpsjb.poo.controller;
 
 import java.math.BigDecimal;
-import java.util.List;
 
-import com.unpsjb.poo.model.EventoAuditoria;
-import com.unpsjb.poo.model.productos.Categoria;
-import com.unpsjb.poo.model.productos.Producto;
-import com.unpsjb.poo.persistence.dao.ReportesDAO;
-import com.unpsjb.poo.persistence.dao.impl.CategoriaDAOImpl;
+import com.unpsjb.poo.model.Producto;
 import com.unpsjb.poo.persistence.dao.impl.ProductoDAOImpl;
-import com.unpsjb.poo.util.CopiarProductoUtil;
 import com.unpsjb.poo.util.Sesion;
+import com.unpsjb.poo.util.CopiarProductoUtil;
+import com.unpsjb.poo.util.AuditoriaUtil;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.stage.Stage;
 
 public class ProductoFormularioVistaControlador {
@@ -24,7 +17,8 @@ public class ProductoFormularioVistaControlador {
     @FXML private TextField txtCodigo;
     @FXML private TextField txtNombre;
     @FXML private TextField txtDescripcion;
-    @FXML private ChoiceBox<Categoria> cbCategoria;
+    @FXML private ChoiceBox<String> cbCategoria;
+    @FXML private ChoiceBox<String> cbFabricante;
     @FXML private TextField txtPrecio;
     @FXML private TextField txtStock;
     @FXML private CheckBox chkActivo;
@@ -34,55 +28,83 @@ public class ProductoFormularioVistaControlador {
     private Producto productoAEditar;       // si es null -> alta
     private Producto productoOriginal;      // copia para comparar cambios
 
-    private final CategoriaDAOImpl categoriaDAO = new CategoriaDAOImpl();
-
     @FXML
     private void initialize() {
-        // Cargar las categorías desde la base de datos
-        List<Categoria> categorias = categoriaDAO.findAll();
-        if (categorias != null && !categorias.isEmpty()) {
-            cbCategoria.getItems().addAll(categorias);
+        cbCategoria.getItems().addAll("Periféricos", "Monitores", "Almacenamiento", "Componentes", "Otros");
+        cbFabricante.getItems().addAll("Logitech", "Redragon", "Kingston", "Samsung", "Otros");
+        chkActivo.setSelected(true);
+    }
+
+    /** Método usado por algunos controladores */
+    public void setProducto(Producto p) {
+        this.productoAEditar = p;
+        if (p != null) {
+            this.productoOriginal = CopiarProductoUtil.copiarProducto(p);
+            txtCodigo.setText(String.valueOf(p.getCodigoProducto()));
+            txtNombre.setText(p.getNombreProducto());
+            txtDescripcion.setText(p.getDescripcionProducto());
+            cbCategoria.setValue(p.getCategoriaProducto());
+            cbFabricante.setValue(p.getFabricanteProducto());
+            txtPrecio.setText(p.getPrecioProducto() != null ? p.getPrecioProducto().toPlainString() : "");
+            txtStock.setText(String.valueOf(p.getStockProducto()));
+            chkActivo.setSelected(p.isActivo());
         }
     }
-    // Guardar producto (crear o actualizar)
+
+    /** Alias para compatibilidad: permite que quien llame setProductoAEditar(...) funcione */
+    public void setProductoAEditar(Producto p) {
+        setProducto(p);
+    }
+
     @FXML
     private void guardarProducto() {
         try {
-            // Validación de campos obligatorios
-            if (txtCodigo.getText().isEmpty() || txtNombre.getText().isEmpty()
-                    || txtPrecio.getText().isEmpty() || txtStock.getText().isEmpty()
-                    || cbCategoria.getValue() == null) {
+            // Validaciones básicas
+            if (txtCodigo.getText().isEmpty() || txtNombre.getText().isEmpty() ||
+                txtPrecio.getText().isEmpty() || txtStock.getText().isEmpty() ||
+                cbCategoria.getValue() == null || cbFabricante.getValue() == null) {
                 mostrarAlerta("Todos los campos son obligatorios.");
                 return;
             }
 
+            Producto nuevo = new Producto();
+            nuevo.setCodigoProducto(Integer.parseInt(txtCodigo.getText().trim()));
+            nuevo.setNombreProducto(txtNombre.getText().trim());
+            nuevo.setDescripcionProducto(txtDescripcion.getText().trim());
+            nuevo.setCategoriaProducto(cbCategoria.getValue());
+            nuevo.setFabricanteProducto(cbFabricante.getValue());
+            nuevo.setPrecioProducto(new BigDecimal(txtPrecio.getText().trim().replace(',', '.')));
+            nuevo.setStockProducto(Integer.parseInt(txtStock.getText().trim()));
+            nuevo.setActivo(chkActivo.isSelected());
+
             boolean ok;
-            if (productoAEditar != null) {
-                // Actualizar producto existente
-                setProducto(productoAEditar);
-                ok = productoDAO.update(productoAEditar);
-                if (ok) {
-                    mostrarAlerta("Producto actualizado correctamente.");
-                    registrarEventoAuditoria(productoAEditar, "ACTUALIZAR PRODUCTO");
-                } else {
-                    mostrarAlerta("Error al actualizar el producto. Revisa la consola para más detalles.");
-                }
-            } else {
+            String usuario = (Sesion.getUsuarioActual() != null)
+                    ? Sesion.getUsuarioActual().getNombre()
+                    : "Desconocido";
+
+            if (productoAEditar == null) {
                 // Crear nuevo producto
-                Producto nuevo = new Producto();
-                setProducto(nuevo);
-                nuevo.setActivo(true);
+                
+                // ATENCIÓN: si tu ProductoDAOImpl tiene método insertar(...) cambia create por insertar
                 ok = productoDAO.create(nuevo);
                 if (ok) {
-                    mostrarAlerta("Producto agregado correctamente.");
-                    registrarEventoAuditoria(nuevo, "CREAR PRODUCTO");
-                } else {
-                    mostrarAlerta("Error al guardar el producto. Revisa la consola para más detalles.");
+                    AuditoriaUtil.registrarAccion(usuario, "CREAR PRODUCTO", "Producto",
+                            "El usuario " + usuario + " creó el producto: " + nuevo.getNombreProducto());
+                }
+            } else {
+                // Modificar producto existente
+                nuevo.setIdProducto(productoAEditar.getIdProducto());
+                ok = productoDAO.update(nuevo);
+                if (ok) {
+                    AuditoriaUtil.registrarCambioProducto(productoOriginal, nuevo, usuario);
                 }
             }
-            
+
             if (ok) {
+                mostrarAlerta("Producto guardado correctamente.");
                 cerrarVentana();
+            } else {
+                mostrarAlerta("Error al guardar el producto. Revisa la consola.");
             }
 
         } catch (NumberFormatException nfe) {
@@ -91,38 +113,6 @@ public class ProductoFormularioVistaControlador {
             e.printStackTrace();
             mostrarAlerta("Error inesperado: " + e.getMessage());
         }
-    }
-    // Guarda los datos del formulario en el objeto Producto
-    public void setProducto(Producto producto) {
-        if (producto != null) {
-            try {
-                producto.setCodigoProducto(Integer.parseInt(txtCodigo.getText().trim()));
-                producto.setNombreProducto(txtNombre.getText().trim());
-                producto.setDescripcionProducto(txtDescripcion.getText() == null ? "" : txtDescripcion.getText().trim());
-                producto.setStockProducto(Integer.parseInt(txtStock.getText().trim()));
-                producto.setPrecioProducto(new BigDecimal(txtPrecio.getText().trim().replace(',', '.')));
-                producto.setCategoria(cbCategoria.getValue());
-            } catch (NumberFormatException e) {
-                throw new IllegalArgumentException("Error en el formato de los campos numéricos");
-            }
-        }
-    }
-    // Carga los datos del producto a editar en los campos de la UI (el contrario al anterior digamos)
-    private void cargarDatosEnCampos(Producto productoAEditar) {
-        if (productoAEditar != null) {
-            txtNombre.setText(productoAEditar.getNombreProducto());
-            txtDescripcion.setText(productoAEditar.getDescripcionProducto());
-            txtStock.setText(String.valueOf(productoAEditar.getStockProducto()));
-            txtPrecio.setText(productoAEditar.getPrecioProducto().toString());
-            cbCategoria.setValue(productoAEditar.getCategoria());
-            txtCodigo.setText(String.valueOf(productoAEditar.getCodigoProducto()));
-        }
-    }
-    // Setter para el producto a editar
-    public void setProductoAEditar(Producto producto) {
-        this.productoAEditar = producto; 
-        this.productoOriginal = CopiarProductoUtil.copiarProducto(producto);
-        cargarDatosEnCampos(producto);
     }
 
     @FXML
@@ -140,32 +130,5 @@ public class ProductoFormularioVistaControlador {
         alert.setHeaderText(null);
         alert.setContentText(mensaje);
         alert.showAndWait();
-    }
-
-    private final ReportesDAO reportesDAO = new ReportesDAO();
-
-    /**
-     *  Método nuevo:
-     * Registra en la tabla de auditoría quién creó el producto.
-     */
-    private void registrarEventoAuditoria(Producto producto, String accion) {
-        try {
-            String usuarioActual = (Sesion.getUsuarioActual() != null)
-                    ? Sesion.getUsuarioActual().getNombre()
-                    : "Desconocido";
-
-            EventoAuditoria evento = new EventoAuditoria();
-            evento.setUsuario(usuarioActual);
-            evento.setAccion(accion);
-            evento.setEntidad("Producto");
-            evento.setIdEntidad(String.valueOf(producto.getCodigoProducto()));
-            String accionTexto = accion.equals("CREAR PRODUCTO") ? "creó" : "actualizó";
-            evento.setDetalles("El usuario " + usuarioActual + " " + accionTexto + " el producto: " + producto.getNombreProducto());
-
-            reportesDAO.registrarEvento(evento);
-
-        } catch (Exception e) {
-            System.err.println(" Error al registrar evento de producto: " + e.getMessage());
-        }
     }
 }
