@@ -17,14 +17,10 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
-//  Importaciones nuevas para la auditoría y sesión
-import com.unpsjb.poo.model.EventoAuditoria;
-import com.unpsjb.poo.persistence.dao.ReportesDAO;
+import com.unpsjb.poo.util.AuditoriaManager;
 import com.unpsjb.poo.util.Sesion;
 
 public class PrincipalVistaControlador implements Initializable {
-
-    private final ReportesDAO reportesDAO = new ReportesDAO(); //  Para registrar el evento de cierre de sesión
 
     @FXML private Pane desktop;
     @FXML private Button btnUsuarios;
@@ -37,7 +33,6 @@ public class PrincipalVistaControlador implements Initializable {
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // 🟩 Mostrar el nombre del usuario logueado en la etiqueta
         if (Sesion.getUsuarioActual() != null) {
             lblNombreUsuario.setText("Usuario: " + Sesion.getUsuarioActual().getNombre());
         } else {
@@ -76,6 +71,7 @@ public class PrincipalVistaControlador implements Initializable {
         try {
             Node view = loadView("/view/usuariosView.fxml");
             openInternal("Gestión de Usuarios", view, 800, 500);
+
         } catch (Exception e) {
             e.printStackTrace();
             new Alert(Alert.AlertType.ERROR, "Error al abrir la gestión de usuarios: " + e.getMessage()).showAndWait();
@@ -112,24 +108,11 @@ public class PrincipalVistaControlador implements Initializable {
     @FXML
     private void cerrarSesionAction(ActionEvent event) {
         try {
-            //  BLOQUE NUEVO: Registrar evento de auditoría
-            if (Sesion.getUsuarioActual() != null) {
-                try {
-                    EventoAuditoria evento = new EventoAuditoria();
-                    evento.setUsuario(Sesion.getUsuarioActual().getNombre());
-                    evento.setAccion("CERRAR SESIÓN");
-                    evento.setEntidad("Sistema");
-                    evento.setDetalles("El usuario " + Sesion.getUsuarioActual().getNombre() + " cerró sesión.");
-                    reportesDAO.registrarEvento(evento);
-                } catch (Exception ex) {
-                    System.err.println(" Error al registrar el cierre de sesión: " + ex.getMessage());
-                }
-            }
+            // 🔹 Registrar el evento de cierre usando AuditoriaManager
+            AuditoriaManager.registrar("CERRAR SESIÓN", "sesion", "cerró sesión.");
 
-            // Cerrar sesión en la clase de sesión
             Sesion.cerrarSesion();
 
-            // Cargar la vista de login
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/loginView.fxml"));
             Parent root = loader.load();
             Scene loginScene = new Scene(root);

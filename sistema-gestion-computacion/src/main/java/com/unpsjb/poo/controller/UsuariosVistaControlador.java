@@ -3,10 +3,8 @@ package com.unpsjb.poo.controller;
 import java.util.List;
 
 import com.unpsjb.poo.model.Usuario;
-import com.unpsjb.poo.model.EventoAuditoria; 
 import com.unpsjb.poo.persistence.dao.impl.UsuarioDAOImpl;
-import com.unpsjb.poo.persistence.dao.ReportesDAO; 
-import com.unpsjb.poo.util.Sesion; 
+import com.unpsjb.poo.util.AuditoriaManager;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -28,7 +26,6 @@ public class UsuariosVistaControlador {
     @FXML private TableColumn<Usuario, Boolean> colActivo;
 
     private final UsuarioDAOImpl usuarioDAO = new UsuarioDAOImpl();
-    private final ReportesDAO reportesDAO = new ReportesDAO(); // Agregado para registrar auditoría
 
     @FXML
     public void initialize() {
@@ -56,6 +53,7 @@ public class UsuariosVistaControlador {
             stage.setResizable(false);
             stage.showAndWait();
             cargarUsuarios();
+
         } catch (Exception e) {
             e.printStackTrace();
             mostrarAlerta("Error al abrir el formulario: " + e.getMessage());
@@ -79,23 +77,10 @@ public class UsuariosVistaControlador {
             mostrarAlerta(nuevoEstado ? "Usuario activado correctamente." : "Usuario desactivado correctamente.");
             cargarUsuarios();
 
-            // registrar evento de auditoría
-            try {
-                String usuarioLogueado = (Sesion.getUsuarioActual() != null)
-                        ? Sesion.getUsuarioActual().getNombre()
-                        : "Sistema";
 
-                EventoAuditoria evento = new EventoAuditoria();
-                evento.setUsuario(usuarioLogueado);
-                evento.setAccion(nuevoEstado ? "ACTIVAR USUARIO" : "DESACTIVAR USUARIO");
-                evento.setEntidad("usuario");
-                evento.setDetalles("El usuario " + usuarioLogueado + " cambió el estado de " + seleccionado.getNombre()
-                        + " a " + (nuevoEstado ? "ACTIVO" : "INACTIVO"));
-
-                reportesDAO.registrarEvento(evento);
-            } catch (Exception e) {
-                System.err.println("Error al registrar evento de auditoría: " + e.getMessage());
-            }
+            // 🔹 Registrar evento de auditoría centralizado
+            AuditoriaManager.registrar(nuevoEstado ? "ACTIVAR USUARIO" : "DESACTIVAR USUARIO","usuario","cambió el estado de "
+             + seleccionado.getNombre() + " a " + (nuevoEstado ? "ACTIVO" : "INACTIVO"));
 
         } else {
             mostrarAlerta("Error al cambiar el estado del usuario.");
