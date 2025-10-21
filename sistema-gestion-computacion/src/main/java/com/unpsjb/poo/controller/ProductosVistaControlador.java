@@ -1,6 +1,5 @@
 package com.unpsjb.poo.controller;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -34,11 +33,10 @@ public class ProductosVistaControlador {
     @FXML private TableColumn<Producto, Integer> colCantidad;
 
     @FXML private TextField txtBuscar;
-    // Checkbox para mostrar productos inactivos
     @FXML private CheckBox chBoxInactivos;
 
     private final ProductoDAOImpl productoDAO = new ProductoDAOImpl();
-    private final ReportesDAO reportesDAO = new ReportesDAO(); //  NUEVO: para registrar auditorías
+    private final ReportesDAO reportesDAO = new ReportesDAO();
     private ObservableList<Producto> backingList = FXCollections.observableArrayList();
 
     @FXML
@@ -54,26 +52,25 @@ public class ProductosVistaControlador {
         cargarProductos();
     }
 
+    /** Carga todos los productos activos en la tabla */
     private void cargarProductos() {
-        // Obtener solo productos activos
         List<Producto> lista = productoDAO.findAll();
         backingList = FXCollections.observableArrayList(lista);
         tablaProductos.setItems(backingList);
         tablaProductos.refresh();
     }
 
-    // ====== HANDLERS que el FXML referencia con onAction ======
-
+    /** Buscar productos por cualquier campo */
     @FXML
     private void buscarProductos() {
-    String q = (txtBuscar != null && txtBuscar.getText() != null) ? 
-               txtBuscar.getText().trim().toLowerCase() : "";
+        String q = (txtBuscar != null && txtBuscar.getText() != null)
+                ? txtBuscar.getText().trim().toLowerCase()
+                : "";
 
     if (q.isEmpty()) {
         tablaProductos.setItems(backingList);
         return;
     }
-    
     List<Producto> resultados = backingList.stream()
         .filter(p -> {
             String nombre = p.getNombreProducto() != null ? p.getNombreProducto().toLowerCase() : "";
@@ -90,15 +87,13 @@ public class ProductosVistaControlador {
     tablaProductos.setItems(FXCollections.observableArrayList(resultados));
 }
 
-
+    /** Limpia el campo de búsqueda */
     @FXML
     private void limpiarBusqueda() {
         cargarProductos();
     }
 
-    // ==========================
-    // ➕ AGREGAR PRODUCTO
-    // ==========================
+    /** Agregar un nuevo producto */
     @FXML
     private void agregarProducto() {
         try {
@@ -108,18 +103,16 @@ public class ProductosVistaControlador {
             stage.setTitle("Agregar Nuevo Producto");
             stage.setScene(new Scene(root));
             stage.setResizable(false);
+            stage.initModality(Modality.APPLICATION_MODAL);
             stage.showAndWait();
             cargarProductos();
-
-            //  REGISTRO DE AUDITORÍA
-            //registrarEvento("AGREGAR PRODUCTO", "Producto", "Se agregó un nuevo producto al sistema");
 
         } catch (Exception e) {
             e.printStackTrace();
             mostrarAlerta("Error al abrir el formulario: " + e.getMessage());
         }
     }
-
+    /** Modificar un producto existente */
     @FXML
     private void modificarProducto() {
     Producto productoSeleccionado = tablaProductos.getSelectionModel().getSelectedItem();
@@ -127,11 +120,15 @@ public class ProductosVistaControlador {
         mostrarAlerta("Debe seleccionar un producto para modificarlo.");
         return;
     }
+
     try {
+        System.out.println(" Intentando abrir formulario...");
+        System.out.println("Ruta FXML: " + getClass().getResource("/view/productoForm.fxml"));
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/productoForm.fxml"));
         Parent root = loader.load();
-        ProductoFormularioVistaControlador controlador = loader.getController();
-        controlador.setProductoAEditar(productoSeleccionado);
+
+    ProductoFormularioVistaControlador controlador = loader.getController();
+    controlador.setProductoAEditar(productoSeleccionado);
 
         Stage stage = new Stage();
         stage.setTitle("Modificar Producto");
@@ -141,11 +138,14 @@ public class ProductosVistaControlador {
         stage.showAndWait();
 
         cargarProductos();
-    } catch (IOException e) {
+
+    } catch (Exception e) {
         e.printStackTrace();
+        mostrarAlerta("Error al abrir el formulario de modificación: " + e.getMessage());
     }
 }
-    // Metodo para cambiar el estado activo/inactivo de un producto
+
+    /** Cambiar el estado (activo/inactivo) de un producto */
     @FXML
     private void cambiarEstadoProducto() {
         Producto seleccionado = tablaProductos.getSelectionModel().getSelectedItem();
@@ -158,6 +158,7 @@ public class ProductosVistaControlador {
         confirm.setTitle("Confirmar cambio de estado");
         confirm.setHeaderText(null);
         confirm.setContentText("¿Desea cambiar el estado del producto a " + nuevoEstado + "?");
+
         if (confirm.showAndWait().get().getButtonData().isDefaultButton()) {
             seleccionado.setActivo(!seleccionado.isActivo());
             boolean ok = productoDAO.update(seleccionado);
@@ -169,19 +170,23 @@ public class ProductosVistaControlador {
             }
         }
     }
-    @FXML private void MostrarProductosInactivos() {
+    /** Mostrar productos inactivos */
+    @FXML
+    private void MostrarProductosInactivos() {
         if (chBoxInactivos.isSelected()) {
-            // Pedimos al DAO los productos inactivos para no depender del backingList (que contiene solo activos)
             List<Producto> productosInactivos = productoDAO.findAllCompleto();
             tablaProductos.setItems(FXCollections.observableArrayList(productosInactivos));
         } else {
-            // Volver a mostrar activos
             tablaProductos.setItems(backingList);
         }
     }
-    @FXML private void detallesProducto(){}
 
-    // Metodo para mostrar alertas
+    @FXML
+    private void detallesProducto() {
+        mostrarAlerta("Función de detalles aún no implementada.");
+    }
+
+    /** Muestra alertas en pantalla */
     private void mostrarAlerta(String msg) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setHeaderText(null);

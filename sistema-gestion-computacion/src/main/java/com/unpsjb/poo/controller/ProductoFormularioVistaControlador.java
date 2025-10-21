@@ -9,10 +9,12 @@ import com.unpsjb.poo.model.productos.Producto;
 import com.unpsjb.poo.persistence.dao.ReportesDAO;
 import com.unpsjb.poo.persistence.dao.impl.CategoriaDAOImpl;
 import com.unpsjb.poo.persistence.dao.impl.ProductoDAOImpl;
+import com.unpsjb.poo.util.CopiarProductoUtil;
 import com.unpsjb.poo.util.Sesion;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -25,10 +27,12 @@ public class ProductoFormularioVistaControlador {
     @FXML private ChoiceBox<Categoria> cbCategoria;
     @FXML private TextField txtPrecio;
     @FXML private TextField txtStock;
+    @FXML private CheckBox chkActivo;
 
     private final ProductoDAOImpl productoDAO = new ProductoDAOImpl();
-    private final ReportesDAO reportesDAO = new ReportesDAO(); // Nuevo: para registrar eventos de auditoría
-    private Producto productoAEditar; 
+
+    private Producto productoAEditar;       // si es null -> alta
+    private Producto productoOriginal;      // copia para comparar cambios
 
     private final CategoriaDAOImpl categoriaDAO = new CategoriaDAOImpl();
 
@@ -81,19 +85,27 @@ public class ProductoFormularioVistaControlador {
                 cerrarVentana();
             }
 
+        } catch (NumberFormatException nfe) {
+            mostrarAlerta("Formato numérico incorrecto (precio o stock).");
         } catch (Exception e) {
             e.printStackTrace();
             mostrarAlerta("Error inesperado: " + e.getMessage());
         }
     }
-    // Carga los datos de la UI en el objeto Producto
-    private void setProducto(Producto p) {
-    p.setCodigoProducto(Integer.parseInt(txtCodigo.getText().trim()));
-        p.setNombreProducto(txtNombre.getText().trim());
-        p.setDescripcionProducto(txtDescripcion.getText() == null ? null : txtDescripcion.getText().trim());
-        p.setStockProducto(Integer.parseInt(txtStock.getText().trim()));
-        p.setPrecioProducto(new BigDecimal(txtPrecio.getText().trim().replace(',', '.')));
-        p.setCategoria(cbCategoria.getValue());
+    // Guarda los datos del formulario en el objeto Producto
+    public void setProducto(Producto producto) {
+        if (producto != null) {
+            try {
+                producto.setCodigoProducto(Integer.parseInt(txtCodigo.getText().trim()));
+                producto.setNombreProducto(txtNombre.getText().trim());
+                producto.setDescripcionProducto(txtDescripcion.getText() == null ? "" : txtDescripcion.getText().trim());
+                producto.setStockProducto(Integer.parseInt(txtStock.getText().trim()));
+                producto.setPrecioProducto(new BigDecimal(txtPrecio.getText().trim().replace(',', '.')));
+                producto.setCategoria(cbCategoria.getValue());
+            } catch (NumberFormatException e) {
+                throw new IllegalArgumentException("Error en el formato de los campos numéricos");
+            }
+        }
     }
     // Carga los datos del producto a editar en los campos de la UI (el contrario al anterior digamos)
     private void cargarDatosEnCampos(Producto productoAEditar) {
@@ -109,11 +121,15 @@ public class ProductoFormularioVistaControlador {
     // Setter para el producto a editar
     public void setProductoAEditar(Producto producto) {
         this.productoAEditar = producto; 
+        this.productoOriginal = CopiarProductoUtil.copiarProducto(producto);
         cargarDatosEnCampos(producto);
     }
-    // Metodo para cancelar y cerrar la ventana
-    @FXML private void cancelar() { cerrarVentana(); }
-    
+
+    @FXML
+    private void cancelar() {
+        cerrarVentana();
+    }
+
     private void cerrarVentana() {
         Stage stage = (Stage) txtNombre.getScene().getWindow();
         stage.close();
@@ -125,6 +141,8 @@ public class ProductoFormularioVistaControlador {
         alert.setContentText(mensaje);
         alert.showAndWait();
     }
+
+    private final ReportesDAO reportesDAO = new ReportesDAO();
 
     /**
      *  Método nuevo:

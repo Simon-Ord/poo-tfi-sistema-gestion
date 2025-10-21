@@ -12,15 +12,10 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import com.unpsjb.poo.model.Usuario;
-import com.unpsjb.poo.model.EventoAuditoria;
 import com.unpsjb.poo.persistence.dao.impl.UsuarioDAOImpl;
-import com.unpsjb.poo.persistence.dao.ReportesDAO;
+import com.unpsjb.poo.util.AuditoriaManager;
 import com.unpsjb.poo.util.Sesion;
 
-/**
- * Controlador de la vista de Login.
- * Gestiona el inicio de sesión y acceso al cambio de datos.
- */
 public class LoginVistaControlador {
 
     @FXML private Button btnLogin;
@@ -29,12 +24,10 @@ public class LoginVistaControlador {
     @FXML private TextField txtUser;
 
     private final UsuarioDAOImpl usuarioDAO = new UsuarioDAOImpl();
-    private final ReportesDAO reportesDAO = new ReportesDAO();
 
     @FXML
     void eventKey(ActionEvent event) {}
 
-    // 🔹 BOTÓN LOGIN
     @FXML
     void btnLoginAction(ActionEvent event) {
         try {
@@ -49,20 +42,15 @@ public class LoginVistaControlador {
             Usuario user = usuarioDAO.verificarLogin(usuario, contraseña);
 
             if (user != null) {
-                // Iniciar sesión en memoria
                 Sesion.iniciarSesion(user);
 
-                // Registrar evento con NOMBRE COMPLETO
-                EventoAuditoria evento = new EventoAuditoria();
-                evento.setUsuario(user.getNombre()); // <-- ahora guarda el nombre y apellido
-                evento.setAccion("INICIAR SESIÓN");
-                evento.setEntidad("sesion");
-                evento.setDetalles("El usuario " + user.getNombre() + " inició sesión correctamente.");
+                // 🔹 Registrar inicio de sesión usando AuditoriaManager
+                AuditoriaManager.registrar(
+                    "INICIAR SESIÓN",
+                    "sesion",
+                    "inició sesión correctamente."
+                );
 
-                // Registrar en BD
-                reportesDAO.registrarEvento(evento);
-
-                // Cargar la vista principal
                 FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/principalView.fxml"));
                 Parent root = loader.load();
 
@@ -72,7 +60,6 @@ public class LoginVistaControlador {
                 stage.setMaximized(true);
                 stage.show();
 
-                // Cerrar login
                 Stage loginStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
                 loginStage.close();
 
@@ -86,7 +73,6 @@ public class LoginVistaControlador {
         }
     }
 
-    // 🔹 BOTÓN "MODIFICAR MIS DATOS"
     @FXML
     void btnCambiarDatosAction(ActionEvent event) {
         try {

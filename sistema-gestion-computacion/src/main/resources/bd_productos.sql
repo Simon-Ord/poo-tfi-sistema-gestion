@@ -67,16 +67,24 @@ CREATE TABLE productos_digitales (
     FOREIGN KEY (id_proveedor_digital) REFERENCES proveedores_digitales(id)
 );
 
+
+
+-- ============================================================
+-- Insertar datos de prueba generales (Nombres reales)
+-- =============================================================
+
+-- Insertar proveedores digitales de ejemplo
+INSERT INTO proveedores_digitales (nombre) VALUES
+('Steam'), ('Epic Games'), ('GOG'), ('Origin'), ('Uplay');
+-- Insertar fabricantes de ejemplo
+INSERT INTO fabricantes (nombre) VALUES
+('Dell'), ('HP'), ('Lenovo'), ('Asus'), ('Acer');
+
+
 -- Insertar categorías de ejemplo
 INSERT INTO categorias (nombre) VALUES
-    ('Monitores'),
-    ('Mouses'),
-    ('Teclados'),
-    ('Periféricos'),
-    ('Componentes'),
-    ('Accesorios'),
-    ('Sin Categoría'),
-    ('Software');
+    ('Monitores'), ('Mouses'), ('Teclados'), ('Periféricos'), ('Componentes'),
+    ('Accesorios'), ('Sin Categoría'), ('Software');
 -- Insertar productos de ejemplo
 INSERT INTO productos (nombre_producto, descripcion_producto, stock_producto, precio_producto, categoria_id, codigo_producto, activo)
 VALUES 
