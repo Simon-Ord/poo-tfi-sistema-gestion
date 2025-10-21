@@ -34,33 +34,23 @@ CREATE TABLE productos (
     categoria_producto VARCHAR(50),
     fabricante_producto VARCHAR(100),
     codigo_producto INT UNIQUE NOT NULL,
-    id_producto SERIAL PRIMARY KEY,
-    nombre_producto VARCHAR(100) NOT NULL,
-    descripcion_producto TEXT,
-    stock_producto INT NOT NULL DEFAULT 0,
-    precio_producto NUMERIC(10,2) NOT NULL,
-    categoria_producto VARCHAR(50),
-    fabricante_producto VARCHAR(100),
-    codigo_producto INT UNIQUE NOT NULL,
-    estado BOOLEAN DEFAULT TRUE,
-    activo BOOLEAN DEFAULT TRUE
+    activo BOOLEAN DEFAULT TRUE,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- <--- CAMPO AÑADIDO
 );
 -- Insertar productos de ejemplo
-INSERT INTO productos (nombre_producto, descripcion_producto, stock_producto, precio_producto, categoria_producto, fabricante_producto, codigo_producto, estado, activo)
-VALUES
-('Laptop XYZ', 'Laptop de alta gama con 16GB RAM y 512GB SSD', 10, 1200.00, 'Electrónica', 'TechCorp', 1001, TRUE, TRUE),
-('Smartphone ABC', 'Smartphone con cámara de 48MP y pantalla OLED', 25, 800.00, 'Electrónica', 'PhoneMakers', 1002, TRUE, TRUE),
-('Auriculares Inalámbricos', 'Auriculares con cancelación de ruido y Bluetooth 5.0', 50, 150.00, 'Accesorios', 'SoundWave', 1003, TRUE, TRUE),
-('Monitor 4K Ultra HD', 'Monitor de 27 pulgadas con resolución 4K y HDR', 15, 400.00, 'Electrónica', 'DisplayTech', 1004, TRUE, TRUE),
-('Teclado Mecánico RGB', 'Teclado mecánico con retroiluminación RGB y switches táctiles', 30, 100.00, 'Accesorios', 'KeyMasters', 1005, TRUE, TRUE);
+INSERT INTO productos (nombre_producto, descripcion_producto, stock_producto, precio_producto, categoria_producto, fabricante_producto, codigo_producto, activo, fecha_creacion)
+VALUES 
+('Laptop XYZ', 'Laptop de alto rendimiento', 10, 1500.00, 'Computadoras', 'TechCorp', 1001, TRUE, CURRENT_TIMESTAMP),
+('Mouse Inalámbrico', 'Mouse ergonómico inalámbrico', 50, 25.99, 'Periféricos', 'GadgetPro', 1002, TRUE, CURRENT_TIMESTAMP),
+('Teclado Mecánico', 'Teclado mecánico retroiluminado', 30, 75.50, 'Periféricos', 'KeyMasters', 1003, TRUE, CURRENT_TIMESTAMP);
+
+
 -- VERIFICAR CONTENIDO DE LA TABLA
 SELECT * FROM productos;
 -- =============================================================
 -- 💰  TABLA DE FACTURAS (simplificada)
 -- =============================================================
-    activo BOOLEAN DEFAULT TRUE,
-    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- <--- CAMPO AÑADIDO
-);
+
 -- 💰 TABLA DE FACTURAS (simplificada)
 CREATE TABLE facturas (
     id SERIAL PRIMARY KEY,
@@ -108,16 +98,6 @@ VALUES
 -- VERIFICAR CONTENIDO DE LA TABLA
 SELECT * FROM usuarios;
 
-
-
-
-
--- Insertar productos de ejemplo
-INSERT INTO productos (nombre_producto, descripcion_producto, stock_producto, precio_producto, categoria_producto, fabricante_producto, codigo_producto, estado, activo)
-VALUES
-('Laptop XYZ', 'Laptop de alto rendimiento', 10, 1500.00, 'Computadoras', 'TechCorp', 1001, TRUE, TRUE),
-('Mouse Inalámbrico', 'Mouse ergonómico inalámbrico', 50, 25.99, 'Periféricos', 'GadgetPro', 1002, TRUE, TRUE),
-('Teclado Mecánico', 'Teclado mecánico retroiluminado', 30, 75.50, 'Periféricos', 'KeyMasters', 1003, TRUE, TRUE);
 
 -- =============================================================
 -- ✅ FUNCIONES Y TRIGGERS DE AUDITORÍA PARA PRODUCTOS (CORREGIDOS)

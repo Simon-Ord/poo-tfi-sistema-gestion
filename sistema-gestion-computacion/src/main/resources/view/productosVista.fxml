@@ -2,6 +2,7 @@
 
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
@@ -31,7 +32,12 @@
 
                 <!-- (Opcional) Barra de búsqueda -->
                 <HBox alignment="CENTER_RIGHT" prefWidth="820" spacing="10">
-                    <TextField fx:id="txtBuscar" prefWidth="300" promptText="Buscar por nombre o código" />
+               <HBox prefHeight="25.0" prefWidth="412.0">
+                  <children>
+                     <CheckBox fx:id="chBoxInactivos" mnemonicParsing="false" onAction="#MostrarProductosInactivos" prefHeight="25.0" prefWidth="179.0" text="Mostrar productos inactivos" textFill="WHITE" />
+                  </children>
+               </HBox>
+                    <TextField fx:id="txtBuscar" prefWidth="300" promptText="Buscar por cualquier campo" />
                     <Button onAction="#buscarProductos" styleClass="btn-accion" text="Buscar" />
                     <Button onAction="#limpiarBusqueda" styleClass="btn-secundario" text="Limpiar" />
                 </HBox>
@@ -41,19 +47,18 @@
                     <columns>
                         <TableColumn fx:id="colCodigo" prefWidth="58.0" text="Código" />
                         <TableColumn fx:id="colNombre" prefWidth="127.0" text="Nombre" />
-                        <TableColumn fx:id="colDescripcion" prefWidth="249.0" text="Descripción" />
-                        <TableColumn fx:id="colCategoria" prefWidth="124.0" text="Categoría" />
-                        <TableColumn fx:id="colFabricante" prefWidth="109.0" text="Fabricante" />
-                        <TableColumn fx:id="colPrecio" minWidth="0.0" prefWidth="67.0" text="Precio" />
-                        <TableColumn fx:id="colCantidad" prefWidth="57.0" text="Stock" />
-                  <TableColumn fx:id="colActivo" prefWidth="56.0" text="Activo" />
+                        <TableColumn fx:id="colDescripcion" prefWidth="263.2000274658203" text="Descripción" />
+                        <TableColumn fx:id="colCategoria" prefWidth="110.39999389648438" text="Categoría" />
+                        <TableColumn fx:id="colFabricante" prefWidth="131.20001220703125" text="Fabricante" />
+                        <TableColumn fx:id="colPrecio" minWidth="0.0" prefWidth="83.199951171875" text="Precio" />
+                        <TableColumn fx:id="colCantidad" prefWidth="73.5999755859375" text="Stock" />
                     </columns>
                 </TableView>
 
                 <!-- Botones -->
                 <HBox alignment="CENTER" spacing="15">
+               <Button fx:id="btnDetalles" mnemonicParsing="false" onAction="#detallesProducto" text="Detalles" />
                     <Button onAction="#agregarProducto" styleClass="btn-accion" text="Agregar Producto" />
-               <Button fx:id="btnEliminarProducto" mnemonicParsing="false" onAction="#eliminarProducto" text="Eliminar Producto" />
                <Button fx:id="btnModificarProducto" mnemonicParsing="false" onAction="#modificarProducto" text="Modificar Producto" />
                     <Button onAction="#cambiarEstadoProducto" styleClass="btn-accion" text="Activar/Desactivar Producto" />
                 </HBox>

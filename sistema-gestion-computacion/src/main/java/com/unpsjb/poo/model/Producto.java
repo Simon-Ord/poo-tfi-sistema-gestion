@@ -1,48 +1,46 @@
 package com.unpsjb.poo.model;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 
 public class Producto {
-	private int idProducto;
-	private String nombreProducto;
-	private String descripcionProducto;
-	private int stockProducto;
-	private BigDecimal precioProducto;
-	private String categoriaProducto;
-	private String fabricanteProducto;
-	private int codigoProducto;
-	private boolean estado; // Para borrarlo del sistema sin eliminarlo de la BD
-	private boolean activo; 
-	
-	public Producto() {
-	//Constructor por defecto, necesario para el metodo Read en el DAO	
-	}
-	
-	public Producto(int idProducto,String nombreProducto,String descripcionProducto,int stockProducto,BigDecimal precioProducto,String categoriaProducto,String fabricanteProducto,int codigoProducto, boolean estado) {
-		this.idProducto = idProducto;
-		this.nombreProducto = nombreProducto;
-		this.descripcionProducto = descripcionProducto;
-		this.stockProducto = stockProducto;
-		this.precioProducto = precioProducto;
-		this.categoriaProducto = categoriaProducto;
-		this.fabricanteProducto = fabricanteProducto;
-		this.codigoProducto = codigoProducto;
-		this.estado = estado;
-		this.activo = activo;
-	}
+    private int idProducto;
+    private String nombreProducto;
+    private String descripcionProducto;
+    private int stockProducto;
+    private BigDecimal precioProducto;
+    private String categoriaProducto;
+    private String fabricanteProducto;
+    private int codigoProducto;
+    private boolean activo;
+    private Timestamp fechaCreacion;
+    
+    public Producto() {
+        // Constructor por defecto, necesario para el método Read en el DAO
+        this.activo = true; // Por defecto los nuevos productos están activos
+    }
+    
+    public Producto(int idProducto, String nombreProducto, String descripcionProducto, 
+                   int stockProducto, BigDecimal precioProducto, String categoriaProducto, 
+                   String fabricanteProducto, int codigoProducto, boolean activo) {
+        this.idProducto = idProducto;
+        this.nombreProducto = nombreProducto;
+        this.descripcionProducto = descripcionProducto;
+        this.stockProducto = stockProducto;
+        this.precioProducto = precioProducto;
+        this.categoriaProducto = categoriaProducto;
+        this.fabricanteProducto = fabricanteProducto;
+        this.codigoProducto = codigoProducto;
+        this.activo = activo;
+    }
 
-	// Constructor compatible con versiones anteriores (por defecto estado = true)
-	public Producto(int idProducto,String nombreProducto,String descripcionProducto,int stockProducto,BigDecimal precioProducto,String categoriaProducto,String fabricanteProducto,int codigoProducto) {
-		this(idProducto, nombreProducto, descripcionProducto, stockProducto, precioProducto, categoriaProducto, fabricanteProducto, codigoProducto, true);
-	}
-
-		public boolean isEstado() {
-				return estado;
-		}
-
-		public void setEstado(boolean estado) {
-				this.estado = estado;
-		}
+    // Constructor compatible con versiones anteriores (por defecto activo = true)
+    public Producto(int idProducto, String nombreProducto, String descripcionProducto,
+                   int stockProducto, BigDecimal precioProducto, String categoriaProducto,
+                   String fabricanteProducto, int codigoProducto) {
+        this(idProducto, nombreProducto, descripcionProducto, stockProducto, 
+             precioProducto, categoriaProducto, fabricanteProducto, codigoProducto, true);
+    }
 
 	
 public int getIdProducto() {
@@ -116,26 +114,19 @@ public void setCodigoProducto (int codigoProducto) {
 }
 
 public boolean isActivo() {
-	return activo;
+    return activo;
 }
 
 public void setActivo(boolean activo) {
-	this.activo = activo;
+    this.activo = activo;
 }
 
+public Timestamp getFechaCreacion() {
+    return fechaCreacion;
+}
 
-
-
-
-
-
-
-
-
-
-
-
-	
-	
+public void setFechaCreacion(Timestamp fechaCreacion) {
+    this.fechaCreacion = fechaCreacion;
+}
 
 }

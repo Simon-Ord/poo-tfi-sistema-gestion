@@ -14,16 +14,17 @@ import com.unpsjb.poo.persistence.GestorDeConexion;
 import com.unpsjb.poo.persistence.dao.DAO;
 
 public class ProductoDAOImpl implements DAO<Producto> {
-
+    // ===============
+    //  Crear producto
+    // ===============
     @Override
     public boolean create(Producto producto) {
         String sql = """
             INSERT INTO productos 
-            (nombre_producto, descripcion_producto, stock_producto, precio_producto, categoria_producto, fabricante_producto, codigo_producto, estado, activo)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)
+            (nombre_producto, descripcion_producto, stock_producto, precio_producto, categoria_producto, 
+            fabricante_producto, codigo_producto, activo, fecha_creacion)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
             """;
-        // Nota: La columna 'id' (código_producto) es SERIAL, se genera sola. No se debe incluir aquí.
-        // Si tienes una columna 'codigo' separada de 'id', debes incluirla. Asumo que usas 'id' como código.
         try (Connection conexion = GestorDeConexion.getInstancia().getConexion();
              PreparedStatement pstmt = conexion.prepareStatement(sql)) {
 
@@ -34,8 +35,7 @@ public class ProductoDAOImpl implements DAO<Producto> {
             pstmt.setString(5, producto.getCategoriaProducto());
             pstmt.setString(6, producto.getFabricanteProducto());
             pstmt.setInt(7, producto.getCodigoProducto());
-            pstmt.setBoolean(8, producto.isEstado());
-            pstmt.setBoolean(9, producto.isActivo()); 
+            pstmt.setBoolean(8, producto.isActivo());
             int filas = pstmt.executeUpdate();
 
             return filas > 0;
@@ -45,14 +45,12 @@ public class ProductoDAOImpl implements DAO<Producto> {
             return false;
         }
     }
-
-    // ================================
+    // =====================
     //  Leer producto por ID
-    // ================================
+    // =====================
     @Override
     public Optional<Producto> read(int id) {
-        // COLUMNA CORREGIDA: Usando 'id' en lugar de 'id_producto'
-        String sql = "SELECT * FROM productos WHERE id = ?"; 
+        String sql = "SELECT * FROM productos WHERE id_producto = ?"; 
         Producto producto = null;
         try (Connection conexion = GestorDeConexion.getInstancia().getConexion();
              PreparedStatement pstmt = conexion.prepareStatement(sql)) {
@@ -68,20 +66,17 @@ public class ProductoDAOImpl implements DAO<Producto> {
 
         return Optional.ofNullable(producto);
     }
-
-    // ================================
+    // =====================
     //  Actualizar producto
-    // ================================
+    // =====================
     @Override
-    public boolean update (Producto producto) {
+    public boolean update(Producto producto) {
         String sql = """
             UPDATE productos 
             SET nombre_producto = ?, descripcion_producto = ?, stock_producto = ?, precio_producto = ?, 
-                categoria_producto = ?, fabricante_producto = ?, codigo_producto = ?, estado = ?, activo = ?
+                categoria_producto = ?, fabricante_producto = ?, codigo_producto = ?, activo = ?
             WHERE id_producto = ?
             """;
-        // Nota: Si 'codigo_producto' es el mismo que 'id', no tiene sentido actualizarlo
-        // SET nombre = ?, ..., id = ? (solo si el id no es la PK). Asumo que actualizas por id.
         try (Connection conexion = GestorDeConexion.getInstancia().getConexion();
              PreparedStatement pstmt = conexion.prepareStatement(sql)) {
 
@@ -92,9 +87,8 @@ public class ProductoDAOImpl implements DAO<Producto> {
             pstmt.setString(5, producto.getCategoriaProducto());
             pstmt.setString(6, producto.getFabricanteProducto());
             pstmt.setInt(7, producto.getCodigoProducto());
-            pstmt.setBoolean(8, producto.isEstado());
-            pstmt.setBoolean(9, producto.isActivo());
-            pstmt.setInt(10, producto.getIdProducto());
+            pstmt.setBoolean(8, producto.isActivo());
+            pstmt.setInt(9, producto.getIdProducto());
 
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -102,14 +96,12 @@ public class ProductoDAOImpl implements DAO<Producto> {
         }
         return false;
     }
-
     // ===================================
-    //  Eliminar producto (estado = false)
+    //  Eliminar producto (activo = false)
     // ===================================
 @Override
 public boolean delete(int id) {
-    // Para "eliminar" del sistema sin borrar la fila, marcamos estado = FALSE
-    String sql = "UPDATE productos SET estado = FALSE WHERE id_producto = ?";
+    String sql = "UPDATE productos SET activo = FALSE WHERE id_producto = ?";
     try (Connection conexion = GestorDeConexion.getInstancia().getConexion();
          PreparedStatement pstmt = conexion.prepareStatement(sql)) {
         pstmt.setInt(1, id);
@@ -120,13 +112,30 @@ public boolean delete(int id) {
         return false;
     }
 }
-    // ============================
-    //  Listar todos los productos 
-    // ============================
+    // ===================================
+    //  Listar todos los productos activos
+    // ===================================
     @Override
     public List<Producto> findAll() {
         List<Producto> productos = new ArrayList<>();
-        String sql = "SELECT * FROM productos WHERE estado = TRUE ORDER BY nombre_producto";
+        String sql = "SELECT * FROM productos WHERE activo = TRUE ORDER BY nombre_producto";
+        try (Connection conexion = GestorDeConexion.getInstancia().getConexion();
+             Statement stmt = conexion.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+            while (rs.next()) {
+                productos.add(mapResultSet(rs));
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al obtener todos los productos: " + e.getMessage());
+        }
+        return productos;
+    }
+    // ===============================================
+    //  Listar todos los productos activos e Inactivos
+    // ===============================================
+    public List<Producto> findAllCompleto() {
+        List<Producto> productos = new ArrayList<>();
+        String sql = "SELECT * FROM productos ORDER BY nombre_producto";
         try (Connection conexion = GestorDeConexion.getInstancia().getConexion();
              Statement stmt = conexion.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
@@ -171,29 +180,22 @@ public boolean reactivar(int id) {
         return false;
     }
 }
-    // ---------------------------
-    // Método auxiliar de mapeo - ¡CORREGIDO!
-    // ---------------------------
+    // ========================
+    // Método auxiliar de mapeo
+    // ========================
     private Producto mapResultSet(ResultSet rs) throws SQLException {
-        Producto p = new Producto();
-        p.setIdProducto(rs.getInt("id_producto"));
-        p.setNombreProducto(rs.getString("nombre_producto"));
-        p.setDescripcionProducto(rs.getString("descripcion_producto"));
-        p.setStockProducto(rs.getInt("stock_producto"));
-        p.setPrecioProducto(rs.getBigDecimal("precio_producto"));
-        p.setCategoriaProducto(rs.getString("categoria_producto"));
-        p.setFabricanteProducto(rs.getString("fabricante_producto"));
-        p.setCodigoProducto(rs.getInt("codigo_producto"));
-        try {
-            p.setEstado(rs.getBoolean("estado"));
-        } catch (SQLException e) {
-            p.setEstado(true);
-        }
-        try {
-            p.setActivo(rs.getBoolean("activo"));
-        } catch (SQLException e) {
-            p.setActivo(true);
-        }
-        return p;
-    }
+    Producto p = new Producto();
+    p.setIdProducto(rs.getInt("id_producto")); 
+    p.setNombreProducto(rs.getString("nombre_producto"));
+    p.setDescripcionProducto(rs.getString("descripcion_producto"));
+    p.setStockProducto(rs.getInt("stock_producto"));
+    p.setPrecioProducto(rs.getBigDecimal("precio_producto"));
+    p.setCategoriaProducto(rs.getString("categoria_producto"));
+    p.setFabricanteProducto(rs.getString("fabricante_producto"));
+    p.setCodigoProducto(rs.getInt("codigo_producto"));
+    p.setActivo(rs.getBoolean("activo"));
+    p.setFechaCreacion(rs.getTimestamp("fecha_creacion"));
+    return p;
+}
+
 }

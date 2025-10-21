@@ -15,6 +15,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -25,23 +26,25 @@ public class ProductosVistaControlador {
 
     // ====== VISTA (IDs deben coincidir con el FXML) ======
     @FXML private TableView<Producto> tablaProductos;
-    @FXML private TableColumn<Producto, Integer>    colCodigo;
-    @FXML private TableColumn<Producto, String>     colNombre;
-    @FXML private TableColumn<Producto, String>     colDescripcion;
-    @FXML private TableColumn<Producto, String>     colCategoria;
-    @FXML private TableColumn<Producto, String>     colFabricante;
+    @FXML private TableColumn<Producto, Integer> colCodigo;
+    @FXML private TableColumn<Producto, String> colNombre;
+    @FXML private TableColumn<Producto, String> colDescripcion;
+    @FXML private TableColumn<Producto, String> colCategoria;
+    @FXML private TableColumn<Producto, String> colFabricante;
     @FXML private TableColumn<Producto, BigDecimal> colPrecio;
-    @FXML private TableColumn<Producto, Integer>    colCantidad;
-    @FXML private TableColumn<Producto, Boolean>    colActivo;
+    @FXML private TableColumn<Producto, Integer> colCantidad;
 
     // barra de búsqueda del FXML nuevo
     @FXML private TextField txtBuscar;
+    // Checkbox para mostrar productos inactivos
+    @FXML private CheckBox chBoxInactivos;
 
     private final ProductoDAOImpl productoDAO = new ProductoDAOImpl();
     private ObservableList<Producto> backingList = FXCollections.observableArrayList();
 
     @FXML
-    private void initialize() {
+    public void initialize() {
+        // Configurar las columnas de la tabla
         colCodigo.setCellValueFactory(c -> new javafx.beans.property.SimpleObjectProperty<>(c.getValue().getCodigoProducto()));
         colNombre.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getNombreProducto()));
         colDescripcion.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getDescripcionProducto()));
@@ -49,40 +52,52 @@ public class ProductosVistaControlador {
         colFabricante.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getFabricanteProducto()));
         colPrecio.setCellValueFactory(c -> new javafx.beans.property.SimpleObjectProperty<>(c.getValue().getPrecioProducto()));
         colCantidad.setCellValueFactory(c -> new javafx.beans.property.SimpleObjectProperty<>(c.getValue().getStockProducto()));
-        colActivo.setCellValueFactory(c -> new javafx.beans.property.SimpleObjectProperty<>(c.getValue().isActivo()));
 
         cargarProductos();
     }
 
     private void cargarProductos() {
-    List<Producto> lista = productoDAO.findAll(); // filtra estado=TRUE si corresponde
-    ObservableList<Producto> obsList = FXCollections.observableArrayList(lista);
-    tablaProductos.setItems(obsList);
+        // Obtener solo productos activos
+        List<Producto> lista = productoDAO.findAll();
+        backingList = FXCollections.observableArrayList(lista);
+        tablaProductos.setItems(backingList);
+        tablaProductos.refresh();
     }
 
     // ====== HANDLERS que el FXML referencia con onAction ======
 
-    @FXML private void buscarProductos() {
-        String q = (txtBuscar == null || txtBuscar.getText() == null) ? "" : txtBuscar.getText().trim().toLowerCase();
-        if (q.isEmpty()) {
-            tablaProductos.setItems(backingList);
-        } else {
-            List<Producto> filtrados = backingList.stream()
-                .filter(p ->
-                        (p.getNombreProducto() != null && p.getNombreProducto().toLowerCase().contains(q)) ||
-                        String.valueOf(p.getCodigoProducto()).contains(q)
-                )
-                .collect(Collectors.toList());
-            tablaProductos.setItems(FXCollections.observableArrayList(filtrados));
-        }
-        tablaProductos.refresh();
+    @FXML
+    private void buscarProductos() {
+    String q = (txtBuscar != null && txtBuscar.getText() != null) ? 
+               txtBuscar.getText().trim().toLowerCase() : "";
+
+    if (q.isEmpty()) {
+        tablaProductos.setItems(backingList);
+        return;
     }
+    
+    List<Producto> resultados = backingList.stream()
+        .filter(p -> {
+            String nombre = p.getNombreProducto() != null ? p.getNombreProducto().toLowerCase() : "";
+            String descripcion = p.getDescripcionProducto() != null ? p.getDescripcionProducto().toLowerCase() : "";
+            String categoria = p.getCategoriaProducto() != null ? p.getCategoriaProducto().toLowerCase() : "";
+            String fabricante = p.getFabricanteProducto() != null ? p.getFabricanteProducto().toLowerCase() : "";
+            String codigo = String.valueOf(p.getCodigoProducto());
+
+            return nombre.contains(q)
+                || descripcion.contains(q)
+                || categoria.contains(q)
+                || fabricante.contains(q)
+                || codigo.contains(q);
+        })
+        .collect(Collectors.toList());
+    tablaProductos.setItems(FXCollections.observableArrayList(resultados));
+}
+
 
     @FXML
     private void limpiarBusqueda() {
-        if (txtBuscar != null) txtBuscar.clear();
-    tablaProductos.setItems(backingList);
-        tablaProductos.refresh();
+        cargarProductos();
     }
 
     @FXML
@@ -101,24 +116,9 @@ public class ProductosVistaControlador {
             mostrarAlerta("Error al abrir el formulario: " + e.getMessage());
         }
     }
-    @FXML void eliminarProducto() {
-        Producto seleccionado = tablaProductos.getSelectionModel().getSelectedItem();
-        if (seleccionado == null) {
-            mostrarAlerta("Seleccione un producto para eliminar.");
-            return;
-        }
-        seleccionado.setEstado(false);
-        boolean ok = productoDAO.update(seleccionado);
 
-        if (ok) {
-            mostrarAlerta("producto eliminado correctamente.");
-            cargarProductos();
-        } else {
-            mostrarAlerta("Error al eliminar el producto.");
-        }
-    }
     @FXML
-private void modificarProducto() {
+    private void modificarProducto() {
     Producto productoSeleccionado = tablaProductos.getSelectionModel().getSelectedItem();
     if (productoSeleccionado == null) {
         mostrarAlerta("Debe seleccionar un producto para modificarlo.");
@@ -142,23 +142,41 @@ private void modificarProducto() {
         e.printStackTrace();
     }
 }
-
+    // Metodo para cambiar el estado activo/inactivo de un producto
     @FXML
     private void cambiarEstadoProducto() {
         Producto seleccionado = tablaProductos.getSelectionModel().getSelectedItem();
         if (seleccionado == null) {
             mostrarAlerta("Seleccione un producto para cambiar su estado.");
             return;
+        }
+        String nuevoEstado = seleccionado.isActivo() ? "inactivo" : "activo";
+        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+        confirm.setTitle("Confirmar cambio de estado");
+        confirm.setHeaderText(null);
+        confirm.setContentText("¿Desea cambiar el estado del producto a " + nuevoEstado + "?");
+        if (confirm.showAndWait().get().getButtonData().isDefaultButton()) {
+            seleccionado.setActivo(!seleccionado.isActivo());
+            boolean ok = productoDAO.update(seleccionado);
+            if (ok) {
+                mostrarAlerta("El producto cambió al estado: " + (seleccionado.isActivo() ? "Activo" : "Inactivo"));
+                cargarProductos();
+            } else {
+                mostrarAlerta("Error al cambiar el estado del producto.");
             }
-        seleccionado.setActivo(!seleccionado.isActivo());
-        boolean ok = productoDAO.update(seleccionado);
-        if (ok) {
-            mostrarAlerta("El producto cambio al estado: " + (seleccionado.isActivo() ? "Activo" : "Inactivo"));
-            cargarProductos();
-        } else {
-            mostrarAlerta("Error al cambiar el estado del producto.");
         }
     }
+    @FXML private void MostrarProductosInactivos() {
+        if (chBoxInactivos.isSelected()) {
+            // Pedimos al DAO los productos inactivos para no depender del backingList (que contiene solo activos)
+            List<Producto> productosInactivos = productoDAO.findAllCompleto();
+            tablaProductos.setItems(FXCollections.observableArrayList(productosInactivos));
+        } else {
+            // Volver a mostrar activos
+            tablaProductos.setItems(backingList);
+        }
+    }
+    // Metodo para mostrar alertas
     private void mostrarAlerta(String msg) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setHeaderText(null);

@@ -7,7 +7,6 @@ import com.unpsjb.poo.persistence.dao.impl.ProductoDAOImpl;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
-import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -21,7 +20,6 @@ public class ProductoFormularioVistaControlador {
     @FXML private ChoiceBox<String> cbFabricante;
     @FXML private TextField txtPrecio;
     @FXML private TextField txtStock;
-    @FXML private CheckBox chkActivo;
 
     private final ProductoDAOImpl productoDAO = new ProductoDAOImpl();
     private Producto productoAEditar;
@@ -31,7 +29,6 @@ public class ProductoFormularioVistaControlador {
         // HAY QUE CAMBIAR ESTO, CREANDO NUEVAS TABLAS DE CATEGORIAS Y FABRICANTES
         cbCategoria.getItems().addAll("Periféricos", "Monitores", "Almacenamiento", "Componentes", "Otros");
         cbFabricante.getItems().addAll("Logitech", "Redragon", "Kingston", "Samsung", "Otros");
-        chkActivo.setSelected(true); // Por defecto, el nuevo producto está activo
 
     }
     // Guardar producto (crear o actualizar)
@@ -60,7 +57,7 @@ public class ProductoFormularioVistaControlador {
             // ====== CREAR ======
             Producto nuevo = new Producto();
             setProducto(nuevo);
-            nuevo.setEstado(true);
+            nuevo.setActivo(true);
             ok = productoDAO.create(nuevo);
             if (ok) {
                 mostrarAlerta("Producto agregado correctamente.");
@@ -76,14 +73,13 @@ public class ProductoFormularioVistaControlador {
     }
     // Carga los datos de la UI en el objeto Producto
     private void setProducto(Producto p) {
-        p.setCodigoProducto(Integer.parseInt(txtCodigo.getText().trim()));
+        //p.setCodigoProducto(Integer.parseInt(txtCodigo.getText().trim()));
         p.setNombreProducto(txtNombre.getText().trim());
         p.setDescripcionProducto(txtDescripcion.getText() == null ? null : txtDescripcion.getText().trim());
         p.setStockProducto(Integer.parseInt(txtStock.getText().trim()));
         p.setPrecioProducto(new BigDecimal(txtPrecio.getText().trim().replace(',', '.')));
         p.setCategoriaProducto(cbCategoria.getValue());
         p.setFabricanteProducto(cbFabricante.getValue());
-        p.setActivo(chkActivo.isSelected());
     }
     // Carga los datos del producto a editar en los campos de la UI (el contrario al anterior digamos)
     private void cargarDatosEnCampos(Producto productoAEditar) {
@@ -104,6 +100,7 @@ public class ProductoFormularioVistaControlador {
     }
     // Metodo para cancelar y cerrar la ventana
     @FXML private void cancelar() { cerrarVentana(); }
+    
     private void cerrarVentana() {
         Stage stage = (Stage) txtNombre.getScene().getWindow();
         stage.close();
