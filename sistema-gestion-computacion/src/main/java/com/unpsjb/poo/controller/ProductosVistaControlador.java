@@ -1,5 +1,6 @@
 package com.unpsjb.poo.controller;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -20,6 +21,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class ProductosVistaControlador {
@@ -137,6 +139,31 @@ public class ProductosVistaControlador {
             mostrarAlerta("Error al eliminar el producto.");
         }
     }
+    @FXML
+private void modificarProducto() {
+    Producto productoSeleccionado = tablaProductos.getSelectionModel().getSelectedItem();
+    if (productoSeleccionado == null) {
+        mostrarAlerta("Debe seleccionar un producto para modificarlo.");
+        return;
+    }
+    try {
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/productoForm.fxml"));
+        Parent root = loader.load();
+        ProductoFormularioVistaControlador controlador = loader.getController();
+        controlador.setProductoAEditar(productoSeleccionado);
+
+        Stage stage = new Stage();
+        stage.setTitle("Modificar Producto");
+        stage.setScene(new Scene(root));
+        stage.setResizable(false);
+        stage.initModality(Modality.APPLICATION_MODAL);
+        stage.showAndWait();
+
+        cargarProductos();
+    } catch (IOException e) {
+        e.printStackTrace();
+    }
+}
 
     // ==========================
     // 🔄 CAMBIAR ESTADO (activar/desactivar)
@@ -147,6 +174,7 @@ public class ProductosVistaControlador {
         if (seleccionado == null) {
             mostrarAlerta("Seleccione un producto para cambiar su estado.");
             return;
+<<<<<<< HEAD
         }
 
         boolean nuevoEstado = !seleccionado.isActivo();
@@ -162,10 +190,19 @@ public class ProductosVistaControlador {
             registrarEvento("CAMBIAR ESTADO PRODUCTO", "Producto",
                 "El usuario cambió el estado del producto: " + seleccionado.getNombreProducto() +
                 " a " + (nuevoEstado ? "Activo" : "Inactivo"));
+=======
+            }
+        seleccionado.setActivo(!seleccionado.isActivo());
+        boolean ok = productoDAO.update(seleccionado);
+        if (ok) {
+            mostrarAlerta("El producto cambio al estado: " + (seleccionado.isActivo() ? "Activo" : "Inactivo"));
+            cargarProductos();
+>>>>>>> 96994ef3a83f7c6aad22d560e4f2fadd36b1ae55
         } else {
             mostrarAlerta("Error al cambiar el estado del producto.");
         }
     }
+<<<<<<< HEAD
 
     // ==========================
     // 🧾 REGISTRAR EVENTOS (Método nuevo)
@@ -191,6 +228,8 @@ public class ProductosVistaControlador {
     // ==========================
     // ⚠️ UTILIDADES
     // ==========================
+=======
+>>>>>>> 96994ef3a83f7c6aad22d560e4f2fadd36b1ae55
     private void mostrarAlerta(String msg) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setHeaderText(null);

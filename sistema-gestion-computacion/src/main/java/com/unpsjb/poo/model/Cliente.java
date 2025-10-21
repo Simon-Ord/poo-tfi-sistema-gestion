@@ -8,16 +8,23 @@ public class Cliente {
     private String telefono;   // Opcional
     private String direccion;  // Opcional
     private String email;      // Opcional
+    private String tipo;
+
 
     // ========= Constructor ========= //
-    public Cliente (Integer id, String nombre, String cuit, String telefono, String direccion, String email) {
+    public Cliente() {
+}
+   
+        public Cliente(Integer id, String nombre, String cuit, String telefono, String direccion, String email, String tipo) {
         this.id = id;
         this.nombre = nombre;
         this.cuit = cuit;
         this.telefono = telefono;
         this.direccion = direccion;
         this.email = email;
-    }
+        this.tipo = tipo;
+}
+
     // ========= Getters / Setters con validacion ========= //
     public int getId() {return id;}
     public void setId(int id) {this.id = id;}
@@ -49,6 +56,7 @@ public class Cliente {
         if (telefono.trim().length() > 40) throw new IllegalArgumentException("Teléfono demasiado largo");
         this.telefono = telefono;
     }
+    
     public String getDireccion() { return direccion; }
     public void setDireccion(String direccion) {
         if (direccion == null || direccion.isBlank()) {
@@ -67,6 +75,18 @@ public class Cliente {
         if (email.trim().length() > 100) throw new IllegalArgumentException("Email demasiado largo");
         this.email = email.toLowerCase();
     }
+    public String getTipo() { 
+    return tipo; 
+}
+
+    public void setTipo(String tipo) {
+        if (tipo == null || tipo.isBlank()) {
+            this.tipo = "Consumidor Final"; // valor por defecto
+        } else {
+            this.tipo = tipo;
+    }
+}
+
     // Es consumidor final si no tiene CUIT cargado //
     public boolean esConsumidorFinal() {
         return this.cuit == null || this.cuit.isBlank();

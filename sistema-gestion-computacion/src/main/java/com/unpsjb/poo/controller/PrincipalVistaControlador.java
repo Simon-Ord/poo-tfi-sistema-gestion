@@ -88,7 +88,19 @@ public class PrincipalVistaControlador implements Initializable {
         openInternal("Productos", view, 1000, 500);
     }
 
-    @FXML private void clientesAction(ActionEvent event) {}
+    @FXML
+    private void clientesAction(ActionEvent event) {
+        try {
+            Node view = loadView("/view/ClientesView.fxml");
+            openInternal("Gestión de Clientes", view, 800, 500);
+        } catch (Exception e) {
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Error al abrir la gestión de clientes: " + e.getMessage()).showAndWait();
+        }
+}
+
+
+
     @FXML private void facturarAction(ActionEvent event) {}
 
     @FXML

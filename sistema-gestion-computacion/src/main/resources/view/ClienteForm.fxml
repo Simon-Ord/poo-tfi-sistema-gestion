@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.unpsjb.poo.controller.ClienteFormularioVistaControlador"
+      alignment="CENTER"
+      spacing="15"
+      style="-fx-background-color: linear-gradient(to bottom right, #1c1f2b, #242a3a);
+             -fx-padding: 25;
+             -fx-background-radius: 10;">
+
+    <!-- 🔹 Título -->
+    <Label text="Agregar Cliente"
+           style="-fx-font-size: 22px; -fx-text-fill: white; -fx-font-weight: bold;" />
+
+    <!-- 🔹 Contenedor principal -->
+    <GridPane hgap="15" vgap="15">
+        <columnConstraints>
+            <ColumnConstraints halignment="RIGHT" />
+            <ColumnConstraints hgrow="ALWAYS" />
+        </columnConstraints>
+
+        <rowConstraints>
+            <RowConstraints vgrow="NEVER" />
+            <RowConstraints vgrow="NEVER" />
+            <RowConstraints vgrow="NEVER" />
+            <RowConstraints vgrow="NEVER" />
+            <RowConstraints vgrow="NEVER" />
+            <RowConstraints vgrow="NEVER" />
+        </rowConstraints>
+
+        <!-- Nombre -->
+        <Label text="Nombre:" GridPane.rowIndex="0" GridPane.columnIndex="0" style="-fx-text-fill: white;" />
+        <TextField fx:id="txtNombre" GridPane.rowIndex="0" GridPane.columnIndex="1" promptText="Ingrese nombre completo" />
+
+        <!-- CUIT -->
+        <Label text="CUIT:" GridPane.rowIndex="1" GridPane.columnIndex="0" style="-fx-text-fill: white;" />
+        <TextField fx:id="txtCuit" GridPane.rowIndex="1" GridPane.columnIndex="1" promptText="Ej: 20123456789" />
+
+        <!-- Teléfono -->
+        <Label text="Teléfono:" GridPane.rowIndex="2" GridPane.columnIndex="0" style="-fx-text-fill: white;" />
+        <TextField fx:id="txtTelefono" GridPane.rowIndex="2" GridPane.columnIndex="1" promptText="Ej: 2974000000" />
+
+        <!-- Email -->
+        <Label text="Email:" GridPane.rowIndex="3" GridPane.columnIndex="0" style="-fx-text-fill: white;" />
+        <TextField fx:id="txtEmail" GridPane.rowIndex="3" GridPane.columnIndex="1" promptText="cliente@mail.com" />
+
+        <!-- Dirección -->
+        <Label text="Dirección:" GridPane.rowIndex="4" GridPane.columnIndex="0" style="-fx-text-fill: white;" />
+        <TextField fx:id="txtDireccion" GridPane.rowIndex="4" GridPane.columnIndex="1" promptText="Ej: San Martín 123" />
+
+        <!-- Tipo de Cliente -->
+        <Label text="Tipo de Cliente:" GridPane.rowIndex="5" GridPane.columnIndex="0" style="-fx-text-fill: white;" />
+        <ChoiceBox fx:id="cbTipoCliente" GridPane.rowIndex="5" GridPane.columnIndex="1" />
+    </GridPane>
+
+    <!-- 🔹 Botones -->
+    <HBox alignment="CENTER" spacing="20">
+        <Button fx:id="btnGuardar" text="Guardar" onAction="#guardarCliente"
+                style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;
+                       -fx-background-radius: 10; -fx-padding: 8 18;" />
+
+        <Button fx:id="btnCancelar" text="Cancelar" onAction="#cancelar"
+                style="-fx-background-color: #F44336; -fx-text-fill: white; -fx-font-weight: bold;
+                       -fx-background-radius: 10; -fx-padding: 8 18;" />
+    </HBox>
+
+</VBox>
