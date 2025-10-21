@@ -4,6 +4,10 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
+import com.unpsjb.poo.model.EventoAuditoria;
+import com.unpsjb.poo.persistence.dao.ReportesDAO;
+import com.unpsjb.poo.util.Sesion;
+
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -16,11 +20,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
-
-//  Importaciones nuevas para la auditoría y sesión
-import com.unpsjb.poo.model.EventoAuditoria;
-import com.unpsjb.poo.persistence.dao.ReportesDAO;
-import com.unpsjb.poo.util.Sesion;
 
 public class PrincipalVistaControlador implements Initializable {
 
@@ -88,7 +87,15 @@ public class PrincipalVistaControlador implements Initializable {
         openInternal("Productos", view, 1000, 500);
     }
 
-    @FXML private void clientesAction(ActionEvent event) {}
+    @FXML private void clientesAction(ActionEvent event) {
+                try {
+            Node view = loadView("/view/ClientesView.fxml");
+            openInternal("Gestión de Usuarios", view, 800, 500);
+        } catch (Exception e) {
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Error al abrir la gestión de usuarios: " + e.getMessage()).showAndWait();
+        }
+    }
     @FXML private void facturarAction(ActionEvent event) {}
 
     @FXML

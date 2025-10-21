@@ -9,7 +9,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import com.unpsjb.poo.model.Producto;
+import com.unpsjb.poo.model.productos.Categoria;
+import com.unpsjb.poo.model.productos.Producto;
 import com.unpsjb.poo.persistence.GestorDeConexion;
 import com.unpsjb.poo.persistence.dao.DAO;
 
@@ -21,9 +22,9 @@ public class ProductoDAOImpl implements DAO<Producto> {
     public boolean create(Producto producto) {
         String sql = """
             INSERT INTO productos 
-            (nombre_producto, descripcion_producto, stock_producto, precio_producto, categoria_producto, 
-            fabricante_producto, codigo_producto, activo, fecha_creacion)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
+            (nombre_producto, descripcion_producto, stock_producto, precio_producto, categoria_id, 
+            codigo_producto, activo, fecha_creacion)
+            VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
             """;
         try (Connection conexion = GestorDeConexion.getInstancia().getConexion();
              PreparedStatement pstmt = conexion.prepareStatement(sql)) {
@@ -32,10 +33,16 @@ public class ProductoDAOImpl implements DAO<Producto> {
             pstmt.setString(2, producto.getDescripcionProducto());
             pstmt.setInt(3, producto.getStockProducto());
             pstmt.setBigDecimal(4, producto.getPrecioProducto());
-            pstmt.setString(5, producto.getCategoriaProducto());
-            pstmt.setString(6, producto.getFabricanteProducto());
-            pstmt.setInt(7, producto.getCodigoProducto());
-            pstmt.setBoolean(8, producto.isActivo());
+            
+            // Manejo seguro de la categoría
+            if (producto.getCategoria() != null) {
+                pstmt.setInt(5, producto.getCategoria().getId());
+            } else {
+                pstmt.setInt(5, 1); // Categoría por defecto
+            }
+            
+            pstmt.setInt(6, producto.getCodigoProducto());
+            pstmt.setBoolean(7, producto.isActivo());
             int filas = pstmt.executeUpdate();
 
             return filas > 0;
@@ -50,7 +57,12 @@ public class ProductoDAOImpl implements DAO<Producto> {
     // =====================
     @Override
     public Optional<Producto> read(int id) {
-        String sql = "SELECT * FROM productos WHERE id_producto = ?"; 
+        String sql = """
+            SELECT p.*, c.id as categoria_id, c.nombre as categoria_nombre 
+            FROM productos p 
+            LEFT JOIN categorias c ON p.categoria_id = c.id 
+            WHERE p.id_producto = ?
+            """; 
         Producto producto = null;
         try (Connection conexion = GestorDeConexion.getInstancia().getConexion();
              PreparedStatement pstmt = conexion.prepareStatement(sql)) {
@@ -74,7 +86,7 @@ public class ProductoDAOImpl implements DAO<Producto> {
         String sql = """
             UPDATE productos 
             SET nombre_producto = ?, descripcion_producto = ?, stock_producto = ?, precio_producto = ?, 
-                categoria_producto = ?, fabricante_producto = ?, codigo_producto = ?, activo = ?
+                categoria_id = ?, codigo_producto = ?, activo = ?
             WHERE id_producto = ?
             """;
         try (Connection conexion = GestorDeConexion.getInstancia().getConexion();
@@ -84,11 +96,17 @@ public class ProductoDAOImpl implements DAO<Producto> {
             pstmt.setString(2, producto.getDescripcionProducto());
             pstmt.setInt(3, producto.getStockProducto());
             pstmt.setBigDecimal(4, producto.getPrecioProducto());
-            pstmt.setString(5, producto.getCategoriaProducto());
-            pstmt.setString(6, producto.getFabricanteProducto());
-            pstmt.setInt(7, producto.getCodigoProducto());
-            pstmt.setBoolean(8, producto.isActivo());
-            pstmt.setInt(9, producto.getIdProducto());
+            
+            // Manejo seguro de la categoría
+            if (producto.getCategoria() != null) {
+                pstmt.setInt(5, producto.getCategoria().getId());
+            } else {
+                pstmt.setInt(5, 1); // Categoría por defecto
+            }
+            
+            pstmt.setInt(6, producto.getCodigoProducto());
+            pstmt.setBoolean(7, producto.isActivo());
+            pstmt.setInt(8, producto.getIdProducto());
 
             return pstmt.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -118,7 +136,13 @@ public boolean delete(int id) {
     @Override
     public List<Producto> findAll() {
         List<Producto> productos = new ArrayList<>();
-        String sql = "SELECT * FROM productos WHERE activo = TRUE ORDER BY nombre_producto";
+        String sql = """
+            SELECT p.*, c.id as categoria_id, c.nombre as categoria_nombre 
+            FROM productos p 
+            LEFT JOIN categorias c ON p.categoria_id = c.id 
+            WHERE p.activo = TRUE 
+            ORDER BY p.nombre_producto
+            """;
         try (Connection conexion = GestorDeConexion.getInstancia().getConexion();
              Statement stmt = conexion.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
@@ -135,7 +159,12 @@ public boolean delete(int id) {
     // ===============================================
     public List<Producto> findAllCompleto() {
         List<Producto> productos = new ArrayList<>();
-        String sql = "SELECT * FROM productos ORDER BY nombre_producto";
+        String sql = """
+            SELECT p.*, c.id as categoria_id, c.nombre as categoria_nombre 
+            FROM productos p 
+            LEFT JOIN categorias c ON p.categoria_id = c.id 
+            ORDER BY p.nombre_producto
+            """;
         try (Connection conexion = GestorDeConexion.getInstancia().getConexion();
              Statement stmt = conexion.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
@@ -184,18 +213,28 @@ public boolean reactivar(int id) {
     // Método auxiliar de mapeo
     // ========================
     private Producto mapResultSet(ResultSet rs) throws SQLException {
-    Producto p = new Producto();
-    p.setIdProducto(rs.getInt("id_producto")); 
-    p.setNombreProducto(rs.getString("nombre_producto"));
-    p.setDescripcionProducto(rs.getString("descripcion_producto"));
-    p.setStockProducto(rs.getInt("stock_producto"));
-    p.setPrecioProducto(rs.getBigDecimal("precio_producto"));
-    p.setCategoriaProducto(rs.getString("categoria_producto"));
-    p.setFabricanteProducto(rs.getString("fabricante_producto"));
-    p.setCodigoProducto(rs.getInt("codigo_producto"));
-    p.setActivo(rs.getBoolean("activo"));
-    p.setFechaCreacion(rs.getTimestamp("fecha_creacion"));
-    return p;
-}
+        Producto p = new Producto();
+        p.setIdProducto(rs.getInt("id_producto")); 
+        p.setNombreProducto(rs.getString("nombre_producto"));
+        p.setDescripcionProducto(rs.getString("descripcion_producto"));
+        p.setStockProducto(rs.getInt("stock_producto"));
+        p.setPrecioProducto(rs.getBigDecimal("precio_producto"));
+        p.setCodigoProducto(rs.getInt("codigo_producto"));
+        p.setActivo(rs.getBoolean("activo"));
+        
+        // Obtener la categoría
+        int categoriaId = rs.getInt("categoria_id");
+        if (!rs.wasNull()) {
+            Categoria cat = new Categoria();
+            cat.setId(categoriaId);
+            cat.setNombre(rs.getString("categoria_nombre"));
+            p.setCategoria(cat);
+        }
+        
+        if (rs.getTimestamp("fecha_creacion") != null) {
+            p.setFechaCreacion(rs.getTimestamp("fecha_creacion"));
+        }
+        return p;
+    }
 
 }

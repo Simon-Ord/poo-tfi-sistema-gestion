@@ -2,6 +2,8 @@ package com.unpsjb.poo.model;
 
 import java.math.BigDecimal;
 
+import com.unpsjb.poo.model.productos.Producto;
+
 //Contienen el producto, la cantidad y el precio unitario al momento de agregarlo al carrito
 public class ItemCarrito {
     private Producto producto;

@@ -4,6 +4,8 @@ import java.math.RoundingMode;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.unpsjb.poo.model.productos.Producto;
+
 
 //El carrito de compra solo gestiona los items, no los productos directamente
 //Tampoco se encarga de la logica de negocio

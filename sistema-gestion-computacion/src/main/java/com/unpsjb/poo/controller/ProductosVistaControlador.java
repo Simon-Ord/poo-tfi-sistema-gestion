@@ -5,7 +5,7 @@ import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.unpsjb.poo.model.Producto;
+import com.unpsjb.poo.model.productos.Producto;
 import com.unpsjb.poo.persistence.dao.ReportesDAO;
 import com.unpsjb.poo.persistence.dao.impl.ProductoDAOImpl;
 
@@ -30,7 +30,6 @@ public class ProductosVistaControlador {
     @FXML private TableColumn<Producto, String> colNombre;
     @FXML private TableColumn<Producto, String> colDescripcion;
     @FXML private TableColumn<Producto, String> colCategoria;
-    @FXML private TableColumn<Producto, String> colFabricante;
     @FXML private TableColumn<Producto, BigDecimal> colPrecio;
     @FXML private TableColumn<Producto, Integer> colCantidad;
 
@@ -48,8 +47,7 @@ public class ProductosVistaControlador {
         colCodigo.setCellValueFactory(c -> new javafx.beans.property.SimpleObjectProperty<>(c.getValue().getCodigoProducto()));
         colNombre.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getNombreProducto()));
         colDescripcion.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getDescripcionProducto()));
-        colCategoria.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getCategoriaProducto()));
-        colFabricante.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getFabricanteProducto()));
+        colCategoria.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getCategoria() != null ? c.getValue().getCategoria().getNombre() : "Sin Categoría"));
         colPrecio.setCellValueFactory(c -> new javafx.beans.property.SimpleObjectProperty<>(c.getValue().getPrecioProducto()));
         colCantidad.setCellValueFactory(c -> new javafx.beans.property.SimpleObjectProperty<>(c.getValue().getStockProducto()));
 
@@ -80,14 +78,12 @@ public class ProductosVistaControlador {
         .filter(p -> {
             String nombre = p.getNombreProducto() != null ? p.getNombreProducto().toLowerCase() : "";
             String descripcion = p.getDescripcionProducto() != null ? p.getDescripcionProducto().toLowerCase() : "";
-            String categoria = p.getCategoriaProducto() != null ? p.getCategoriaProducto().toLowerCase() : "";
-            String fabricante = p.getFabricanteProducto() != null ? p.getFabricanteProducto().toLowerCase() : "";
+            String categoria = p.getCategoria() != null ? p.getCategoria().getNombre().toLowerCase() : "";
             String codigo = String.valueOf(p.getCodigoProducto());
 
             return nombre.contains(q)
                 || descripcion.contains(q)
                 || categoria.contains(q)
-                || fabricante.contains(q)
                 || codigo.contains(q);
         })
         .collect(Collectors.toList());

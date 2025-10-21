@@ -49,7 +49,6 @@
                         <TableColumn fx:id="colNombre" prefWidth="127.0" text="Nombre" />
                         <TableColumn fx:id="colDescripcion" prefWidth="263.2000274658203" text="Descripción" />
                         <TableColumn fx:id="colCategoria" prefWidth="110.39999389648438" text="Categoría" />
-                        <TableColumn fx:id="colFabricante" prefWidth="131.20001220703125" text="Fabricante" />
                         <TableColumn fx:id="colPrecio" minWidth="0.0" prefWidth="83.199951171875" text="Precio" />
                         <TableColumn fx:id="colCantidad" prefWidth="73.5999755859375" text="Stock" />
                     </columns>

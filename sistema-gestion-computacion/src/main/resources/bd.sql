@@ -11,7 +11,9 @@ CREATE TABLE usuarios (
     estado BOOLEAN DEFAULT TRUE,
     fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
+-- ====================
+-- 🧑‍🤝‍🧑 TABLA DE CLIENTES
+-- ====================
 CREATE TABLE clientes (
     id SERIAL PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
@@ -20,34 +22,76 @@ CREATE TABLE clientes (
     email VARCHAR(100),
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
-
+-- ======================
+-- 🛒 TABLA DE PRODUCTOS 
+--  =====================
 CREATE TABLE productos (
     id_producto SERIAL PRIMARY KEY,
     nombre_producto VARCHAR(100) NOT NULL,
     descripcion_producto TEXT,
     stock_producto INT NOT NULL DEFAULT 0,
     precio_producto NUMERIC(10,2) NOT NULL,
-    categoria_producto VARCHAR(50),
-    fabricante_producto VARCHAR(100),
+    categoria_id INTEGER REFERENCES categorias(id),
     codigo_producto INT UNIQUE NOT NULL,
     activo BOOLEAN DEFAULT TRUE,
     fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- <--- CAMPO AÑADIDO
 );
--- Insertar productos de ejemplo
-INSERT INTO productos (nombre_producto, descripcion_producto, stock_producto, precio_producto, categoria_producto, fabricante_producto, codigo_producto, activo, fecha_creacion)
-VALUES 
-('Laptop XYZ', 'Laptop de alto rendimiento', 10, 1500.00, 'Computadoras', 'TechCorp', 1001, TRUE, CURRENT_TIMESTAMP),
-('Mouse Inalámbrico', 'Mouse ergonómico inalámbrico', 50, 25.99, 'Periféricos', 'GadgetPro', 1002, TRUE, CURRENT_TIMESTAMP),
-('Teclado Mecánico', 'Teclado mecánico retroiluminado', 30, 75.50, 'Periféricos', 'KeyMasters', 1003, TRUE, CURRENT_TIMESTAMP);
-
-
 -- VERIFICAR CONTENIDO DE LA TABLA
 SELECT * FROM productos;
+-- =================================
+-- 🏢 TABLA DE PROVEEDORES DIGITALES
+-- =================================
+CREATE TABLE proveedores_digitales (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL UNIQUE
+);
+-- VERIFICAR CONTENIDO DE LA TABLA
+SELECT * FROM proveedores_digitales;
+-- ======================
+-- 🏭 TABLA DE FABRICANTE
+-- ======================
+CREATE TABLE fabricantes (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL UNIQUE
+);
+-- VERIFICAR CONTENIDO DE LA TABLA
+SELECT * FROM fabricantes;
+-- ======================
+-- 🗂️ TABLA DE CATEGORÍA
+-- ======================
+CREATE TABLE categorias (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL UNIQUE
+);
+-- VERIFICAR CONTENIDO DE LA TABLA
+SELECT * FROM categorias;
+-- ===========================
+-- 📦 TABLA PRODUCTOS FÍSICOS
+-- ===========================
+CREATE TABLE productos_fisicos (
+    id_producto INT PRIMARY KEY,
+    id_fabricante INT,
+    garantia_meses INT, -- Null si no tiene garantía
+    tipo_garantia VARCHAR(20), -- 'FABRICANTE' o 'TIENDA', null si no tiene
+    estado_fisico VARCHAR(20) NOT NULL, -- 'NUEVO', 'USADO', 'REACONDICIONADO'
+    FOREIGN KEY (id_producto) REFERENCES productos(id_producto) ON DELETE CASCADE,
+    FOREIGN KEY (id_fabricante) REFERENCES fabricantes(id)
+);
+-- ============================
+-- 💾 TABLA PRODUCTOS DIGITALES
+-- ============================
+CREATE TABLE productos_digitales (
+    id_producto INT PRIMARY KEY,
+    id_proveedor_digital INT,
+    tipo_licencia VARCHAR(20) NOT NULL, -- 'PERPETUA', 'SUSCRIPCION', 'TRIAL'
+    activaciones_max INT,
+    duracion_licencia_dias INT, -- Null si es perpetua
+    FOREIGN KEY (id_producto) REFERENCES productos(id_producto) ON DELETE CASCADE,
+    FOREIGN KEY (id_proveedor_digital) REFERENCES proveedores_digitales(id)
+);
 -- =============================================================
 -- 💰  TABLA DE FACTURAS (simplificada)
 -- =============================================================
-
--- 💰 TABLA DE FACTURAS (simplificada)
 CREATE TABLE facturas (
     id SERIAL PRIMARY KEY,
     fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -55,7 +99,9 @@ CREATE TABLE facturas (
     total DECIMAL(12,2) NOT NULL,
     FOREIGN KEY (cliente_id) REFERENCES clientes(id)
 );
-
+-- ==============================
+-- 📄 TABLA DE DETALLE DE FACTURA
+-- ==============================
 CREATE TABLE detalle_factura (
     id SERIAL PRIMARY KEY,
     factura_id INT,
@@ -178,3 +224,34 @@ SELECT * FROM sesiones ORDER BY fecha_inicio DESC;
 
 INSERT INTO usuarios (dni, nombre, usuario, contraseña, rol, estado)
 VALUES ('1234', 'ALEXIS', '1', '1', 'ADMINISTRADOR', true);
+
+
+
+
+
+
+
+
+
+-- ============================================================
+-- Insertar datos de prueba generales (Nombres reales)
+-- =============================================================
+
+-- Insertar proveedores digitales de ejemplo
+INSERT INTO proveedores_digitales (nombre) VALUES
+('Steam'), ('Epic Games'), ('GOG'), ('Origin'), ('Uplay');
+-- Insertar fabricantes de ejemplo
+INSERT INTO fabricantes (nombre) VALUES
+('Dell'), ('HP'), ('Lenovo'), ('Asus'), ('Acer');
+
+-- Insertar categorías de ejemplo
+INSERT INTO categorias (nombre) VALUES
+('Computadoras'), ('Periféricos'), ('Componentes'), ('Accesorios'), ('Software');
+-- Insertar productos de ejemplo
+INSERT INTO productos (nombre_producto, descripcion_producto, stock_producto, precio_producto, categoria_producto, codigo_producto, activo, fecha_creacion)
+VALUES 
+('Mouse Logitech MX Master 3', 'Mouse inalámbrico de alta precisión', 50, 99.99, 'Periféricos', 1001, true, CURRENT_TIMESTAMP),
+('Teclado Mecánico Redragon K552', 'Teclado mecánico compacto con retroiluminación', 30, 79.99, 'Periféricos', 1002, true, CURRENT_TIMESTAMP),
+('Disco Duro Externo Seagate 2TB', 'Disco duro portátil USB 3.0', 20, 89.99, 'Almacenamiento', 1003, true, CURRENT_TIMESTAMP),
+('Monitor Samsung 24" FHD', 'Monitor LED Full HD con tecnología Eye Saver', 15, 149.99, 'Monitores', 1004, true, CURRENT_TIMESTAMP),
+('Tarjeta Gráfica NVIDIA GeForce RTX 3060', 'Tarjeta gráfica para gaming y diseño', 10, 399.99, 'Componentes', 1005, true, CURRENT_TIMESTAMP);
