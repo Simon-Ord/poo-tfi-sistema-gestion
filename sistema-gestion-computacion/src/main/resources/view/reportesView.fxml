@@ -37,7 +37,7 @@
           <font>
               <Font size="18.0" />
           </font></Label>
-        <TextField fx:id="txtAccion" promptText="Crear, Actualizar, Eliminar" styleClass="campo-texto" GridPane.columnIndex="3" GridPane.rowIndex="0" />
+        <TextField fx:id="txtAccion" promptText="Crear, Actualizar, Eliminar, Sesion" styleClass="campo-texto" GridPane.columnIndex="3" GridPane.rowIndex="0" />
 
         <Label styleClass="etiqueta" text="Entidad:" GridPane.columnIndex="0" GridPane.rowIndex="1">
           <font>

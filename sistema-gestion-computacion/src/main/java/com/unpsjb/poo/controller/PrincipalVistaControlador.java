@@ -17,19 +17,43 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
+// 🟩 Importaciones nuevas para la auditoría y sesión
+import com.unpsjb.poo.model.EventoAuditoria;
+import com.unpsjb.poo.persistence.dao.ReportesDAO;
+import com.unpsjb.poo.util.Sesion;
+
 public class PrincipalVistaControlador implements Initializable {
+
+    private final ReportesDAO reportesDAO = new ReportesDAO(); // 🟩 Para registrar el evento de cierre de sesión
+
+    @FXML private Pane desktop;
+    @FXML private Button btnUsuarios;
+    @FXML private Button btnClientes;
+    @FXML private Button btnProductos;
+    @FXML private Button btnFacturar;
+    @FXML private Button btnReportes;
+    @FXML private Button btnCerrarSesion;
+    @FXML private Label lblNombreUsuario;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
-        // Nada especial por ahora
+        // 🟩 Mostrar el nombre del usuario logueado en la etiqueta
+        if (Sesion.getUsuarioActual() != null) {
+            lblNombreUsuario.setText("Usuario: " + Sesion.getUsuarioActual().getNombre());
+        } else {
+            lblNombreUsuario.setText("Usuario: Desconocido");
+        }
     }
 
-    // ========== MÉTODOS DE UTILIDAD ==========
+    // ==================================================
+    // 🔹 MÉTODOS DE UTILIDAD
+    // ==================================================
+
     private void openInternal(String title, Node content, double w, double h) {
         VentanaVistaControlador win = new VentanaVistaControlador(title, content);
         win.setPrefSize(w, h);
         int count = desktop.getChildren().size();
-        win.relocate(30 + 24 * count, 30 + 18 * count); 
+        win.relocate(30 + 24 * count, 30 + 18 * count);
         desktop.getChildren().add(win);
         win.toFront();
     }
@@ -43,20 +67,11 @@ public class PrincipalVistaControlador implements Initializable {
         }
     }
 
-    // ========== REFERENCIAS FXML ==========
-    @FXML private Pane desktop;
-    @FXML private Button btnUsuarios;
-    @FXML private Button btnClientes;
-    @FXML private Button btnProductos;
-    @FXML private Button btnFacturar;
-    @FXML private Button btnReportes;
-    @FXML private Button btnCerrarSesion;
-    @FXML private Label lblNombreUsuario;
+    // ==================================================
+    // 🔹 BOTONES DE MENÚ
+    // ==================================================
 
-    // ========== ACCIONES ==========
-
-    // BOTON USUARIOS - abre la ventana con la tabla
-   @FXML
+    @FXML
     private void usuariosAction(ActionEvent event) {
         try {
             Node view = loadView("/view/usuariosView.fxml");
@@ -65,8 +80,8 @@ public class PrincipalVistaControlador implements Initializable {
             e.printStackTrace();
             new Alert(Alert.AlertType.ERROR, "Error al abrir la gestión de usuarios: " + e.getMessage()).showAndWait();
         }
-    } 
-    // BOTÓN PRODUCTOS
+    }
+
     @FXML
     private void productosAction(ActionEvent event) {
         Node view = loadView("/view/productosVista.fxml");
@@ -76,32 +91,45 @@ public class PrincipalVistaControlador implements Initializable {
     @FXML private void clientesAction(ActionEvent event) {}
     @FXML private void facturarAction(ActionEvent event) {}
 
-@FXML
+    @FXML
     private void reportesAction(ActionEvent event) {
         try {
-            // Carga manual del FXML y obtención del controlador. 
-            // La ruta DEBE coincidir con el recurso empaquetado.
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/reportesView.fxml"));
             Node view = loader.load();
-            
-            // Asumiendo que tu controlador se llama ReportesControlador.java
-            ReportesControlador controller = loader.getController(); 
 
+            ReportesControlador controller = loader.getController();
             openInternal("Reportes del Sistema", view, 900, 600);
 
         } catch (Exception e) {
-            // ESTE ES EL CATCH QUE MUESTRA EL ERROR QUE VISTE
             e.printStackTrace();
             new Alert(Alert.AlertType.ERROR, "Error al abrir reportes: " + e.getMessage()).showAndWait();
         }
     }
 
-    
-
-    // BOTON CERRAR SESION
+    // ==================================================
+    // 🔹 CERRAR SESIÓN
+    // ==================================================
     @FXML
     private void cerrarSesionAction(ActionEvent event) {
         try {
+            // 🟩 BLOQUE NUEVO: Registrar evento de auditoría
+            if (Sesion.getUsuarioActual() != null) {
+                try {
+                    EventoAuditoria evento = new EventoAuditoria();
+                    evento.setUsuario(Sesion.getUsuarioActual().getNombre());
+                    evento.setAccion("CERRAR SESIÓN");
+                    evento.setEntidad("Sistema");
+                    evento.setDetalles("El usuario " + Sesion.getUsuarioActual().getNombre() + " cerró sesión.");
+                    reportesDAO.registrarEvento(evento);
+                } catch (Exception ex) {
+                    System.err.println("⚠️ Error al registrar el cierre de sesión: " + ex.getMessage());
+                }
+            }
+
+            // Cerrar sesión en la clase de sesión
+            Sesion.cerrarSesion();
+
+            // Cargar la vista de login
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/loginView.fxml"));
             Parent root = loader.load();
             Scene loginScene = new Scene(root);
@@ -112,6 +140,7 @@ public class PrincipalVistaControlador implements Initializable {
             stage.sizeToScene();
             stage.centerOnScreen();
             stage.show();
+
         } catch (IOException e) {
             e.printStackTrace();
         }
