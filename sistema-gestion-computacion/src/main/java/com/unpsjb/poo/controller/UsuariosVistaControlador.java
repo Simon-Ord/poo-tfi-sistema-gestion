@@ -3,10 +3,10 @@ package com.unpsjb.poo.controller;
 import java.util.List;
 
 import com.unpsjb.poo.model.Usuario;
-import com.unpsjb.poo.model.EventoAuditoria; // 🟩 Import agregado
+import com.unpsjb.poo.model.EventoAuditoria; 
 import com.unpsjb.poo.persistence.dao.impl.UsuarioDAOImpl;
-import com.unpsjb.poo.persistence.dao.ReportesDAO; // 🟩 Import agregado
-import com.unpsjb.poo.util.Sesion; // 🟩 Import agregado
+import com.unpsjb.poo.persistence.dao.ReportesDAO; 
+import com.unpsjb.poo.util.Sesion; 
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -28,7 +28,7 @@ public class UsuariosVistaControlador {
     @FXML private TableColumn<Usuario, Boolean> colActivo;
 
     private final UsuarioDAOImpl usuarioDAO = new UsuarioDAOImpl();
-    private final ReportesDAO reportesDAO = new ReportesDAO(); // 🟩 Agregado para registrar auditoría
+    private final ReportesDAO reportesDAO = new ReportesDAO(); // Agregado para registrar auditoría
 
     @FXML
     public void initialize() {
