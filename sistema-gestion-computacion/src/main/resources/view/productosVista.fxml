@@ -34,7 +34,7 @@
                 <HBox alignment="CENTER_RIGHT" prefWidth="820" spacing="10">
                <HBox prefHeight="25.0" prefWidth="412.0">
                   <children>
-                     <CheckBox fx:id="chBoxInactivos" mnemonicParsing="false" onAction="#MostrarProductosInactivos" prefHeight="25.0" prefWidth="179.0" text="Mostrar productos inactivos" textFill="WHITE" />
+                     <CheckBox fx:id="chBoxInactivos" mnemonicParsing="false" onAction="#mostrarProductosInactivos" prefHeight="25.0" prefWidth="179.0" text="Mostrar productos inactivos" textFill="WHITE" />
                   </children>
                </HBox>
                     <TextField fx:id="txtBuscar" prefWidth="300" promptText="Buscar por cualquier campo" />

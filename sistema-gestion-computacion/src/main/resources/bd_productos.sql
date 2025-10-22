@@ -66,9 +66,6 @@ CREATE TABLE productos_digitales (
     FOREIGN KEY (id_producto) REFERENCES productos(id_producto) ON DELETE CASCADE,
     FOREIGN KEY (id_proveedor_digital) REFERENCES proveedores_digitales(id)
 );
-
-
-
 -- ============================================================
 -- Insertar datos de prueba generales (Nombres reales)
 -- =============================================================

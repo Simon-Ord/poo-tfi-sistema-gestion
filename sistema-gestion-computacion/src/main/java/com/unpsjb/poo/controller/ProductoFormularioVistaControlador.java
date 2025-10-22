@@ -13,10 +13,14 @@ import com.unpsjb.poo.util.CopiarProductoUtil;
 import com.unpsjb.poo.util.Sesion;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class ProductoFormularioVistaControlador {
@@ -91,6 +95,30 @@ public class ProductoFormularioVistaControlador {
             e.printStackTrace();
             mostrarAlerta("Error inesperado: " + e.getMessage());
         }
+    }
+    @FXML
+    public void agregarCategoria() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/formularios/CategoriaForm.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Agregar Nueva Categoría");
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+
+            // Recargar categorías por si se creó una nueva
+            List<Categoria> categorias = categoriaDAO.findAll();
+            if (categorias != null) {
+                cbCategoria.getItems().setAll(categorias);
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            mostrarAlerta("Error al abrir el formulario: " + e.getMessage());
+        }
+        
     }
     // Guarda los datos del formulario en el objeto Producto
     public void setProducto(Producto producto) {

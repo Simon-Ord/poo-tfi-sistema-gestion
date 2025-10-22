@@ -17,7 +17,9 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuButton;
 import javafx.scene.layout.Pane;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 public class PrincipalVistaControlador implements Initializable {
@@ -25,7 +27,7 @@ public class PrincipalVistaControlador implements Initializable {
     @FXML private Pane desktop;
     @FXML private Button btnUsuarios;
     @FXML private Button btnClientes;
-    @FXML private Button btnProductos;
+    @FXML private MenuButton mnBtnProductos;
     @FXML private Button btnFacturar;
     @FXML private Button btnReportes;
     @FXML private Button btnCerrarSesion;
@@ -69,7 +71,7 @@ public class PrincipalVistaControlador implements Initializable {
     }
 
     // ==================================================
-    // 🔹 BOTONES DE MENÚ
+    //  BOTONES DE MENÚ
     // ==================================================
 
     @FXML
@@ -83,13 +85,34 @@ public class PrincipalVistaControlador implements Initializable {
             new Alert(Alert.AlertType.ERROR, "Error al abrir la gestión de usuarios: " + e.getMessage()).showAndWait();
         }
     }
-
+    // =====================
+    //  BOTON DE PRODUCTOS
+    // =====================
     @FXML
     private void productosAction(ActionEvent event) {
         // 🔹 NUEVO: Usar el método crearVentana() simplificado
         VentanaVistaControlador.crearVentana(desktop, "/view/productosVista.fxml", "Productos", 1000, 500);
     }
-
+    @FXML
+    private void agregarProducto() {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/productoForm.fxml"));
+            Parent root = loader.load();
+            Stage stage = new Stage();
+            stage.setTitle("Agregar Nuevo Producto");
+            stage.setScene(new Scene(root));
+            stage.setResizable(false);
+            stage.initModality(Modality.APPLICATION_MODAL);
+            stage.showAndWait();
+           // cargarProductos();
+        } catch (Exception e) {
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Error al abrir el formulario de producto: " + e.getMessage()).showAndWait();
+        }
+    }
+    // =====================
+    //  BOTON DE PRODUCTOS
+    // =====================
     @FXML private void clientesAction(ActionEvent event) {
         try {
             // 🔹 NUEVO: Usar el método crearVentana() simplificado

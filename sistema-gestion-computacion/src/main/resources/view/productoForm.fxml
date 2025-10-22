@@ -35,13 +35,14 @@
         <TextField fx:id="txtDescripcion" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
         <Label text="Categoría:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-        <ChoiceBox fx:id="cbCategoria" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+        <ChoiceBox fx:id="cbCategoria" maxWidth="204.0" prefWidth="204.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
         <Label text="Precio:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
         <TextField fx:id="txtPrecio" GridPane.columnIndex="1" GridPane.rowIndex="4" />
 
         <Label text="Stock:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
         <TextField fx:id="txtStock" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+      <Button fx:id="btnAgregarCategoria" alignment="CENTER" contentDisplay="CENTER" maxWidth="38.0" mnemonicParsing="false" onAction="#agregarCategoria" prefWidth="38.0" text="+" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
       <rowConstraints>
          <RowConstraints />
          <RowConstraints />
