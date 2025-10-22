@@ -44,6 +44,9 @@ public class PrincipalVistaControlador implements Initializable {
     // 🔹 MÉTODOS DE UTILIDAD
     // ==================================================
 
+    /**
+     * Método heredado para compatibilidad - se recomienda usar VentanaVistaControlador.crearVentana()
+     */
     private void openInternal(String title, Node content, double w, double h) {
         VentanaVistaControlador win = new VentanaVistaControlador(title, content);
         win.setPrefSize(w, h);
@@ -53,6 +56,9 @@ public class PrincipalVistaControlador implements Initializable {
         win.toFront();
     }
 
+    /**
+     * Método heredado para compatibilidad - se recomienda usar VentanaVistaControlador.crearVentana()
+     */
     private Node loadView(String resource) {
         try {
             return FXMLLoader.load(getClass().getResource(resource));
@@ -69,8 +75,8 @@ public class PrincipalVistaControlador implements Initializable {
     @FXML
     private void usuariosAction(ActionEvent event) {
         try {
-            Node view = loadView("/view/usuariosView.fxml");
-            openInternal("Gestión de Usuarios", view, 800, 500);
+            // 🔹 NUEVO: Usar el método crearVentana() simplificado
+            VentanaVistaControlador.crearVentana(desktop, "/view/usuariosView.fxml", "Gestión de Usuarios", 800, 500);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -80,17 +86,17 @@ public class PrincipalVistaControlador implements Initializable {
 
     @FXML
     private void productosAction(ActionEvent event) {
-        Node view = loadView("/view/productosVista.fxml");
-        openInternal("Productos", view, 1000, 500);
+        // 🔹 NUEVO: Usar el método crearVentana() simplificado
+        VentanaVistaControlador.crearVentana(desktop, "/view/productosVista.fxml", "Productos", 1000, 500);
     }
 
     @FXML private void clientesAction(ActionEvent event) {
-                try {
-            Node view = loadView("/view/ClientesView.fxml");
-            openInternal("Gestión de Usuarios", view, 800, 500);
+        try {
+            // 🔹 NUEVO: Usar el método crearVentana() simplificado
+            VentanaVistaControlador.crearVentana(desktop, "/view/ClientesView.fxml", "Gestión de Clientes", 800, 500);
         } catch (Exception e) {
             e.printStackTrace();
-            new Alert(Alert.AlertType.ERROR, "Error al abrir la gestión de usuarios: " + e.getMessage()).showAndWait();
+            new Alert(Alert.AlertType.ERROR, "Error al abrir la gestión de clientes: " + e.getMessage()).showAndWait();
         }
     }
     @FXML private void facturarAction(ActionEvent event) {}
@@ -98,11 +104,12 @@ public class PrincipalVistaControlador implements Initializable {
     @FXML
     private void reportesAction(ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/reportesView.fxml"));
-            Node view = loader.load();
-
-            ReportesControlador controller = loader.getController();
-            openInternal("Reportes del Sistema", view, 900, 600);
+            // 🔹 NUEVO: Usar el método crearVentana() que retorna el controlador si se necesita
+            VentanaVistaControlador.ResultadoVentana resultado = 
+                VentanaVistaControlador.crearVentana(desktop, "/view/reportesView.fxml", "Reportes del Sistema", 900, 600);
+            
+            // Si necesitas acceder al controlador puedes hacerlo así:
+            // ReportesControlador controller = resultado.getControlador(ReportesControlador.class);
 
         } catch (Exception e) {
             e.printStackTrace();

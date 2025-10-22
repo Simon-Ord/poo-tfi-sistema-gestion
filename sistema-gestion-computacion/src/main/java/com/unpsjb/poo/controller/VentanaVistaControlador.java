@@ -1,9 +1,11 @@
 package com.unpsjb.poo.controller;
 
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.input.MouseEvent;
@@ -132,6 +134,94 @@ public class VentanaVistaControlador extends Region {
     }
 
     private static class Delta { double x, y; }
+
+    // ==================================================
+    // 🔹 MÉTODO DE UTILIDAD ESTÁTICO - CREAR VENTANA
+    // ==================================================
+    
+    /**
+     * Crea y abre una ventana interna en el escritorio cargando una vista FXML.
+     * Este método simplifica el proceso de abrir vistas como subventanas.
+     * 
+     * @param desktop El panel contenedor donde se agregará la ventana (típicamente PrincipalVistaControlador.desktop)
+     * @param fxmlPath Ruta del archivo FXML a cargar (ej: "/view/productosVista.fxml")
+     * @param titulo Título que se mostrará en la barra de la ventana
+     * @param ancho Ancho preferido de la ventana en píxeles
+     * @param alto Alto preferido de la ventana en píxeles
+     * @return ResultadoVentana conteniendo la ventana creada y el controlador FXML cargado
+     * @throws RuntimeException si hay error al cargar el FXML
+     */
+    public static ResultadoVentana crearVentana(Pane desktop, String fxmlPath, String titulo, double ancho, double alto) {
+        try {
+            // Cargar el FXML
+            FXMLLoader loader = new FXMLLoader(VentanaVistaControlador.class.getResource(fxmlPath));
+            Node content = loader.load();
+            Object controller = loader.getController();
+            
+            // Crear la ventana con el contenido cargado
+            VentanaVistaControlador ventana = new VentanaVistaControlador(titulo, content);
+            ventana.setPrefSize(ancho, alto);
+            
+            // Posicionar la ventana en cascada
+            int count = desktop.getChildren().size();
+            ventana.relocate(30 + 24 * count, 30 + 18 * count);
+            
+            // Agregar al escritorio y traer al frente
+            desktop.getChildren().add(ventana);
+            ventana.toFront();
+            
+            return new ResultadoVentana(ventana, controller);
+            
+        } catch (Exception ex) {
+            new Alert(Alert.AlertType.ERROR, 
+                "Error cargando " + fxmlPath + ": " + ex.getMessage()).showAndWait();
+            throw new RuntimeException("Error al crear ventana desde " + fxmlPath, ex);
+        }
+    }
+    
+    /**
+     * Sobrecarga del método crearVentana con dimensiones por defecto.
+     * 
+     * @param desktop El panel contenedor donde se agregará la ventana
+     * @param fxmlPath Ruta del archivo FXML a cargar
+     * @param titulo Título que se mostrará en la barra de la ventana
+     * @return ResultadoVentana conteniendo la ventana creada y el controlador FXML cargado
+     */
+    public static ResultadoVentana crearVentana(Pane desktop, String fxmlPath, String titulo) {
+        return crearVentana(desktop, fxmlPath, titulo, 640, 420);
+    }
+    
+    /**
+     * Clase contenedora para el resultado de crear una ventana.
+     * Permite acceder tanto a la ventana como al controlador del FXML cargado.
+     */
+    public static class ResultadoVentana {
+        private final VentanaVistaControlador ventana;
+        private final Object controlador;
+        
+        public ResultadoVentana(VentanaVistaControlador ventana, Object controlador) {
+            this.ventana = ventana;
+            this.controlador = controlador;
+        }
+        
+        public VentanaVistaControlador getVentana() {
+            return ventana;
+        }
+        
+        public Object getControlador() {
+            return controlador;
+        }
+        
+        /**
+         * Obtiene el controlador con el tipo específico.
+         * @param <T> Tipo del controlador
+         * @return El controlador casteado al tipo solicitado
+         */
+        @SuppressWarnings("unchecked")
+        public <T> T getControlador(Class<T> tipo) {
+            return (T) controlador;
+        }
+    }
 
 }
 
