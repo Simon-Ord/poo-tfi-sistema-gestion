@@ -11,7 +11,8 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox spacing="10" stylesheets="@css/styleUsuarioForm.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.unpsjb.poo.controller.ProductoFormularioVistaControlador">
+<VBox spacing="10" stylesheets="@css/styleUsuarioForm.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" 
+fx:controller="com.unpsjb.poo.controller.ProductoFormularioVistaControlador">
       
     <padding>
         <Insets bottom="20" left="20" right="20" top="20" />

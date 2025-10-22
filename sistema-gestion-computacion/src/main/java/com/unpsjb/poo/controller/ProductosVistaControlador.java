@@ -1,6 +1,5 @@
 package com.unpsjb.poo.controller;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -13,23 +12,18 @@ import com.unpsjb.poo.util.Sesion;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 
 /**
  * Controlador para la vista de productos.
  * IMPORTANTE: Este controlador NO conoce el DAO directamente.
  * Toda la comunicación con la persistencia se hace a través del modelo (Producto).
  */
-public class ProductosVistaControlador {
+public class ProductosVistaControlador extends BaseControlador {
 
     @FXML private TableView<Producto> tablaProductos;
     @FXML private TableColumn<Producto, Integer> colCodigo;
@@ -100,22 +94,8 @@ public class ProductosVistaControlador {
     /** Agregar producto */
     @FXML
     private void agregarProducto() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/productoForm.fxml"));
-            Parent root = loader.load();
-
-            Stage stage = new Stage();
-            stage.setTitle("Agregar Nuevo Producto");
-            stage.setScene(new Scene(root));
-            stage.setResizable(false);
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.showAndWait();
-
-            cargarProductos();
-        } catch (Exception e) {
-            e.printStackTrace();
-            mostrarAlerta("Error al abrir el formulario: " + e.getMessage());
-        }
+        crearFormulario("/view/productoForm.fxml", "Agregar Nuevo Producto");
+        cargarProductos(); // Recargar datos después de cerrar la ventana
     }
 
     /** Modificar producto */
@@ -126,33 +106,26 @@ public class ProductosVistaControlador {
             mostrarAlerta("Debe seleccionar un producto para modificarlo.");
             return;
         }
+        // Guardamos una copia del producto original para comparar cambios después
+        Producto productoOriginal = CopiarProductoUtil.copiarProducto(productoSeleccionado);
 
-        try {
-            // Guardamos una copia del producto original para comparar cambios después
-            Producto productoOriginal = CopiarProductoUtil.copiarProducto(productoSeleccionado);
-
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/productoForm.fxml"));
-            Parent root = loader.load();
-
-            ProductoFormularioVistaControlador controlador = loader.getController();
-            controlador.setProductoAEditar(productoSeleccionado);
-
-            Stage stage = new Stage();
-            stage.setTitle("Modificar Producto");
-            stage.setScene(new Scene(root));
-            stage.setResizable(false);
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.showAndWait();
-
-            cargarProductos();
-
-            // Auditoría: registrar cambios si hay un usuario en sesión
-            if (Sesion.getUsuarioActual() != null) {
-                AuditoriaUtil.registrarCambioProducto(productoOriginal, productoSeleccionado);
+        // Abrir ventana y configurar el controlador
+        VentanaVistaControlador.ResultadoVentana resultado = 
+            crearFormulario("/view/productoForm.fxml", "Modificar Producto");
+        
+        if (resultado != null) {
+            ProductoFormularioVistaControlador controlador = 
+                resultado.getControlador(ProductoFormularioVistaControlador.class);
+            if (controlador != null) {
+                controlador.setProductoAEditar(productoSeleccionado);
             }
+        }
 
-        } catch (IOException e) {
-            mostrarAlerta("Error al abrir el formulario de modificación: " + e.getMessage());
+        cargarProductos();
+
+        // Auditoría: registrar cambios si hay un usuario en sesión
+        if (Sesion.getUsuarioActual() != null) {
+            AuditoriaUtil.registrarCambioProducto(productoOriginal, productoSeleccionado);
         }
     }
 
@@ -168,7 +141,6 @@ public class ProductosVistaControlador {
         
         // Guardar el estado anterior para auditoría
         boolean estadoAnterior = seleccionado.isActivo();
-        
         // 2. Lógica de UI: mostrar confirmación al usuario
         String nuevoEstado = seleccionado.isActivo() ? "inactivo" : "activo";
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);

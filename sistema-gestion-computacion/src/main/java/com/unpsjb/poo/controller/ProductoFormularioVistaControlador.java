@@ -13,17 +13,13 @@ import com.unpsjb.poo.util.CopiarProductoUtil;
 import com.unpsjb.poo.util.Sesion;
 
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
-import javafx.scene.Parent;
-import javafx.scene.Scene;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
-import javafx.stage.Modality;
-import javafx.stage.Stage;
 
-public class ProductoFormularioVistaControlador {
+public class ProductoFormularioVistaControlador extends BaseControlador {
 
     @FXML private TextField txtCodigo;
     @FXML private TextField txtNombre;
@@ -43,11 +39,17 @@ public class ProductoFormularioVistaControlador {
     @FXML
     private void initialize() {
         // Cargar las categorías desde la base de datos
+        cargarCategorias();
+    }
+
+    // Metodo separado para cargar categorias
+    public void cargarCategorias(){
         List<Categoria> categorias = categoriaDAO.findAll();
         if (categorias != null && !categorias.isEmpty()) {
             cbCategoria.getItems().addAll(categorias);
         }
     }
+
     // Guardar producto (crear o actualizar)
     @FXML
     private void guardarProducto() {
@@ -99,15 +101,8 @@ public class ProductoFormularioVistaControlador {
     @FXML
     public void agregarCategoria() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/formularios/CategoriaForm.fxml"));
-            Parent root = loader.load();
-            Stage stage = new Stage();
-            stage.setTitle("Agregar Nueva Categoría");
-            stage.setScene(new Scene(root));
-            stage.setResizable(false);
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.showAndWait();
-
+            // Crear y mostrar la ventana del formulario de categoría
+            crearDialogo("/view/formularios/CategoriaForm.fxml", "Agregar Nueva Categoría");
             // Recargar categorías por si se creó una nueva
             List<Categoria> categorias = categoriaDAO.findAll();
             if (categorias != null) {
@@ -159,8 +154,7 @@ public class ProductoFormularioVistaControlador {
     }
 
     private void cerrarVentana() {
-        Stage stage = (Stage) txtNombre.getScene().getWindow();
-        stage.close();
+        BaseControlador.cerrarVentanaInterna(txtNombre);
     }
 
     private void mostrarAlerta(String mensaje) {
@@ -170,6 +164,7 @@ public class ProductoFormularioVistaControlador {
         alert.showAndWait();
     }
 
+    
     private final ReportesDAO reportesDAO = new ReportesDAO();
 
     /**

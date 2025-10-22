@@ -59,9 +59,9 @@ public class FormulariosVistaControlador {
 
 	// ===== Utilidades =====
 	private void cerrarVentanaDesde(ActionEvent event) {
-		if (event != null && event.getSource() instanceof Node) {
-			Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-			if (stage != null) stage.close();
+		if (event != null && event.getSource() != null) {
+			Node node = (Node) event.getSource();
+			BaseControlador.cerrarVentanaInterna(node);
 		}
 	}
 

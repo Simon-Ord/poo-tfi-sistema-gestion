@@ -1,8 +1,8 @@
 package com.unpsjb.poo.controller;
 
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.stage.Stage;
 
 import com.unpsjb.poo.model.Usuario;
 import com.unpsjb.poo.persistence.dao.impl.UsuarioDAOImpl;
@@ -72,8 +72,7 @@ public class UsuarioFormularioVistaControlador {
     }
 
     private void cerrarVentana() {
-        Stage stage = (Stage) txtNombre.getScene().getWindow();
-        stage.close();
+        BaseControlador.cerrarVentanaInterna(txtNombre);
     }
 
     private void mostrarAlerta(String mensaje) {

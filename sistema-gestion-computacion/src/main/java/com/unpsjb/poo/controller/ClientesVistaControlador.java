@@ -12,7 +12,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 
-public class ClientesVistaControlador {
+public class ClientesVistaControlador extends BaseControlador {
 
     @FXML private TableView<Cliente> tablaClientes;
     @FXML private TableColumn<Cliente, Integer> colId;
@@ -49,17 +49,9 @@ public class ClientesVistaControlador {
     @FXML
     private void agregarCliente() {
         try {
-            javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/view/ClienteForm.fxml"));
-            javafx.scene.Parent root = loader.load();
-
-            javafx.stage.Stage stage = new javafx.stage.Stage();
-            stage.setTitle("Agregar Cliente");
-            stage.setScene(new javafx.scene.Scene(root));
-            stage.showAndWait();
-
+            crearFormulario("/view/ClienteForm.fxml", "Agregar Cliente");
             // 🔁 Refrescar después de cerrar el formulario
             cargarClientesDesdeBD();
-
         } catch (Exception e) {
             mostrarAlerta("No se pudo abrir el formulario de cliente: " + e.getMessage());
             e.printStackTrace();
@@ -76,19 +68,18 @@ private void editarCliente() {
     }
 
     try {
-        // Cargar el formulario
-        javafx.fxml.FXMLLoader loader = new javafx.fxml.FXMLLoader(getClass().getResource("/view/ClienteForm.fxml"));
-        javafx.scene.Parent root = loader.load();
-
-        // Obtener el controlador del formulario
-        ClienteFormularioVistaControlador controlador = loader.getController();
-        controlador.setClienteEditable(seleccionado); // ⚡ Le pasamos el cliente seleccionado
-
-        // Mostrar ventana
-        javafx.stage.Stage stage = new javafx.stage.Stage();
-        stage.setTitle("Editar Cliente");
-        stage.setScene(new javafx.scene.Scene(root));
-        stage.showAndWait();
+        // Abrir el formulario como ventana interna
+        VentanaVistaControlador.ResultadoVentana resultado = 
+            crearFormulario("/view/ClienteForm.fxml", "Editar Cliente");
+        
+        if (resultado != null) {
+            // Obtener el controlador del formulario
+            ClienteFormularioVistaControlador controlador = 
+                resultado.getControlador(ClienteFormularioVistaControlador.class);
+            if (controlador != null) {
+                controlador.setClienteEditable(seleccionado); // ⚡ Le pasamos el cliente seleccionado
+            }
+        }
 
         // Refrescar la tabla
         cargarClientesDesdeBD();

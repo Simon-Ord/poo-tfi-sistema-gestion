@@ -4,11 +4,11 @@ import com.unpsjb.poo.model.Cliente;
 import com.unpsjb.poo.persistence.dao.impl.ClienteDAOImpl;
 
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 
 public class ClienteFormularioVistaControlador {
 
@@ -77,8 +77,7 @@ public class ClienteFormularioVistaControlador {
     }
 
     private void cerrarVentana() {
-        Stage stage = (Stage) btnCancelar.getScene().getWindow();
-        stage.close();
+        BaseControlador.cerrarVentanaInterna(btnCancelar);
     }
 
     private void mostrarAlerta(String mensaje) {
