@@ -2,7 +2,7 @@ package com.unpsjb.poo.controller;
 
 import com.unpsjb.poo.model.Usuario;
 import com.unpsjb.poo.persistence.dao.impl.UsuarioDAOImpl;
-import com.unpsjb.poo.util.AuditoriaManager;
+import com.unpsjb.poo.util.AuditoriaUtil;
 import com.unpsjb.poo.util.Sesion;
 
 import javafx.fxml.FXML;
@@ -65,7 +65,7 @@ public class CambioDatosController {
                 mostrarAlerta("Datos actualizados correctamente.");
 
                 // ✅ Registrar evento con AuditoriaManager
-                AuditoriaManager.registrar(
+                AuditoriaUtil.registrarAccion(
                     "MODIFICAR DATOS",
                     "usuario",
                     "El usuario modificó sus datos personales."

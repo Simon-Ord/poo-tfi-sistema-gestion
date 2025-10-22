@@ -3,6 +3,7 @@ package com.unpsjb.poo.controller;
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.text.Text;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
@@ -31,23 +32,20 @@ public class ReportesControlador {
 
     private final ReportesDAO dao = new ReportesDAO();
     private List<EventoAuditoria> resultados;
-    
-    // Formato de fecha para la tabla 
-    private static final java.text.SimpleDateFormat DATE_FORMAT = 
-        new java.text.SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
+    // Formato de fecha para la tabla
+    private static final SimpleDateFormat DATE_FORMAT =
+            new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
-        // ========== MÉTODOS DE INICIALIZACIÓN Y CONFIGURACIÓN ==========
-        // Configura las columnas de la tabla y carga datos iniciales
-        // Llamado automáticamente tras cargar el FXML
+    // ========== MÉTODOS DE INICIALIZACIÓN ==========
     @FXML
     public void initialize() {
-        // Formatear la fecha
+        // Formatear fecha
         colFecha.setCellValueFactory(c -> {
             Timestamp fechaHora = c.getValue().getFechaHora();
-            String fechaFormateada = fechaHora != null 
-                ? DATE_FORMAT.format(fechaHora) 
-                : "";
+            String fechaFormateada = fechaHora != null
+                    ? DATE_FORMAT.format(fechaHora)
+                    : "";
             return new javafx.beans.property.SimpleStringProperty(fechaFormateada);
         });
 
@@ -57,62 +55,82 @@ public class ReportesControlador {
         colEntidad.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getEntidad()));
         colDetalles.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getDetalles()));
 
+        // ✅ Nuevo: celdas de “Detalles” con texto ajustable (multilínea)
+        colDetalles.setCellFactory(tc -> {
+            TableCell<EventoAuditoria, String> cell = new TableCell<>() {
+                private final Text text = new Text();
+                {
+                    text.wrappingWidthProperty().bind(tc.widthProperty().subtract(10));
+                    setGraphic(text);
+                    setPrefHeight(Control.USE_COMPUTED_SIZE);
+                }
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    text.setText(empty ? "" : item);
+                }
+            };
+            return cell;
+        });
+
         // Cargar datos iniciales
         buscar();
+
+        // Aplicar CSS si es posible
         try {
             java.net.URL cssUrl = getClass().getResource("/css/reportes.css");
-            if (cssUrl == null) {
-                 // Si la Scene está disponible, intenta aplicar el CSS
-                 if (tablaReportes.getScene() != null) {
-                     tablaReportes.getScene().getStylesheets().add(cssUrl.toExternalForm());
-                 }
+            if (cssUrl != null && tablaReportes.getScene() != null) {
+                tablaReportes.getScene().getStylesheets().add(cssUrl.toExternalForm());
             }
         } catch (Exception e) {
-            // No hacemos nada si falla la Scene en initialize
+            System.err.println("⚠️ Error al aplicar CSS: " + e.getMessage());
         }
     }
 
+    // ========== MÉTODOS DE ACCIÓN ==========
 
+    /** Ejecuta la búsqueda con los filtros actuales */
     @FXML
     private void buscar() {
-        // Llama al DAO con los filtros de los TextField
-        // Si un campo está vacío, se pasa una cadena vacía para no filtrar por ese campo
-        resultados = dao.obtenerEventos(txtUsuario.getText(), txtEntidad.getText(), txtAccion.getText());
-        
-        // Actualiza la tabla
+        resultados = dao.obtenerEventos(
+                txtUsuario.getText(),
+                txtEntidad.getText(),
+                txtAccion.getText()
+        );
+
         tablaReportes.setItems(FXCollections.observableArrayList(resultados));
-        
+
         if (resultados.isEmpty()) {
             mostrarAlerta("No se encontraron registros de auditoría con los filtros especificados.");
         }
     }
 
-@FXML
-public void exportarPDF() { 
-    if (resultados == null || resultados.isEmpty()) {
-        mostrarAlerta("No hay datos cargados o filtrados para exportar.");
-        return;
+    /** Exporta los resultados actuales a un PDF */
+    @FXML
+    public void exportarPDF() {
+        if (resultados == null || resultados.isEmpty()) {
+            mostrarAlerta("No hay datos cargados o filtrados para exportar.");
+            return;
+        }
+
+        FileChooser fc = new FileChooser();
+        fc.setTitle("Guardar Reporte de Auditoría (PDF)");
+        fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivo PDF", "*.pdf"));
+
+        Stage stage = (Stage) tablaReportes.getScene().getWindow();
+        File file = fc.showSaveDialog(stage);
+
+        if (file != null) {
+            PDFExporter pdf = new PDFReporte(resultados);
+            boolean ok = pdf.export(file.getAbsolutePath());
+
+            mostrarAlerta(ok
+                    ? "Exportación completada correctamente.\nUbicación: " + file.getAbsolutePath()
+                    : " Error al exportar el PDF.");
+        }
     }
 
-    FileChooser fc = new FileChooser();
-    fc.setTitle("Guardar Reporte de Auditoría (PDF)");
-    fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivo PDF", "*.pdf")); 
-
-    Stage stage = (Stage) tablaReportes.getScene().getWindow();
-    File file = fc.showSaveDialog(stage);
-
-    if (file != null) {
-        // Usamos la clase polimórfica asi que puede ser PDFReporte u otra futura implementación de PDFExporter
-        PDFExporter pdf = new PDFReporte(resultados);
-        boolean ok = pdf.export(file.getAbsolutePath());// Genera el PDF en la ruta indicada 
-
-        mostrarAlerta(ok 
-            ? "Exportación completada correctamente \nUbicación: " + file.getAbsolutePath()
-            : "Error al exportar el PDF ");
-    }
-}
-
-// Muestra una alerta informativa con el mensaje dado
+    /** Muestra un mensaje informativo */
     private void mostrarAlerta(String msg) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setHeaderText(null);

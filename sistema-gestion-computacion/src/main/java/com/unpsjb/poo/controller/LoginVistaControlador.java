@@ -13,7 +13,7 @@ import javafx.stage.Stage;
 
 import com.unpsjb.poo.model.Usuario;
 import com.unpsjb.poo.persistence.dao.impl.UsuarioDAOImpl;
-import com.unpsjb.poo.util.AuditoriaManager;
+import com.unpsjb.poo.util.AuditoriaUtil;
 import com.unpsjb.poo.util.Sesion;
 
 public class LoginVistaControlador {
@@ -45,7 +45,7 @@ public class LoginVistaControlador {
                 Sesion.iniciarSesion(user);
 
                 // 🔹 Registrar inicio de sesión usando AuditoriaManager
-                AuditoriaManager.registrar(
+                AuditoriaUtil.registrarAccion(
                     "INICIAR SESIÓN",
                     "sesion",
                     "inició sesión correctamente."

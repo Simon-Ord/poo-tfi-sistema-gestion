@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.unpsjb.poo.model.Usuario;
 import com.unpsjb.poo.persistence.dao.impl.UsuarioDAOImpl;
-import com.unpsjb.poo.util.AuditoriaManager;
+import com.unpsjb.poo.util.AuditoriaUtil;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -79,7 +79,7 @@ public class UsuariosVistaControlador {
 
 
             // 🔹 Registrar evento de auditoría centralizado
-            AuditoriaManager.registrar(nuevoEstado ? "ACTIVAR USUARIO" : "DESACTIVAR USUARIO","usuario","cambió el estado de "
+            AuditoriaUtil.registrarAccion(nuevoEstado ? "ACTIVAR USUARIO" : "DESACTIVAR USUARIO","usuario","cambió el estado de "
              + seleccionado.getNombre() + " a " + (nuevoEstado ? "ACTIVO" : "INACTIVO"));
 
         } else {

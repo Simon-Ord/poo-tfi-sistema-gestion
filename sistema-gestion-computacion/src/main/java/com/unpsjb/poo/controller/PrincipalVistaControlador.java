@@ -4,7 +4,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import com.unpsjb.poo.util.AuditoriaManager;
+import com.unpsjb.poo.util.AuditoriaUtil;
 import com.unpsjb.poo.util.Sesion;
 
 import javafx.event.ActionEvent;
@@ -140,7 +140,7 @@ public class PrincipalVistaControlador implements Initializable {
     private void cerrarSesionAction(ActionEvent event) {
         try {
             // 🔹 Registrar el evento de cierre usando AuditoriaManager
-            AuditoriaManager.registrar("CERRAR SESIÓN", "sesion", "cerró sesión.");
+            AuditoriaUtil.registrarAccion("CERRAR SESIÓN", "sesion", "cerró sesión.");
 
             Sesion.cerrarSesion();
 
