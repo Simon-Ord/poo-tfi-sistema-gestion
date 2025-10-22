@@ -5,8 +5,6 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import com.unpsjb.poo.model.productos.Producto;
-import com.unpsjb.poo.persistence.dao.ReportesDAO;
-import com.unpsjb.poo.persistence.dao.impl.ProductoDAOImpl;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -22,6 +20,11 @@ import javafx.scene.control.TextField;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+/**
+ * Controlador para la vista de productos.
+ * IMPORTANTE: Este controlador NO conoce el DAO directamente.
+ * Toda la comunicación con la persistencia se hace a través del modelo (Producto).
+ */
 public class ProductosVistaControlador {
 
     @FXML private TableView<Producto> tablaProductos;
@@ -35,8 +38,6 @@ public class ProductosVistaControlador {
     @FXML private TextField txtBuscar;
     @FXML private CheckBox chBoxInactivos;
 
-    private final ProductoDAOImpl productoDAO = new ProductoDAOImpl();
-    private final ReportesDAO reportesDAO = new ReportesDAO();
     private ObservableList<Producto> backingList = FXCollections.observableArrayList();
 
     @FXML
@@ -53,8 +54,9 @@ public class ProductosVistaControlador {
     }
 
     /** Carga todos los productos activos en la tabla */
-    private void cargarProductos() {
-        List<Producto> lista = productoDAO.findAll();
+    public void cargarProductos() {
+        // Obtener productos a través del modelo, NO del DAO
+        List<Producto> lista = Producto.obtenerTodos();
         backingList = FXCollections.observableArrayList(lista);
         tablaProductos.setItems(backingList);
         tablaProductos.refresh();
@@ -66,7 +68,6 @@ public class ProductosVistaControlador {
         String q = (txtBuscar != null && txtBuscar.getText() != null)
                 ? txtBuscar.getText().trim().toLowerCase()
                 : "";
-
     if (q.isEmpty()) {
         tablaProductos.setItems(backingList);
         return;
@@ -120,15 +121,11 @@ public class ProductosVistaControlador {
         mostrarAlerta("Debe seleccionar un producto para modificarlo.");
         return;
     }
-
     try {
-        System.out.println(" Intentando abrir formulario...");
-        System.out.println("Ruta FXML: " + getClass().getResource("/view/productoForm.fxml"));
         FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/productoForm.fxml"));
         Parent root = loader.load();
-
-    ProductoFormularioVistaControlador controlador = loader.getController();
-    controlador.setProductoAEditar(productoSeleccionado);
+        ProductoFormularioVistaControlador controlador = loader.getController();
+        controlador.setProductoAEditar(productoSeleccionado);
 
         Stage stage = new Stage();
         stage.setTitle("Modificar Producto");
@@ -143,16 +140,19 @@ public class ProductosVistaControlador {
         e.printStackTrace();
         mostrarAlerta("Error al abrir el formulario de modificación: " + e.getMessage());
     }
-}
+    }
 
     /** Cambiar el estado (activo/inactivo) de un producto */
     @FXML
     private void cambiarEstadoProducto() {
+        // 1. Lógica de UI: obtener selección y validar
         Producto seleccionado = tablaProductos.getSelectionModel().getSelectedItem();
         if (seleccionado == null) {
             mostrarAlerta("Seleccione un producto para cambiar su estado.");
             return;
         }
+        
+        // 2. Lógica de UI: mostrar confirmación al usuario
         String nuevoEstado = seleccionado.isActivo() ? "inactivo" : "activo";
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Confirmar cambio de estado");
@@ -160,8 +160,13 @@ public class ProductosVistaControlador {
         confirm.setContentText("¿Desea cambiar el estado del producto a " + nuevoEstado + "?");
 
         if (confirm.showAndWait().get().getButtonData().isDefaultButton()) {
-            seleccionado.setActivo(!seleccionado.isActivo());
-            boolean ok = productoDAO.update(seleccionado);
+            // 3. Lógica de NEGOCIO: delegar al modelo
+            seleccionado.cambiarEstado();  // ← Ahora la lógica está en el modelo
+            
+            // 4. Persistencia: delegar al modelo
+            boolean ok = seleccionado.actualizar();  // ← El modelo maneja su propia persistencia
+            
+            // 5. Lógica de UI: mostrar resultado
             if (ok) {
                 mostrarAlerta("El producto cambió al estado: " + (seleccionado.isActivo() ? "Activo" : "Inactivo"));
                 cargarProductos();
@@ -174,7 +179,8 @@ public class ProductosVistaControlador {
     @FXML
     private void MostrarProductosInactivos() {
         if (chBoxInactivos.isSelected()) {
-            List<Producto> productosInactivos = productoDAO.findAllCompleto();
+            // Obtener todos los productos a través del modelo
+            List<Producto> productosInactivos = Producto.obtenerTodosCompleto();
             tablaProductos.setItems(FXCollections.observableArrayList(productosInactivos));
         } else {
             tablaProductos.setItems(backingList);
