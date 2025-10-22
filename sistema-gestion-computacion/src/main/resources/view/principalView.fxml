@@ -3,6 +3,8 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.MenuButton?>
+<?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
@@ -14,31 +16,49 @@ stylesheets="@css/stylePrincipal.css" xmlns="http://javafx.com/javafx/21" xmlns:
    <top>
       <HBox alignment="CENTER" prefHeight="43.0" prefWidth="600.0" BorderPane.alignment="CENTER" HBox.hgrow="ALWAYS">
          <children>
-            <Button fx:id="btnUsuarios" mnemonicParsing="false" onAction="#usuariosAction" prefHeight="37.0" prefWidth="82.0" text="Usuarios">
+            <MenuButton fx:id="btnUsuarios" mnemonicParsing="false" prefHeight="37.0" prefWidth="82.0" text="Usuarios" styleClass="menu-button-as-button">
+               <items>
+                  <MenuItem text="Ver Usuarios" onAction="#usuariosAction" />
+                  <MenuItem text="Agregar Usuario" onAction="#agregarUsuarioAction" />
+               </items>
                <HBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </HBox.margin>
-            </Button>
-            <Button fx:id="btnClientes" mnemonicParsing="false" onAction="#clientesAction" prefHeight="37.0" prefWidth="82.0" text="Clientes">
+            </MenuButton>
+            <MenuButton fx:id="btnClientes" mnemonicParsing="false" prefHeight="37.0" prefWidth="82.0" text="Clientes" styleClass="menu-button-as-button">
+               <items>
+                  <MenuItem text="Ver Clientes" onAction="#clientesAction" />
+                  <MenuItem text="Agregar Cliente" onAction="#agregarClienteAction" />
+               </items>
                <HBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </HBox.margin>
-            </Button>
-            <Button fx:id="btnProductos" mnemonicParsing="false" onAction="#productosAction" prefHeight="37.0" prefWidth="82.0" text="Productos">
+            </MenuButton>
+            <MenuButton fx:id="btnProductos" mnemonicParsing="false" prefHeight="37.0" prefWidth="82.0" text="Productos" styleClass="menu-button-as-button">
+               <items>
+                  <MenuItem text="Ver Productos" onAction="#productosAction" />
+                  <MenuItem text="Agregar Producto" onAction="#agregarProductoAction" />
+               </items>
                <HBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </HBox.margin>
-            </Button>
-            <Button fx:id="btnFacturar" mnemonicParsing="false" onAction="#facturarAction" prefHeight="37.0" prefWidth="82.0" text="Facturar">
+            </MenuButton>
+            <MenuButton fx:id="btnFacturar" mnemonicParsing="false" prefHeight="37.0" prefWidth="82.0" text="Facturar" styleClass="menu-button-as-button">
+               <items>
+                  <MenuItem text="Nueva Factura" onAction="#facturarAction" />
+               </items>
                <HBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </HBox.margin>
-            </Button>
-            <Button fx:id="btnReportes" mnemonicParsing="false" onAction="#reportesAction" prefHeight="37.0" prefWidth="82.0" text="Reportes">
+            </MenuButton>
+            <MenuButton fx:id="btnReportes" mnemonicParsing="false" prefHeight="37.0" prefWidth="82.0" text="Reportes" styleClass="menu-button-as-button">
+               <items>
+                  <MenuItem text="Ver Reportes" onAction="#reportesAction" />
+               </items>
                <HBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                </HBox.margin>
-            </Button>
+            </MenuButton>
             <Button fx:id="btnCerrarSesion" alignment="CENTER" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#cerrarSesionAction" prefHeight="37.0" text="Cerrar Sesión" textAlignment="RIGHT">
                <HBox.margin>
                   <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />

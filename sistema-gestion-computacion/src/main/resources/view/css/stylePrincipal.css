@@ -35,6 +35,59 @@
     -fx-text-fill: #ffffff;
 }
 
+/* ========== MENUBUTTONS QUE PARECEN BOTONES ========== */
+.menu-button-as-button {
+    -fx-background-color: linear-gradient(to bottom, #3e4561, #2f3548);
+    -fx-text-fill: #e6e9f0;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+    -fx-pref-height: 34;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.25), 5, 0, 0, 2);
+    -fx-border-color: transparent;
+}
+
+.menu-button-as-button:hover {
+    -fx-background-color: linear-gradient(to bottom, #4a6fff, #364fd9);
+    -fx-text-fill: #ffffff;
+}
+
+/* Ocultar la flecha del MenuButton */
+.menu-button-as-button .arrow {
+    -fx-shape: "";
+    -fx-padding: 0;
+    -fx-background-color: transparent;
+}
+
+.menu-button-as-button .arrow-button {
+    -fx-padding: 0;
+}
+
+/* Estilo de los MenuItems dentro del MenuButton */
+.menu-button-as-button .context-menu {
+    -fx-background-color: #2b3042;
+    -fx-background-radius: 8;
+    -fx-border-color: rgba(255,255,255,0.2);
+    -fx-border-radius: 8;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 10, 0, 0, 3);
+}
+
+.menu-button-as-button .menu-item {
+    -fx-background-color: transparent;
+    -fx-text-fill: #e6e9f0;
+    -fx-padding: 8 20;
+}
+
+.menu-button-as-button .menu-item:hover {
+    -fx-background-color: linear-gradient(to right, #4a6fff, #364fd9);
+    -fx-text-fill: #ffffff;
+}
+
+.menu-button-as-button .menu-item .label {
+    -fx-text-fill: inherit;
+}
+
 /* Botón "Cerrar Sesión" en rojo suave */
 #btnCerrarSesion {
     -fx-background-color: linear-gradient(to bottom, #d64045, #a83235);

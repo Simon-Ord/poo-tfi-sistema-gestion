@@ -17,17 +17,18 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuButton;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
 public class PrincipalVistaControlador implements Initializable {
 
     @FXML private Pane desktop;
-    @FXML private Button btnUsuarios;
-    @FXML private Button btnClientes;
-    @FXML private Button btnProductos;
-    @FXML private Button btnFacturar;
-    @FXML private Button btnReportes;
+    @FXML private MenuButton btnUsuarios;
+    @FXML private MenuButton btnClientes;
+    @FXML private MenuButton btnProductos;
+    @FXML private MenuButton btnFacturar;
+    @FXML private MenuButton btnReportes;
     @FXML private Button btnCerrarSesion;
     @FXML private Label lblNombreUsuario;
 
@@ -79,20 +80,57 @@ public class PrincipalVistaControlador implements Initializable {
     }
 
     @FXML
+    private void agregarUsuarioAction(ActionEvent event) {
+        try {
+            Node view = loadView("/view/UsuarioForm.fxml");
+            openInternal("Agregar Usuario", view, 500, 400);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Error al abrir el formulario de usuario: " + e.getMessage()).showAndWait();
+        }
+    }
+
+    @FXML
     private void productosAction(ActionEvent event) {
         Node view = loadView("/view/productosVista.fxml");
         openInternal("Productos", view, 1000, 500);
     }
 
+    @FXML
+    private void agregarProductoAction(ActionEvent event) {
+        try {
+            Node view = loadView("/view/productoForm.fxml");
+            openInternal("Agregar Producto", view, 600, 450);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Error al abrir el formulario de producto: " + e.getMessage()).showAndWait();
+        }
+    }
+
     @FXML private void clientesAction(ActionEvent event) {
                 try {
             Node view = loadView("/view/ClientesView.fxml");
-            openInternal("Gestión de Usuarios", view, 800, 500);
+            openInternal("Gestión de Clientes", view, 800, 500);
         } catch (Exception e) {
             e.printStackTrace();
-            new Alert(Alert.AlertType.ERROR, "Error al abrir la gestión de usuarios: " + e.getMessage()).showAndWait();
+            new Alert(Alert.AlertType.ERROR, "Error al abrir la gestión de clientes: " + e.getMessage()).showAndWait();
         }
     }
+
+    @FXML
+    private void agregarClienteAction(ActionEvent event) {
+        try {
+            Node view = loadView("/view/ClienteForm.fxml");
+            openInternal("Agregar Cliente", view, 600, 450);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Error al abrir el formulario de cliente: " + e.getMessage()).showAndWait();
+        }
+    }
+
     @FXML private void facturarAction(ActionEvent event) {}
 
     @FXML
