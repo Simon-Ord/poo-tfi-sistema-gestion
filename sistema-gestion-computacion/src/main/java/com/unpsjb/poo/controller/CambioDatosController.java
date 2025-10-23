@@ -2,14 +2,14 @@ package com.unpsjb.poo.controller;
 
 import com.unpsjb.poo.model.Usuario;
 import com.unpsjb.poo.persistence.dao.impl.UsuarioDAOImpl;
-import com.unpsjb.poo.util.AuditoriaManager;
+import com.unpsjb.poo.util.AuditoriaUtil;
 import com.unpsjb.poo.util.Sesion;
 
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 
 public class CambioDatosController {
 
@@ -65,7 +65,7 @@ public class CambioDatosController {
                 mostrarAlerta("Datos actualizados correctamente.");
 
                 // ✅ Registrar evento con AuditoriaManager
-                AuditoriaManager.registrar(
+                AuditoriaUtil.registrarAccion(
                     "MODIFICAR DATOS",
                     "usuario",
                     "El usuario modificó sus datos personales."
@@ -90,8 +90,7 @@ public class CambioDatosController {
     }
 
     private void cerrarVentana() {
-        Stage stage = (Stage) txtUsuarioActual.getScene().getWindow();
-        stage.close();
+        BaseControlador.cerrarVentanaInterna(txtUsuarioActual);
     }
 
     private void mostrarAlerta(String mensaje) {

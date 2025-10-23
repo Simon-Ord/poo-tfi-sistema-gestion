@@ -12,8 +12,14 @@ public class UsuarioDAOImpl implements UsuarioDAO {
     @Override
     public Usuario verificarLogin(String usuario, String contraseña) {
         String sql = "SELECT * FROM usuarios WHERE usuario = ? AND contraseña = ? AND estado = TRUE";
-        try (Connection conn = GestorDeConexion.getInstancia().getConexion();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
+        Connection conn = GestorDeConexion.getInstancia().getConexion();
+        
+        if (conn == null) {
+            System.err.println("Error: No se pudo establecer conexión a la base de datos");
+            return null;
+        }
+        
+        try (PreparedStatement stmt = conn.prepareStatement(sql)) {
 
             stmt.setString(1, usuario);
             stmt.setString(2, contraseña);
@@ -32,6 +38,12 @@ public class UsuarioDAOImpl implements UsuarioDAO {
 
         } catch (SQLException e) {
             System.err.println("Error al verificar login: " + e.getMessage());
+        } finally {
+            try {
+                if (conn != null) conn.close();
+            } catch (SQLException e) {
+                System.err.println("Error al cerrar conexión: " + e.getMessage());
+            }
         }
         return null;
     }

@@ -1,12 +1,12 @@
 package com.unpsjb.poo.controller;
 
 import javafx.fxml.FXML;
+import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.stage.Stage;
 
 import com.unpsjb.poo.model.Usuario;
 import com.unpsjb.poo.persistence.dao.impl.UsuarioDAOImpl;
-import com.unpsjb.poo.util.AuditoriaManager;
+import com.unpsjb.poo.util.AuditoriaUtil;
 
 public class UsuarioFormularioVistaControlador {
 
@@ -49,7 +49,7 @@ public class UsuarioFormularioVistaControlador {
                 mostrarAlerta("Usuario agregado correctamente.");
 
                 // 🔹 Ahora el registro de auditoría se hace con una sola línea:
-                AuditoriaManager.registrar(
+               AuditoriaUtil.registrarAccion(
                     "CREAR USUARIO",
                     "usuario",
                     "creó el usuario: " + nuevo.getNombre() + " (" + nuevo.getUsuario() + ")"
@@ -72,8 +72,7 @@ public class UsuarioFormularioVistaControlador {
     }
 
     private void cerrarVentana() {
-        Stage stage = (Stage) txtNombre.getScene().getWindow();
-        stage.close();
+        BaseControlador.cerrarVentanaInterna(txtNombre);
     }
 
     private void mostrarAlerta(String mensaje) {

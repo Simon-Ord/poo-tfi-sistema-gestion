@@ -14,5 +14,6 @@ public class Fabricante {
     public String getNombre() {return nombreFabricante;}
     public void setNombre(String nombreFabricante) {this.nombreFabricante = nombreFabricante;}
 
-
+    @Override
+    public String toString() {return nombreFabricante;}
 }

@@ -106,3 +106,10 @@
     -fx-text-fill: black;
     -fx-font-size: 13px;
 }
+
+
+.scroll-pane {
+    -fx-background: transparent;
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
