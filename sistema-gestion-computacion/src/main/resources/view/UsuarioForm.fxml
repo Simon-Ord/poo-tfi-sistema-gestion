@@ -4,6 +4,10 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+
+
+
+
 <VBox spacing="10"
       xmlns="http://javafx.com/javafx/21"
       xmlns:fx="http://javafx.com/fxml/1"
@@ -16,18 +20,19 @@
 
 <Label text="Agregar Nuevo Usuario" styleClass="titulo"/>
 
-    <GridPane hgap="10" vgap="10">
-        <Label text="DNI:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-        <TextField fx:id="txtDni" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+  <GridPane hgap="10" vgap="10">
+       <Label text="DNI:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+       <TextField fx:id="txtDni" GridPane.rowIndex="0" GridPane.columnIndex="1" promptText="Ej: 40123456"/>
 
-        <Label text="Nombre y apellido:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-        <TextField fx:id="txtNombre" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+       <Label text="Nombre y apellido:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+       <TextField fx:id="txtNombre" GridPane.rowIndex="1" GridPane.columnIndex="1" promptText="Ej: Luis Fernández"/>
 
-        <Label text="Usuario:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-        <TextField fx:id="txtUsuario" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+       <Label text="Usuario:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+       <TextField fx:id="txtUsuario" GridPane.rowIndex="2" GridPane.columnIndex="1" promptText="Ej: lfernandez"/>
 
         <Label text="Contraseña:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-        <PasswordField fx:id="txtContraseña" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+        <PasswordField fx:id="txtContraseña" GridPane.rowIndex="3" GridPane.columnIndex="1" promptText="Ej: ********"/>
+
 
         <Label text="Rol:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
         <ChoiceBox fx:id="cbRol" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
