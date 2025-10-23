@@ -27,22 +27,22 @@ fx:controller="com.unpsjb.poo.controller.ProductoFormularioVistaControlador">
         </columnConstraints>
 
         <Label text="Código:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-        <TextField fx:id="txtCodigo" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+        <TextField fx:id="txtCodigo" GridPane.columnIndex="1" GridPane.rowIndex="0" promptText="Ej: 001"/>
 
         <Label text="Nombre:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-        <TextField fx:id="txtNombre" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+        <TextField fx:id="txtNombre" GridPane.columnIndex="1" GridPane.rowIndex="1" promptText="Ej: Hisense U7N"/>
 
         <Label text="Descripción:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-        <TextField fx:id="txtDescripcion" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+        <TextField fx:id="txtDescripcion" GridPane.columnIndex="1" GridPane.rowIndex="2" promptText="Ej: monitor pc"/>
 
         <Label text="Categoría:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-        <ChoiceBox fx:id="cbCategoria" maxWidth="204.0" prefWidth="204.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+        <ChoiceBox fx:id="cbCategoria" maxWidth="204.0" prefWidth="204.0" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
 
         <Label text="Precio:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-        <TextField fx:id="txtPrecio" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+        <TextField fx:id="txtPrecio" GridPane.columnIndex="1" GridPane.rowIndex="4" promptText="Ej: 500,60"/>
 
         <Label text="Stock:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
-        <TextField fx:id="txtStock" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+        <TextField fx:id="txtStock" GridPane.columnIndex="1" GridPane.rowIndex="5" promptText="Ej: 3"/>
       <Button fx:id="btnAgregarCategoria" alignment="CENTER" contentDisplay="CENTER" maxWidth="38.0" mnemonicParsing="false" onAction="#agregarCategoria" prefWidth="38.0" text="+" textAlignment="CENTER" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="3" />
       <rowConstraints>
          <RowConstraints />
