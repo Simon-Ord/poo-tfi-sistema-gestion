@@ -74,7 +74,14 @@ public class PrincipalVistaControlador implements Initializable {
     @FXML private void agregarProducto() {
         VentanaVistaControlador.crearFormulario(desktop, "/view/productoForm.fxml", "Agregar Producto", 400, 300);
     }
-
+    // Ventana para gestionar categorías
+    @FXML private void categoriasAction(){
+            VentanaVistaControlador.crearVentana(desktop, "/view/categoriasVista.fxml", "Gestión de Categorías", 800, 600);
+    }
+    // Ventana para agregar categorías
+    @FXML private void agregarCategoria() {
+        VentanaVistaControlador.crearFormulario(desktop, "/view/formularios/categoriaForm.fxml", "Agregar Categoría", 400, 300);
+    }
     // =====================
     //  BOTON DE CLIENTES
     // =====================

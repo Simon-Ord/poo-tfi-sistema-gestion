@@ -2,8 +2,10 @@
 -- 🗂️ TABLA DE CATEGORÍA
 -- ======================
 CREATE TABLE categorias (
-    id SERIAL PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL UNIQUE
+    id_categoria SERIAL PRIMARY KEY,
+    nombre_categoria VARCHAR(100) NOT NULL UNIQUE,
+    activo BOOLEAN DEFAULT TRUE,
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 -- VERIFICAR CONTENIDO DE LA TABLA
 SELECT * FROM categorias;
@@ -16,7 +18,7 @@ CREATE TABLE productos (
     descripcion_producto TEXT,
     stock_producto INT NOT NULL DEFAULT 0,
     precio_producto NUMERIC(10,2) NOT NULL,
-    categoria_id INTEGER REFERENCES categorias(id),
+    categoria_id INTEGER REFERENCES categorias(id_categoria),
     codigo_producto INT UNIQUE NOT NULL,
     activo BOOLEAN DEFAULT TRUE,
     fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- <--- CAMPO AÑADIDO
@@ -78,10 +80,10 @@ INSERT INTO fabricantes (nombre) VALUES
 ('Dell'), ('HP'), ('Lenovo'), ('Asus'), ('Acer');
 
 
--- Insertar categorías de ejemplo
-INSERT INTO categorias (nombre) VALUES
-    ('Monitores'), ('Mouses'), ('Teclados'), ('Periféricos'), ('Componentes'),
-    ('Accesorios'), ('Sin Categoría'), ('Software');
+-- Insertar categorías de ejemplo para la tienda de computacion
+INSERT INTO categorias (nombre_categoria) VALUES
+('Computadoras'), ('Notebooks'), ('Periféricos'), ('Componentes'), ('Accesorios'), ('Software'),
+('Monitores'), ('Almacenamiento');
 -- Insertar productos de ejemplo
 INSERT INTO productos (nombre_producto, descripcion_producto, stock_producto, precio_producto, categoria_id, codigo_producto, activo)
 VALUES 
@@ -90,7 +92,6 @@ VALUES
     ('Teclado Mecánico Corsair K70', 'Teclado mecánico retroiluminado', 20, 129.99, 3, 1003, TRUE),
     ('Disco Duro SSD Samsung 1TB', 'Unidad de estado sólido de 1TB', 10, 149.99, 5, 1004, TRUE),
     ('Software Antivirus Norton', 'Protección completa contra virus y malware', 50, 39.99, 8, 1005, TRUE);
-
 
 
 

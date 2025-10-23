@@ -58,9 +58,9 @@ public class ProductoDAOImpl implements DAO<Producto> {
     @Override
     public Optional<Producto> read(int id) {
         String sql = """
-            SELECT p.*, c.id as categoria_id, c.nombre as categoria_nombre 
+            SELECT p.*, c.id_categoria as categoria_id, c.nombre_categoria as categoria_nombre 
             FROM productos p 
-            LEFT JOIN categorias c ON p.categoria_id = c.id 
+            LEFT JOIN categorias c ON p.categoria_id = c.id_categoria 
             WHERE p.id_producto = ?
             """; 
         Producto producto = null;
@@ -137,18 +137,20 @@ public boolean delete(int id) {
     public List<Producto> findAll() {
         List<Producto> productos = new ArrayList<>();
         String sql = """
-            SELECT p.*, c.id as categoria_id, c.nombre as categoria_nombre 
+            SELECT p.*, c.id_categoria as categoria_id, c.nombre_categoria as categoria_nombre 
             FROM productos p 
-            LEFT JOIN categorias c ON p.categoria_id = c.id 
+            LEFT JOIN categorias c ON p.categoria_id = c.id_categoria 
             WHERE p.activo = TRUE 
             ORDER BY p.nombre_producto
             """;
         try (Connection conexion = GestorDeConexion.getInstancia().getConexion();
              Statement stmt = conexion.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
+            
             while (rs.next()) {
                 productos.add(mapResultSet(rs));
             }
+            
         } catch (SQLException e) {
             System.err.println("Error al obtener todos los productos: " + e.getMessage());
         }
@@ -160,9 +162,9 @@ public boolean delete(int id) {
     public List<Producto> findAllCompleto() {
         List<Producto> productos = new ArrayList<>();
         String sql = """
-            SELECT p.*, c.id as categoria_id, c.nombre as categoria_nombre 
+            SELECT p.*, c.id_categoria as categoria_id, c.nombre_categoria as categoria_nombre 
             FROM productos p 
-            LEFT JOIN categorias c ON p.categoria_id = c.id 
+            LEFT JOIN categorias c ON p.categoria_id = c.id_categoria 
             ORDER BY p.nombre_producto
             """;
         try (Connection conexion = GestorDeConexion.getInstancia().getConexion();

@@ -105,8 +105,7 @@ public class VentanaVistaControlador extends Region {
             "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 20, 0.3, 0, 5);");
         getChildren().add(frame);
         enableDrag();
-        // Comentado: No permitir redimensionamiento para mantener tamaño fijo
-        // enableResize();
+        // Configurar acciones de los botones
         btnClose.setOnAction(e -> cerrarSinAnimacion());
         btnMin.setOnAction(e -> toggleMinimize());
         // Solo ventanas principales pueden maximizar
@@ -122,7 +121,7 @@ public class VentanaVistaControlador extends Region {
         // Al clickear, traer al frente
         addEventHandler(MouseEvent.MOUSE_PRESSED, e -> {
             toFront();
-            aplicarEfectoFoco();
+            // aplicarEfectoFoco(); POR AHORA COMENTE APLICAREFECTO PARA QUE NO HAYA EFECTO AL APRETAR LA VENTANA
         });
         setMinSize(MIN_W, MIN_H);
         setPrefSize(640, 420);
@@ -210,7 +209,7 @@ public class VentanaVistaControlador extends Region {
             "-fx-background-color: transparent;" +
             "-fx-background-radius: 10px;" +
             "-fx-border-radius: 10px;" +
-            "-fx-border-color: linear-gradient(to bottom, #5dade2, #3498db);" +
+            "-fx-border-color: linear-gradient(to bottom, #373838ff, #737577ff);" +
             "-fx-border-width: 2px;" +
             "-fx-effect: dropshadow(gaussian, rgba(93,173,226,0.4), 25, 0.4, 0, 6);"
         );
@@ -218,7 +217,7 @@ public class VentanaVistaControlador extends Region {
         runLater(() -> {
             new Thread(() -> {
                 try {
-                    Thread.sleep(800);
+                    Thread.sleep(200);
                     runLater(() -> {
                         frame.setStyle(
                             "-fx-background-color: transparent;" +
@@ -289,7 +288,7 @@ public class VentanaVistaControlador extends Region {
     //         ARRASTRE DE VENTANAS
     // ====================================
     
-    // Habilita el arrastre simple de ventanas (sin snap)
+    // Habilita el arrastre simple de ventanas 
     // Funcionalidad básica de mover ventanas
     private void enableDrag() {
         titleBar.setOnMousePressed(e -> {
@@ -329,12 +328,7 @@ public class VentanaVistaControlador extends Region {
             setCursor(Cursor.DEFAULT);
             // Sin funcionalidad de snap - solo liberar el cursor
         });
-    }
-    private void enableResize() {
-        // Redimensionamiento deshabilitado para mantener el tamaño original de la ventana
-        // Las ventanas mantienen su tamaño de creación sin permitir modificaciones
-    }
-    
+    }    
     @Override
     protected void layoutChildren() {
         double w = getWidth();
@@ -347,7 +341,7 @@ public class VentanaVistaControlador extends Region {
     private static class Delta { double x, y; }
 
     // ==================================================
-    // 🔹 MÉTODO DE UTILIDAD ESTÁTICO - CREAR VENTANA
+    //  MÉTODO DE UTILIDAD ESTÁTICO - CREAR VENTANA
     // ==================================================
     
     /**

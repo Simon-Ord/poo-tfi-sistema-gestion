@@ -29,6 +29,8 @@
               <items>
                 <MenuItem fx:id="btnGestionProductos" mnemonicParsing="false" onAction="#productosAction" text="Gestión de productos" />
                 <MenuItem fx:id="btnAgregarProducto" mnemonicParsing="false" onAction="#agregarProducto" text="Agregar producto" />
+                  <MenuItem fx:id="btnGestionCategorias" mnemonicParsing="false" onAction="#categoriasAction" text="Gestión de categorias" />
+                  <MenuItem fx:id="btnAgregarCategoria" mnemonicParsing="false" onAction="#agregarCategoria" text="Agregar categoria" />
               </items>
             </MenuButton>
             <Button fx:id="btnFacturar" mnemonicParsing="false" onAction="#facturarAction" prefHeight="37.0" prefWidth="82.0" text="Facturar">

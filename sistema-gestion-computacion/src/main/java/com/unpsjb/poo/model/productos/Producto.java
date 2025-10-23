@@ -63,8 +63,10 @@ public class Producto {
     public Timestamp getFechaCreacion() {return fechaCreacion;}
     public void setFechaCreacion(Timestamp fechaCreacion) {this.fechaCreacion = fechaCreacion;}
     
+    // ========================================
     // ===== MÉTODOS DE LÓGICA DE NEGOCIO =====
-    
+    // ========================================
+
     /**
      * Cambia el estado del producto (activo/inactivo).
      * Esta es lógica de negocio que pertenece al modelo.

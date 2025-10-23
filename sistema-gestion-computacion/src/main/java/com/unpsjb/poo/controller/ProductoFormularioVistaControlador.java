@@ -7,13 +7,11 @@ import com.unpsjb.poo.model.EventoAuditoria;
 import com.unpsjb.poo.model.productos.Categoria;
 import com.unpsjb.poo.model.productos.Producto;
 import com.unpsjb.poo.persistence.dao.ReportesDAO;
-import com.unpsjb.poo.persistence.dao.impl.CategoriaDAOImpl;
 import com.unpsjb.poo.persistence.dao.impl.ProductoDAOImpl;
 import com.unpsjb.poo.util.CopiarProductoUtil;
 import com.unpsjb.poo.util.Sesion;
 
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ChoiceBox;
@@ -34,8 +32,6 @@ public class ProductoFormularioVistaControlador extends BaseControlador {
     private Producto productoAEditar;       // si es null -> alta
     private Producto productoOriginal;      // copia para comparar cambios
 
-    private final CategoriaDAOImpl categoriaDAO = new CategoriaDAOImpl();
-
     @FXML
     private void initialize() {
         // Cargar las categorías desde la base de datos
@@ -44,7 +40,7 @@ public class ProductoFormularioVistaControlador extends BaseControlador {
 
     // Metodo separado para cargar categorias
     public void cargarCategorias(){
-        List<Categoria> categorias = categoriaDAO.findAll();
+        List<Categoria> categorias = Categoria.obtenerTodas();
         if (categorias != null && !categorias.isEmpty()) {
             cbCategoria.getItems().addAll(categorias);
         }
@@ -104,7 +100,7 @@ public class ProductoFormularioVistaControlador extends BaseControlador {
             // Crear y mostrar la ventana del formulario de categoría
             crearDialogo("/view/formularios/CategoriaForm.fxml", "Agregar Nueva Categoría");
             // Recargar categorías por si se creó una nueva
-            List<Categoria> categorias = categoriaDAO.findAll();
+            List<Categoria> categorias = Categoria.obtenerTodas();
             if (categorias != null) {
                 cbCategoria.getItems().setAll(categorias);
             }
