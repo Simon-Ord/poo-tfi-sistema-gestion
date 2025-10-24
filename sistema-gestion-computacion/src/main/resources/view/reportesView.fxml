@@ -79,7 +79,7 @@
                 <TableColumn fx:id="colUsuario" prefWidth="120.0" text="Usuario" />
                 <TableColumn fx:id="colAccion" prefWidth="160.0" text="Acción" />
                 <TableColumn fx:id="colEntidad" prefWidth="120.0" text="Entidad" />
-                <TableColumn fx:id="colDetalles" prefWidth="700.0" text="Descripción / Detalles" />
+                <TableColumn fx:id="colDetalles" prefWidth="700.0" text="Descripción/Detalles" />
             </columns>
 
         </TableView>
