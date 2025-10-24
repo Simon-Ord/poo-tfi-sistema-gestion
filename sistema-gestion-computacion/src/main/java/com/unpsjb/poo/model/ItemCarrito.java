@@ -41,6 +41,14 @@ public class ItemCarrito {
         return precioUnitario;
     }
 
+    public String getCodigoProducto() {
+        return String.valueOf(this.producto.getCodigoProducto());
+    }
+
+    public String getNombreProducto() {
+        return String.valueOf(this.producto.getNombreProducto());
+    }
+
     @Override
     public String toString() {
         return "ItemCarrito [Producto: " + producto + ", Cantidad: " + cantidad + ", PrecioUnitario: " + precioUnitario
