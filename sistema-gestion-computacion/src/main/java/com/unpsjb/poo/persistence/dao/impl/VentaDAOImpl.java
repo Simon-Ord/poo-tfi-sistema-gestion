@@ -118,26 +118,31 @@ public class VentaDAOImpl implements VentaDAO {
 
     @Override
     public Optional<Venta> read(int id) {
-        // Este método no es necesario para la funcionalidad básica de ventas
-        // pero se implementa para cumplir con la interfaz DAO
+        // Nota: Este método no está implementado ya que el sistema actual 
+        // no requiere recuperar ventas individuales. Las ventas solo se crean.
+        // Si en el futuro se necesita, implementar la lógica de lectura aquí.
         return Optional.empty();
     }
 
     @Override
     public boolean update(Venta venta) {
-        // Las ventas normalmente no se modifican, solo se crean
+        // Nota: Las ventas no se modifican una vez creadas.
+        // Si se requiere modificación, considerar un sistema de anulación/reembolso.
         return false;
     }
 
     @Override
     public boolean delete(int id) {
-        // Las ventas no se eliminan, solo se anulan si es necesario
+        // Nota: Las ventas no se eliminan. Para anular una venta,
+        // implementar un sistema de anulación que genere una contra-factura.
         return false;
     }
 
     @Override
     public List<Venta> findAll() {
-        // Este método se puede implementar después si es necesario listar ventas
+        // Nota: Este método no está implementado ya que listar ventas completas
+        // con todos sus ítems no es necesario en la funcionalidad actual.
+        // Para reportes, usar consultas SQL específicas en ReportesDAO.
         return new ArrayList<>();
     }
 
