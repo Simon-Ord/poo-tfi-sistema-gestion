@@ -17,9 +17,12 @@ CREATE TABLE usuarios (
 CREATE TABLE clientes (
     id SERIAL PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
+    cuit VARCHAR(11),
     direccion VARCHAR(150),
     telefono VARCHAR(30),
     email VARCHAR(100),
+    tipo VARCHAR(50) DEFAULT 'Consumidor Final',
+    activo BOOLEAN DEFAULT TRUE,
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
@@ -31,6 +34,8 @@ CREATE TABLE facturas (
     fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     cliente_id INT,
     total DECIMAL(12,2) NOT NULL,
+    tipo_factura VARCHAR(20),
+    metodo_pago VARCHAR(50),
     FOREIGN KEY (cliente_id) REFERENCES clientes(id)
 );
 -- ==============================

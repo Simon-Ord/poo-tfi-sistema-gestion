@@ -13,5 +13,10 @@ public class PagoEfectivo implements EstrategiaPago {
     public String getNombreMetodoPago() {
         return "Pago en Efectivo";
     }
+
+    @Override
+    public double getComision() {
+        return 0.00; // Sin comisión para efectivo
+    }
     
 }

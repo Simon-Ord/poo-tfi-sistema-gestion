@@ -1,5 +1,7 @@
 package com.unpsjb.poo.model;
 
+import com.unpsjb.poo.persistence.dao.impl.VentaDAOImpl;
+
 public class Venta {
 
 private CarritoDeCompra carrito;
@@ -7,6 +9,8 @@ private EstadoVenta estadoActualVenta;
 private String tipoFactura;
 private EstrategiaPago estrategiaPago;
 private Cliente clienteFactura;
+
+private static final VentaDAOImpl ventaDAO = new VentaDAOImpl();
 
 public Venta () {
 	this.carrito = new CarritoDeCompra();
@@ -62,9 +66,8 @@ public void setEstrategiaPago(EstrategiaPago estrategiaPago) {
 	this.estrategiaPago = estrategiaPago;
 }
 
-public void guardarVentaBD() {
-//Lógica aca
-	System.out.println("Persistiendo la venta en la base de datos...");
+public boolean guardarVentaBD() {
+	return ventaDAO.create(this);
 }
 
 public void setClienteFactura(Cliente clienteFactura) {

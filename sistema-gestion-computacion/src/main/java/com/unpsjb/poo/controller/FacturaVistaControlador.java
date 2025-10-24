@@ -298,9 +298,7 @@ public void handleMetodoPagoSelected() {
         this.estrategiaPagoSeleccionada = estrategia;
         
         double totalBase = miVenta.getCarrito().getTotal().doubleValue();
-        
-        // Simulación: La lógica real de Strategy aplicaría la comisión
-        double comision = (estrategia instanceof PagoTarjeta) ? 0.05 : 0.00;
+        double comision = estrategia.getComision();
         double totalFinal = totalBase * (1 + comision);
 
         // Actualizar UI
@@ -319,12 +317,20 @@ public void handleRegistrarVenta() {
         return;
     }
     
-    // 1. El controlador invoca la lógica de PAGO y PERSISTENCIA en el Modelo (EstadoConfirmacionPago)
+    // Establecer la estrategia de pago en la venta
+    miVenta.setEstrategiaPago(estrategiaPagoSeleccionada);
+    
+    // El controlador invoca la lógica de PAGO y PERSISTENCIA en el Modelo (EstadoConfirmacionPago)
     miVenta.siguientePaso(); 
 
-    // 2. El Patrón State mueve la Venta al estado inicial (Agregar Productos)
+    // El Patrón State mueve la Venta al estado inicial (Agregar Productos)
     // El Controlador actualiza la UI para volver al inicio
     actualizarVisibilidadVistas(miVenta.getEstadoActual().getVistaID());
+    
+    // Actualizar la tabla del carrito
+    carritoTable.setItems(FXCollections.observableArrayList(miVenta.getCarrito().getItems()));
+    actualizarTotalParcial();
+    
     mostrarAlerta("Éxito", "Venta registrada exitosamente.", Alert.AlertType.INFORMATION);
 }
 

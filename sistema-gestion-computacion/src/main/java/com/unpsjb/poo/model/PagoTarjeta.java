@@ -15,5 +15,10 @@ public class PagoTarjeta implements EstrategiaPago {
     public String getNombreMetodoPago() {
         return "Pago con Tarjeta";
     }
+
+    @Override
+    public double getComision() {
+        return comision; // 5% de comisión
+    }
     
 }
