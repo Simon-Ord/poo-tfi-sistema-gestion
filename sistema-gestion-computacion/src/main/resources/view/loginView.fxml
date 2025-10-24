@@ -37,8 +37,11 @@
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="txtUser" onKeyTyped="#eventKey" prefHeight="35.0"
-                             promptText="Ej: admin o nombre_usuario" />
+                  <TextField fx:id="txtUser" 
+                             onKeyTyped="#eventKey" 
+                             prefHeight="35.0"
+                             promptText="Ej:nombre_usuario"
+                             style="-fx-background-radius: 8; -fx-padding: 5 10;"/>
 
                   <!-- Campo Contraseña -->
                   <Label text="Contraseña:" style="-fx-text-fill: #d0d0d0;">
@@ -49,19 +52,27 @@
                         <Insets top="10.0" />
                      </VBox.margin>
                   </Label>
-                  <PasswordField fx:id="txtPassword" onKeyTyped="#eventKey" prefHeight="35.0"
-                                 promptText="Ej: ********" />
+                  <PasswordField fx:id="txtPassword" 
+                                 onKeyTyped="#eventKey" 
+                                 prefHeight="35.0"
+                                 promptText="contraseña"
+                                 style="-fx-background-radius: 8; -fx-padding: 5 10;"/>
 
                   <!-- Botones alineados -->
                   <HBox spacing="10" alignment="CENTER" style="-fx-padding: 10 0 0 0;">
                      <Button fx:id="btnLogin" text="Ingresar" 
                              onAction="#btnLoginAction"
-                             style="-fx-background-color: #3a7af7; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 10;" />
+                             style="-fx-background-color: #3a7af7; 
+                                    -fx-text-fill: white; 
+                                    -fx-font-weight: bold; 
+                                    -fx-background-radius: 10;" />
                   </HBox>
 
                   <!-- Comentario explicativo -->
-                  <Label text="Ingrese sus credenciales para acceder al sistema."
-                         style="-fx-text-fill: #aaaaaa; -fx-font-size: 12px; -fx-alignment: center;"
+                  <Label text="Ingrese sus datos para acceder al sistema."
+                         style="-fx-text-fill: #aaaaaa; 
+                                -fx-font-size: 12px; 
+                                -fx-alignment: center;"
                          wrapText="true" />
                </children>
             </VBox>
@@ -81,7 +92,10 @@
             </ImageView>
 
             <Label text="Sistema de Gestión"
-                   style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-padding: 15 0 0 0;" />
+                   style="-fx-text-fill: white; 
+                          -fx-font-size: 16px; 
+                          -fx-font-weight: bold; 
+                          -fx-padding: 15 0 0 0;" />
          </children>
       </VBox>
    </children>
