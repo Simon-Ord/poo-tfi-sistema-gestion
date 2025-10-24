@@ -3,10 +3,7 @@ package com.unpsjb.poo.model;
 import java.util.List;
 import com.unpsjb.poo.persistence.dao.impl.UsuarioDAOImpl;
 
-/**
- * Clase de modelo que representa un usuario del sistema.
- * Además contiene la lógica de negocio básica y llama al DAO para persistencia.
- */
+
 public class Usuario {
     private String dni;
     private String nombre;
