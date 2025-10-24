@@ -1,4 +1,4 @@
-/*package com.unpsjb.poo.model;
+package com.unpsjb.poo.model;
 
 public class Venta {
 
@@ -6,6 +6,7 @@ private CarritoDeCompra carrito;
 private EstadoVenta estadoActualVenta;
 private String tipoFactura;
 private EstrategiaPago estrategiaPago;
+private Cliente clienteFactura;
 
 public Venta () {
 	this.carrito = new CarritoDeCompra();
@@ -14,6 +15,19 @@ public Venta () {
 
 public void siguientePaso() {
 	this.estadoActualVenta.siguientePaso(this);
+}
+
+public void cancelar() {
+    // 1. Limpiar los datos de la venta actual (crucial antes de reiniciar)
+    if (this.carrito != null) {
+        this.carrito.vaciarCarrito(); //vacía la lista de ítems
+    }
+    this.tipoFactura = null;
+    this.estrategiaPago = null;
+    this.clienteFactura = null; 
+
+    // 2. Reiniciar el estado (volviendo al inicio del proceso)
+    this.estadoActualVenta = new EstadoAgregarProductos();
 }
 
 //Getters y setters
@@ -53,5 +67,12 @@ public void guardarVentaBD() {
 	System.out.println("Persistiendo la venta en la base de datos...");
 }
 
+public void setClienteFactura(Cliente clienteFactura) {
+	this.clienteFactura = clienteFactura;
 }
-*/
+
+public Cliente getClienteFactura() {
+	return clienteFactura;
+}
+
+}

@@ -1,19 +1,267 @@
-<BorderPane xmlns:fx="http://javafx.com/fxml/1" 
-            fx:controller="com.unpsjb.poo.controller.FacturacionController">
-    
-    <center>
+<?xml version="1.0" encoding="UTF-8"?>
+
+
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.cell.PropertyValueFactory?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.geometry.Insets?>
+
+
+<BorderPane xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="com.unpsjb.poo.controller.FacturaVistaControlador"
+            xmlns="http://javafx.com/javafx/21"
+            style="-fx-background-color: white;">
+
+     <center>
         <StackPane fx:id="contentStackPane">
-            <fx:include fx:id="agregarProductosView" source="agregarProductosView.fxml" visible="true" />
-            <fx:include fx:id="seleccionarFacturaView" source="seleccionarFacturaView.fxml" visible="false" />
-            <fx:include fx:id="confirmarVentaView" source="confirmarVentaView.fxml" visible="false" />
+
+            <AnchorPane fx:id="FacturaAgregarProductos" visible="false"
+                        prefHeight="550.0" prefWidth="750.0" style="-fx-padding: 20;">
+                <children>
+                    <VBox prefHeight="200.0" prefWidth="100.0" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+
+                        <children>
+
+                            <Label style="-fx-font-size: 16pt; -fx-font-weight: bold;" text="1. Agregar productos al Carrito" />
+
+                           
+
+                            <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+
+                                <children>
+
+                                    <TextField fx:id="txtCodigoProducto" promptText="Codigo de Producto" />
+
+                                    <TextField fx:id="txtCantidad" maxWidth="80.0" promptText="Cantidad" />
+
+                                    <Button fx:id="btnAnadirCarrito" mnemonicParsing="false" onAction="#handleAnadirItem" text="Añadir al carrito" />
+
+                                    <Button fx:id="btnQuitarSeleccionado" mnemonicParsing="false" onAction="#handleQuitarItem" style="-fx-background-color: #f44336; -fx-text-fill: white;" text="Quitar seleccionado" />
+
+                                    <Button fx:id="btnLIistarCodigos" mnemonicParsing="false" onAction="#handleListarCodigos" text="Listar codigos" />
+
+                                </children>
+
+                            </HBox>
+
+                           
+
+                            <TableView fx:id="carritoTable" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+
+                                <columns>
+
+                                    <TableColumn prefWidth="80.0" text="Código">
+
+                                        <cellValueFactory><PropertyValueFactory property="producto.codigoProducto" /></cellValueFactory>
+
+                                    </TableColumn>
+
+                                    <TableColumn prefWidth="250.0" text="Producto">
+
+                                        <cellValueFactory><PropertyValueFactory property="producto.nombreProducto" /></cellValueFactory>
+
+                                    </TableColumn>
+
+                                    <TableColumn prefWidth="120.0" text="Precio Unitario">
+
+                                        <cellValueFactory><PropertyValueFactory property="precioUnitario" /></cellValueFactory>
+
+                                    </TableColumn>
+
+                                    <TableColumn prefWidth="80.0" text="Cantidad">
+
+                                        <cellValueFactory><PropertyValueFactory property="cantidad" /></cellValueFactory>
+
+                                    </TableColumn>
+
+                                    <TableColumn prefWidth="219.0" text="Subtotal">
+
+                                        <cellValueFactory><PropertyValueFactory property="subtotal" /></cellValueFactory>
+
+                                    </TableColumn>
+
+                                </columns>
+
+                            </TableView>
+
+                           
+
+                            <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+                                <children>
+                                    <Label style="-fx-font-size: 14pt; -fx-font-weight: bold; -fx-text-fill: red;" text="Total Parcial" />
+                                    <Label fx:id="lblTotalParcial" style="-fx-font-size: 14pt; -fx-font-weight: bold; -fx-text-fill: #4CAF50;" text="\$0.00" />
+                                </children>
+                            </HBox>
+                        </children>
+                    </VBox>
+                </children>
+            </AnchorPane>
+
+
+<AnchorPane fx:id="FacturaDatosVenta" visible="false">
+                <children>
+                    <VBox spacing="20.0" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+
+                        <children>
+                            <Label style="-fx-font-size: 16pt; -fx-font-weight: bold;" text="2. Seleccionar Tipo de Factura" />
+
+                            <VBox spacing="10.0" style="-fx-border-color: #ccc; -fx-padding: 10;">
+                                <children>
+                                    <Label style="-fx-font-size: 14pt;" text="Seleccione el Tipo de Factura:" />
+                                    <HBox spacing="15.0">
+                                        <children>
+                                            <ComboBox fx:id="cbTipoFactura" promptText="Tipo de Factura" onAction="#handleTipoFacturaSelected" />
+                                        </children>
+                                    </HBox>
+                                </children>
+                            </VBox>
+                            
+                            <VBox fx:id="panelDatosCliente" spacing="10.0" visible="false">
+                                <children>
+                                    <Label text="Datos del cliente (Factura)" />
+                                    <GridPane hgap="10.0" vgap="10.0">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="150.0" minWidth="10.0" prefWidth="120.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="300.0" />
+                            </columnConstraints>
+                            
+                            <rowConstraints>
+                                <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            </rowConstraints>
+                            
+                            <children>
+                                <Label text="CUIT/DNI" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                <TextField fx:id="txtCuidDni" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                                <Label text="Nombre/Razon social" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+                                <TextField fx:id="txtRazonSocial" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                                
+                                <Label fx:id="lblEstadoCliente" text="Cliente cargado." visible="false" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+                            </children>
+                        </GridPane>
+                                </children>
+                            </VBox>
+                            
+                            <Label fx:id="lblTotalVenta" style="-fx-font-size: 16pt;" text="Total de Venta: $ 0.00" />
+                            
+                        </children>
+                    </VBox>
+                </children>
+            </AnchorPane>
+
+
+
+        
+            <AnchorPane fx:id="FacturaConfirmarVenta" visible="false"
+                        prefHeight="400.0" prefWidth="600.0">
+            <children>
+            <VBox layoutX="250.0" layoutY="100.0" prefHeight="411.0" prefWidth="608.0" spacing="20.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+         <children>
+            <Label style="-fx-font-size: 16pt; -fx-font-weight: bold;" text="3. Confirmar venta y pago" />
+            <VBox prefHeight="200.0" prefWidth="100.0" spacing="2.0" style="-fx-background-color: lightgrey; -fx-padding: 15;">
+               <children>
+                  <Label style="-fx-font-weight: bold; -fx-font-size: 14pt;" text="Resumen de venta" />
+                  <Separator prefWidth="200.0" />
+                  <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Label style="-fx-text-fill: black;" text="Tipo de factura:" />
+                        <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                        <Label fx:id="lblTipoFacturaResumen" style="-fx-text-fill: black;" text="[Ticket o Factura]" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Label style="-fx-text-fill: black;" text="Cliente:" />
+                        <Region prefHeight="200.0" prefWidth="200.0" HBox.hgrow="ALWAYS" />
+                        <Label fx:id="lblClienteResumen" style="-fx-text-fill: black;" text="[Consumidor final o Razon social]" />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Label fx:id="lblMontoSinIVAResumen" style="-fx-text-fill: black;" text="Subtotal sin IVA: $0.00 " />
+                     </children>
+                  </HBox>
+                  <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Label fx:id="lblIVAResumen" style="-fx-text-fill: black;" text="Monto IVA (21%): $ 0.00" />
+                     </children>
+                  </HBox>
+                  <Label style="-fx-text-fill: black;" text="Productos de la operacion:" />
+                  <ScrollPane fx:id="scrollPaneItems" fitToWidth="true" prefHeight="200.0" prefWidth="200.0">
+                     <content>
+                        <VBox prefHeight="200.0" prefWidth="100.0" />
+                     </content>
+                  </ScrollPane>
+               </children>
+            </VBox>
+            <VBox prefHeight="200.0" prefWidth="100.0" spacing="10.0" style="-fx-border-color: #00bcd4; -fx-padding: 5;">
+               <children>
+                  <Label style="-fx-font-weight: bold;" text="Metodo de pago" />
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <ComboBox fx:id="cbMetodoPago" onAction="#handleMetodoPagoSelected" prefWidth="150.0" promptText="Seleccione el metodo" />
+                        <Label text="Comision/Descuento: +0.00%">
+                           <HBox.margin>
+                              <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                           </HBox.margin>
+                        </Label>
+                        <VBox alignment="CENTER_RIGHT" prefHeight="50.0" prefWidth="253.0">
+                           <children>
+                              <Button mnemonicParsing="false" onAction="#handleExportarPDF" text="Exportar PDF">
+                                 <VBox.margin>
+                                    <Insets bottom="7.0" />
+                                 </VBox.margin>
+                              </Button>
+                              <Button mnemonicParsing="false" onAction="#handleRegistrarVenta" text="Registrar venta" />
+                           </children>
+                        </VBox>
+                     </children>
+                  </HBox>
+                  <HBox prefHeight="100.0" prefWidth="200.0">
+                     <children>
+                        <Label style="-fx-font-size: 14pt; -fx-font-weight: bold;" text="TOTAL FINAL: " />
+                        <Label fx:id="lblTotalFinal" style="-fx-font-size: 14pt; -fx-font-weight: bold; -fx-text-fill: #4CAF50;" text="\$ 0.00" />
+                     </children>
+                  </HBox>
+               </children>
+            </VBox>
+            <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="20.0" />
+         </children>
+      </VBox>
+            </children>
+            </AnchorPane>
+            
+
         </StackPane>
     </center>
 
+
     <bottom>
-        <HBox alignment="CENTER" spacing="20">
-            <Button text="Cancelar Venta" onAction="#handleCancelarVenta"/>
-            <Button text="Atrás" onAction="#handleVolverPaso"/>
-            <Button text="Siguiente" onAction="#handleSiguientePaso"/>
+        <HBox alignment="CENTER" spacing="20" style="-fx-padding: 10 10 10 10;">
+            <Button onAction="#handleCancelarVenta" text="Cancelar Venta" />
+            <Button onAction="#handleVolverPaso" text="Atrás" />
+            <Button onAction="#handleSiguientePaso" text="Siguiente" />
         </HBox>
     </bottom>
 </BorderPane>

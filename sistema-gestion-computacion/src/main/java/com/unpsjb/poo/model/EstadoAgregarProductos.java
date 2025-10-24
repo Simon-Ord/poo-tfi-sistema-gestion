@@ -1,13 +1,13 @@
-/*package com.unpsjb.poo.model;
+package com.unpsjb.poo.model;
 
 public class EstadoAgregarProductos implements EstadoVenta {
     
     @Override
     public void siguientePaso(Venta venta) {
-        if (venta.getCarrito().getItems().isEmpty()) {
+       /*  if (venta.getCarrito().getItems().isEmpty()) {
             System.out.println("ERROR: Debe agregar productos al carrito antes de continuar.");
             return;  //Esto bloquea el avanceñ
-        }
+        } */
         venta.setEstado(new EstadoDatosFactura());
     }
 
@@ -23,7 +23,7 @@ public class EstadoAgregarProductos implements EstadoVenta {
 
     @Override
     public String getVistaID() {
-        return "AgregarProductosVista";
+        return "FacturaAgregarProductos";
     }
     
-}*/
+}

@@ -1,4 +1,4 @@
-/*
+
 
 package com.unpsjb.poo.model;
 
@@ -13,7 +13,7 @@ public class EstadoDatosFactura implements EstadoVenta {
             return;  // Esto bloquea el avance
         }
 
-        //venta.setEstado(new EstadoConfirmacionPago());
+        venta.setEstado(new EstadoConfirmacionPago());
 }
 
     @Override
@@ -28,11 +28,11 @@ public class EstadoDatosFactura implements EstadoVenta {
 
     @Override
     public String getVistaID() {
-        return "DatosFacturaVista";
+        return "FacturaDatosVenta";
     }
 
    
 
     
 }
- */
+ 

@@ -1,4 +1,4 @@
-/*package com.unpsjb.poo.model;
+package com.unpsjb.poo.model;
 
 public class EstadoConfirmacionPago implements EstadoVenta {
 
@@ -20,7 +20,6 @@ public class EstadoConfirmacionPago implements EstadoVenta {
 
     @Override
     public String getVistaID() {
-        return "ConfirmacionPagoVista";
+        return "FacturaConfirmarVenta";
     }
 }
-*/

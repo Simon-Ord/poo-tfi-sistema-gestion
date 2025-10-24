@@ -96,15 +96,12 @@ public class PrincipalVistaControlador implements Initializable {
             new Alert(Alert.AlertType.ERROR, "Error al abrir la gestión de productos: " + e.getMessage()).showAndWait();
         }
     }
-
     @FXML private void agregarProducto() {
         VentanaVistaControlador.crearFormulario(desktop, "/view/productoForm.fxml", "Agregar Producto", 400, 300);
     }
-
     @FXML private void categoriasAction(){
         VentanaVistaControlador.crearVentana(desktop, "/view/categoriasVista.fxml", "Gestión de Categorías", 800, 600);
     }
-
     @FXML private void agregarCategoria() {
         VentanaVistaControlador.crearFormulario(desktop, "/view/formularios/categoriaForm.fxml", "Agregar Categoría", 400, 300);
     }
@@ -124,7 +121,16 @@ public class PrincipalVistaControlador implements Initializable {
     // =====================
     //  BOTÓN FACTURAR
     // =====================
-    @FXML private void facturarAction(ActionEvent event) {}
+    @FXML private void facturarAction(ActionEvent event) {
+        try {
+            VentanaVistaControlador.crearVentana(desktop, "/view/FacturacionVista.fxml", "Generar Factura", 800, 600);
+        } catch (Exception e) {
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Error al abrir la vista de facturación: " + e.getMessage()).showAndWait();
+        }
+    }
+
+
 
     // =====================
     //  BOTÓN REPORTES

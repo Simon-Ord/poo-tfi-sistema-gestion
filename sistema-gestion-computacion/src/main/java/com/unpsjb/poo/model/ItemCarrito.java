@@ -10,8 +10,8 @@ public class ItemCarrito {
     private int cantidad;
     private BigDecimal precioUnitario;
 
-    public ItemCarrito(Producto producto, int cantidad, BigDecimal precioUnitario) {
-        this.producto = producto;
+    public ItemCarrito(Producto producto2, int cantidad, BigDecimal precioUnitario) {
+        this.producto = producto2;
         this.cantidad = cantidad;
         this.precioUnitario = precioUnitario;
     }

@@ -55,4 +55,7 @@ public List<ItemCarrito> getItems() {
 public javafx.collections.ObservableList<ItemCarrito> getItemsObservable() {
     return javafx.collections.FXCollections.observableArrayList(items);
    }
+
+
 }
+

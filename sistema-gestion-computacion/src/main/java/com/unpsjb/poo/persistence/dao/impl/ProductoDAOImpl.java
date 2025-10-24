@@ -238,5 +238,9 @@ public boolean reactivar(int id) {
         }
         return p;
     }
+    public Optional<Producto> findByCodigo(String codigo) {
+        // TODO Auto-generated method stub
+        return Optional.empty();
+    }
 
 }
