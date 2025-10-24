@@ -44,7 +44,7 @@
                 <!-- Botones -->
                 <HBox alignment="CENTER" spacing="15">
                     <Button onAction="#agregarUsuario" styleClass="btn-accion" text="Agregar Usuario" />
-                    <Button onAction="#cambiarEstadoUsuario" styleClass="btn-accion" text="Activar/Desactivar Usuario" />
+                    <Button onAction="#cambiarEstadoUsuario" styleClass="btn-accion" text="Activar/Desactivar Usuario"  />
                 </HBox>
             </VBox>
         </VBox>

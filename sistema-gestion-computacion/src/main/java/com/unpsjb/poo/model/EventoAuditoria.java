@@ -1,24 +1,49 @@
 package com.unpsjb.poo.model;
 
 import java.sql.Timestamp;
+import java.util.List;
+import com.unpsjb.poo.persistence.dao.ReportesDAO;
 
 /**
  * Representa un evento de auditoría en el sistema.
- * Guarda información sobre acciones realizadas por los usuarios
- * (por ejemplo: crear, modificar, eliminar datos).
+ * Ahora además contiene la lógica de persistencia, conectándose al DAO.
  */
 public class EventoAuditoria {
 
-    private long id;                    // Identificador único del evento
-    private Timestamp fechaHora;        // Fecha y hora en que ocurrió
-    private String usuario;             // Usuario que realizó la acción
-    private String accion;              // Acción ejecutada (CREATE, UPDATE, DELETE)
-    private String entidad;             // Entidad afectada (usuarios, productos, etc.)
-    private String idEntidad;           // ID de la entidad afectada
-    private String detalles;            // Descripción del evento
+    private long id;
+    private Timestamp fechaHora;
+    private String usuario;
+    private String accion;
+    private String entidad;
+    private String idEntidad;
+    private String detalles;
 
+    private static final ReportesDAO dao = new ReportesDAO();
 
-    // --- Getters y Setters ---
+    // ==============================
+    // 🔹 Métodos de persistencia
+    // ==============================
+
+    /** Guarda este evento de auditoría en la base de datos */
+    public boolean guardar() {
+        try {
+            dao.registrarEvento(this);
+            return true;
+        } catch (Exception e) {
+            System.err.println("Error al guardar evento de auditoría: " + e.getMessage());
+            return false;
+        }
+    }
+
+    /** Obtiene una lista de eventos filtrados */
+    public static List<EventoAuditoria> obtenerEventos(String usuario, String entidad, String accion) {
+        return dao.obtenerEventos(usuario, entidad, accion);
+    }
+
+    // ==============================
+    // 🔹 Getters / Setters
+    // ==============================
+
     public long getId() { return id; }
     public void setId(long id) { this.id = id; }
 
