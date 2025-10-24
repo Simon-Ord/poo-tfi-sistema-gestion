@@ -18,7 +18,9 @@
       <!-- Panel izquierdo -->
       <VBox alignment="CENTER" prefHeight="400.0" prefWidth="300.0" spacing="15">
          <children>
-            <Label text="Iniciar Sesión">
+
+            <!-- Título principal -->
+            <Label text="Iniciar Sesión" style="-fx-text-fill: white;">
                <font>
                   <Font name="System Bold" size="33.0" />
                </font>
@@ -27,16 +29,19 @@
                </VBox.margin>
             </Label>
 
-            <VBox spacing="10">
+            <VBox spacing="12">
                <children>
-                  <Label text="Usuario">
+                  <!-- Campo Usuario -->
+                  <Label text="Usuario:" style="-fx-text-fill: #d0d0d0;">
                      <font>
                         <Font size="18.0" />
                      </font>
                   </Label>
-                  <TextField fx:id="txtUser" onKeyTyped="#eventKey" prefHeight="30.0" />
+                  <TextField fx:id="txtUser" onKeyTyped="#eventKey" prefHeight="35.0"
+                             promptText="Ej: admin o nombre_usuario" />
 
-                  <Label text="Contraseña">
+                  <!-- Campo Contraseña -->
+                  <Label text="Contraseña:" style="-fx-text-fill: #d0d0d0;">
                      <font>
                         <Font size="18.0" />
                      </font>
@@ -44,12 +49,20 @@
                         <Insets top="10.0" />
                      </VBox.margin>
                   </Label>
-                  <PasswordField fx:id="txtPassword" onKeyTyped="#eventKey" prefHeight="30.0" />
+                  <PasswordField fx:id="txtPassword" onKeyTyped="#eventKey" prefHeight="35.0"
+                                 promptText="Ej: ********" />
 
-                  <!-- Botones alineados en la misma fila -->
-                  <HBox spacing="10" alignment="CENTER">
-                     <Button fx:id="btnLogin" text="Ingresar" onAction="#btnLoginAction" />
+                  <!-- Botones alineados -->
+                  <HBox spacing="10" alignment="CENTER" style="-fx-padding: 10 0 0 0;">
+                     <Button fx:id="btnLogin" text="Ingresar" 
+                             onAction="#btnLoginAction"
+                             style="-fx-background-color: #3a7af7; -fx-text-fill: white; -fx-font-weight: bold; -fx-background-radius: 10;" />
                   </HBox>
+
+                  <!-- Comentario explicativo -->
+                  <Label text="Ingrese sus credenciales para acceder al sistema."
+                         style="-fx-text-fill: #aaaaaa; -fx-font-size: 12px; -fx-alignment: center;"
+                         wrapText="true" />
                </children>
             </VBox>
          </children>
@@ -66,6 +79,9 @@
                   <Image url="@../images/login2.png" />
                </image>
             </ImageView>
+
+            <Label text="Sistema de Gestión"
+                   style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold; -fx-padding: 15 0 0 0;" />
          </children>
       </VBox>
    </children>
