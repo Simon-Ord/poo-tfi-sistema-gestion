@@ -19,22 +19,22 @@
 
     <GridPane hgap="10" vgap="10" alignment="CENTER">
         <Label text="Usuario actual:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-        <TextField fx:id="txtUsuarioActual" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+        <TextField fx:id="txtUsuarioActual" GridPane.rowIndex="0" GridPane.columnIndex="1" promptText="Ej. lfernandez" />
 
         <Label text="Contraseña actual:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-        <PasswordField fx:id="txtContrasenaActual" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+        <PasswordField fx:id="txtContrasenaActual" GridPane.rowIndex="1" GridPane.columnIndex="1" promptText="********" />
 
         <Label text="Repetir contraseña actual:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-        <PasswordField fx:id="txtRepetirContrasena" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+        <PasswordField fx:id="txtRepetirContrasena" GridPane.rowIndex="2" GridPane.columnIndex="1" promptText="********" />
 
         <Label text="ingrese nuevo nombre y apellido:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-        <TextField fx:id="txtNuevoNombre" GridPane.rowIndex="3" GridPane.columnIndex="1"/>
+        <TextField fx:id="txtNuevoNombre" GridPane.rowIndex="3" GridPane.columnIndex="1" promptText= "Ej. Daniel Gomez" />
 
         <Label text="ingrese nuevo usuario:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-        <TextField fx:id="txtNuevoUsuario" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
+        <TextField fx:id="txtNuevoUsuario" GridPane.rowIndex="4" GridPane.columnIndex="1" promptText="Ej: Lgomez" />
 
         <Label text="ingrese nueva contraseña:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
-        <PasswordField fx:id="txtNuevaContrasena" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+        <PasswordField fx:id="txtNuevaContrasena" GridPane.rowIndex="5" GridPane.columnIndex="1" promptText="********" />
     </GridPane>
 
     <HBox alignment="CENTER" spacing="12">
