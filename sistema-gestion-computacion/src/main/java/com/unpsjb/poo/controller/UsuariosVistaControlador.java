@@ -3,15 +3,12 @@ package com.unpsjb.poo.controller;
 import java.util.List;
 
 import com.unpsjb.poo.model.Usuario;
-import com.unpsjb.poo.persistence.dao.impl.UsuarioDAOImpl;
 import com.unpsjb.poo.util.AuditoriaUtil;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 
 public class UsuariosVistaControlador extends BaseControlador {
 
@@ -20,8 +17,6 @@ public class UsuariosVistaControlador extends BaseControlador {
     @FXML private TableColumn<Usuario, String> colNombre;
     @FXML private TableColumn<Usuario, String> colRol;
     @FXML private TableColumn<Usuario, Boolean> colActivo;
-
-    private final UsuarioDAOImpl usuarioDAO = new UsuarioDAOImpl();
 
     @FXML
     public void initialize() {
@@ -33,7 +28,7 @@ public class UsuariosVistaControlador extends BaseControlador {
     }
 
     private void cargarUsuarios() {
-        List<Usuario> lista = usuarioDAO.obtenerTodos();
+        List<Usuario> lista = Usuario.obtenerTodos();
         ObservableList<Usuario> obsList = FXCollections.observableArrayList(lista);
         tablaUsuarios.setItems(obsList);
     }
@@ -60,17 +55,17 @@ public class UsuariosVistaControlador extends BaseControlador {
         boolean nuevoEstado = !seleccionado.isEstado();
         seleccionado.setEstado(nuevoEstado);
 
-        boolean ok = usuarioDAO.modificar(seleccionado);
+        boolean ok = seleccionado.actualizar();
 
         if (ok) {
             mostrarAlerta(nuevoEstado ? "Usuario activado correctamente." : "Usuario desactivado correctamente.");
             cargarUsuarios();
 
-
-            // 🔹 Registrar evento de auditoría centralizado
-            AuditoriaUtil.registrarAccion(nuevoEstado ? "ACTIVAR USUARIO" : "DESACTIVAR USUARIO","usuario","cambió el estado de "
-             + seleccionado.getNombre() + " a " + (nuevoEstado ? "ACTIVO" : "INACTIVO"));
-
+            AuditoriaUtil.registrarAccion(
+                nuevoEstado ? "ACTIVAR USUARIO" : "DESACTIVAR USUARIO",
+                "usuario",
+                "cambió el estado de " + seleccionado.getNombre() + " a " + (nuevoEstado ? "ACTIVO" : "INACTIVO")
+            );
         } else {
             mostrarAlerta("Error al cambiar el estado del usuario.");
         }
