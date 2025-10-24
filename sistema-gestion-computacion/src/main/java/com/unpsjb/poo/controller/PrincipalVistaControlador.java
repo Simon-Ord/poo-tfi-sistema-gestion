@@ -25,6 +25,7 @@ public class PrincipalVistaControlador implements Initializable {
 
     @FXML private Pane desktop;
     @FXML private Button btnUsuarios;
+    @FXML private Button btnModificarUsuario; // 🔹 NUEVO BOTÓN
     @FXML private Button btnClientes;
     @FXML private MenuButton mnBtnProductos;
     @FXML private Button btnFacturar;
@@ -41,85 +42,100 @@ public class PrincipalVistaControlador implements Initializable {
         }
     }
 
-    // ================================================== //
-    //             BOTONES DE MENU PRINCIPAL              //
-    // ================================================== //
-
     // =====================
-    //  BOTON DE USUARIOS
+    //  BOTÓN USUARIOS
     // =====================
     @FXML
     private void usuariosAction(ActionEvent event) {
         try {
             VentanaVistaControlador.crearVentana(desktop, "/view/usuariosView.fxml", "Gestión de Usuarios", 800, 500);
-            } catch (Exception e) {
-                e.printStackTrace();
-                new Alert(Alert.AlertType.ERROR, "Error al abrir la gestión de usuarios: " + e.getMessage()).showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Error al abrir la gestión de usuarios: " + e.getMessage()).showAndWait();
         }
     }
-    // =====================
-    //  BOTON DE PRODUCTOS
-    // =====================
 
-    // Ventana para gestionar productos
+    // =====================
+    //  BOTÓN MODIFICAR USUARIO
+    // =====================
+    @FXML
+    private void modificarUsuarioAction(ActionEvent event) {
+        try {
+            // Abrir el formulario de cambio de datos del usuario logueado
+            VentanaVistaControlador.crearFormulario(
+                desktop,
+                "/view/cambioDatosView.fxml",
+                "Modificar Usuario",
+                450,
+                400
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Error al abrir el formulario de modificar usuario: " + e.getMessage()).showAndWait();
+        }
+    }
+
+    // =====================
+    //  BOTÓN PRODUCTOS
+    // =====================
     @FXML private void productosAction(ActionEvent event) {
         try {
             VentanaVistaControlador.crearVentana(desktop, "/view/productosVista.fxml", "Gestión de Productos", 1000, 700);
-            } catch (Exception e) {
-                e.printStackTrace();
-                new Alert(Alert.AlertType.ERROR, "Error al abrir la gestión de productos: " + e.getMessage()).showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Error al abrir la gestión de productos: " + e.getMessage()).showAndWait();
         }
     }
-    // Ventana para agregar productos
+
     @FXML private void agregarProducto() {
         VentanaVistaControlador.crearFormulario(desktop, "/view/productoForm.fxml", "Agregar Producto", 400, 300);
     }
-    // Ventana para gestionar categorías
+
     @FXML private void categoriasAction(){
-            VentanaVistaControlador.crearVentana(desktop, "/view/categoriasVista.fxml", "Gestión de Categorías", 800, 600);
+        VentanaVistaControlador.crearVentana(desktop, "/view/categoriasVista.fxml", "Gestión de Categorías", 800, 600);
     }
-    // Ventana para agregar categorías
+
     @FXML private void agregarCategoria() {
         VentanaVistaControlador.crearFormulario(desktop, "/view/formularios/categoriaForm.fxml", "Agregar Categoría", 400, 300);
     }
+
     // =====================
-    //  BOTON DE CLIENTES
+    //  BOTÓN CLIENTES
     // =====================
     @FXML private void clientesAction(ActionEvent event) {
         try {
             VentanaVistaControlador.crearVentana(desktop, "/view/ClientesView.fxml", "Gestión de Clientes", 800, 500);
-            } catch (Exception e) {
-                e.printStackTrace();
-                new Alert(Alert.AlertType.ERROR, "Error al abrir la gestión de clientes: " + e.getMessage()).showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Error al abrir la gestión de clientes: " + e.getMessage()).showAndWait();
         }
     }
+
     // =====================
-    //  BOTON DE FACTURAR
+    //  BOTÓN FACTURAR
     // =====================
     @FXML private void facturarAction(ActionEvent event) {}
 
     // =====================
-    //  BOTON DE REPORTES
+    //  BOTÓN REPORTES
     // =====================
     @FXML
     private void reportesAction(ActionEvent event) {
         try {
             VentanaVistaControlador.crearVentana(desktop, "/view/reportesView.fxml", "Gestión de Reportes", 900, 600);
-            } catch (Exception e) {
-                e.printStackTrace();
-                new Alert(Alert.AlertType.ERROR, "Error al abrir la gestión de reportes: " + e.getMessage()).showAndWait();
+        } catch (Exception e) {
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Error al abrir la gestión de reportes: " + e.getMessage()).showAndWait();
         }
     }
 
-    // ==================================================
-    // 🔹 CERRAR SESIÓN
-    // ==================================================
+    // =====================
+    //  CERRAR SESIÓN
+    // =====================
     @FXML
     private void cerrarSesionAction(ActionEvent event) {
         try {
-            // 🔹 Registrar el evento de cierre usando AuditoriaManager
             AuditoriaUtil.registrarAccion("CERRAR SESIÓN", "sesion", "cerró sesión.");
-
             Sesion.cerrarSesion();
 
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/loginView.fxml"));

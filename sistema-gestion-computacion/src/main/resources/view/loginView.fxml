@@ -49,7 +49,6 @@
                   <!-- Botones alineados en la misma fila -->
                   <HBox spacing="10" alignment="CENTER">
                      <Button fx:id="btnLogin" text="Ingresar" onAction="#btnLoginAction" />
-                     <Button fx:id="btnCambiarDatos" text="Modificar mis datos" onAction="#btnCambiarDatosAction" />
                   </HBox>
                </children>
             </VBox>

@@ -45,13 +45,13 @@
         <Label styleClass="etiqueta" text="Acción:" GridPane.columnIndex="2" GridPane.rowIndex="0">
             <font><Font size="18.0" /></font>
         </Label>
-        <TextField fx:id="txtAccion" promptText="Crear, Actualizar, Eliminar, Sesión"
+        <TextField fx:id="txtAccion" promptText="Crear, modificar, Eliminar,iniciar/cerrar sesion"
                    styleClass="campo-texto" GridPane.columnIndex="3" GridPane.rowIndex="0" />
 
         <Label styleClass="etiqueta" text="Entidad:" GridPane.columnIndex="0" GridPane.rowIndex="1">
             <font><Font size="18.0" /></font>
         </Label>
-        <TextField fx:id="txtEntidad" promptText="usuarios, productos, etc."
+        <TextField fx:id="txtEntidad" promptText="usuarios, productos,sesion ."
                    styleClass="campo-texto" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
         <HBox alignment="CENTER_LEFT" spacing="10"

@@ -77,25 +77,6 @@ public class LoginVistaControlador {
         }
     }
 
-    @FXML
-    void btnCambiarDatosAction(ActionEvent event) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/CambioDatosView.fxml"));
-            Parent root = loader.load();
-
-            Stage stage = new Stage();
-            stage.setTitle("Modificar Mis Datos");
-            stage.setScene(new Scene(root));
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setResizable(false);
-            stage.showAndWait();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-            mostrarAlerta("Error al abrir el formulario de cambio de datos.");
-        }
-    }
-
     private void mostrarAlerta(String mensaje) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setHeaderText(null);

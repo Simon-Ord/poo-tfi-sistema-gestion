@@ -1,6 +1,6 @@
 /* ==============================================
    ESTILO PRINCIPAL OSCURO - stylePrincipal.css
-   Basado en styleLogin.css
+   Basado en tu CSS original, con texto negro en Productos
    ============================================== */
 
 .root {
@@ -9,7 +9,7 @@
 }
 
 /* ========== BARRA SUPERIOR ========== */
-#topBar, .hbox {
+.hbox {
     -fx-background-color: linear-gradient(to right, #2b3042, #353b52);
     -fx-padding: 8 12;
     -fx-alignment: CENTER_LEFT;
@@ -35,12 +35,11 @@
     -fx-text-fill: #ffffff;
 }
 
-/* Botón "Cerrar Sesión" en rojo suave */
+/* Botón "Cerrar Sesión" */
 #btnCerrarSesion {
     -fx-background-color: linear-gradient(to bottom, #d64045, #a83235);
     -fx-text-fill: #ffffff;
 }
-
 #btnCerrarSesion:hover {
     -fx-background-color: linear-gradient(to bottom, #ff5c5c, #d64045);
 }
@@ -93,7 +92,8 @@
 .image-view {
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 10, 0, 0, 3);
 }
-/* ========== MENUBUTTONS QUE PARECEN BOTONES ========== */
+
+/* ========== MENUBUTTONS COMO BOTONES ========== */
 .menu-button-as-button {
     -fx-background-color: linear-gradient(to bottom, #3e4561, #2f3548);
     -fx-text-fill: #ffffff;
@@ -106,7 +106,6 @@
     -fx-border-color: transparent;
 }
 
-/* Específicamente para el texto del MenuButton */
 .menu-button-as-button .label {
     -fx-text-fill: #ffffff;
 }
@@ -126,12 +125,11 @@
     -fx-padding: 0;
     -fx-background-color: transparent;
 }
-
 .menu-button-as-button .arrow-button {
     -fx-padding: 0;
 }
 
-/* Estilo de los MenuItems dentro del MenuButton */
+/* Menú desplegable */
 .menu-button-as-button .context-menu {
     -fx-background-color: #2b3042;
     -fx-background-radius: 8;
@@ -139,18 +137,65 @@
     -fx-border-radius: 8;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 10, 0, 0, 3);
 }
-
 .menu-button-as-button .menu-item {
     -fx-background-color: transparent;
     -fx-text-fill: #e6e9f0;
     -fx-padding: 8 20;
 }
-
 .menu-button-as-button .menu-item:hover {
     -fx-background-color: linear-gradient(to right, #4a6fff, #364fd9);
     -fx-text-fill: #ffffff;
 }
-
 .menu-button-as-button .menu-item .label {
     -fx-text-fill: inherit;
+}
+
+/* ======================================================
+   REGLAS ESPECÍFICAS: MenuButton "Productos"
+   ====================================================== */
+#mnBtnProductos {
+    -fx-text-fill: rgb(255, 255, 255);
+}
+#mnBtnProductos .label {
+    -fx-text-fill: rgb(255, 255, 255);
+    -fx-font-weight: bold;
+}
+#mnBtnProductos .menu-item {
+    -fx-text-fill: rgb(255, 255, 255);
+}
+#mnBtnProductos .menu-item .label {
+    -fx-text-fill: rgb(255, 255, 255);
+}
+#mnBtnProductos:hover {
+    -fx-text-fill: rgb(255, 255, 255);
+}
+#mnBtnProductos:hover .label {
+    -fx-text-fill: rgb(255, 255, 255);
+}
+
+/* ===========================
+   Ajustes responsivos / extra
+   =========================== */
+.menu-button-as-button .context-menu .menu-item .label {
+    -fx-font-size: 13px;
+    -fx-padding: 4 0;
+}
+
+/* ======================================================
+   BOTÓN MODIFICAR (texto visible completo y tamaño ajustado)
+   ====================================================== */
+#btnModificar {
+    -fx-background-color: linear-gradient(to bottom, #3e4561, #2f3548);
+    -fx-text-fill: #ffffff;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+    -fx-pref-width: 130px;   /* más ancho */
+    -fx-pref-height: 38;     /* más alto */
+    -fx-wrap-text: true;     /* muestra todo el texto */
+}
+#btnModificar:hover {
+    -fx-background-color: linear-gradient(to bottom, #4a6fff, #364fd9);
+    -fx-text-fill: #ffffff;
 }
