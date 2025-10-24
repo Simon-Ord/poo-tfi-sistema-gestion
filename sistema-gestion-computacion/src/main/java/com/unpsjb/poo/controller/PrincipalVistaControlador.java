@@ -18,6 +18,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 
@@ -25,13 +27,14 @@ public class PrincipalVistaControlador implements Initializable {
 
     @FXML private Pane desktop;
     @FXML private Button btnUsuarios;
-    @FXML private Button btnModificarUsuario; // 🔹 NUEVO BOTÓN
+    @FXML private Button btnModificarUsuario;
     @FXML private Button btnClientes;
     @FXML private MenuButton mnBtnProductos;
     @FXML private Button btnFacturar;
     @FXML private Button btnReportes;
     @FXML private Button btnCerrarSesion;
     @FXML private Label lblNombreUsuario;
+    @FXML private ImageView logoImage;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -39,6 +42,14 @@ public class PrincipalVistaControlador implements Initializable {
             lblNombreUsuario.setText("Usuario: " + Sesion.getUsuarioActual().getNombre());
         } else {
             lblNombreUsuario.setText("Usuario: Desconocido");
+        }
+
+        // Cargar logo desde resources
+        try {
+            Image logo = new Image(getClass().getResource("/images/logoMundoPC.png").toExternalForm());
+            logoImage.setImage(logo);
+        } catch (Exception e) {
+            System.err.println("⚠️ No se pudo cargar el logo: " + e.getMessage());
         }
     }
 
@@ -61,7 +72,6 @@ public class PrincipalVistaControlador implements Initializable {
     @FXML
     private void modificarUsuarioAction(ActionEvent event) {
         try {
-            // Abrir el formulario de cambio de datos del usuario logueado
             VentanaVistaControlador.crearFormulario(
                 desktop,
                 "/view/cambioDatosView.fxml",

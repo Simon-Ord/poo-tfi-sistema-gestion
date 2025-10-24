@@ -11,99 +11,65 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Pane?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity"
-            prefHeight="585.0" prefWidth="830.0" stylesheets="@css/stylePrincipal.css"
-            xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.unpsjb.poo.controller.PrincipalVistaControlador">
-
-    <top>
-        <HBox alignment="CENTER" prefHeight="43.0" prefWidth="600.0" BorderPane.alignment="CENTER" HBox.hgrow="ALWAYS">
-            <children>
-                <!-- BOTÓN USUARIOS -->
-                <Button fx:id="btnUsuarios" mnemonicParsing="false" onAction="#usuariosAction" prefHeight="37.0"
-                        prefWidth="82.0" text="Usuarios">
-                    <HBox.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-                    </HBox.margin>
-                </Button>
-
-                <!-- BOTÓN MODIFICAR USUARIO -->
-                <Button fx:id="btnModificarUsuario" mnemonicParsing="false" onAction="#modificarUsuarioAction"
-                        prefHeight="37.0" prefWidth="120.0" text="Modificar Usuario">
-                    <HBox.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-                    </HBox.margin>
-                </Button>
-
-                <!-- BOTÓN CLIENTES -->
-                <Button fx:id="btnClientes" mnemonicParsing="false" onAction="#clientesAction" prefHeight="37.0"
-                        prefWidth="82.0" text="Clientes">
-                    <HBox.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-                    </HBox.margin>
-                </Button>
-
-                <!-- MENU DE PRODUCTOS -->
-                <MenuButton fx:id="mnBtnProductos" mnemonicParsing="false" styleClass="menu-button-as-button"
-                            text="Productos">
-                    <items>
-                        <MenuItem fx:id="btnGestionProductos" mnemonicParsing="false" onAction="#productosAction"
-                                  text="Gestión de productos"/>
-                        <MenuItem fx:id="btnAgregarProducto" mnemonicParsing="false" onAction="#agregarProducto"
-                                  text="Agregar producto"/>
-                        <MenuItem fx:id="btnGestionCategorias" mnemonicParsing="false" onAction="#categoriasAction"
-                                  text="Gestión de categorías"/>
-                        <MenuItem fx:id="btnAgregarCategoria" mnemonicParsing="false" onAction="#agregarCategoria"
-                                  text="Agregar categoría"/>
-                    </items>
-                </MenuButton>
-
-                <!-- BOTÓN FACTURAR -->
-                <Button fx:id="btnFacturar" mnemonicParsing="false" onAction="#facturarAction" prefHeight="37.0"
-                        prefWidth="82.0" text="Facturar">
-                    <HBox.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-                    </HBox.margin>
-                </Button>
-
-                <!-- BOTÓN REPORTES -->
-                <Button fx:id="btnReportes" mnemonicParsing="false" onAction="#reportesAction" prefHeight="37.0"
-                        prefWidth="82.0" text="Reportes">
-                    <HBox.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-                    </HBox.margin>
-                </Button>
-
-                <!-- BOTÓN CERRAR SESIÓN -->
-                <Button fx:id="btnCerrarSesion" alignment="CENTER" mnemonicParsing="false"
-                        nodeOrientation="LEFT_TO_RIGHT" onAction="#cerrarSesionAction" prefHeight="37.0"
-                        text="Cerrar Sesión" textAlignment="RIGHT">
-                    <HBox.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-                    </HBox.margin>
-                </Button>
-
-                <!-- LABEL USUARIO -->
-                <Label fx:id="lblNombreUsuario" prefHeight="38.0" text="Nombre Completo">
-                    <HBox.margin>
-                        <Insets bottom="5.0" left="5.0" right="5.0" top="5.0"/>
-                    </HBox.margin>
-                    <graphic>
-                        <ImageView fitHeight="37.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">
-                            <image>
-                                <Image url="@../images/login.png"/>
-                            </image>
-                        </ImageView>
-                    </graphic>
-                </Label>
-            </children>
-            <BorderPane.margin>
-                <Insets top="5.0"/>
-            </BorderPane.margin>
-        </HBox>
-    </top>
-
-    <center>
-        <Pane fx:id="desktop" prefHeight="465.0" prefWidth="797.0" BorderPane.alignment="CENTER"/>
-    </center>
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="585.0" prefWidth="830.0" stylesheets="@css/stylePrincipal.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.unpsjb.poo.controller.PrincipalVistaControlador">
+   <top>
+      <HBox alignment="CENTER" prefHeight="43.0" prefWidth="600.0" BorderPane.alignment="CENTER" HBox.hgrow="ALWAYS">
+         <children>
+            <Button fx:id="btnUsuarios" mnemonicParsing="false" onAction="#usuariosAction" prefHeight="37.0" prefWidth="82.0" text="Usuarios">
+               <HBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </HBox.margin>
+            </Button>
+            <Button fx:id="btnClientes" mnemonicParsing="false" onAction="#clientesAction" prefHeight="37.0" prefWidth="82.0" text="Clientes">
+               <HBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </HBox.margin>
+            </Button>
+            <MenuButton fx:id="mnBtnProductos" mnemonicParsing="false" styleClass="menu-button-as-button" text="Productos">
+              <items>
+                <MenuItem fx:id="btnGestionProductos" mnemonicParsing="false" onAction="#productosAction" text="Gestión de productos" />
+                <MenuItem fx:id="btnAgregarProducto" mnemonicParsing="false" onAction="#agregarProducto" text="Agregar producto" />
+                  <MenuItem fx:id="btnGestionCategorias" mnemonicParsing="false" onAction="#categoriasAction" text="Gestión de categorias" />
+                  <MenuItem fx:id="btnAgregarCategoria" mnemonicParsing="false" onAction="#agregarCategoria" text="Agregar categoria" />
+              </items>
+            </MenuButton>
+            <Button fx:id="btnFacturar" mnemonicParsing="false" onAction="#facturarAction" prefHeight="37.0" prefWidth="82.0" text="Facturar">
+               <HBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </HBox.margin>
+            </Button>
+            <Button fx:id="btnReportes" mnemonicParsing="false" onAction="#reportesAction" prefHeight="37.0" prefWidth="82.0" text="Reportes">
+               <HBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </HBox.margin>
+            </Button>
+            <Button fx:id="btnCerrarSesion" alignment="CENTER" mnemonicParsing="false" nodeOrientation="LEFT_TO_RIGHT" onAction="#cerrarSesionAction" prefHeight="37.0" text="Cerrar Sesión" textAlignment="RIGHT">
+               <HBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </HBox.margin>
+            </Button>
+            <Label fx:id="lblNombreUsuario" prefHeight="38.0" text="Nombre Completo">
+               <HBox.margin>
+                  <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+               </HBox.margin>
+               <graphic>
+                  <ImageView fitHeight="37.0" fitWidth="39.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@../images/login.png" />
+                     </image>
+                  </ImageView>
+               </graphic>
+            </Label>
+         </children>
+         <BorderPane.margin>
+            <Insets top="5.0" />
+         </BorderPane.margin>
+      </HBox>
+   </top>
+   <HBox.margin>
+      <Insets bottom="5.0" top="5.0" />
+   </HBox.margin>
+   <center>
+      <Pane fx:id="desktop" prefHeight="465.0" prefWidth="797.0" BorderPane.alignment="CENTER" />
+   </center>
 </BorderPane>

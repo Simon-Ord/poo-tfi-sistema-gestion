@@ -9,6 +9,7 @@
 }
 
 /* ========== BARRA SUPERIOR ========== */
+/* tu HBox principal toma la clase .hbox */
 .hbox {
     -fx-background-color: linear-gradient(to right, #2b3042, #353b52);
     -fx-padding: 8 12;
@@ -35,11 +36,12 @@
     -fx-text-fill: #ffffff;
 }
 
-/* Botón "Cerrar Sesión" */
+/* Botón "Cerrar Sesión" en rojo suave */
 #btnCerrarSesion {
     -fx-background-color: linear-gradient(to bottom, #d64045, #a83235);
     -fx-text-fill: #ffffff;
 }
+
 #btnCerrarSesion:hover {
     -fx-background-color: linear-gradient(to bottom, #ff5c5c, #d64045);
 }
@@ -93,10 +95,11 @@
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 10, 0, 0, 3);
 }
 
-/* ========== MENUBUTTONS COMO BOTONES ========== */
+/* ========== MENUBUTTONS QUE PARECEN BOTONES ========== */
+/* estilo general (para todos los que usen esta clase) */
 .menu-button-as-button {
     -fx-background-color: linear-gradient(to bottom, #3e4561, #2f3548);
-    -fx-text-fill: #ffffff;
+    -fx-text-fill: #ffffff; /* por defecto los demás siguen en blanco */
     -fx-font-weight: bold;
     -fx-font-size: 13px;
     -fx-background-radius: 8;
@@ -119,7 +122,7 @@
     -fx-text-fill: #ffffff;
 }
 
-/* Ocultar la flecha del MenuButton */
+/* Ocultar la flecha del MenuButton (si la usás) */
 .menu-button-as-button .arrow {
     -fx-shape: "";
     -fx-padding: 0;
@@ -129,7 +132,7 @@
     -fx-padding: 0;
 }
 
-/* Menú desplegable */
+/* Estilo del menú desplegable */
 .menu-button-as-button .context-menu {
     -fx-background-color: #2b3042;
     -fx-background-radius: 8;
@@ -137,6 +140,7 @@
     -fx-border-radius: 8;
     -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.5), 10, 0, 0, 3);
 }
+
 .menu-button-as-button .menu-item {
     -fx-background-color: transparent;
     -fx-text-fill: #e6e9f0;
@@ -151,27 +155,43 @@
 }
 
 /* ======================================================
-   REGLAS ESPECÍFICAS: MenuButton "Productos"
+   REGLAS ESPECÍFICAS: que solo afecten al MenuButton "Productos"
    ====================================================== */
+
+/* Si el MenuButton tiene fx:id="mnBtnProductos" le ponemos texto negro */
 #mnBtnProductos {
-    -fx-text-fill: rgb(255, 255, 255);
+    -fx-text-fill: rgb(255, 255, 255); /* texto del botón (estado normal) */
 }
+
+/* Asegurarnos que la etiqueta interna del MenuButton también use negro */
 #mnBtnProductos .label {
     -fx-text-fill: rgb(255, 255, 255);
     -fx-font-weight: bold;
 }
+
+/* MenuItems dentro de mnBtnProductos en negro */
 #mnBtnProductos .menu-item {
     -fx-text-fill: rgb(255, 255, 255);
 }
+
+/* Las etiquetas de los MenuItem dentro del menú (texto) */
 #mnBtnProductos .menu-item .label {
     -fx-text-fill: rgb(255, 255, 255);
 }
+
+/* Si querés que el texto siga negro incluso al hacer hover del MenuButton,
+   descomenta la siguiente regla (actualmente el hover deja el fondo azul y texto blanco,
+   si preferís mantener texto negro con cambio de fondo, ajustá aquí):
+*/
+
 #mnBtnProductos:hover {
     -fx-text-fill: rgb(255, 255, 255);
 }
 #mnBtnProductos:hover .label {
     -fx-text-fill: rgb(255, 255, 255);
 }
+
+
 
 /* ===========================
    Ajustes responsivos / extra
@@ -181,21 +201,3 @@
     -fx-padding: 4 0;
 }
 
-/* ======================================================
-   BOTÓN MODIFICAR (texto visible completo y tamaño ajustado)
-   ====================================================== */
-#btnModificar {
-    -fx-background-color: linear-gradient(to bottom, #3e4561, #2f3548);
-    -fx-text-fill: #ffffff;
-    -fx-font-weight: bold;
-    -fx-font-size: 13px;
-    -fx-background-radius: 8;
-    -fx-cursor: hand;
-    -fx-pref-width: 130px;   /* más ancho */
-    -fx-pref-height: 38;     /* más alto */
-    -fx-wrap-text: true;     /* muestra todo el texto */
-}
-#btnModificar:hover {
-    -fx-background-color: linear-gradient(to bottom, #4a6fff, #364fd9);
-    -fx-text-fill: #ffffff;
-}
