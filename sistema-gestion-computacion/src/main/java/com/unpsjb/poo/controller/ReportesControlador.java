@@ -8,7 +8,6 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import com.unpsjb.poo.model.EventoAuditoria;
-import com.unpsjb.poo.persistence.dao.ReportesDAO;
 import com.unpsjb.poo.util.PDFExporter;
 import com.unpsjb.poo.util.PDFReporte;
 
@@ -17,9 +16,12 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
+/**
+ * Controlador de la vista de reportes/auditoría.
+ * Ahora se comunica solo con el modelo (EventoAuditoria), no directamente con el DAO.
+ */
 public class ReportesControlador {
 
-    // ========== REFERENCIAS FXML ==========
     @FXML private TextField txtUsuario;
     @FXML private TextField txtEntidad;
     @FXML private TextField txtAccion;
@@ -30,22 +32,17 @@ public class ReportesControlador {
     @FXML private TableColumn<EventoAuditoria, String> colEntidad;
     @FXML private TableColumn<EventoAuditoria, String> colDetalles;
 
-    private final ReportesDAO dao = new ReportesDAO();
     private List<EventoAuditoria> resultados;
 
-    // Formato de fecha para la tabla
     private static final SimpleDateFormat DATE_FORMAT =
             new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
-    // ========== MÉTODOS DE INICIALIZACIÓN ==========
     @FXML
     public void initialize() {
         // Formatear fecha
         colFecha.setCellValueFactory(c -> {
             Timestamp fechaHora = c.getValue().getFechaHora();
-            String fechaFormateada = fechaHora != null
-                    ? DATE_FORMAT.format(fechaHora)
-                    : "";
+            String fechaFormateada = fechaHora != null ? DATE_FORMAT.format(fechaHora) : "";
             return new javafx.beans.property.SimpleStringProperty(fechaFormateada);
         });
 
@@ -55,7 +52,7 @@ public class ReportesControlador {
         colEntidad.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getEntidad()));
         colDetalles.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getDetalles()));
 
-        // ✅ Nuevo: celdas de “Detalles” con texto ajustable (multilínea)
+        // Celdas multilinea para "detalles"
         colDetalles.setCellFactory(tc -> {
             TableCell<EventoAuditoria, String> cell = new TableCell<>() {
                 private final Text text = new Text();
@@ -73,26 +70,13 @@ public class ReportesControlador {
             return cell;
         });
 
-        // Cargar datos iniciales
-        buscar();
-
-        // Aplicar CSS si es posible
-        try {
-            java.net.URL cssUrl = getClass().getResource("/css/reportes.css");
-            if (cssUrl != null && tablaReportes.getScene() != null) {
-                tablaReportes.getScene().getStylesheets().add(cssUrl.toExternalForm());
-            }
-        } catch (Exception e) {
-            System.err.println("⚠️ Error al aplicar CSS: " + e.getMessage());
-        }
+        buscar(); // carga inicial
     }
 
-    // ========== MÉTODOS DE ACCIÓN ==========
-
-    /** Ejecuta la búsqueda con los filtros actuales */
+    /** Busca registros de auditoría según los filtros */
     @FXML
     private void buscar() {
-        resultados = dao.obtenerEventos(
+        resultados = EventoAuditoria.obtenerEventos(
                 txtUsuario.getText(),
                 txtEntidad.getText(),
                 txtAccion.getText()
@@ -105,7 +89,7 @@ public class ReportesControlador {
         }
     }
 
-    /** Exporta los resultados actuales a un PDF */
+    /** Exporta los resultados actuales a PDF */
     @FXML
     public void exportarPDF() {
         if (resultados == null || resultados.isEmpty()) {
@@ -126,11 +110,10 @@ public class ReportesControlador {
 
             mostrarAlerta(ok
                     ? "Exportación completada correctamente.\nUbicación: " + file.getAbsolutePath()
-                    : " Error al exportar el PDF.");
+                    : "Error al exportar el PDF.");
         }
     }
 
-    /** Muestra un mensaje informativo */
     private void mostrarAlerta(String msg) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setHeaderText(null);

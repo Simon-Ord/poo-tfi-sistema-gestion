@@ -1,16 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TableColumn?>
-<?import javafx.scene.control.TableView?>
-<?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.ColumnConstraints?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.RowConstraints?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.text.Font?>
 
 <VBox alignment="TOP_CENTER" spacing="20"
@@ -22,9 +13,7 @@
 
     <!-- 🔹 Título -->
     <Label styleClass="titulo-principal" text="📊 Auditoría y Reportes del Sistema">
-        <font>
-            <Font size="18.0" />
-        </font>
+        <font><Font size="22.0" /></font>
     </Label>
 
     <!-- 🔍 Panel de búsqueda -->
@@ -36,28 +25,50 @@
             <ColumnConstraints hgrow="ALWAYS" minWidth="150" prefWidth="200" />
         </columnConstraints>
 
-        <Label styleClass="etiqueta" text="Usuario:" GridPane.columnIndex="0" GridPane.rowIndex="0">
-            <font><Font size="18.0" /></font>
-        </Label>
-        <TextField fx:id="txtUsuario" promptText="Buscar por usuario"
-                   styleClass="campo-texto" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+        <!-- 🧍 Usuario -->
+        <Label styleClass="etiqueta" text="👤 Usuario:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+        <TextField fx:id="txtUsuario"
+                   promptText="nombre del usuario (ej: Alexis,Simon,Elias,Marcos..)"
+                   GridPane.columnIndex="1" GridPane.rowIndex="0">
+            <tooltip>
+                <Tooltip text="Filtra los registros según el nombre del usuario que realizó la acción." />
+            </tooltip>
+        </TextField>
 
-        <Label styleClass="etiqueta" text="Acción:" GridPane.columnIndex="2" GridPane.rowIndex="0">
-            <font><Font size="18.0" /></font>
-        </Label>
-        <TextField fx:id="txtAccion" promptText="Crear, modificar, Eliminar,iniciar/cerrar sesion"
-                   styleClass="campo-texto" GridPane.columnIndex="3" GridPane.rowIndex="0" />
+        <!-- ⚙️ Acción -->
+        <Label styleClass="etiqueta" text="🛠️ Acción:" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+        <TextField fx:id="txtAccion"
+                   promptText="Ej: Crear, Modificar, Eliminar, Iniciar Sesión..."
+                   GridPane.columnIndex="3" GridPane.rowIndex="0">
+            <tooltip>
+                <Tooltip text="Indique el tipo de acción que desea buscar (crear, modificar, eliminar...)" />
+            </tooltip>
+        </TextField>
 
-        <Label styleClass="etiqueta" text="Entidad:" GridPane.columnIndex="0" GridPane.rowIndex="1">
-            <font><Font size="18.0" /></font>
-        </Label>
-        <TextField fx:id="txtEntidad" promptText="usuarios, productos,sesion ."
-                   styleClass="campo-texto" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+        <!-- 🧾 Entidad -->
+        <Label styleClass="etiqueta" text="📦 Entidad:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+        <TextField fx:id="txtEntidad"
+                   promptText="Ej: Usuario, Producto, Sesión..."
+                   GridPane.columnIndex="1" GridPane.rowIndex="1">
+            <tooltip>
+                <Tooltip text="Filtra los registros según la entidad afectada (usuario, producto, sesión...)" />
+            </tooltip>
+        </TextField>
 
+        <!-- 🔘 Botones -->
         <HBox alignment="CENTER_LEFT" spacing="10"
               GridPane.columnIndex="3" GridPane.rowIndex="1">
-            <Button onAction="#buscar" styleClass="boton-accion" text="Buscar" />
-            <Button onAction="#exportarPDF" styleClass="boton-accion" text="Exportar PDF" />
+            <Button onAction="#buscar" styleClass="boton-accion" text="🔍 Buscar">
+                <tooltip>
+                    <Tooltip text="Realiza la búsqueda según los filtros ingresados." />
+                </tooltip>
+            </Button>
+
+            <Button onAction="#exportarPDF" styleClass="boton-accion" text="📄 Exportar PDF">
+                <tooltip>
+                    <Tooltip text="Guarda los resultados actuales en un archivo PDF." />
+                </tooltip>
+            </Button>
         </HBox>
 
         <rowConstraints>
@@ -66,23 +77,25 @@
         </rowConstraints>
     </GridPane>
 
-    <!-- 🧾 Tabla dentro de ScrollPane -->
+    <!-- 🧾 Tabla de resultados -->
     <ScrollPane fitToWidth="true" fitToHeight="true"
                 hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED"
                 VBox.vgrow="ALWAYS">
 
         <TableView fx:id="tablaReportes" styleClass="tabla-reportes"
                    tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
-
             <columns>
-                <TableColumn fx:id="colFecha" prefWidth="160.0" text="Fecha y Hora" />
-                <TableColumn fx:id="colUsuario" prefWidth="120.0" text="Usuario" />
-                <TableColumn fx:id="colAccion" prefWidth="160.0" text="Acción" />
-                <TableColumn fx:id="colEntidad" prefWidth="120.0" text="Entidad" />
-                <TableColumn fx:id="colDetalles" prefWidth="700.0" text="Descripción/Detalles" />
+                <TableColumn fx:id="colFecha" prefWidth="160.0" text="📅 Fecha y Hora" />
+                <TableColumn fx:id="colUsuario" prefWidth="120.0" text="👤 Usuario" />
+                <TableColumn fx:id="colAccion" prefWidth="160.0" text="⚙️ Acción" />
+                <TableColumn fx:id="colEntidad" prefWidth="120.0" text="📦 Entidad" />
+                <TableColumn fx:id="colDetalles" prefWidth="700.0" text="📝 Descripción / Detalles" />
             </columns>
-
         </TableView>
     </ScrollPane>
+
+    <!-- 🧠 Pie de ayuda -->
+    <Label text=" Puede combinar filtros. Ejemplo: buscar 'crear' en acción y 'producto' en entidad.Y te lo podes hacer un PDF"
+           styleClass="texto-ayuda" />
 
 </VBox>
