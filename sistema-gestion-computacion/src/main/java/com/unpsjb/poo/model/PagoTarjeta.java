@@ -22,4 +22,3 @@ public class PagoTarjeta implements EstrategiaPago {
     }
     
 }
-

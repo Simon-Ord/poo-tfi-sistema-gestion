@@ -9,47 +9,60 @@
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.Insets?>
 
 <AnchorPane prefHeight="550.0" prefWidth="750.0" 
+            style="-fx-background-color: #f5f5f5;"
             xmlns="http://javafx.com/javafx/21" 
             xmlns:fx="http://javafx.com/fxml/1" 
             fx:controller="com.unpsjb.poo.controller.FacturaVistaControlador">
    <children>
-      <VBox prefHeight="200.0" prefWidth="100.0" spacing="15.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+      <VBox prefHeight="200.0" prefWidth="100.0" spacing="15.0" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
          <children>
-            <Label style="-fx-font-size: 16pt; -fx-font-weight: bold;" text="1. Agregar productos al Carrito" />
-            <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+            <Label style="-fx-font-size: 18pt; -fx-font-weight: bold; -fx-text-fill: #2c3e50;" text="1. Agregar Productos al Carrito">
+               <padding>
+                  <Insets bottom="5.0" />
+               </padding>
+            </Label>
+            <HBox alignment="CENTER_LEFT" prefHeight="50.0" prefWidth="200.0" spacing="12.0" style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 15;">
                <children>
-                  <TextField fx:id="txtCodigoProducto" promptText="Codigo de Producto" />
-                  <TextField fx:id="txtCantidad" maxWidth="80.0" promptText="Cantidad" />
-                  <Button fx:id="btnAnadirCarrito" mnemonicParsing="false" onAction="#handleAnadirItem" text="Añadir al carrito" />
-                  <Button fx:id="btnQuitarSeleccionado" mnemonicParsing="false" onAction="#handleQuitarItem" style="-fx-background-color: #f44336; -fx-text-fill: white;" text="Quitar seleccionado" />
-                  <Button fx:id="btnLIistarCodigos" mnemonicParsing="false" onAction="#handleListarCodigos" text="Listar codigos" />
+                  <TextField fx:id="txtCodigoProducto" promptText="Código de Producto" prefWidth="150.0" 
+                            style="-fx-font-size: 13pt; -fx-border-color: #bdc3c7; -fx-border-radius: 4; -fx-background-radius: 4;" />
+                  <TextField fx:id="txtCantidad" maxWidth="100.0" promptText="Cantidad" 
+                            style="-fx-font-size: 13pt; -fx-border-color: #bdc3c7; -fx-border-radius: 4; -fx-background-radius: 4;" />
+                  <Button fx:id="btnAnadirCarrito" mnemonicParsing="false" onAction="#handleAnadirItem" text="✓ Añadir al Carrito" 
+                         style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 12pt; -fx-background-radius: 4; -fx-cursor: hand;" />
+                  <Button fx:id="btnQuitarSeleccionado" mnemonicParsing="false" onAction="#handleQuitarItem" text="✕ Quitar Seleccionado" 
+                         style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 12pt; -fx-background-radius: 4; -fx-cursor: hand;" />
+                  <Button fx:id="btnLIistarCodigos" mnemonicParsing="false" onAction="#handleListarCodigos" text="📋 Listar Códigos" 
+                         style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 12pt; -fx-background-radius: 4; -fx-cursor: hand;" />
                </children>
             </HBox>
-            <TableView fx:id="carritoTable" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS">
+            <TableView fx:id="carritoTable" prefHeight="200.0" prefWidth="200.0" VBox.vgrow="ALWAYS" 
+                      style="-fx-background-color: white; -fx-background-radius: 8; -fx-border-radius: 8;">
               <columns>
-               <TableColumn prefWidth="80.0" text="Código">
+               <TableColumn prefWidth="80.0" text="Código" style="-fx-font-weight: bold;">
     <cellValueFactory><PropertyValueFactory property="producto.codigoProducto" /></cellValueFactory>
 </TableColumn>
-<TableColumn prefWidth="250.0" text="Producto">
+<TableColumn prefWidth="250.0" text="Producto" style="-fx-font-weight: bold;">
     <cellValueFactory><PropertyValueFactory property="producto.nombreProducto" /></cellValueFactory>
 </TableColumn>
-<TableColumn prefWidth="120.0" text="Precio Unitario">
+<TableColumn prefWidth="120.0" text="Precio Unitario" style="-fx-font-weight: bold;">
     <cellValueFactory><PropertyValueFactory property="precioUnitario" /></cellValueFactory>
 </TableColumn>
-<TableColumn prefWidth="80.0" text="Cantidad">
+<TableColumn prefWidth="80.0" text="Cantidad" style="-fx-font-weight: bold;">
     <cellValueFactory><PropertyValueFactory property="cantidad" /></cellValueFactory>
 </TableColumn>
-<TableColumn prefWidth="219.0" text="Subtotal">
+<TableColumn prefWidth="219.0" text="Subtotal" style="-fx-font-weight: bold;">
     <cellValueFactory><PropertyValueFactory property="subtotal" /></cellValueFactory>
 </TableColumn>
               </columns>
             </TableView>
-            <HBox alignment="CENTER_RIGHT" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
+            <HBox alignment="CENTER_RIGHT" prefHeight="50.0" prefWidth="200.0" spacing="15.0" 
+                 style="-fx-background-color: white; -fx-background-radius: 8; -fx-padding: 15;">
                <children>
-                  <Label style="-fx-font-size: 14pt; -fx-font-weight: bold; -fx-text-fill: red;" text="Total Parcial" />
-                  <Label fx:id="lblTotalParcial" style="-fx-font-size: 14pt; -fx-font-weight: bold; -fx-text-fill: #4CAF50;" text="\$0.00" />
+                  <Label style="-fx-font-size: 16pt; -fx-font-weight: bold; -fx-text-fill: #34495e;" text="Total Parcial:" />
+                  <Label fx:id="lblTotalParcial" style="-fx-font-size: 18pt; -fx-font-weight: bold; -fx-text-fill: #27ae60;" text="$ 0.00" />
                </children>
             </HBox>
          </children>

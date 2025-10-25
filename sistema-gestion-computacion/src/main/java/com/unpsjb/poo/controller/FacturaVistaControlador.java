@@ -29,18 +29,6 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
-
-// para el pdf
-
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
-import java.io.File;
-
-import com.unpsjb.poo.util.PDFExporter;
-import com.unpsjb.poo.util.PDFFactura;
-import com.unpsjb.poo.util.PDFTicket;
-
-
 public class FacturaVistaControlador extends BaseControlador implements Initializable {
 
     private boolean vistaDatosFacturaInicializada = false;
@@ -65,7 +53,8 @@ public class FacturaVistaControlador extends BaseControlador implements Initiali
     @FXML private Label lblEstadoCliente;
     @FXML private Label lblTotalVenta; 
     @FXML private Button btnCargarCliente;
-    @FXML private Button btnExportarPDF; // alexisssssssssssssssssssssss
+    
+
     // 4. INYECCIÓN DE ELEMENTOS DEL PASO 3 (FacturaConfirmarVenta.fxml)
     @FXML private Label lblTipoFacturaResumen;
     @FXML private Label lblClienteResumen;
@@ -76,7 +65,6 @@ public class FacturaVistaControlador extends BaseControlador implements Initiali
     @FXML private ScrollPane scrollPaneItems; // El contenedor para la lista de productos
     @FXML private ComboBox<EstrategiaPago> cbMetodoPago; // El ComboBox usará objetos EstrategiaPago
     @FXML private VBox vboxItemsLista;
-
 
     private EstrategiaPago estrategiaPagoSeleccionada; // Campo auxiliar para guardar la estrategia
     private boolean vistaConfirmacionPagoInicializada = false;
@@ -346,7 +334,28 @@ private void inicializarVistaConfirmacionPago() {
     }
     
     if (!vistaConfirmacionPagoInicializada) {
-        // ... (Tu código de inicialización normal: llenar Combobox, etc.) ...
+        // Llenar el ComboBox con las estrategias de pago disponibles
+        cbMetodoPago.setItems(FXCollections.observableArrayList(
+            new PagoEfectivo(),
+            new PagoTarjeta()
+        ));
+        
+        // Configurar cómo se muestra cada estrategia en el ComboBox
+        cbMetodoPago.setCellFactory(param -> new javafx.scene.control.ListCell<EstrategiaPago>() {
+            @Override
+            protected void updateItem(EstrategiaPago item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? null : item.getNombreMetodoPago());
+            }
+        });
+        
+        cbMetodoPago.setButtonCell(new javafx.scene.control.ListCell<EstrategiaPago>() {
+            @Override
+            protected void updateItem(EstrategiaPago item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? null : item.getNombreMetodoPago());
+            }
+        });
         
         vistaConfirmacionPagoInicializada = true;
     }
@@ -415,6 +424,8 @@ public void handleMetodoPagoSelected() {
     EstrategiaPago estrategia = cbMetodoPago.getSelectionModel().getSelectedItem();
     if (estrategia != null) {
         this.estrategiaPagoSeleccionada = estrategia;
+        // Establecer la estrategia de pago en el modelo Venta
+        miVenta.setEstrategiaPago(estrategia);
 
         if (lblComisionPago == null || lblTotalFinal == null) {
             System.err.println("Error: Faltan inyecciones críticas de Label en Vista 3.");
@@ -443,69 +454,86 @@ public void handleRegistrarVenta() {
         return;
     }
     
-    // 1. El controlador invoca la lógica de PAGO y PERSISTENCIA en el Modelo (EstadoConfirmacionPago)
-    miVenta.siguientePaso(); 
+    try {
+        // 1. El controlador invoca la lógica de PAGO y PERSISTENCIA en el Modelo (EstadoConfirmacionPago)
+        miVenta.siguientePaso(); 
 
-    // 2. El Patrón State mueve la Venta al estado inicial (Agregar Productos)
-    // El Controlador actualiza la UI para volver al inicio
-    actualizarVisibilidadVistas(miVenta.getEstadoActual().getVistaID());
-    mostrarAlerta("Éxito", "Venta registrada exitosamente.", Alert.AlertType.INFORMATION);
+        // 2. El Patrón State mueve la Venta al estado inicial (Agregar Productos)
+        // El Controlador actualiza la UI para volver al inicio
+        actualizarVisibilidadVistas(miVenta.getEstadoActual().getVistaID());
+        
+        // 3. Limpiar completamente la UI del paso 1
+        inicializarVistaAgregarProductos();
+        
+        // 4. Resetear flags de inicialización para permitir nueva venta
+        vistaDatosFacturaInicializada = false;
+        vistaConfirmacionPagoInicializada = false;
+        
+        mostrarAlerta("Éxito", "Venta registrada exitosamente en la base de datos.", Alert.AlertType.INFORMATION);
+    } catch (Exception e) {
+        // Manejar cualquier error durante el proceso de venta
+        System.err.println("Error al registrar venta: " + e.getMessage());
+        e.printStackTrace();
+        mostrarAlerta("Error", "No se pudo completar la venta: " + e.getMessage(), Alert.AlertType.ERROR);
+    }
 }
 
 /**
  * Llamado por el botón "Exportar PDF".
  */
-
-
 @FXML
-private void handleExportarPDF() {
-    // Obtener la venta actual (ajustá el nombre si tu variable es distinta)
-    Venta ventaActual = this.miVenta; // o como la tengas referenciada
-
-    if (ventaActual == null) {
-        mostrarAlerta("No hay ninguna venta activa para exportar.");
+public void handleExportarPDF() {
+    // Validar que haya datos para exportar
+    if (miVenta.getCarrito() == null || miVenta.getCarrito().getItems().isEmpty()) {
+        mostrarAlerta("Error", "No hay productos en el carrito para exportar.", Alert.AlertType.WARNING);
         return;
     }
-
-    // Verificar tipo de documento
-    String tipo = ventaActual.getTipoFactura();
-    if (tipo == null || tipo.isEmpty()) {
-        mostrarAlerta("No se ha seleccionado si es factura o ticket.");
+    
+    if (miVenta.getTipoFactura() == null) {
+        mostrarAlerta("Error", "Debe seleccionar el tipo de factura antes de exportar.", Alert.AlertType.WARNING);
         return;
     }
-
-    // Elegir dónde guardar
-    FileChooser fileChooser = new FileChooser();
-    fileChooser.setTitle("Guardar PDF de Venta");
-    fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivo PDF", "*.pdf"));
-    Stage stage = (Stage) btnExportarPDF.getScene().getWindow();
-    File file = fileChooser.showSaveDialog(stage);
-
-    if (file == null) return;
-
-    boolean ok = false;
-    PDFExporter pdf;
-
-    if (tipo.equalsIgnoreCase("factura")) {
-        pdf = new PDFFactura(ventaActual);
-    } else {
-        pdf = new PDFTicket(ventaActual);
+    
+    if (miVenta.getEstrategiaPago() == null) {
+        mostrarAlerta("Error", "Debe seleccionar un método de pago antes de exportar.", Alert.AlertType.WARNING);
+        return;
     }
+    
+    try {
 
-    ok = pdf.export(file.getAbsolutePath());
+        // Crear el generador de PDF
+        com.unpsjb.poo.util.PDFFactura pdfGenerator = new com.unpsjb.poo.util.PDFFactura(miVenta);
+        //com.unpsjb.poo.util.PDFTicket pdfGenerator = new com.unpsjb.poo.util.PDFTicket(miVenta);
 
-    mostrarAlerta(ok ? "PDF generado correctamente:\n" + file.getAbsolutePath()
-                     : "Error al generar el PDF.");
+        // Generar nombre de archivo
+        String tipoDoc = "FACTURA".equals(miVenta.getTipoFactura()) ? "Factura" : "Ticket";
+        String timestamp = new java.text.SimpleDateFormat("yyyyMMdd_HHmmss").format(new java.util.Date());
+        String fileName = tipoDoc + "_" + timestamp + ".pdf";
+        String filePath = System.getProperty("user.home") + "/" + fileName;
+        
+        // Exportar el PDF
+        boolean success = pdfGenerator.export(filePath);
+        
+        if (success) {
+            mostrarAlerta("Éxito", 
+                "PDF generado exitosamente en:\n" + filePath, 
+                Alert.AlertType.INFORMATION);
+        } else {
+            mostrarAlerta("Error", 
+                "No se pudo generar el PDF. Verifique los datos de la venta.", 
+                Alert.AlertType.ERROR);
+        }
+        
+    } catch (Exception e) {
+        System.err.println("Error al exportar PDF: " + e.getMessage());
+        e.printStackTrace();
+        mostrarAlerta("Error", 
+            "Error al generar el PDF: " + e.getMessage(), 
+            Alert.AlertType.ERROR);
+    }
 }
 
 
-private void mostrarAlerta(String mensaje) {
-    javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
-    alert.setHeaderText(null);
-    alert.setTitle("Exportar PDF");
-    alert.setContentText(mensaje);
-    alert.showAndWait();
-}
 
 
     
@@ -629,20 +657,22 @@ private void inicializarVistaDatosFactura() {
 
     private void inicializarVistaAgregarProductos() {
     // 1. Limpiar visualmente la tabla (aunque el modelo esté limpio, la tabla debe reflejarlo)
-    // El .clear() en la ObservableList inyectada con fx:id="carritoTable" borra las filas
     if (carritoTable != null) {
         carritoTable.getItems().clear();
     }
     
-    // 2. LÍNEA CRÍTICA: Resetear el Label del Total a 0.00
-    // Asume que tu Label para el total en la Vista 1 se llama lblTotalCarrito
-    if (lblTotalVenta != null) { 
-        lblTotalVenta.setText("Total: $ 0.00"); 
+    // 2. Resetear el Label del Total Parcial a 0.00
+    if (lblTotalParcial != null) { 
+        lblTotalParcial.setText("$ 0.00"); 
+    }
+    
+    // 3. Limpiar campos de entrada
+    if (txtCodigoProducto != null) {
+        txtCodigoProducto.clear();
+    }
+    if (txtCantidad != null) {
+        txtCantidad.clear();
     }
 }
 
 }
-
-
-
-

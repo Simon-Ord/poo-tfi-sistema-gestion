@@ -10,4 +10,3 @@ String getNombreMetodoPago();
 double getComision();
 
 }
-
