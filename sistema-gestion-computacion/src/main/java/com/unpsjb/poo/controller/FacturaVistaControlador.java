@@ -6,26 +6,30 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.Optional; // Necesario para buscar productos
 
-import com.unpsjb.poo.model.*; // Importa todas tus clases del Modelo
+import com.unpsjb.poo.model.Cliente; // Importa todas tus clases del Modelo
+import com.unpsjb.poo.model.EstrategiaPago;
+import com.unpsjb.poo.model.ItemCarrito; // Asume la ubicación de tu DAO // Asume que moviste la interfaz EstadoVenta a su propio paquete
+import com.unpsjb.poo.model.PagoEfectivo;
+import com.unpsjb.poo.model.PagoTarjeta;
+import com.unpsjb.poo.model.Venta; // Importar FXMLLoader
 import com.unpsjb.poo.model.productos.Producto;
-import com.unpsjb.poo.persistence.dao.impl.ProductoDAOImpl; // Asume la ubicación de tu DAO // Asume que moviste la interfaz EstadoVenta a su propio paquete
 
 import javafx.collections.FXCollections;
-import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader; // Importar FXMLLoader
+import javafx.fxml.FXML; // Necesario para la ventana emergente
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
-import javafx.scene.Parent;
-import javafx.scene.Scene; // Necesario para la ventana emergente
-import javafx.scene.control.*; // Importar todos los controles
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality; // Necesario para la ventana modal
-import javafx.stage.Stage; // Necesario para la ventana emergente
 
-public class FacturaVistaControlador implements Initializable {
+public class FacturaVistaControlador extends BaseControlador implements Initializable {
 
     private boolean vistaDatosFacturaInicializada = false;
 
@@ -69,19 +73,15 @@ public class FacturaVistaControlador implements Initializable {
     
     // 5. MODELO DE DATOS Y ESTADO
     private Venta miVenta;
-    private Map<String, Node> vistaMap; 
-    private ProductoDAOImpl productoDAO; // Instancia del DAO para buscar productos
+    private Map<String, Node> vistaMap;
 
     
    @Override
    public void initialize(URL url, ResourceBundle rb) {
-    // 1. INICIALIZACIÓN DEL MODELO Y DAO (Lógica de Negocio)
+    // 1. INICIALIZACIÓN DEL MODELO (Lógica de Negocio)
     
     // El constructor de Venta no recibe Empleado, según el código que me pasaste.
     miVenta = new Venta(); 
-    
-    // Inicializar el DAO
-    productoDAO = new ProductoDAOImpl(); 
     
     // --------------------------------------------------------------------------
     
@@ -135,51 +135,39 @@ public void handleAnadirItem() {
     String codigo = txtCodigoProducto.getText();
     String cantidadStr = txtCantidad.getText();
 
-    // 1. VALIDACIÓN BÁSICA (Evita excepciones y NPE)
+    // 1. VALIDACIÓN BÁSICA
     if (codigo.isEmpty() || cantidadStr.isEmpty()) {
         mostrarAlerta("Datos Faltantes", "Debe ingresar el código y la cantidad del producto.", Alert.AlertType.WARNING);
-        return; // Detiene la ejecución si falta algún campo
+        return;
     }
 
     try {
         int cantidad = Integer.parseInt(cantidadStr);
-
+        
         if (cantidad <= 0) {
             mostrarAlerta("Cantidad Inválida", "La cantidad debe ser un número positivo.", Alert.AlertType.WARNING);
             return;
         }
-
-        // 2. BÚSQUEDA DE PRODUCTO EN LA BASE DE DATOS (Persistencia)
-        Optional<Producto> productoOpt = productoDAO.findByCodigo(codigo); 
-
-        if (productoOpt.isPresent()) {
-            Producto producto = productoOpt.get();
-            
-            // 3. AGREGAR AL CARRITO (Lógica del Modelo)
-            // Usamos el método correcto: agregarItem (asumiendo que ese es el nombre final)
-            miVenta.getCarrito().agregarItemAlCarrito(producto, cantidad); 
-            
-            // 4. ACTUALIZACIÓN DE LA INTERFAZ DE USUARIO (Vista)
-            
-            // Re-establecer la lista observable para reflejar el nuevo ItemCarrito o la nueva cantidad
+        // 2. BÚSQUEDA SIMPLIFICADA - Usar el mismo método que el buscador
+        List<Producto> resultados = Producto.buscarProductos(codigo);
+        
+        if (!resultados.isEmpty()) {
+            Producto producto = resultados.get(0); // Tomar el primer resultado
+            // 3. AGREGAR AL CARRITO
+            miVenta.getCarrito().agregarItemAlCarrito(producto, cantidad);
+            // 4. ACTUALIZAR INTERFAZ
             carritoTable.setItems(FXCollections.observableArrayList(miVenta.getCarrito().getItems()));
-            
-            // Actualizar Total
-            actualizarTotalParcial(); 
-            
-            // Limpiar los campos de entrada
+            actualizarTotalParcial();
+            // Limpiar campos
             txtCodigoProducto.clear();
             txtCantidad.clear();
-
         } else {
-            // Este caso cubre si el código ingresado no existe en la DB
-            mostrarAlerta("Producto No Encontrado", "No existe un producto con el código ingresado o no está activo.", Alert.AlertType.ERROR);
+            mostrarAlerta("Producto No Encontrado", "No existe un producto con el código ingresado.", Alert.AlertType.ERROR);
         }
+        
     } catch (NumberFormatException e) {
-        // Captura si la cantidad ingresada no es un número (ej. el vendedor pone "uno")
         mostrarAlerta("Error de Formato", "La cantidad debe ser un número entero válido.", Alert.AlertType.WARNING);
     } catch (Exception e) {
-        // Captura errores de conexión a DB o fallos inesperados
         mostrarAlerta("Error de Sistema", "Ocurrió un error al procesar la solicitud.", Alert.AlertType.ERROR);
         e.printStackTrace();
     }
@@ -198,7 +186,8 @@ public void handleAnadirItem() {
     @FXML
     public void handleListarCodigos() {
         try {
-            List<Producto> listaProductos = productoDAO.findAll();
+            // Usar el mismo método optimizado de búsqueda que otros controladores
+            List<Producto> listaProductos = Producto.buscarProductos(""); // Buscar todos
             mostrarVentanaCodigos(listaProductos);
         } catch (Exception e) {
             mostrarAlerta("Error de DB", "No se pudo cargar la lista de productos: " + e.getMessage(), Alert.AlertType.ERROR);
@@ -207,7 +196,7 @@ public void handleAnadirItem() {
     
     // --- LÓGICA DE VENTANA MODAL (Listado de Códigos) ---
 
-    private void mostrarVentanaCodigos(List<Producto> productos) {
+    /*private void mostrarVentanaCodigos(List<Producto> productos) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/CodigosListaVista.fxml"));
             Parent root = loader.load();
@@ -228,6 +217,38 @@ public void handleAnadirItem() {
         } catch (Exception e) {
             mostrarAlerta("Error de Vista", "No se pudo cargar la ventana de códigos: " + e.getMessage(), Alert.AlertType.ERROR);
         }
+    }*/
+
+    private void mostrarVentanaCodigos(List<Producto> productos) {
+        try {
+            // Usar el patrón crearFormulario heredado de BaseControlador
+            VentanaVistaControlador.ResultadoVentana resultado = crearFormulario(
+                "/view/CodigosListaVista.fxml", 
+                "Lista de Códigos de Productos", 
+                600, 
+                450
+            );
+
+            if (resultado != null && resultado.getControlador() instanceof CodigosListaControlador) {
+                CodigosListaControlador controlador = (CodigosListaControlador) resultado.getControlador();
+                
+                // Pasar la lista de productos al controlador
+                controlador.setProductos(productos);
+                
+                // Configurar el controlador padre para recibir la selección
+                controlador.setControladorPadre(this);
+
+                // Mostrar la ventana
+                resultado.getVentana().setVisible(true);
+            }
+        } catch (Exception e) {
+            mostrarAlerta("Error de Vista", "No se pudo cargar la ventana de códigos: " + e.getMessage(), Alert.AlertType.ERROR);
+        }
+    }
+
+    // Método llamado por CodigosListaControlador cuando se selecciona un producto
+    public void setCodigoProductoSeleccionado(int codigo) {
+        txtCodigoProducto.setText(String.valueOf(codigo));
     }
 
 

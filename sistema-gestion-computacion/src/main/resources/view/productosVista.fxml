@@ -34,11 +34,10 @@
                 <HBox alignment="CENTER_RIGHT" prefWidth="820" spacing="10">
                <HBox prefHeight="25.0" prefWidth="412.0">
                   <children>
-                     <CheckBox fx:id="chBoxInactivos" mnemonicParsing="false" onAction="#mostrarProductosInactivos" prefHeight="25.0" prefWidth="179.0" text="Mostrar productos inactivos" textFill="WHITE" />
+                     <CheckBox fx:id="chBoxInactivos" mnemonicParsing="false" prefHeight="25.0" prefWidth="179.0" text="Mostrar productos inactivos" textFill="WHITE" />
                   </children>
                </HBox>
                     <TextField fx:id="txtBuscar" prefWidth="300" promptText="Buscar por cualquier campo" />
-                    <Button onAction="#buscarProductos" styleClass="btn-accion" text="Buscar" />
                     <Button onAction="#limpiarBusqueda" styleClass="btn-secundario" text="Limpiar" />
                 </HBox>
 
@@ -47,10 +46,11 @@
                     <columns>
                         <TableColumn fx:id="colCodigo" prefWidth="58.0" text="Código" />
                         <TableColumn fx:id="colNombre" prefWidth="127.0" text="Nombre" />
-                        <TableColumn fx:id="colDescripcion" prefWidth="263.2000274658203" text="Descripción" />
-                        <TableColumn fx:id="colCategoria" prefWidth="110.39999389648438" text="Categoría" />
-                        <TableColumn fx:id="colPrecio" minWidth="0.0" prefWidth="83.199951171875" text="Precio" />
-                        <TableColumn fx:id="colCantidad" prefWidth="73.5999755859375" text="Stock" />
+                        <TableColumn fx:id="colDescripcion" prefWidth="220.0" text="Descripción" />
+                        <TableColumn fx:id="colCategoria" prefWidth="110.0" text="Categoría" />
+                        <TableColumn fx:id="colPrecio" minWidth="0.0" prefWidth="83.0" text="Precio" />
+                        <TableColumn fx:id="colCantidad" prefWidth="73.0" text="Stock" />
+                        <TableColumn fx:id="colEstado" prefWidth="50.0" text="Estado" />
                     </columns>
                <columnResizePolicy>
                   <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

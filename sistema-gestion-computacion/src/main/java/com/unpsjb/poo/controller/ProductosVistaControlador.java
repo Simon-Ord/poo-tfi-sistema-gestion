@@ -1,13 +1,10 @@
 package com.unpsjb.poo.controller;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import com.unpsjb.poo.model.productos.Producto;
 import com.unpsjb.poo.util.AuditoriaUtil;
-import com.unpsjb.poo.util.CopiarProductoUtil;
 import com.unpsjb.poo.util.Sesion;
 
 import javafx.collections.FXCollections;
@@ -19,11 +16,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 
-/**
- * Controlador para la vista de productos.
- * IMPORTANTE: Este controlador NO conoce el DAO directamente.
- * Toda la comunicación con la persistencia se hace a través del modelo (Producto).
- */
+
+// Controlador para la vista de productos.
+
 public class ProductosVistaControlador extends BaseControlador {
 
     @FXML private TableView<Producto> tablaProductos;
@@ -34,6 +29,7 @@ public class ProductosVistaControlador extends BaseControlador {
     @FXML private TableColumn<Producto, String> colFabricante;
     @FXML private TableColumn<Producto, BigDecimal> colPrecio;
     @FXML private TableColumn<Producto, Integer> colCantidad;
+    @FXML private TableColumn<Producto, String> colEstado; // Nueva columna para estado
 
     @FXML private TextField txtBuscar;
     @FXML private CheckBox chBoxInactivos;
@@ -42,16 +38,58 @@ public class ProductosVistaControlador extends BaseControlador {
 
     @FXML
     public void initialize() {
-        // Configurar columnas
+        configurarColumnas();
+        configurarColumnasEstado();
+        configurarListeners();
+        cargarProductos();
+    }
+
+    //Configura las columnas básicas de la tabla
+    private void configurarColumnas() {
         colCodigo.setCellValueFactory(c -> new javafx.beans.property.SimpleObjectProperty<>(c.getValue().getCodigoProducto()));
         colNombre.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getNombreProducto()));
         colDescripcion.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getDescripcionProducto()));
         colCategoria.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(
-                c.getValue().getCategoria() != null ? c.getValue().getCategoria().getNombre() : "Sin Categoría"));
+            c.getValue().getCategoria() != null ? c.getValue().getCategoria().getNombre() : "Sin Categoría"));
         colPrecio.setCellValueFactory(c -> new javafx.beans.property.SimpleObjectProperty<>(c.getValue().getPrecioProducto()));
         colCantidad.setCellValueFactory(c -> new javafx.beans.property.SimpleObjectProperty<>(c.getValue().getStockProducto()));
+    }
 
-        cargarProductos();
+    // Configura la columna de estado con colores y formato
+    private void configurarColumnasEstado() {
+        colEstado.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty("●"));
+        // Configurar formato visual con colores
+        colEstado.setCellFactory(column -> {
+            return new javafx.scene.control.TableCell<Producto, String>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty || item == null) {setText(null); setStyle("");
+                    } else {
+                        setText(item);
+                        Producto producto = getTableView().getItems().get(getIndex());
+                        String color = producto.isActivo() ? "green" : "red";
+                        setStyle("-fx-text-fill: " + color + "; -fx-font-size: 16px; -fx-alignment: center;");
+                    }
+                }
+            };
+        });
+        colEstado.setVisible(false); // Ocultar columna inicialmente
+    }
+
+    // Configura los listeners para búsqueda automática y checkbox
+    private void configurarListeners() {
+        // Listener para búsqueda automática en tiempo real
+        if (txtBuscar != null) {
+            txtBuscar.textProperty().addListener((observable, oldValue, newValue) -> buscarProductos());
+        }
+        // Listener para mostrar/ocultar productos inactivos
+        if (chBoxInactivos != null) {
+            chBoxInactivos.selectedProperty().addListener((observable, oldValue, newValue) -> {
+                colEstado.setVisible(newValue);
+                buscarProductos();
+            });
+        }
     }
 
     /** Carga todos los productos activos en la tabla */
@@ -63,119 +101,90 @@ public class ProductosVistaControlador extends BaseControlador {
         tablaProductos.refresh();
     }
 
+    // ==================================
+    // BOTONES Y ACCIONES DEL CONTROLADOR
+    // ==================================
     /** Buscar productos */
-    @FXML
-    private void buscarProductos() {
+    @FXML private void buscarProductos() {
         String q = (txtBuscar != null && txtBuscar.getText() != null)
                 ? txtBuscar.getText().trim().toLowerCase()
                 : "";
-    if (q.isEmpty()) {
-        tablaProductos.setItems(backingList);
-        return;
-    }
-    List<Producto> resultados = backingList.stream()
-        .filter(p -> {
-            String nombre = p.getNombreProducto() != null ? p.getNombreProducto().toLowerCase() : "";
-            String descripcion = p.getDescripcionProducto() != null ? p.getDescripcionProducto().toLowerCase() : "";
-            String categoria = p.getCategoria() != null ? p.getCategoria().getNombre().toLowerCase() : "";
-            String codigo = String.valueOf(p.getCodigoProducto());
-
-                    return nombre.contains(q) || descripcion.contains(q) ||
-                           categoria.contains(q) || codigo.contains(q);
-                })
-                .collect(Collectors.toList());
+        // Usar búsqueda completa si el checkbox de inactivos está marcado
+        List<Producto> resultados;
+        if (chBoxInactivos != null && chBoxInactivos.isSelected()) {
+            resultados = Producto.buscarProductosCompleto(q);
+        } else {
+            resultados = Producto.buscarProductos(q);
+        }
         tablaProductos.setItems(FXCollections.observableArrayList(resultados));
     }
 
     /** Limpiar búsqueda */
-    @FXML
-    private void limpiarBusqueda() {
-        cargarProductos();
+    @FXML private void limpiarBusqueda() {
+        if (txtBuscar != null) {
+            txtBuscar.clear(); // Esto activará automáticamente el listener y hará la búsqueda
+        }
+        if (chBoxInactivos != null) {
+            chBoxInactivos.setSelected(false); // También resetear el checkbox
+        }
     }
 
     /** Agregar producto */
-    @FXML
-    private void agregarProducto() {
+    @FXML private void agregarProducto() {
         crearFormulario("/view/productoForm.fxml", "Agregar Nuevo Producto");
         cargarProductos(); // Recargar datos después de cerrar la ventana
     }
 
     /** Modificar producto */
-    @FXML
-    private void modificarProducto() {
+    @FXML private void modificarProducto() {
         Producto productoSeleccionado = tablaProductos.getSelectionModel().getSelectedItem();
         if (productoSeleccionado == null) {
             mostrarAlerta("Debe seleccionar un producto para modificarlo.");
             return;
         }
-        // Guardamos una copia del producto original para comparar cambios después
-        Producto productoOriginal = CopiarProductoUtil.copiarProducto(productoSeleccionado);
-
+        
         // Abrir ventana y configurar el controlador
         VentanaVistaControlador.ResultadoVentana resultado = 
             crearFormulario("/view/productoForm.fxml", "Modificar Producto");
         
         if (resultado != null) {
             ProductoFormularioVistaControlador controlador = 
-                resultado.getControlador(ProductoFormularioVistaControlador.class);
+                (ProductoFormularioVistaControlador) resultado.getControlador(); 
             if (controlador != null) {
                 controlador.setProductoAEditar(productoSeleccionado);
+                controlador.setControladorPadre(this); // ← ¡Pasar referencia de este controlador!
             }
-        }
-
-        cargarProductos();
-
-        // Auditoría: registrar cambios si hay un usuario en sesión
-        if (Sesion.getUsuarioActual() != null) {
-            AuditoriaUtil.registrarCambioProducto(productoOriginal, productoSeleccionado);
         }
     }
 
     /** Cambiar estado activo/inactivo */
-    @FXML
-    private void cambiarEstadoProducto() {
-        // 1. Lógica de UI: obtener selección y validar
+    @FXML private void cambiarEstadoProducto() {
         Producto seleccionado = tablaProductos.getSelectionModel().getSelectedItem();
         if (seleccionado == null) {
             mostrarAlerta("Seleccione un producto para cambiar su estado.");
             return;
         }
-        
-        // Guardar el estado anterior para auditoría
+        // Guardar el estado anterior para auditoría y mensaje
         boolean estadoAnterior = seleccionado.isActivo();
-        // 2. Lógica de UI: mostrar confirmación al usuario
-        String nuevoEstado = seleccionado.isActivo() ? "inactivo" : "activo";
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-        confirm.setTitle("Confirmar cambio de estado");
-        confirm.setHeaderText(null);
-        confirm.setContentText("¿Desea cambiar el estado del producto a " + nuevoEstado + "?");
-
-        if (confirm.showAndWait().get().getButtonData().isDefaultButton()) {
-            // 3. Lógica de NEGOCIO: delegar al modelo
-            seleccionado.cambiarEstado();  // ← Ahora la lógica está en el modelo
-            
-            // 4. Persistencia: delegar al modelo
-            boolean ok = seleccionado.actualizar();  // ← El modelo maneja su propia persistencia
-            
-            // 5. Lógica de UI: mostrar resultado
-            if (ok) {
-                if (Sesion.getUsuarioActual() != null) {
-                    AuditoriaUtil.registrarCambioEstadoProducto(seleccionado, !estadoAnterior);
-                }
-
-                mostrarAlerta("El producto cambió al estado: " + (!estadoAnterior ? "Activo" : "Inactivo"));
-                cargarProductos();
-            } else {
-                mostrarAlerta("Error al cambiar el estado del producto.");
-            }
+        // Cambiar el estado y persistir
+        seleccionado.cambiarEstado(); 
+        boolean ok = seleccionado.actualizar();
+        if (ok) {
+            // Registrar auditoría si hay usuario en sesión
+            if (Sesion.getUsuarioActual() != null) {
+                AuditoriaUtil.registrarCambioEstadoProducto(seleccionado, !estadoAnterior);
+            }            
+            String estadoActual = seleccionado.isActivo() ? "Activo" : "Inactivo";
+            mostrarAlerta("El producto cambió al estado: " + estadoActual);
+            cargarProductos();
+        } else {
+            mostrarAlerta("Error al cambiar el estado del producto.");
         }
     }
 
     /** Mostrar productos inactivos */
-    @FXML
-    private void mostrarProductosInactivos() {
+    @FXML private void mostrarProductosInactivos() {
         if (chBoxInactivos.isSelected()) {
-            // Obtener todos los productos a través del modelo
             List<Producto> productosInactivos = Producto.obtenerTodosCompleto();
             tablaProductos.setItems(FXCollections.observableArrayList(productosInactivos));
         } else {

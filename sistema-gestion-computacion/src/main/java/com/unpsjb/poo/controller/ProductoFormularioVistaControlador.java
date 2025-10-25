@@ -13,7 +13,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
-import javafx.stage.Stage;
 
 public class ProductoFormularioVistaControlador extends BaseControlador {
 
@@ -26,15 +25,15 @@ public class ProductoFormularioVistaControlador extends BaseControlador {
 
     private Producto productoAEditar;       // si es null -> alta
     private Producto productoOriginal;      // copia para comparar cambios
+    
+    // Referencia a ProductoVistaControlador para actualizar la tabla al cerrar
+    private ProductosVistaControlador productosVista;
 
     @FXML
     private void initialize() {
         try {
-            // Cargar las categorías desde la base de datos usando el modelo
             cargarCategorias();
-            
-            // No se usa CheckBox 'activo' aquí (se maneja en el modelo)
-        } catch (Exception e) {
+                } catch (Exception e) {
             System.err.println("Error al inicializar el formulario de productos: " + e.getMessage());
             e.printStackTrace();
         }
@@ -65,9 +64,14 @@ public class ProductoFormularioVistaControlador extends BaseControlador {
         }
     }
 
-    /** Alias para compatibilidad: permite que quien llame setProductoAEditar(...) funcione */
-    public void setProductoAEditar(Producto p) {
+    // ESTE METODO CREO SE PUEDE BORRAR
+        public void setProductoAEditar(Producto p) {
         setProducto(p);
+    }
+
+    /** Establecer referencia al controlador padre */
+    public void setControladorPadre(ProductosVistaControlador productosVista) {
+        this.productosVista = productosVista;
     }
 
     // Carga los datos del producto a editar en los campos de la UI
@@ -92,12 +96,10 @@ public class ProductoFormularioVistaControlador extends BaseControlador {
                 mostrarAlerta("Todos los campos son obligatorios.");
                 return;
             }
-
             boolean ok;
             String usuario = (Sesion.getUsuarioActual() != null)
                     ? Sesion.getUsuarioActual().getNombre()
                     : "Desconocido";
-
             if (productoAEditar == null) {
                 // Crear nuevo producto
                 Producto nuevo = new Producto();
@@ -116,7 +118,6 @@ public class ProductoFormularioVistaControlador extends BaseControlador {
                     AuditoriaUtil.registrarCambioProducto(productoOriginal, productoAEditar);
                 }
             }
-
             if (ok) {
                 mostrarAlerta("Producto guardado correctamente.");
                 cerrarVentana();
@@ -161,14 +162,14 @@ public class ProductoFormularioVistaControlador extends BaseControlador {
         }
     }
 
-    @FXML
-    private void cancelar() {
-        cerrarVentana();
-    }
+    @FXML private void cancelar() {cerrarVentana();}
 
     private void cerrarVentana() {
-        Stage stage = (Stage) txtNombre.getScene().getWindow();
-        stage.close();
+        if (productosVista != null) {
+            productosVista.cargarProductos();
+        }
+        // Para ventanas internas, usar el método de BaseControlador
+        BaseControlador.cerrarVentanaInterna(txtCodigo);
     }
 
     private void mostrarAlerta(String mensaje) {
