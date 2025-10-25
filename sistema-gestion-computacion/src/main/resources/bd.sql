@@ -8,7 +8,7 @@ CREATE TABLE usuarios (
     nombre VARCHAR(100) NOT NULL,
     usuario VARCHAR(50) UNIQUE NOT NULL,
     contraseña VARCHAR(100) NOT NULL,
-    rol VARCHAR(50) NOT NULL CHECK (rol IN ('ADMINISTRADOR', 'USER')),
+    rol VARCHAR(50) NOT NULL CHECK (rol IN ('ADMINISTRADOR', 'EMPLEADO')),
     estado BOOLEAN DEFAULT TRUE,
     fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -89,7 +89,7 @@ VALUES ('1234', 'ALEXIS', '1', '1', 'ADMINISTRADOR', true);
 -- 🔍 CONSULTAS DE PRUEBA
 -- =============================================================
 
-SELECT * FROM usuarios;
+SELECT * FROM clientes;
 SELECT * FROM productos;
 SELECT * FROM auditoria ORDER BY fecha_hora DESC;
 SELECT * FROM sesion333es ORDER BY fecha_inicio DESC;
