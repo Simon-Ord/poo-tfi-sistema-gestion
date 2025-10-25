@@ -178,35 +178,87 @@ public boolean delete(int id) {
         }
         return productos;
     }
-    // ========================
-    // Método auxiliar de mapeo
-    // ========================
-    private Producto mapResultSet(ResultSet rs) throws SQLException {
-        Producto p = new Producto();
-        p.setIdProducto(rs.getInt("id_producto")); 
-        p.setNombreProducto(rs.getString("nombre_producto"));
-        p.setDescripcionProducto(rs.getString("descripcion_producto"));
-        p.setStockProducto(rs.getInt("stock_producto"));
-        p.setPrecioProducto(rs.getBigDecimal("precio_producto"));
-        p.setCodigoProducto(rs.getInt("codigo_producto"));
-        p.setActivo(rs.getBoolean("activo"));
+
+    // Método para buscar productos activos y devuelve lista de productos
+    public List<Producto> buscarProductos(String termino) {
+        String sql = """
+            SELECT p.*, c.id_categoria as categoria_id, c.nombre_categoria as categoria_nombre 
+            FROM productos p 
+            LEFT JOIN categorias c ON p.categoria_id = c.id_categoria 
+            WHERE p.activo = TRUE 
+            AND (LOWER(p.nombre_producto) LIKE ? 
+                 OR LOWER(p.descripcion_producto) LIKE ? 
+                 OR LOWER(c.nombre_categoria) LIKE ? 
+                 OR CAST(p.codigo_producto AS TEXT) LIKE ?
+                 OR CAST(p.precio_producto AS TEXT) LIKE ?
+                 OR CAST(p.stock_producto AS TEXT) LIKE ?)
+            ORDER BY p.nombre_producto
+            """;
         
-        // Obtener la categoría
-        int categoriaId = rs.getInt("categoria_id");
-        if (!rs.wasNull()) {
-            Categoria cat = new Categoria();
-            cat.setId(categoriaId);
-            cat.setNombre(rs.getString("categoria_nombre"));
-            p.setCategoria(cat);
-        }
+        List<Producto> productos = new ArrayList<>();
+        String terminoBusqueda = "%" + termino.toLowerCase() + "%";
         
-        if (rs.getTimestamp("fecha_creacion") != null) {
-            p.setFechaCreacion(rs.getTimestamp("fecha_creacion"));
+        try (Connection conexion = GestorDeConexion.getInstancia().getConexion();
+             PreparedStatement pstmt = conexion.prepareStatement(sql)) {
+            
+            // Setear el mismo término para todos los campos
+            pstmt.setString(1, terminoBusqueda);
+            pstmt.setString(2, terminoBusqueda);
+            pstmt.setString(3, terminoBusqueda);
+            pstmt.setString(4, terminoBusqueda);
+            pstmt.setString(5, terminoBusqueda);
+            pstmt.setString(6, terminoBusqueda);
+            
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    productos.add(mapResultSet(rs));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al buscar productos: " + e.getMessage());
         }
-        return p;
+        return productos;
     }
+
+    // Método para buscar productos incluyendo inactivos y devuelve lista de productos
+    public List<Producto> buscarProductosCompleto(String termino) {
+        String sql = """
+            SELECT p.*, c.id_categoria as categoria_id, c.nombre_categoria as categoria_nombre 
+            FROM productos p 
+            LEFT JOIN categorias c ON p.categoria_id = c.id_categoria 
+            WHERE (LOWER(p.nombre_producto) LIKE ? 
+                   OR LOWER(p.descripcion_producto) LIKE ? 
+                   OR LOWER(c.nombre_categoria) LIKE ? 
+                   OR CAST(p.codigo_producto AS TEXT) LIKE ?
+                   OR CAST(p.precio_producto AS TEXT) LIKE ?
+                   OR CAST(p.stock_producto AS TEXT) LIKE ?)
+            ORDER BY p.activo DESC, p.nombre_producto
+            """;
+        
+        List<Producto> productos = new ArrayList<>();
+        String terminoBusqueda = "%" + termino.toLowerCase() + "%";
+        
+        try (Connection conexion = GestorDeConexion.getInstancia().getConexion();
+             PreparedStatement pstmt = conexion.prepareStatement(sql)) {
+            // Setear el mismo término para todos los campos
+            pstmt.setString(1, terminoBusqueda);
+            pstmt.setString(2, terminoBusqueda);
+            pstmt.setString(3, terminoBusqueda);
+            pstmt.setString(4, terminoBusqueda);
+            pstmt.setString(5, terminoBusqueda);
+            pstmt.setString(6, terminoBusqueda);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    productos.add(mapResultSet(rs));
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al buscar productos completo: " + e.getMessage());
+        }
+        return productos;
+    }
+
  public Optional<Producto> findByCodigo(String codigo) {
-    // CORRECCIÓN: La consulta debe buscar por la columna donde se almacena el código.
     String sql = """
         SELECT p.*, c.id_categoria as categoria_id, c.nombre_categoria as categoria_nombre 
         FROM productos p 
@@ -239,5 +291,31 @@ public boolean delete(int id) {
     return Optional.ofNullable(producto);
 
     }
-
+    // ========================
+    // Método auxiliar de mapeo
+    // ========================
+    private Producto mapResultSet(ResultSet rs) throws SQLException {
+        Producto p = new Producto();
+        p.setIdProducto(rs.getInt("id_producto")); 
+        p.setNombreProducto(rs.getString("nombre_producto"));
+        p.setDescripcionProducto(rs.getString("descripcion_producto"));
+        p.setStockProducto(rs.getInt("stock_producto"));
+        p.setPrecioProducto(rs.getBigDecimal("precio_producto"));
+        p.setCodigoProducto(rs.getInt("codigo_producto"));
+        p.setActivo(rs.getBoolean("activo"));
+        
+        // Obtener la categoría
+        int categoriaId = rs.getInt("categoria_id");
+        if (!rs.wasNull()) {
+            Categoria cat = new Categoria();
+            cat.setId(categoriaId);
+            cat.setNombre(rs.getString("categoria_nombre"));
+            p.setCategoria(cat);
+        }
+        
+        if (rs.getTimestamp("fecha_creacion") != null) {
+            p.setFechaCreacion(rs.getTimestamp("fecha_creacion"));
+        }
+        return p;
+    }
 }

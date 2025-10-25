@@ -116,39 +116,37 @@ public class Producto {
         }
     }
     
-    // ===== MÉTODOS ESTÁTICOS PARA ACCESO A PERSISTENCIA =====
-    // El modelo encapsula el acceso al DAO
-    // El controlador NUNCA debe conocer el DAO directamente
+    // ========================================================
+    // ===== METODOS ESTATICOS PARA ACCESO A PERSISTENCIA =====
+    // ========================================================
     
-    /**
-     * Obtiene todos los productos activos desde la base de datos
-     * @return Lista de productos activos
-     */
+    // Obtiene todos los productos activos desde la base de datos
     public static List<Producto> obtenerTodos() {
         return productoDAO.findAll();
     }
-    
-    /**
-     * Obtiene todos los productos (activos e inactivos) desde la base de datos
-     * @return Lista completa de productos
-     */
+    // Obtiene todos los productos activos e INACTIVOS desde la base de datos
     public static List<Producto> obtenerTodosCompleto() {
         return productoDAO.findAllCompleto();
     }
-    
-    /**
-     * Busca un producto por su ID
-     * @param id ID del producto
-     * @return Producto encontrado o null
-     */
+    // Busca productos por cualquier campo (solo activos)
+    public static List<Producto> buscarProductos(String termino) {
+        if (termino == null || termino.trim().isEmpty()) {
+            return obtenerTodos(); // Si no hay término, devolver todos
+        }
+        return productoDAO.buscarProductos(termino.trim());
+    }
+    // Busca productos por cualquier campo incluyendo inactivos
+    public static List<Producto> buscarProductosCompleto(String termino) {
+        if (termino == null || termino.trim().isEmpty()) {
+            return obtenerTodosCompleto(); // Si no hay término, devolver todos
+        }
+        return productoDAO.buscarProductosCompleto(termino.trim());
+    }
+    // Obtiene un producto por su ID
     public static Producto obtenerPorId(int id) {
         return productoDAO.read(id).orElse(null);
     }
-    
-    /**
-     * Guarda este producto en la base de datos (persistencia de la instancia)
-     * @return true si se guardó correctamente
-     */
+    // Guarda este producto en la base de datos
     public boolean guardar() {
         if (this.idProducto == 0) {
             // Es un producto nuevo, usar create
@@ -158,27 +156,15 @@ public class Producto {
             return productoDAO.update(this);
         }
     }
-    
-    /**
-     * Actualiza este producto en la base de datos
-     * @return true si se actualizó correctamente
-     */
+    // Actualiza un producto existente en la base de datos
     public boolean actualizar() {
         return productoDAO.update(this);
     }
-    
-    /**
-     * Crea un nuevo producto en la base de datos
-     * @return true si se creó correctamente
-     */
+    // Crea un producto nuevo en la base de datos
     public boolean crear() {
         return productoDAO.create(this);
     }
-    
-    /**
-     * Elimina este producto (eliminación lógica - lo marca como inactivo)
-     * @return true si se eliminó correctamente
-     */
+    // Pone el estado de activo en false (eliminación lógica)
     public boolean eliminar() {
         this.desactivar();
         return productoDAO.update(this);
