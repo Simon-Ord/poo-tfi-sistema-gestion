@@ -29,6 +29,18 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
+
+// para el pdf
+
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
+import java.io.File;
+
+import com.unpsjb.poo.util.PDFExporter;
+import com.unpsjb.poo.util.PDFFactura;
+import com.unpsjb.poo.util.PDFTicket;
+
+
 public class FacturaVistaControlador extends BaseControlador implements Initializable {
 
     private boolean vistaDatosFacturaInicializada = false;
@@ -53,8 +65,7 @@ public class FacturaVistaControlador extends BaseControlador implements Initiali
     @FXML private Label lblEstadoCliente;
     @FXML private Label lblTotalVenta; 
     @FXML private Button btnCargarCliente;
-    
-
+    @FXML private Button btnExportarPDF; // alexisssssssssssssssssssssss
     // 4. INYECCIÓN DE ELEMENTOS DEL PASO 3 (FacturaConfirmarVenta.fxml)
     @FXML private Label lblTipoFacturaResumen;
     @FXML private Label lblClienteResumen;
@@ -65,6 +76,7 @@ public class FacturaVistaControlador extends BaseControlador implements Initiali
     @FXML private ScrollPane scrollPaneItems; // El contenedor para la lista de productos
     @FXML private ComboBox<EstrategiaPago> cbMetodoPago; // El ComboBox usará objetos EstrategiaPago
     @FXML private VBox vboxItemsLista;
+
 
     private EstrategiaPago estrategiaPagoSeleccionada; // Campo auxiliar para guardar la estrategia
     private boolean vistaConfirmacionPagoInicializada = false;
@@ -443,14 +455,57 @@ public void handleRegistrarVenta() {
 /**
  * Llamado por el botón "Exportar PDF".
  */
+
+
 @FXML
-public void handleExportarPDF() {
-    // Lógica para exportar el PDF (asumiendo que la clase PDFExporter existe)
-    // PDFExporter.exportar(miVenta);
-    mostrarAlerta("Exportar", "Generando PDF de la factura...", Alert.AlertType.INFORMATION);
+private void handleExportarPDF() {
+    // Obtener la venta actual (ajustá el nombre si tu variable es distinta)
+    Venta ventaActual = this.miVenta; // o como la tengas referenciada
+
+    if (ventaActual == null) {
+        mostrarAlerta("No hay ninguna venta activa para exportar.");
+        return;
+    }
+
+    // Verificar tipo de documento
+    String tipo = ventaActual.getTipoFactura();
+    if (tipo == null || tipo.isEmpty()) {
+        mostrarAlerta("No se ha seleccionado si es factura o ticket.");
+        return;
+    }
+
+    // Elegir dónde guardar
+    FileChooser fileChooser = new FileChooser();
+    fileChooser.setTitle("Guardar PDF de Venta");
+    fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivo PDF", "*.pdf"));
+    Stage stage = (Stage) btnExportarPDF.getScene().getWindow();
+    File file = fileChooser.showSaveDialog(stage);
+
+    if (file == null) return;
+
+    boolean ok = false;
+    PDFExporter pdf;
+
+    if (tipo.equalsIgnoreCase("factura")) {
+        pdf = new PDFFactura(ventaActual);
+    } else {
+        pdf = new PDFTicket(ventaActual);
+    }
+
+    ok = pdf.export(file.getAbsolutePath());
+
+    mostrarAlerta(ok ? "PDF generado correctamente:\n" + file.getAbsolutePath()
+                     : "Error al generar el PDF.");
 }
 
 
+private void mostrarAlerta(String mensaje) {
+    javafx.scene.control.Alert alert = new javafx.scene.control.Alert(javafx.scene.control.Alert.AlertType.INFORMATION);
+    alert.setHeaderText(null);
+    alert.setTitle("Exportar PDF");
+    alert.setContentText(mensaje);
+    alert.showAndWait();
+}
 
 
     
@@ -584,10 +639,10 @@ private void inicializarVistaDatosFactura() {
     if (lblTotalVenta != null) { 
         lblTotalVenta.setText("Total: $ 0.00"); 
     }
+}
 
 }
 
 
 
 
-}
