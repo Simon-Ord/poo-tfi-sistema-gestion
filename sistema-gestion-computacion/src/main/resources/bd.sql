@@ -1,3 +1,4 @@
+-- Active: 1760230244890@@127.0.0.1@5432@tienda_computacion
 -- =============================================================
 -- 🧱 TABLAS PRINCIPALES DEL SISTEMA
 -- =============================================================
@@ -14,6 +15,7 @@ CREATE TABLE usuarios (
 -- ====================
 -- 🧑‍🤝‍🧑 TABLA DE CLIENTES
 -- ====================
+
 CREATE TABLE clientes (
     id SERIAL PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
@@ -90,12 +92,12 @@ VALUES ('1234', 'ALEXIS', '1', '1', 'ADMINISTRADOR', true);
 SELECT * FROM usuarios;
 SELECT * FROM productos;
 SELECT * FROM auditoria ORDER BY fecha_hora DESC;
-SELECT * FROM sesiones ORDER BY fecha_inicio DESC;
+SELECT * FROM sesion333es ORDER BY fecha_inicio DESC;
 
 -- Crear usuario inicial
 
 INSERT INTO usuarios (dni, nombre, usuario, contraseña, rol, estado)
 VALUES ('1234', 'ALEXIS', '1', '1', 'ADMINISTRADOR', true);
 
-
-
+INSERT INTO clientes(nombre,direccion,telefono,email) VALUES
+('ALEXIS','enpapa','29345543','ac991623438.com');

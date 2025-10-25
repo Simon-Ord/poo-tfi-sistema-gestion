@@ -1,105 +1,103 @@
 package com.unpsjb.poo.model;
 
+import java.sql.Timestamp;
+import java.util.List;
+
+import com.unpsjb.poo.persistence.dao.impl.ClienteDAOImpl;
+
+/**
+ * Modelo del Cliente
+ * 
+ * 🔹 Aplica los principios de POO:
+ * - Encapsulamiento → controla sus propios datos.
+ * - Abstracción → el controlador no conoce el DAO.
+ * - Responsabilidad única → lógica de negocio del cliente.
+ */
 public class Cliente {
 
-    private Integer id;           
-    private String nombre;     // Obligatorio, 100 caracteres
-    private String cuit;       // Opcional
-    private String telefono;   // Opcional
-    private String direccion;  // Opcional
-    private String email;      // Opcional
+    private int id;
+    private String nombre;
+    private String cuit;
+    private String telefono;
+    private String direccion;
+    private String email;
     private String tipo;
+    private boolean activo;
+    private Timestamp fechaCreacion;
 
+    // DAO estático compartido
+    private static final ClienteDAOImpl clienteDAO = new ClienteDAOImpl();
 
-    // ========= Constructor ========= //
     public Cliente() {
-}
-   
-        public Cliente(Integer id, String nombre, String cuit, String telefono, String direccion, String email, String tipo) {
-        this.id = id;
-        this.nombre = nombre;
-        this.cuit = cuit;
-        this.telefono = telefono;
-        this.direccion = direccion;
-        this.email = email;
-        this.tipo = tipo;
-}
+        this.activo = true;
+    }
 
-    // ========= Getters / Setters con validacion ========= //
-    public int getId() {return id;}
-    public void setId(int id) {this.id = id;}
+    // ========================
+    // Getters y Setters
+    // ========================
+    public int getId() { return id; }
+    public void setId(int id) { this.id = id; }
+
     public String getNombre() { return nombre; }
-    public void setNombre(String nombre) {
-        if (nombre == null || nombre.isBlank()) // Validacion doble, nulo o ""
-            throw new IllegalArgumentException("El nombre es obligatorio");
-        if (nombre.trim().length() < 3 || nombre.trim().length() > 100)
-            throw new IllegalArgumentException("El nombre debe tener entre 3 y 100 caracteres");
-        this.nombre = nombre;
-    }
-      // Acepta null/"" (consumidor final)//
+    public void setNombre(String nombre) { this.nombre = nombre; }
+
     public String getCuit() { return cuit; }
-    public void setCuit(String cuit) { 
-        if (cuit == null || cuit.isBlank()) {
-            this.cuit = null;
-            return;
-        }
-        if (cuit.length() != 11)
-            throw new IllegalArgumentException("CUIT inválido");
-        this.cuit = cuit;
-    }
+    public void setCuit(String cuit) { this.cuit = cuit; }
+
     public String getTelefono() { return telefono; }
-    public void setTelefono(String telefono) {
-        if (telefono == null || telefono.isBlank()) {
-            this.telefono = null;
-            return;
-        }
-        if (telefono.trim().length() > 40) throw new IllegalArgumentException("Teléfono demasiado largo");
-        this.telefono = telefono;
-    }
-    
+    public void setTelefono(String telefono) { this.telefono = telefono; }
+
     public String getDireccion() { return direccion; }
-    public void setDireccion(String direccion) {
-        if (direccion == null || direccion.isBlank()) {
-            this.direccion = null;
-            return;
-        }
-        if (direccion.trim().length() > 200) throw new IllegalArgumentException("Dirección demasiado larga");
-        this.direccion = direccion;
-    }
+    public void setDireccion(String direccion) { this.direccion = direccion; }
+
     public String getEmail() { return email; }
-    public void setEmail(String email) {
-        if (email == null || email.isBlank()) {
-            this.email = null;
-            return;
-        }
-        if (email.trim().length() > 100) throw new IllegalArgumentException("Email demasiado largo");
-        this.email = email.toLowerCase();
-    }
-    public String getTipo() { 
-    return tipo; 
-}
+    public void setEmail(String email) { this.email = email; }
 
-    public void setTipo(String tipo) {
-        if (tipo == null || tipo.isBlank()) {
-            this.tipo = "Consumidor Final"; // valor por defecto
+    public String getTipo() { return tipo; }
+    public void setTipo(String tipo) { this.tipo = tipo; }
+
+    public boolean isActivo() { return activo; }
+    public void setActivo(boolean activo) { this.activo = activo; }
+
+    public Timestamp getFechaCreacion() { return fechaCreacion; }
+    public void setFechaCreacion(Timestamp fechaCreacion) { this.fechaCreacion = fechaCreacion; }
+
+    // ========================
+    // Lógica de Negocio
+    // ========================
+    public void cambiarEstado() {
+        this.activo = !this.activo;
+    }
+
+    // ========================
+    // Acceso a Persistencia
+    // ========================
+    public boolean guardar() {
+        if (this.id == 0) {
+            return clienteDAO.insertar(this);
         } else {
-            this.tipo = tipo;
+            return clienteDAO.modificar(this);
+        }
     }
-}
 
-    // Es consumidor final si no tiene CUIT cargado //
-    public boolean esConsumidorFinal() {
-        return this.cuit == null || this.cuit.isBlank();
+    public boolean eliminar() {
+        this.activo = false;
+        return clienteDAO.modificar(this);
     }
-    @Override
-    public String toString() {
-        return "Cliente{" +
-                "id=" + id +
-                ", nombre='" + nombre + '\'' +
-                ", cuit='" + (cuit == null ? "-" : cuit) + '\'' +
-                ", telefono='" + (telefono == null ? "-" : telefono) + '\'' +
-                ", email='" + (email == null ? "-" : email) + '\'' +
-                '}';
+
+    public boolean actualizarEstado() {
+        return clienteDAO.modificar(this);
     }
-    
+
+    public static List<Cliente> obtenerTodos() {
+        return clienteDAO.obtenerTodos();
+    }
+
+    public static Cliente obtenerPorId(int id) {
+        return clienteDAO.obtenerPorId(id);
+    }
+
+    public static List<Cliente> buscarPorNombre(String nombre) {
+        return clienteDAO.buscarPorNombre(nombre);
+    }
 }
