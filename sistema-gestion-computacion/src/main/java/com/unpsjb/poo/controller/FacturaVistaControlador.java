@@ -450,6 +450,7 @@ public void handleRegistrarVenta() {
     // El Controlador actualiza la UI para volver al inicio
     actualizarVisibilidadVistas(miVenta.getEstadoActual().getVistaID());
     mostrarAlerta("Éxito", "Venta registrada exitosamente.", Alert.AlertType.INFORMATION);
+    
 }
 
 /**
