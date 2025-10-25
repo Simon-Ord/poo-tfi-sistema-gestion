@@ -50,6 +50,8 @@ public class FacturaVistaControlador implements Initializable {
     @FXML private TextField txtRazonSocial;
     @FXML private Label lblEstadoCliente;
     @FXML private Label lblTotalVenta; 
+    @FXML private Button btnCargarCliente;
+    
 
     // 4. INYECCIÓN DE ELEMENTOS DEL PASO 3 (FacturaConfirmarVenta.fxml)
     @FXML private Label lblTipoFacturaResumen;
@@ -126,35 +128,60 @@ private void actualizarTotalParcial() {
     // -------------------------------------------------------------------------
     // MANEJO DE EVENTOS DE LA VISTA 1: CARRITO
     // -------------------------------------------------------------------------
+@FXML
+public void handleAnadirItem() {
+    String codigo = txtCodigoProducto.getText();
+    String cantidadStr = txtCantidad.getText();
 
-    @FXML
-    public void handleAnadirItem() {
-        try {
-            String codigo = txtCodigoProducto.getText();
-            int cantidad = Integer.parseInt(txtCantidad.getText());
-
-            // Buscar producto por código (asumiendo que DAO tiene este método)
-            Optional<Producto> productoOpt = productoDAO.findByCodigo(codigo); 
-
-            if (productoOpt.isPresent()) {
-                Producto producto = productoOpt.get();
-                // CORRECCIÓN 3: Asumiendo que CarritoDeCompra ya maneja el agregar item.
-                miVenta.getCarrito().agregarItemAlCarrito(producto, cantidad); 
-                
-                // Actualizar la UI
-                carritoTable.setItems(FXCollections.observableArrayList(miVenta.getCarrito().getItems()));
-                // Actualizar Total
-                lblTotalParcial.setText("$ " + miVenta.getCarrito().getTotal()); 
-                
-                txtCodigoProducto.clear();
-                txtCantidad.clear();
-            } else {
-                mostrarAlerta("Producto no encontrado", "No existe un producto con el código ingresado.", Alert.AlertType.ERROR);
-            }
-        } catch (NumberFormatException e) {
-            mostrarAlerta("Error de entrada", "La cantidad debe ser un número entero.", Alert.AlertType.WARNING);
-        }
+    // 1. VALIDACIÓN BÁSICA (Evita excepciones y NPE)
+    if (codigo.isEmpty() || cantidadStr.isEmpty()) {
+        mostrarAlerta("Datos Faltantes", "Debe ingresar el código y la cantidad del producto.", Alert.AlertType.WARNING);
+        return; // Detiene la ejecución si falta algún campo
     }
+
+    try {
+        int cantidad = Integer.parseInt(cantidadStr);
+
+        if (cantidad <= 0) {
+            mostrarAlerta("Cantidad Inválida", "La cantidad debe ser un número positivo.", Alert.AlertType.WARNING);
+            return;
+        }
+
+        // 2. BÚSQUEDA DE PRODUCTO EN LA BASE DE DATOS (Persistencia)
+        Optional<Producto> productoOpt = productoDAO.findByCodigo(codigo); 
+
+        if (productoOpt.isPresent()) {
+            Producto producto = productoOpt.get();
+            
+            // 3. AGREGAR AL CARRITO (Lógica del Modelo)
+            // Usamos el método correcto: agregarItem (asumiendo que ese es el nombre final)
+            miVenta.getCarrito().agregarItemAlCarrito(producto, cantidad); 
+            
+            // 4. ACTUALIZACIÓN DE LA INTERFAZ DE USUARIO (Vista)
+            
+            // Re-establecer la lista observable para reflejar el nuevo ItemCarrito o la nueva cantidad
+            carritoTable.setItems(FXCollections.observableArrayList(miVenta.getCarrito().getItems()));
+            
+            // Actualizar Total
+            actualizarTotalParcial(); 
+            
+            // Limpiar los campos de entrada
+            txtCodigoProducto.clear();
+            txtCantidad.clear();
+
+        } else {
+            // Este caso cubre si el código ingresado no existe en la DB
+            mostrarAlerta("Producto No Encontrado", "No existe un producto con el código ingresado o no está activo.", Alert.AlertType.ERROR);
+        }
+    } catch (NumberFormatException e) {
+        // Captura si la cantidad ingresada no es un número (ej. el vendedor pone "uno")
+        mostrarAlerta("Error de Formato", "La cantidad debe ser un número entero válido.", Alert.AlertType.WARNING);
+    } catch (Exception e) {
+        // Captura errores de conexión a DB o fallos inesperados
+        mostrarAlerta("Error de Sistema", "Ocurrió un error al procesar la solicitud.", Alert.AlertType.ERROR);
+        e.printStackTrace();
+    }
+}
     
     @FXML
     public void handleQuitarItem() {
@@ -228,23 +255,45 @@ private void actualizarTotalParcial() {
     }
 
 
-    /* 
     @FXML
-    public void handleCargarCliente() {
-        if (txtCuitDni.getText().isEmpty() || txtRazonSocial.getText().isEmpty()) {
-            lblEstadoCliente.setText("ERROR: CUIT/Nombre no pueden estar vacíos.");
-            lblEstadoCliente.setVisible(true);
-            return;
-        }
+public void handleCargarCliente() {
+    String cuit = txtCuitDni.getText();
+    String nombre = txtRazonSocial.getText();
+    
+    // 1. Validación de campos obligatorios para Factura (CUIT y Nombre)
+    if (cuit.isBlank() || nombre.isBlank()) {
+        lblEstadoCliente.setText("ERROR: CUIT y Nombre/Razón Social son obligatorios.");
+        lblEstadoCliente.setStyle("-fx-text-fill: red;"); // Mostrar el error en rojo
+        lblEstadoCliente.setVisible(true);
+        return;
+    }
 
-        // Asumiendo que Cliente tiene un constructor para CUIT y Nombre
-        Cliente cliente = new Cliente(txtCuitDni.getText(), txtRazonSocial.getText());
+    try {
+        // 2. Crear el objeto Cliente utilizando el constructor por defecto y setters
+        // NOTA: Usar setters es más seguro porque tienen validación.
+        Cliente cliente = new Cliente(); 
+        
+        // Asignar valores
+        cliente.setNombre(nombre); 
+        cliente.setCuit(cuit); // El setter de CUIT valida la longitud (11)
+        cliente.setTipo("Responsable Inscripto"); // Definir el tipo para Factura
+
+        // 3. Guardar el objeto Cliente en el Modelo (Venta)
         miVenta.setClienteFactura(cliente); 
 
-        lblEstadoCliente.setText("Cliente cargado exitosamente.");
+        // 4. Actualizar UI
+        lblEstadoCliente.setText("Cliente fiscal cargado exitosamente.");
+        lblEstadoCliente.setStyle("-fx-text-fill: green;");
+        lblEstadoCliente.setVisible(true);
+        
+        
+    } catch (IllegalArgumentException e) {
+        // Captura errores de validación, como CUIT inválido
+        lblEstadoCliente.setText("ERROR de Datos: " + e.getMessage());
+        lblEstadoCliente.setStyle("-fx-text-fill: red;");
         lblEstadoCliente.setVisible(true);
     }
-    */
+}
 
 // -------------------------------------------------------------------------
 // MANEJO DE EVENTOS DE LA VISTA 3: CONFIRMACIÓN Y PAGO (Strategy)
@@ -300,7 +349,7 @@ public void handleMetodoPagoSelected() {
         double totalBase = miVenta.getCarrito().getTotal().doubleValue();
         
         // Simulación: La lógica real de Strategy aplicaría la comisión
-        double comision = (estrategia instanceof PagoTarjeta) ? 0.05 : 0.00;
+        double comision = estrategia.getComision();
         double totalFinal = totalBase * (1 + comision);
 
         // Actualizar UI
@@ -376,6 +425,11 @@ public void handleVolverPaso() {
     // 2. El Controlador actualiza la UI
     String nuevaVistaID = miVenta.getEstadoActual().getVistaID();
     actualizarVisibilidadVistas(nuevaVistaID);
+
+    if ("VistaDatosFactura".equals(nuevaVistaID)) {
+    
+        lblTotalVenta.setText("Total de Venta: $ " + miVenta.getCarrito().getTotal());
+    }
 }
 
 /**
@@ -384,15 +438,22 @@ public void handleVolverPaso() {
  */
 @FXML
 public void handleCancelarVenta() {
-    // La clase Venta asume que tiene un método cancelar() que hace la limpieza
+    // 1. Limpieza de datos en el Modelo
+    // Esto vacía el carrito y resetea el estado a EstadoAgregarProductos
     miVenta.cancelar(); 
     
-    // Reinicia el proceso y la UI
-    actualizarVisibilidadVistas(miVenta.getEstadoActual().getVistaID()); 
+    // 2. El Controlador actualiza la UI al Paso 1
+    String nuevaVistaID = miVenta.getEstadoActual().getVistaID();
+    actualizarVisibilidadVistas(nuevaVistaID); 
     
-    // Opcional: limpiar los campos de texto
-    txtCodigoProducto.clear();
-    txtCantidad.clear();
+    // 3. LIMPIEZA DE LA VISTA 1: Llamar al nuevo método auxiliar
+    // Esto garantiza que la tabla se vacíe y el Label del Total se ponga en $0.00
+    if ("VistaAgregarProductos".equals(nuevaVistaID)) {
+        inicializarVistaAgregarProductos(); 
+    }
+
+       actualizarVisibilidadVistas(nuevaVistaID); 
+
 }
     
     // -------------------------------------------------------------------------
@@ -406,9 +467,11 @@ private void inicializarVistaDatosFactura() {
             cbTipoFactura.getSelectionModel().select("Factura");
             
             // Lógica para limpiar el total inicial y otros elementos
-            lblTotalVenta.setText("Total de Venta: $ 0.00");
+            lblTotalVenta.setText("Total de Venta: $ " + miVenta.getCarrito().getTotal());
             
             vistaDatosFacturaInicializada = true; // MARCAR como hecho
+        } else {
+            lblTotalVenta.setText("Total de Venta: $ " + miVenta.getCarrito().getTotal());
         }
     }
 
@@ -445,4 +508,20 @@ private void inicializarVistaDatosFactura() {
         alert.setContentText(mensaje);
         alert.showAndWait();
     }
+
+    private void inicializarVistaAgregarProductos() {
+    // 1. Limpiar visualmente la tabla (aunque el modelo esté limpio, la tabla debe reflejarlo)
+    // El .clear() en la ObservableList inyectada con fx:id="carritoTable" borra las filas
+    if (carritoTable != null) {
+        carritoTable.getItems().clear();
+    }
+    
+    // 2. LÍNEA CRÍTICA: Resetear el Label del Total a 0.00
+    // Asume que tu Label para el total en la Vista 1 se llama lblTotalCarrito
+    if (lblTotalVenta != null) { 
+        lblTotalVenta.setText("Total: $ 0.00"); 
+    }
+
+}
+
 }

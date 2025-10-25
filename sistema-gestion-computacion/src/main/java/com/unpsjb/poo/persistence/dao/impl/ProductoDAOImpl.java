@@ -205,26 +205,39 @@ public boolean delete(int id) {
         }
         return p;
     }
-    public Optional<Producto> findByCodigo(String codigo) {
-        String sql = """
-            SELECT p.*, c.id_categoria as categoria_id, c.nombre_categoria as categoria_nombre 
-            FROM productos p 
-            LEFT JOIN categorias c ON p.categoria_id = c.id_categoria 
-            WHERE p.codigo_producto = ?
-            """;
-        try (Connection conexion = GestorDeConexion.getInstancia().getConexion();
-             PreparedStatement pstmt = conexion.prepareStatement(sql)) {
-            pstmt.setString(1, codigo);
-            try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
-                    Producto producto = mapResultSet(rs);
-                    return Optional.of(producto);
-                }
+ public Optional<Producto> findByCodigo(String codigo) {
+    // CORRECCIÓN: La consulta debe buscar por la columna donde se almacena el código.
+    String sql = """
+        SELECT p.*, c.id_categoria as categoria_id, c.nombre_categoria as categoria_nombre 
+        FROM productos p 
+        LEFT JOIN categorias c ON p.categoria_id = c.id_categoria 
+        WHERE p.codigo_producto = ? AND p.activo = TRUE
+        """; 
+    Producto producto = null;
+
+    try (Connection conexion = GestorDeConexion.getInstancia().getConexion();
+         PreparedStatement pstmt = conexion.prepareStatement(sql)) {
+
+        // 1. Convertir el String de la interfaz a INT (porque codigoProducto es INT)
+        int codigoInt = Integer.parseInt(codigo);
+        pstmt.setInt(1, codigoInt);
+
+        try (ResultSet rs = pstmt.executeQuery()) {
+            if (rs.next()) {
+                producto = mapResultSet(rs);
             }
-        } catch (SQLException e) {
-            System.err.println("Error al buscar el producto por código: " + e.getMessage());
         }
-        return Optional.empty();
+    } catch (NumberFormatException e) {
+        // Captura si el vendedor escribe letras en el campo de código
+        System.err.println("Error: El código '" + codigo + "' no es un número válido.");
+        return Optional.empty(); 
+    } catch (SQLException e) {
+        System.err.println("Error al buscar producto por código: " + e.getMessage());
+    }
+
+    // Devuelve el producto encontrado (o vacío si no existe)
+    return Optional.ofNullable(producto);
+
     }
 
 }

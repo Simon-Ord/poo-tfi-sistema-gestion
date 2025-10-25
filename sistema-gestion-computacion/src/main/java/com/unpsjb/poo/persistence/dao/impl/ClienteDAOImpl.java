@@ -1,10 +1,6 @@
 package com.unpsjb.poo.persistence.dao.impl;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,7 +14,6 @@ public class ClienteDAOImpl implements ClienteDAO {
     public List<Cliente> obtenerTodos() {
         List<Cliente> lista = new ArrayList<>();
         String sql = "SELECT * FROM clientes WHERE activo = TRUE ORDER BY id";
-
         try (Connection conn = GestorDeConexion.getInstancia().getConexion();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
@@ -31,58 +26,57 @@ public class ClienteDAOImpl implements ClienteDAO {
                 c.setTelefono(rs.getString("telefono"));
                 c.setDireccion(rs.getString("direccion"));
                 c.setEmail(rs.getString("email"));
+                c.setTipo(rs.getString("tipo"));
+                c.setActivo(rs.getBoolean("activo"));
                 lista.add(c);
             }
-
         } catch (SQLException e) {
             System.err.println("Error al obtener clientes: " + e.getMessage());
         }
-
         return lista;
     }
 
-    
     @Override
-public boolean insertar(Cliente cliente) {
-    String sql = "INSERT INTO clientes (nombre, cuit, telefono, direccion, email, tipo, activo) VALUES (?, ?, ?, ?, ?, ?, TRUE)";
-    try (Connection conn = GestorDeConexion.getInstancia().getConexion();
-         PreparedStatement stmt = conn.prepareStatement(sql)) {
+    public boolean insertar(Cliente cliente) {
+        String sql = "INSERT INTO clientes (nombre, cuit, telefono, direccion, email, tipo, activo) VALUES (?, ?, ?, ?, ?, ?, TRUE)";
+        try (Connection conn = GestorDeConexion.getInstancia().getConexion();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-        stmt.setString(1, cliente.getNombre());
-        stmt.setString(2, cliente.getCuit());
-        stmt.setString(3, cliente.getTelefono());
-        stmt.setString(4, cliente.getDireccion());
-        stmt.setString(5, cliente.getEmail());
-        stmt.setString(6, cliente.getTipo()); // 👈 nuevo campo
+            stmt.setString(1, cliente.getNombre());
+            stmt.setString(2, cliente.getCuit());
+            stmt.setString(3, cliente.getTelefono());
+            stmt.setString(4, cliente.getDireccion());
+            stmt.setString(5, cliente.getEmail());
+            stmt.setString(6, cliente.getTipo());
 
-        return stmt.executeUpdate() > 0;
-
-    } catch (SQLException e) {
-        System.err.println("Error SQL al insertar cliente: " + e.getMessage());
-        return false;
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Error al insertar cliente: " + e.getMessage());
+            return false;
+        }
     }
-}
-@Override
-public boolean modificar(Cliente cliente) {
-    String sql = "UPDATE clientes SET nombre = ?, cuit = ?, telefono = ?, direccion = ?, email = ?, tipo = ? WHERE id = ?";
-    try (Connection conn = GestorDeConexion.getInstancia().getConexion();
-         PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-        stmt.setString(1, cliente.getNombre());
-        stmt.setString(2, cliente.getCuit());
-        stmt.setString(3, cliente.getTelefono());
-        stmt.setString(4, cliente.getDireccion());
-        stmt.setString(5, cliente.getEmail());
-        stmt.setString(6, cliente.getTipo());
-        stmt.setInt(7, cliente.getId());
+    @Override
+    public boolean modificar(Cliente cliente) {
+        String sql = "UPDATE clientes SET nombre=?, cuit=?, telefono=?, direccion=?, email=?, tipo=?, activo=? WHERE id=?";
+        try (Connection conn = GestorDeConexion.getInstancia().getConexion();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
 
-        return stmt.executeUpdate() > 0;
+            stmt.setString(1, cliente.getNombre());
+            stmt.setString(2, cliente.getCuit());
+            stmt.setString(3, cliente.getTelefono());
+            stmt.setString(4, cliente.getDireccion());
+            stmt.setString(5, cliente.getEmail());
+            stmt.setString(6, cliente.getTipo());
+            stmt.setBoolean(7, cliente.isActivo());
+            stmt.setInt(8, cliente.getId());
 
-    } catch (SQLException e) {
-        System.err.println("Error al modificar cliente: " + e.getMessage());
-        return false;
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Error al modificar cliente: " + e.getMessage());
+            return false;
+        }
     }
-}
 
     @Override
     public boolean eliminar(int id) {
@@ -102,10 +96,8 @@ public boolean modificar(Cliente cliente) {
         String sql = "SELECT * FROM clientes WHERE id = ?";
         try (Connection conn = GestorDeConexion.getInstancia().getConexion();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-
             stmt.setInt(1, id);
             ResultSet rs = stmt.executeQuery();
-
             if (rs.next()) {
                 Cliente c = new Cliente();
                 c.setId(rs.getInt("id"));
@@ -114,13 +106,13 @@ public boolean modificar(Cliente cliente) {
                 c.setTelefono(rs.getString("telefono"));
                 c.setDireccion(rs.getString("direccion"));
                 c.setEmail(rs.getString("email"));
+                c.setTipo(rs.getString("tipo"));
+                c.setActivo(rs.getBoolean("activo"));
                 return c;
             }
-
         } catch (SQLException e) {
-            System.err.println("Error al obtener cliente por ID: " + e.getMessage());
+            System.err.println("Error al obtener cliente: " + e.getMessage());
         }
-
         return null;
     }
 
@@ -130,10 +122,8 @@ public boolean modificar(Cliente cliente) {
         String sql = "SELECT * FROM clientes WHERE LOWER(nombre) LIKE LOWER(?) AND activo = TRUE";
         try (Connection conn = GestorDeConexion.getInstancia().getConexion();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
-
             stmt.setString(1, "%" + nombre + "%");
             ResultSet rs = stmt.executeQuery();
-
             while (rs.next()) {
                 Cliente c = new Cliente();
                 c.setId(rs.getInt("id"));
@@ -142,13 +132,12 @@ public boolean modificar(Cliente cliente) {
                 c.setTelefono(rs.getString("telefono"));
                 c.setDireccion(rs.getString("direccion"));
                 c.setEmail(rs.getString("email"));
+                c.setTipo(rs.getString("tipo"));
                 lista.add(c);
             }
-
         } catch (SQLException e) {
             System.err.println("Error al buscar clientes: " + e.getMessage());
         }
-
         return lista;
     }
 }

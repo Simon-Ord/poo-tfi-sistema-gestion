@@ -29,8 +29,8 @@
 
       <VBox fx:id="panelDatosCliente" prefHeight="200.0" prefWidth="100.0">
          <children>
-            <Label disable="true" text="Datos del cliente (Factura)" />
-            <GridPane disable="true" hgap="10.0" vgap="10.0" visible="false">
+            <Label text="Datos del cliente (Factura)" />
+            <GridPane hgap="10.0" vgap="10.0">
               <columnConstraints>
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -46,10 +46,10 @@
               </rowConstraints>
                <children>
                   <Label text="CUIT/DNI" />
-                  <TextField fx:id="txtCuidDni" GridPane.columnIndex="1" />
+                  <TextField fx:id="txtCuitDni" GridPane.columnIndex="1" />
                   <Label text="Nombre/Razon social" GridPane.rowIndex="1" />
                   <TextField fx:id="txtRazonSocial" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                  <Button mnemonicParsing="false" onAction="#handleCargarCliente" text="Cargar Cliente" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+                  <Button fx:id="btnCargarCliente" mnemonicParsing="false" onAction="#handleCargarCliente" text="Cargar Cliente" GridPane.columnIndex="1" GridPane.rowIndex="4" />
                </children>
             </GridPane>
             <Label fx:id="lblEstadoCliente" text="Label" visible="false" />

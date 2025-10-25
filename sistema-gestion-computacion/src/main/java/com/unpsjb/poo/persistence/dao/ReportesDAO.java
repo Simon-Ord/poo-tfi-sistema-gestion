@@ -7,15 +7,19 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * DAO responsable de acceder a la tabla de auditoría.
+ * No tiene lógica de negocio, solo consultas SQL puras.
+ */
 public class ReportesDAO {
 
-    // 🔹 Método para registrar un evento manualmente (por la app)
+    /** Inserta un nuevo evento en la base de datos */
     public void registrarEvento(EventoAuditoria evento) {
         String sql = "INSERT INTO auditoria (usuario, accion, descripcion, entidad_afectada, id_referencia) VALUES (?, ?, ?, ?, ?)";
         try (Connection conn = GestorDeConexion.getInstancia().getConexion();
              PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setString(1, evento.getUsuario());  // nombre completo
+            ps.setString(1, evento.getUsuario());
             ps.setString(2, evento.getAccion());
             ps.setString(3, evento.getDetalles());
             ps.setString(4, evento.getEntidad());
@@ -27,10 +31,9 @@ public class ReportesDAO {
         }
     }
 
-    // 🔹 Método para listar eventos con filtros
+    /** Obtiene eventos filtrados según usuario, entidad o acción */
     public List<EventoAuditoria> obtenerEventos(String usuario, String entidad, String accion) {
         List<EventoAuditoria> lista = new ArrayList<>();
-
         StringBuilder sql = new StringBuilder("SELECT * FROM auditoria WHERE 1=1 ");
 
         if (usuario != null && !usuario.isEmpty()) sql.append("AND usuario ILIKE ? ");
