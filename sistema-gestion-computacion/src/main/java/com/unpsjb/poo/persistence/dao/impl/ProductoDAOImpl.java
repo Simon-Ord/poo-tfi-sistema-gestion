@@ -178,39 +178,6 @@ public boolean delete(int id) {
         }
         return productos;
     }
-    // =====================================================
-    //  Comprueba si un producto esta activo (activo = true)
-    // =====================================================
-public boolean estaActivo(int id) {
-    String sql = "SELECT activo FROM productos WHERE id_producto = ?";
-    try (Connection conexion = GestorDeConexion.getInstancia().getConexion();
-         PreparedStatement pstmt = conexion.prepareStatement(sql)) {
-        pstmt.setInt(1, id);
-        try (ResultSet rs = pstmt.executeQuery()) {
-            if (rs.next()) {
-                return rs.getBoolean("activo");
-            }
-        }
-    } catch (SQLException e) {
-        System.err.println("Error al comprobar si esta activo el producto: " + e.getMessage());
-    }
-    return false;
-}
-    // =====================================
-    //  Reactiva un producto (activo = true)
-    // =====================================
-public boolean reactivar(int id) {
-    String sql = "UPDATE productos SET activo = TRUE WHERE id_producto = ?";
-    try (Connection conexion = GestorDeConexion.getInstancia().getConexion();
-         PreparedStatement pstmt = conexion.prepareStatement(sql)) {
-        pstmt.setInt(1, id);
-        int filas = pstmt.executeUpdate();
-        return filas > 0;
-    } catch (SQLException e) {
-        System.err.println("Error al reactivar el producto: " + e.getMessage());
-        return false;
-    }
-}
     // ========================
     // Método auxiliar de mapeo
     // ========================
@@ -239,7 +206,24 @@ public boolean reactivar(int id) {
         return p;
     }
     public Optional<Producto> findByCodigo(String codigo) {
-        // TODO Auto-generated method stub
+        String sql = """
+            SELECT p.*, c.id_categoria as categoria_id, c.nombre_categoria as categoria_nombre 
+            FROM productos p 
+            LEFT JOIN categorias c ON p.categoria_id = c.id_categoria 
+            WHERE p.codigo_producto = ?
+            """;
+        try (Connection conexion = GestorDeConexion.getInstancia().getConexion();
+             PreparedStatement pstmt = conexion.prepareStatement(sql)) {
+            pstmt.setString(1, codigo);
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    Producto producto = mapResultSet(rs);
+                    return Optional.of(producto);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al buscar el producto por código: " + e.getMessage());
+        }
         return Optional.empty();
     }
 

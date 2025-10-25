@@ -1,13 +1,11 @@
 package com.unpsjb.poo.controller;
 
-import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Collectors;
 
 import com.unpsjb.poo.model.productos.Producto;
 import com.unpsjb.poo.util.AuditoriaUtil;
-import com.unpsjb.poo.util.CopiarProductoUtil;
 import com.unpsjb.poo.util.Sesion;
 
 import javafx.collections.FXCollections;
@@ -19,11 +17,9 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 
-/**
- * Controlador para la vista de productos.
- * IMPORTANTE: Este controlador NO conoce el DAO directamente.
- * Toda la comunicación con la persistencia se hace a través del modelo (Producto).
- */
+
+// Controlador para la vista de productos.
+
 public class ProductosVistaControlador extends BaseControlador {
 
     @FXML private TableView<Producto> tablaProductos;
@@ -47,7 +43,7 @@ public class ProductosVistaControlador extends BaseControlador {
         colNombre.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getNombreProducto()));
         colDescripcion.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getDescripcionProducto()));
         colCategoria.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(
-                c.getValue().getCategoria() != null ? c.getValue().getCategoria().getNombre() : "Sin Categoría"));
+        c.getValue().getCategoria() != null ? c.getValue().getCategoria().getNombre() : "Sin Categoría"));
         colPrecio.setCellValueFactory(c -> new javafx.beans.property.SimpleObjectProperty<>(c.getValue().getPrecioProducto()));
         colCantidad.setCellValueFactory(c -> new javafx.beans.property.SimpleObjectProperty<>(c.getValue().getStockProducto()));
 
@@ -108,66 +104,44 @@ public class ProductosVistaControlador extends BaseControlador {
             mostrarAlerta("Debe seleccionar un producto para modificarlo.");
             return;
         }
-        // Guardamos una copia del producto original para comparar cambios después
-        Producto productoOriginal = CopiarProductoUtil.copiarProducto(productoSeleccionado);
-
+        
         // Abrir ventana y configurar el controlador
         VentanaVistaControlador.ResultadoVentana resultado = 
             crearFormulario("/view/productoForm.fxml", "Modificar Producto");
         
         if (resultado != null) {
             ProductoFormularioVistaControlador controlador = 
-                resultado.getControlador(ProductoFormularioVistaControlador.class);
+                (ProductoFormularioVistaControlador) resultado.getControlador(); 
             if (controlador != null) {
                 controlador.setProductoAEditar(productoSeleccionado);
+                controlador.setControladorPadre(this); // ← ¡Pasar referencia de este controlador!
             }
-        }
-
-        cargarProductos();
-
-        // Auditoría: registrar cambios si hay un usuario en sesión
-        if (Sesion.getUsuarioActual() != null) {
-            AuditoriaUtil.registrarCambioProducto(productoOriginal, productoSeleccionado);
         }
     }
 
     /** Cambiar estado activo/inactivo */
     @FXML
     private void cambiarEstadoProducto() {
-        // 1. Lógica de UI: obtener selección y validar
         Producto seleccionado = tablaProductos.getSelectionModel().getSelectedItem();
         if (seleccionado == null) {
             mostrarAlerta("Seleccione un producto para cambiar su estado.");
             return;
         }
-        
-        // Guardar el estado anterior para auditoría
+        // Guardar el estado anterior para auditoría y mensaje
         boolean estadoAnterior = seleccionado.isActivo();
-        // 2. Lógica de UI: mostrar confirmación al usuario
-        String nuevoEstado = seleccionado.isActivo() ? "inactivo" : "activo";
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-        confirm.setTitle("Confirmar cambio de estado");
-        confirm.setHeaderText(null);
-        confirm.setContentText("¿Desea cambiar el estado del producto a " + nuevoEstado + "?");
-
-        if (confirm.showAndWait().get().getButtonData().isDefaultButton()) {
-            // 3. Lógica de NEGOCIO: delegar al modelo
-            seleccionado.cambiarEstado();  // ← Ahora la lógica está en el modelo
-            
-            // 4. Persistencia: delegar al modelo
-            boolean ok = seleccionado.actualizar();  // ← El modelo maneja su propia persistencia
-            
-            // 5. Lógica de UI: mostrar resultado
-            if (ok) {
-                if (Sesion.getUsuarioActual() != null) {
-                    AuditoriaUtil.registrarCambioEstadoProducto(seleccionado, !estadoAnterior);
-                }
-
-                mostrarAlerta("El producto cambió al estado: " + (!estadoAnterior ? "Activo" : "Inactivo"));
-                cargarProductos();
-            } else {
-                mostrarAlerta("Error al cambiar el estado del producto.");
-            }
+        // Cambiar el estado y persistir
+        seleccionado.cambiarEstado(); 
+        boolean ok = seleccionado.actualizar();
+        if (ok) {
+            // Registrar auditoría si hay usuario en sesión
+            if (Sesion.getUsuarioActual() != null) {
+                AuditoriaUtil.registrarCambioEstadoProducto(seleccionado, !estadoAnterior);
+            }            
+            String estadoActual = seleccionado.isActivo() ? "Activo" : "Inactivo";
+            mostrarAlerta("El producto cambió al estado: " + estadoActual);
+            cargarProductos();
+        } else {
+            mostrarAlerta("Error al cambiar el estado del producto.");
         }
     }
 
@@ -175,7 +149,6 @@ public class ProductosVistaControlador extends BaseControlador {
     @FXML
     private void mostrarProductosInactivos() {
         if (chBoxInactivos.isSelected()) {
-            // Obtener todos los productos a través del modelo
             List<Producto> productosInactivos = Producto.obtenerTodosCompleto();
             tablaProductos.setItems(FXCollections.observableArrayList(productosInactivos));
         } else {
