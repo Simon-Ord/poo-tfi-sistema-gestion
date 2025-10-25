@@ -42,8 +42,6 @@ public class FacturaVistaControlador implements Initializable {
     @FXML private Label lblTotalParcial; 
     
     // 3. INYECCIÓN DE ELEMENTOS DEL PASO 2 (FacturaDatosVenta.fxml)
-   // @FXML private CheckBox cbFacturaA; // Antes estaba mal nombrado como cbFactura
-    //@FXML private CheckBox cbFacturaB; // Antes estaba mal nombrado como cbTicket
     @FXML private ComboBox <String> cbTipoFactura;
     @FXML private VBox panelDatosCliente; 
     @FXML private TextField txtCuitDni;
@@ -59,11 +57,15 @@ public class FacturaVistaControlador implements Initializable {
     @FXML private Label lblMontoSinIVAResumen;
     @FXML private Label lblIVAResumen;
     @FXML private Label lblTotalFinal;
-    @FXML private Label lblComision; // Para mostrar la comisión del pago
+    @FXML private Label lblComisionPago; // Para mostrar la comisión del pago
     @FXML private ScrollPane scrollPaneItems; // El contenedor para la lista de productos
     @FXML private ComboBox<EstrategiaPago> cbMetodoPago; // El ComboBox usará objetos EstrategiaPago
+    @FXML private VBox vboxItemsLista;
 
     private EstrategiaPago estrategiaPagoSeleccionada; // Campo auxiliar para guardar la estrategia
+    private boolean vistaConfirmacionPagoInicializada = false;
+    
+    
     
     // 5. MODELO DE DATOS Y ESTADO
     private Venta miVenta;
@@ -304,39 +306,74 @@ public void handleCargarCliente() {
  * Aquí se llena el ComboBox y se muestran los datos de resumen.
  */
 private void inicializarVistaConfirmacionPago() {
-    // 1. Cargar las Estrategias de Pago en el ComboBox
-    List<EstrategiaPago> estrategias = new ArrayList<>();
-    estrategias.add(new PagoEfectivo());
-    estrategias.add(new PagoTarjeta()); 
+    // 1. Chequeo CRÍTICO: Si el ComboBox es null, asumimos que toda la vista falló la inyección.
+    if (cbMetodoPago == null) {
+        System.err.println("Error: El ComboBox/Vista 3 no está inyectado. Revise el FXML.");
+        return; 
+    }
     
-    cbMetodoPago.setItems(FXCollections.observableArrayList(estrategias));
-
-    // 2. Mostrar resumen (IVA, Cliente, Totales)
-    mostrarResumenVenta();
-
-    // 3. Seleccionar la primera opción por defecto
+    if (!vistaConfirmacionPagoInicializada) {
+        // ... (Tu código de inicialización normal: llenar Combobox, etc.) ...
+        
+        vistaConfirmacionPagoInicializada = true;
+    }
+    
+    // 2. ACTUALIZACIÓN DE LABELS: Proteger la llamada a mostrarResumenVenta
+    if (lblTotalFinal == null || lblComisionPago == null) {
+        // Si fallan los labels, forzamos el fin para evitar el NullPointerException en handleMetodoPagoSelected()
+        System.err.println("Error: Faltan inyecciones críticas de Label en Vista 3.");
+        return; 
+    }
+    
+    // Si no es nulo, ejecutamos la lógica que actualiza los labels
+    mostrarResumenVenta(); 
     cbMetodoPago.getSelectionModel().selectFirst();
-    handleMetodoPagoSelected(); // Llamar a la lógica de pago para calcular el total inicial
+    handleMetodoPagoSelected(); 
 }
-
 /**
  * Muestra los detalles finales (IVA y cliente) en la vista de resumen.
  */
 private void mostrarResumenVenta() {
-    double subtotal = miVenta.getCarrito().getTotal().doubleValue();
-    double iva = subtotal * 0.21; // 21% de IVA asumido
-    double baseImponible = subtotal - iva; // Cálculo simple
+    // 1. OBTENER DATOS CALCULADOS DEL MODELO
+    double subtotalConIVA = miVenta.getCarrito().getTotal().doubleValue();
     
-    // Actualizar Labels de Resumen
-    lblTipoFacturaResumen.setText(miVenta.getTipoFactura());
-    lblMontoSinIVAResumen.setText("$ " + String.format("%.2f", baseImponible));
-    lblIVAResumen.setText("$ " + String.format("%.2f", iva));
-    //lblClienteResumen.setText(miVenta.getClienteFactura() != null ? miVenta.getClienteFactura().getRazonSocial() : "Consumidor Final");
+    // Asumo que el 21% de IVA ya está incluido en el totalConIVA
+    double iva = subtotalConIVA * 0.21; 
+    double baseImponible = subtotalConIVA - iva; 
     
-    // (Opcional) Llenar el ScrollPane con Labels para cada ItemCarrito
-    // ...
-}
+    // 2. OBTENER DATOS DE CLIENTE Y TIPO DE FACTURA
+    Cliente cliente = miVenta.getClienteFactura();
+    String nombreCliente = (cliente != null && cliente.getNombre() != null) 
+                            ? cliente.getNombre() 
+                            : "[Consumidor final o Razón social]";
+    
+    String tipoFactura = miVenta.getTipoFactura() != null 
+                         ? miVenta.getTipoFactura() 
+                         : "[Tipo no Seleccionado]";
 
+    // 3. ACTUALIZAR LABELS DE RESUMEN (Vista 3)
+    
+    // A. Tipo de Factura y Cliente
+    if (lblTipoFacturaResumen != null) {
+        lblTipoFacturaResumen.setText(tipoFactura);
+    }
+    if (lblClienteResumen != null) {
+        lblClienteResumen.setText(nombreCliente);
+    }
+    
+    // B. Montos (Formateando a 2 decimales)
+    if (lblMontoSinIVAResumen != null) {
+        lblMontoSinIVAResumen.setText("Subtotal sin IVA: $ " + String.format("%.2f", baseImponible));
+    }
+    if (lblIVAResumen != null) {
+        lblIVAResumen.setText("Monto IVA (21%): $ " + String.format("%.2f", iva));
+    }
+    
+    // C. El Total Final se inicializa con el subtotal (handleMetodoPagoSelected lo ajustará)
+    if (lblTotalFinal != null) {
+        lblTotalFinal.setText("$ " + String.format("%.2f", subtotalConIVA));
+    }
+}
 /**
  * Llamado por el ComboBox. Aplica la Estrategia de Pago seleccionada.
  */
@@ -345,6 +382,11 @@ public void handleMetodoPagoSelected() {
     EstrategiaPago estrategia = cbMetodoPago.getSelectionModel().getSelectedItem();
     if (estrategia != null) {
         this.estrategiaPagoSeleccionada = estrategia;
+
+        if (lblComisionPago == null || lblTotalFinal == null) {
+            System.err.println("Error: Faltan inyecciones críticas de Label en Vista 3.");
+            return; 
+        }
         
         double totalBase = miVenta.getCarrito().getTotal().doubleValue();
         
@@ -353,7 +395,7 @@ public void handleMetodoPagoSelected() {
         double totalFinal = totalBase * (1 + comision);
 
         // Actualizar UI
-        lblComision.setText("Comision/Descuento: " + String.format("%.2f", comision * 100) + "%");
+        lblComisionPago.setText("Comision/Descuento: " + String.format("%.2f", comision * 100) + "%");
         lblTotalFinal.setText("$ " + String.format("%.2f", totalFinal));
     }
 }
@@ -523,5 +565,8 @@ private void inicializarVistaDatosFactura() {
     }
 
 }
+
+
+
 
 }
