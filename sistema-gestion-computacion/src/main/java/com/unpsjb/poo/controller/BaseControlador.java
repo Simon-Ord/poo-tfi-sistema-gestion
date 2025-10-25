@@ -6,16 +6,11 @@ import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
 import javafx.stage.Window;
 
-/**
- * Controlador base para crear ventanas internas
- * Todos los controladores que necesiten abrir ventanas internas deben extender esta clase
- */
-public abstract class BaseControlador {
+
+// Controlador base para crear ventanas internas
+public class BaseControlador {
     
-    /**
-     * Obtiene el desktop principal de la aplicación.
-     * Busca en todas las ventanas abiertas el Pane con id="desktop"
-     */
+    // Metodo para obtener el desktop principal, buscando en todas las ventanas abiertas 
     protected static Pane obtenerDesktopPrincipal() {
         try {
             // Buscar en todas las ventanas abiertas
@@ -34,10 +29,8 @@ public abstract class BaseControlador {
         }
         return null;
     }
-    
-    /**
-     * Busca recursivamente el Pane desktop en la jerarquía de nodos
-     */
+
+    // Metodo para buscar el Pane desktop 
     private static Pane buscarDesktop(Parent parent) {
         for (Node child : parent.getChildrenUnmodifiable()) {
             if (child.getClass().equals(Pane.class) && "desktop".equals(child.getId())) {
@@ -53,24 +46,13 @@ public abstract class BaseControlador {
         return null;
     }
     
-    /**
-     * Crea una ventana interna principal (con maximizar y minimizar)
-     * @param fxmlPath Ruta del archivo FXML
-     * @param titulo Título de la ventana
-     * @return El resultado de la ventana creada (ventana + controlador)
-     */
+    // ESTE CAPAZ LO PUEDO SACAR =========================================
+    // Metodo para crear ventana interna principal con tamaño determinado (con maximizar y minimizar)
     protected VentanaVistaControlador.ResultadoVentana crearVentana(String fxmlPath, String titulo) {
         return crearVentana(fxmlPath, titulo, 640, 420);
     }
     
-    /**
-     * Crea una ventana interna principal con tamaño personalizado
-     * @param fxmlPath Ruta del archivo FXML
-     * @param titulo Título de la ventana
-     * @param ancho Ancho de la ventana
-     * @param alto Alto de la ventana
-     * @return El resultado de la ventana creada (ventana + controlador)
-     */
+    // Metodo para crear ventana interna principal devolviendo la ventana + el controlador (con maximizar y minimizar)
     protected VentanaVistaControlador.ResultadoVentana crearVentana(String fxmlPath, String titulo, double ancho, double alto) {
         Pane desktop = obtenerDesktopPrincipal();
         if (desktop != null) {
@@ -91,14 +73,7 @@ public abstract class BaseControlador {
         return crearFormulario(fxmlPath, titulo, 400, 350);
     }
     
-    /**
-     * Crea un formulario interno con tamaño personalizado
-     * @param fxmlPath Ruta del archivo FXML
-     * @param titulo Título del formulario
-     * @param ancho Ancho del formulario
-     * @param alto Alto del formulario
-     * @return El resultado de la ventana creada (ventana + controlador)
-     */
+    // Metodo para crear ventana interna NO principal devolviendo la ventana + el controlador 
     protected VentanaVistaControlador.ResultadoVentana crearFormulario(String fxmlPath, String titulo, double ancho, double alto) {
         Pane desktop = obtenerDesktopPrincipal();
         if (desktop != null) {
@@ -108,25 +83,15 @@ public abstract class BaseControlador {
             return null;
         }
     }
-    
-    /**
-     * Crea un diálogo interno (solo cerrar, sin minimizar ni maximizar)
-     * @param fxmlPath Ruta del archivo FXML
-     * @param titulo Título del diálogo
-     * @return El resultado de la ventana creada (ventana + controlador)
-     */
+
+    // ESTE CAPAZ LO PUEDO SACAR TAMBIEN =========================================
+    // Metodo para crear ventana interna tipo dialogo devolviendo la ventana + el controlador (tamaño fijo)
     protected VentanaVistaControlador.ResultadoVentana crearDialogo(String fxmlPath, String titulo) {
         return crearDialogo(fxmlPath, titulo, 350, 250);
     }
     
-    /**
-     * Crea un diálogo interno con tamaño personalizado
-     * @param fxmlPath Ruta del archivo FXML
-     * @param titulo Título del diálogo
-     * @param ancho Ancho del diálogo
-     * @param alto Alto del diálogo
-     * @return El resultado de la ventana creada (ventana + controlador)
-     */
+    // ESTE CAPAZ LO PUEDO SACAR TAMBIEN =========================================
+    // Metodo para crear ventana interna tipo dialogo devolviendo la ventana + el controlador
     protected VentanaVistaControlador.ResultadoVentana crearDialogo(String fxmlPath, String titulo, double ancho, double alto) {
         Pane desktop = obtenerDesktopPrincipal();
         if (desktop != null) {
@@ -137,12 +102,7 @@ public abstract class BaseControlador {
         }
     }
     
-    /**
-     * Cierra una ventana interna buscando el VentanaVistaControlador que contiene el nodo dado.
-     * Si no se encuentra, intenta cerrar como Stage (para compatibilidad hacia atrás).
-     * 
-     * @param nodo Cualquier nodo dentro de la ventana a cerrar
-     */
+    // Metodo para cerrar ventana interna buscando el VentanaVistaControlador que tiene su nodo
     protected static void cerrarVentanaInterna(Node nodo) {
         try {
             // Buscar el VentanaVistaControlador en la jerarquía de padres
@@ -157,13 +117,7 @@ public abstract class BaseControlador {
                 if (ventanaInterna.getParent() != null) {
                     ((Pane) ventanaInterna.getParent()).getChildren().remove(ventanaInterna);
                 }
-            } else {
-                // Fallback: si no se encuentra la ventana interna, intentar cerrar como Stage
-                Stage stage = (Stage) nodo.getScene().getWindow();
-                if (stage != null) {
-                    stage.close();
-                }
-            }
+            } 
         } catch (Exception e) {
             System.err.println("Error al cerrar ventana: " + e.getMessage());
         }

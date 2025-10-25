@@ -223,7 +223,7 @@ public void handleAnadirItem() {
             VentanaVistaControlador.ResultadoVentana resultado = crearFormulario(
                 "/view/CodigosListaVista.fxml", 
                 "Lista de Códigos de Productos", 
-                600, 
+                500, 
                 450
             );
 
