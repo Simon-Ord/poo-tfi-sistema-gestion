@@ -78,11 +78,6 @@ public class PDFTicket extends PDFExporter {
             infoVenta.add(new Phrase("Nº de Venta: " + venta.getIdVenta() + "\n", FONT_NORMAL));
         }
 
-        // 🆕 Mostrar código único de venta
-        if (venta.getCodigoVenta() != null && !venta.getCodigoVenta().isEmpty()) {
-            infoVenta.add(new Phrase("Código de Venta: " + venta.getCodigoVenta() + "\n", FONT_NORMAL));
-        }
-
         infoVenta.add(new Phrase("Método de Pago: " + venta.getEstrategiaPago().getNombreMetodoPago() + "\n\n", FONT_NORMAL));
         document.add(infoVenta);
     }

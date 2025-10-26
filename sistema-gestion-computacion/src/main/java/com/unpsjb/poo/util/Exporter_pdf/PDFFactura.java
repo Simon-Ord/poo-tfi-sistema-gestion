@@ -81,11 +81,6 @@ public class PDFFactura extends PDFExporter {
             infoVenta.add(new Phrase("Código de Venta: " + venta.getCodigoVenta() + "\n", FONT_NORMAL));
         }
 
-        // ID interno (solo si está guardada en BD)
-        if (venta.getIdVenta() > 0) {
-            infoVenta.add(new Phrase("ID Interno (BD): " + venta.getIdVenta() + "\n", FONT_NORMAL));
-        }
-
         infoVenta.add(new Phrase("Método de Pago: " + venta.getEstrategiaPago().getNombreMetodoPago() + "\n\n", FONT_NORMAL));
         document.add(infoVenta);
     }
