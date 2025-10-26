@@ -18,5 +18,11 @@ public class PagoEfectivo implements EstrategiaPago {
     public double getComision() {
         return 0.0; // No hay comisión para pagos en efectivo
     }
+
+    @Override
+    public String getDescripcion() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getDescripcion'");
+    }
     
 }

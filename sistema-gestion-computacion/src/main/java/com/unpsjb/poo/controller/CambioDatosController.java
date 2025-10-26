@@ -2,8 +2,8 @@ package com.unpsjb.poo.controller;
 
 import com.unpsjb.poo.model.Usuario;
 import com.unpsjb.poo.persistence.dao.impl.UsuarioDAOImpl;
-import com.unpsjb.poo.util.AuditoriaUtil;
 import com.unpsjb.poo.util.Sesion;
+import com.unpsjb.poo.util.cap_auditoria.AuditoriaUtil;
 
 import javafx.fxml.FXML;
 import javafx.scene.Node;

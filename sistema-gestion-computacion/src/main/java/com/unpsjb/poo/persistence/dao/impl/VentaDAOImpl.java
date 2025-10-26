@@ -1,145 +1,130 @@
 package com.unpsjb.poo.persistence.dao.impl;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+import com.unpsjb.poo.model.CarritoDeCompra;
 import com.unpsjb.poo.model.ItemCarrito;
 import com.unpsjb.poo.model.Venta;
 import com.unpsjb.poo.persistence.GestorDeConexion;
 import com.unpsjb.poo.persistence.dao.DAO;
 
-
 /**
- * Implementación del DAO para gestionar la persistencia de Ventas.
- * Sigue el patrón DAO y respeta los principios de POO.
+ * ✅ Implementación del DAO para gestionar la persistencia de Ventas.
  */
 public class VentaDAOImpl implements DAO<Venta> {
 
-    // Constantes
-    private static final double IVA_RATE = 0.21; // 21% de IVA
-    
-    // ===============
-    //  Crear venta
-    // ===============
+    private static final double IVA_RATE = 0.21;
+
     @Override
     public boolean create(Venta venta) {
         String sqlVenta = """
             INSERT INTO ventas 
-            (cliente_id, tipo_factura, metodo_pago, subtotal, iva, total)
-            VALUES (?, ?, ?, ?, ?, ?)
+            (codigo_venta, cliente_id, tipo_factura, metodo_pago, subtotal, iva, total)
+            VALUES (?, ?, ?, ?, ?, ?, ?)
             """;
-        
+
         String sqlDetalle = """
             INSERT INTO detalle_venta 
             (venta_id, producto_id, cantidad, precio_unitario, subtotal)
             VALUES (?, ?, ?, ?, ?)
             """;
-        
+
         Connection conexion = null;
         PreparedStatement pstmtVenta = null;
         PreparedStatement pstmtDetalle = null;
         ResultSet generatedKeys = null;
-        
+
         try {
             conexion = GestorDeConexion.getInstancia().getConexion();
-            conexion.setAutoCommit(false); // Iniciar transacción
-            
-            // 1. Insertar la venta
+            conexion.setAutoCommit(false);
+
+            // Generar código único (ejemplo: FACT-20251026-001)
+            String codigoUnico = generarCodigoVenta(venta.getTipoFactura(), conexion);
+            venta.setCodigoVenta(codigoUnico);
+
             pstmtVenta = conexion.prepareStatement(sqlVenta, Statement.RETURN_GENERATED_KEYS);
-            
-            // Cliente puede ser null para TICKET
+
+            pstmtVenta.setString(1, codigoUnico);
+
             if (venta.getClienteFactura() != null && venta.getClienteFactura().getId() != 0) {
-                pstmtVenta.setInt(1, venta.getClienteFactura().getId());
+                pstmtVenta.setInt(2, venta.getClienteFactura().getId());
             } else {
-                pstmtVenta.setNull(1, java.sql.Types.INTEGER);
+                pstmtVenta.setNull(2, Types.INTEGER);
             }
-            
-            pstmtVenta.setString(2, venta.getTipoFactura());
-            pstmtVenta.setString(3, venta.getEstrategiaPago().getNombreMetodoPago());
-            
-            // Calcular montos
-            double totalCarrito = venta.getCarrito().getTotal().doubleValue();
-            
-            // Aplicar comisión si existe (antes de calcular IVA)
-            double comision = venta.getEstrategiaPago().getComision();
+
+            pstmtVenta.setString(3, venta.getTipoFactura());
+            pstmtVenta.setString(4,
+                    venta.getEstrategiaPago() != null ? venta.getEstrategiaPago().getNombreMetodoPago() : "SIN MÉTODO");
+
+            CarritoDeCompra carrito = venta.getCarrito();
+            double totalCarrito = carrito != null ? carrito.getTotal().doubleValue() : 0;
+            double comision = venta.getEstrategiaPago() != null ? venta.getEstrategiaPago().getComision() : 0;
             double totalConComision = totalCarrito * (1 + comision);
-            
-            // Calcular IVA sobre el total con comisión
+
             double subtotalSinIva = totalConComision / (1 + IVA_RATE);
             double iva = totalConComision - subtotalSinIva;
-            
-            pstmtVenta.setBigDecimal(4, java.math.BigDecimal.valueOf(subtotalSinIva));
-            pstmtVenta.setBigDecimal(5, java.math.BigDecimal.valueOf(iva));
-            pstmtVenta.setBigDecimal(6, java.math.BigDecimal.valueOf(totalConComision));
-            
+
+            pstmtVenta.setBigDecimal(5, java.math.BigDecimal.valueOf(subtotalSinIva));
+            pstmtVenta.setBigDecimal(6, java.math.BigDecimal.valueOf(iva));
+            pstmtVenta.setBigDecimal(7, java.math.BigDecimal.valueOf(totalConComision));
+
             int filasVenta = pstmtVenta.executeUpdate();
-            
             if (filasVenta == 0) {
                 conexion.rollback();
                 return false;
             }
-            
-            // Obtener el ID generado
+
             generatedKeys = pstmtVenta.getGeneratedKeys();
             int ventaId = 0;
             if (generatedKeys.next()) {
                 ventaId = generatedKeys.getInt(1);
-                venta.setIdVenta(ventaId); // Actualizar el ID en el objeto Venta
+                venta.setIdVenta(ventaId);
             } else {
                 conexion.rollback();
                 return false;
             }
-            
-            // 2. Insertar los detalles de la venta
-            pstmtDetalle = conexion.prepareStatement(sqlDetalle);
-            
-            for (ItemCarrito item : venta.getCarrito().getItems()) {
-                pstmtDetalle.setInt(1, ventaId);
-                pstmtDetalle.setInt(2, item.getProducto().getIdProducto());
-                pstmtDetalle.setInt(3, item.getCantidad());
-                pstmtDetalle.setBigDecimal(4, item.getPrecioUnitario());
-                pstmtDetalle.setBigDecimal(5, item.getSubtotal());
-                
-                pstmtDetalle.addBatch();
-            }
-            
-            pstmtDetalle.executeBatch();
-            
-            // 3. Actualizar stock de productos
-            String sqlUpdateStock = "UPDATE productos SET stock_producto = stock_producto - ? WHERE id_producto = ?";
-            try (PreparedStatement pstmtStock = conexion.prepareStatement(sqlUpdateStock)) {
-                for (ItemCarrito item : venta.getCarrito().getItems()) {
-                    pstmtStock.setInt(1, item.getCantidad());
-                    pstmtStock.setInt(2, item.getProducto().getIdProducto());
-                    pstmtStock.addBatch();
+
+            // Insertar detalle
+            if (carrito != null && !carrito.getItems().isEmpty()) {
+                pstmtDetalle = conexion.prepareStatement(sqlDetalle);
+                for (ItemCarrito item : carrito.getItems()) {
+                    pstmtDetalle.setInt(1, ventaId);
+                    pstmtDetalle.setInt(2, item.getProducto().getIdProducto());
+                    pstmtDetalle.setInt(3, item.getCantidad());
+                    pstmtDetalle.setBigDecimal(4, item.getPrecioUnitario());
+                    pstmtDetalle.setBigDecimal(5, item.getSubtotal());
+                    pstmtDetalle.addBatch();
                 }
-                pstmtStock.executeBatch();
+                pstmtDetalle.executeBatch();
+
+                // Actualizar stock
+                String sqlStock = "UPDATE productos SET stock_producto = stock_producto - ? WHERE id_producto = ?";
+                try (PreparedStatement pstmtStock = conexion.prepareStatement(sqlStock)) {
+                    for (ItemCarrito item : carrito.getItems()) {
+                        pstmtStock.setInt(1, item.getCantidad());
+                        pstmtStock.setInt(2, item.getProducto().getIdProducto());
+                        pstmtStock.addBatch();
+                    }
+                    pstmtStock.executeBatch();
+                }
             }
-            
-            // Confirmar transacción
+
             conexion.commit();
-            System.out.println("Venta creada exitosamente con ID: " + ventaId);
+            System.out.println("✅ Venta creada con código: " + codigoUnico);
             return true;
-            
+
         } catch (SQLException e) {
-            System.err.println("Error al insertar la venta: " + e.getMessage());
+            System.err.println("❌ Error al insertar la venta: " + e.getMessage());
             e.printStackTrace();
             if (conexion != null) {
-                try {
-                    conexion.rollback();
-                } catch (SQLException ex) {
-                    System.err.println("Error al hacer rollback: " + ex.getMessage());
-                }
+                try { conexion.rollback(); } catch (SQLException ex) { }
             }
             return false;
+
         } finally {
-            // Cerrar recursos en orden inverso
             try {
                 if (generatedKeys != null) generatedKeys.close();
                 if (pstmtDetalle != null) pstmtDetalle.close();
@@ -149,49 +134,50 @@ public class VentaDAOImpl implements DAO<Venta> {
                     conexion.close();
                 }
             } catch (SQLException e) {
-                System.err.println("Error al cerrar recursos: " + e.getMessage());
+                System.err.println("⚠️ Error al cerrar recursos: " + e.getMessage());
             }
         }
     }
 
-    // =====================
-    //  Leer venta por ID
-    // =====================
+    /**
+     * Genera un código único basado en el tipo y la fecha.
+     * Ejemplo: FACT-20251026-004 o TICK-20251026-012
+     */
+    private String generarCodigoVenta(String tipo, Connection conn) throws SQLException {
+        String prefijo = tipo.equalsIgnoreCase("FACTURA") ? "FACT" : "TICK";
+        String fecha = new java.text.SimpleDateFormat("yyyyMMdd").format(new java.util.Date());
+        String sql = "SELECT COUNT(*) AS total FROM ventas WHERE tipo_factura = ?";
+        int numero = 1;
+
+        try (PreparedStatement ps = conn.prepareStatement(sql)) {
+            ps.setString(1, tipo);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                numero = rs.getInt("total") + 1;
+            }
+        }
+        return String.format("%s-%s-%03d", prefijo, fecha, numero);
+    }
+
     @Override
     public Optional<Venta> read(int id) {
-        // Por ahora no es necesario implementar la lectura completa
-        // Ya que el sistema solo necesita crear ventas
-        // Se puede implementar en el futuro si se necesita
         return Optional.empty();
     }
 
-    // =====================
-    //  Actualizar venta
-    // =====================
     @Override
     public boolean update(Venta venta) {
-        // No se necesita actualizar ventas en este sistema
-        // Las ventas son registros inmutables una vez creadas
         return false;
     }
 
-    // ===================================
-    //  Eliminar venta (no permitido)
-    // ===================================
     @Override
     public boolean delete(int id) {
-        // No se permite eliminar ventas
-        // Solo se pueden consultar o anular mediante un campo de estado
         return false;
     }
 
-    // ===================================
-    //  Listar todas las ventas
-    // ===================================
     @Override
     public List<Venta> findAll() {
-        // Por ahora retornamos lista vacía
-        // Se puede implementar en el futuro si se necesita listar ventas
         return new ArrayList<>();
     }
 }
+
+

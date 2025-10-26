@@ -1,4 +1,4 @@
-package com.unpsjb.poo.util;
+package com.unpsjb.poo.util.Exporter_pdf;
 
 /**
  * Clase base abstracta para exportar información a PDF.

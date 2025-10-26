@@ -4,8 +4,9 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import com.unpsjb.poo.model.productos.Producto;
-import com.unpsjb.poo.util.AuditoriaUtil;
 import com.unpsjb.poo.util.Sesion;
+import com.unpsjb.poo.util.cap_auditoria.AuditoriaProductoUtil;
+import com.unpsjb.poo.util.cap_auditoria.AuditoriaUtil;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -172,7 +173,8 @@ public class ProductosVistaControlador extends BaseControlador {
         if (ok) {
             // Registrar auditoría si hay usuario en sesión
             if (Sesion.getUsuarioActual() != null) {
-                AuditoriaUtil.registrarCambioEstadoProducto(seleccionado, !estadoAnterior);
+                    AuditoriaProductoUtil auditor = new AuditoriaProductoUtil();
+           auditor.registrarAccionEspecifica(seleccionado, auditor);
             }            
             String estadoActual = seleccionado.isActivo() ? "Activo" : "Inactivo";
             mostrarAlerta("El producto cambió al estado: " + estadoActual);

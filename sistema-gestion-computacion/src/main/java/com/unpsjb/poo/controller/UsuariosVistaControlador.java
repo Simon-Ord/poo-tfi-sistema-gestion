@@ -3,12 +3,14 @@ package com.unpsjb.poo.controller;
 import java.util.List;
 
 import com.unpsjb.poo.model.Usuario;
-import com.unpsjb.poo.util.AuditoriaUtil;
+import com.unpsjb.poo.util.cap_auditoria.AuditoriaUtil;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 
 public class UsuariosVistaControlador extends BaseControlador {
 
@@ -26,23 +28,32 @@ public class UsuariosVistaControlador extends BaseControlador {
         colActivo.setCellValueFactory(c -> new javafx.beans.property.SimpleObjectProperty<>(c.getValue().isEstado()));
         cargarUsuarios();
     }
-
+    @FXML
     private void cargarUsuarios() {
         List<Usuario> lista = Usuario.obtenerTodos();
         ObservableList<Usuario> obsList = FXCollections.observableArrayList(lista);
         tablaUsuarios.setItems(obsList);
     }
-
+    
     @FXML
     private void agregarUsuario() {
         try {
-            crearFormulario("/view/UsuarioForm.fxml", "Agregar Nuevo Usuario");
-            cargarUsuarios();
-        } catch (Exception e) {
-            e.printStackTrace();
-            mostrarAlerta("Error al abrir el formulario: " + e.getMessage());
+            var resultado = crearFormulario("/view/UsuarioForm.fxml", "Agregar Nuevo Usuario");
+
+            if (resultado != null && resultado.getVentana() != null) {
+                resultado.getVentana().parentProperty().addListener((obs, oldVal, newVal) -> {
+                    if (newVal == null) {
+                        cargarUsuarios();
+                    }
+                });
         }
+
+    } catch (Exception e) {
+        e.printStackTrace();
+        mostrarAlerta("Error al abrir el formulario: " + e.getMessage());
     }
+}
+
 
     @FXML
     private void cambiarEstadoUsuario() {

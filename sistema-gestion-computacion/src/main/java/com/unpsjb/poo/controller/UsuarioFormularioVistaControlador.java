@@ -6,7 +6,7 @@ import javafx.scene.control.*;
 
 import com.unpsjb.poo.model.Usuario;
 import com.unpsjb.poo.persistence.dao.impl.UsuarioDAOImpl;
-import com.unpsjb.poo.util.AuditoriaUtil;
+import com.unpsjb.poo.util.cap_auditoria.AuditoriaUtil;
 
 public class UsuarioFormularioVistaControlador {
 

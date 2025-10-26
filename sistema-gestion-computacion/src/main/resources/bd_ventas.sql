@@ -5,6 +5,7 @@
 -- Crear la tabla de ventas mejorada
 CREATE TABLE ventas (
     id SERIAL PRIMARY KEY,
+    codigo_venta VARCHAR(50) UNIQUE NOT NULL,
     fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     cliente_id INT,
     tipo_factura VARCHAR(20) NOT NULL CHECK (tipo_factura IN ('FACTURA', 'TICKET')),
@@ -20,6 +21,7 @@ CREATE TABLE ventas (
 -- ==============================
 CREATE TABLE detalle_venta (
     id SERIAL PRIMARY KEY,
+
     venta_id INT NOT NULL,
     producto_id INT NOT NULL,
     cantidad INT NOT NULL CHECK (cantidad > 0),

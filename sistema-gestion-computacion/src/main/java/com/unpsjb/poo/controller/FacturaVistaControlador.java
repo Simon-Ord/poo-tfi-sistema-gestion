@@ -14,6 +14,8 @@ import com.unpsjb.poo.model.PagoEfectivo;
 import com.unpsjb.poo.model.PagoTarjeta;
 import com.unpsjb.poo.model.Venta; // Importar FXMLLoader
 import com.unpsjb.poo.model.productos.Producto;
+import com.unpsjb.poo.util.cap_auditoria.AuditoriaUtil;
+import com.unpsjb.poo.util.cap_auditoria.AuditoriaVentaUtil;
 
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML; // Necesario para la ventana emergente
@@ -68,6 +70,7 @@ public class FacturaVistaControlador extends BaseControlador implements Initiali
 
     private EstrategiaPago estrategiaPagoSeleccionada; // Campo auxiliar para guardar la estrategia
     private boolean vistaConfirmacionPagoInicializada = false;
+    private final AuditoriaVentaUtil auditoriaVentaUtil = new AuditoriaVentaUtil();
     
     
     
@@ -431,26 +434,38 @@ public void handleRegistrarVenta() {
         mostrarAlerta("Error", "Debe seleccionar un método de pago.", Alert.AlertType.WARNING);
         return;
     }
-    
-    try {
-        // 1. El controlador invoca la lógica de PAGO y PERSISTENCIA en el Modelo (EstadoConfirmacionPago)
-        miVenta.siguientePaso(); 
 
-        // 2. El Patrón State mueve la Venta al estado inicial (Agregar Productos)
-        // El Controlador actualiza la UI para volver al inicio
+    try {
+        // ======================================
+        // 1️⃣ Se ejecuta el guardado de la venta
+        // ======================================
+        miVenta.siguientePaso(); // <-- 🔹 DESPUÉS DE ESTA LÍNEA
+        
+
+        // ======================================
+        // 2️⃣ 🔹 REGISTRAR AUDITORÍA DE LA VENTA
+        // ======================================
+
+        // Ahora que miVenta tiene el ID y el Código de Venta generados por el DAO,
+        // podemos auditar la transacción completa.
+        auditoriaVentaUtil.registrarVenta(miVenta); // ⬅️ LA CONEXIÓN ES AQUÍ
+
+
+        // ======================================
+        // 3️⃣ Actualizar vistas y resetear estado
+        // ======================================
         actualizarVisibilidadVistas(miVenta.getEstadoActual().getVistaID());
-        
-        // 3. Limpiar completamente la UI del paso 1
         inicializarVistaAgregarProductos();
-        
-        // 4. Resetear flags de inicialización para permitir nueva venta
         vistaDatosFacturaInicializada = false;
         vistaConfirmacionPagoInicializada = false;
-        
-        mostrarAlerta("Éxito", "Venta registrada exitosamente en la base de datos.", Alert.AlertType.INFORMATION);
+
+        // ======================================
+        // 4️⃣ Confirmación al usuario
+        // ======================================
+        mostrarAlerta("Éxito", "Venta registrada y auditada correctamente.", Alert.AlertType.INFORMATION);
+
     } catch (Exception e) {
-        // Manejar cualquier error durante el proceso de venta
-        System.err.println("Error al registrar venta: " + e.getMessage());
+        System.err.println("❌ Error al registrar venta: " + e.getMessage());
         e.printStackTrace();
         mostrarAlerta("Error", "No se pudo completar la venta: " + e.getMessage(), Alert.AlertType.ERROR);
     }
@@ -480,7 +495,7 @@ public void handleExportarPDF() {
     try {
 
         // Crear el generador de PDF
-        com.unpsjb.poo.util.PDFFactura pdfGenerator = new com.unpsjb.poo.util.PDFFactura(miVenta);
+        com.unpsjb.poo.util.Exporter_pdf.PDFFactura pdfGenerator = new com.unpsjb.poo.util.Exporter_pdf.PDFFactura(miVenta);
         //com.unpsjb.poo.util.PDFTicket pdfGenerator = new com.unpsjb.poo.util.PDFTicket(miVenta);
 
         // Generar nombre de archivo

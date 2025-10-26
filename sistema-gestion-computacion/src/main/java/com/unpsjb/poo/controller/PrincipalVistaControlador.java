@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
 
-import com.unpsjb.poo.util.AuditoriaUtil;
 import com.unpsjb.poo.util.Sesion;
+import com.unpsjb.poo.util.cap_auditoria.AuditoriaUtil;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -40,11 +40,19 @@ public class PrincipalVistaControlador implements Initializable {
     public void initialize(URL url, ResourceBundle rb) {
         if (Sesion.getUsuarioActual() != null) {
             lblNombreUsuario.setText("Usuario: " + Sesion.getUsuarioActual().getNombre());
+
+            // 🔹 CONTROL DE ACCESO SEGÚN ROL
+            String rol = Sesion.getUsuarioActual().getRol();
+            if (rol != null && rol.equalsIgnoreCase("EMPLEADO")) {
+                // Desactivar botones restringidos para empleados
+                btnUsuarios.setDisable(true);
+                btnReportes.setDisable(true);
+            }
         } else {
             lblNombreUsuario.setText("Usuario: Desconocido");
         }
 
-        // Cargar logo desde resources
+        // 🔹 Cargar logo desde resources
         try {
             Image logo = new Image(getClass().getResource("/images/logoMundoPC.png").toExternalForm());
             logoImage.setImage(logo);
@@ -96,12 +104,15 @@ public class PrincipalVistaControlador implements Initializable {
             new Alert(Alert.AlertType.ERROR, "Error al abrir la gestión de productos: " + e.getMessage()).showAndWait();
         }
     }
+
     @FXML private void agregarProducto() {
         VentanaVistaControlador.crearFormulario(desktop, "/view/productoForm.fxml", "Agregar Producto", 400, 300);
     }
+
     @FXML private void categoriasAction(){
         VentanaVistaControlador.crearVentana(desktop, "/view/categoriasVista.fxml", "Gestión de Categorías", 800, 600);
     }
+
     @FXML private void agregarCategoria() {
         VentanaVistaControlador.crearFormulario(desktop, "/view/formularios/categoriaForm.fxml", "Agregar Categoría", 400, 300);
     }
@@ -129,8 +140,6 @@ public class PrincipalVistaControlador implements Initializable {
             new Alert(Alert.AlertType.ERROR, "Error al abrir la vista de facturación: " + e.getMessage()).showAndWait();
         }
     }
-
-
 
     // =====================
     //  BOTÓN REPORTES
