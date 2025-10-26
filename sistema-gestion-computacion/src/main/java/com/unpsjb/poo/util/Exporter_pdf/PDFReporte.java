@@ -1,4 +1,4 @@
-package com.unpsjb.poo.util;
+package com.unpsjb.poo.util.Exporter_pdf;
 
 import com.unpsjb.poo.model.EventoAuditoria;
 import com.itextpdf.text.Document;

@@ -5,9 +5,10 @@ import java.util.List;
 
 import com.unpsjb.poo.model.productos.Categoria;
 import com.unpsjb.poo.model.productos.Producto;
-import com.unpsjb.poo.util.AuditoriaUtil;
 import com.unpsjb.poo.util.CopiarProductoUtil;
 import com.unpsjb.poo.util.Sesion;
+import com.unpsjb.poo.util.cap_auditoria.AuditoriaProductoUtil;
+import com.unpsjb.poo.util.cap_auditoria.AuditoriaUtil;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -115,7 +116,7 @@ public class ProductoFormularioVistaControlador extends BaseControlador {
                 guardarDatosEnProducto(productoAEditar);
                 ok = productoAEditar.actualizar(); // Usar el método del modelo
                 if (ok) {
-                    AuditoriaUtil.registrarCambioProducto(productoOriginal, productoAEditar);
+                    AuditoriaProductoUtil.registrarCambioProducto(productoOriginal, productoAEditar);
                 }
             }
             if (ok) {

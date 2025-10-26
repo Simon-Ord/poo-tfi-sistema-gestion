@@ -1,8 +1,8 @@
-package com.unpsjb.poo.util;
+package com.unpsjb.poo.util.Exporter_pdf;
 
 /**
  * Clase base abstracta para exportar información a PDF.
- * Las subclases concretas (como PDFFactura o PDFTicket)
+ * Las subclases concretas (como PDFReporte o PDFTicket)
  * definen la estructura específica de su documento.
  */
 public abstract class PDFExporter {

@@ -8,8 +8,8 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 import com.unpsjb.poo.model.EventoAuditoria;
-import com.unpsjb.poo.util.PDFExporter;
-import com.unpsjb.poo.util.PDFReporte;
+import com.unpsjb.poo.util.Exporter_pdf.PDFExporter;
+import com.unpsjb.poo.util.Exporter_pdf.PDFReporte;
 
 import java.io.File;
 import java.sql.Timestamp;

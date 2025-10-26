@@ -1,40 +1,19 @@
-package com.unpsjb.poo.util;
+package com.unpsjb.poo.util.cap_auditoria;
 
 import com.unpsjb.poo.model.EventoAuditoria;
 import com.unpsjb.poo.model.productos.Producto;
 import com.unpsjb.poo.persistence.dao.ReportesDAO;
+import com.unpsjb.poo.util.Sesion;
 
 /**
- * ✅ Clase utilitaria centralizada para registrar eventos de auditoría.
+ * 🧾 Clase específica para registrar auditorías relacionadas con productos.
  * 
- * - Maneja registro genérico (usuarios, clientes, etc.)
- * - Detecta cambios detallados en productos
- * - Evita duplicación de código
+ * Separa la lógica de comparación y registro de cambios de productos
+ * del resto de AuditoriaUtil para mantener el código más limpio.
  */
-public class AuditoriaUtil {
+public class AuditoriaProductoUtil {
 
     private static final ReportesDAO reportesDAO = new ReportesDAO();
-
-    /**
-     * 🔹 Registrar acción genérica de auditoría (para cualquier entidad)
-     */
-    public static void registrarAccion(String accion, String entidad, String detalles) {
-        try {
-            String usuario = (Sesion.getUsuarioActual() != null)
-                    ? Sesion.getUsuarioActual().getNombre()
-                    : "Sistema";
-
-            EventoAuditoria evento = new EventoAuditoria();
-            evento.setUsuario(usuario);
-            evento.setAccion(accion.toUpperCase());
-            evento.setEntidad(entidad.toLowerCase());
-            evento.setDetalles("El usuario " + usuario + " " + detalles);
-
-            reportesDAO.registrarEvento(evento);
-        } catch (Exception e) {
-            System.err.println("Error al registrar auditoría genérica: " + e.getMessage());
-        }
-    }
 
     /**
      * 🔹 Registrar cambios entre un producto original y su versión modificada.
@@ -83,8 +62,14 @@ public class AuditoriaUtil {
 
             // Registrar solo si hubo algo que cambió
             if (cambios.length() > 0) {
-                registrarAccion("MODIFICAR PRODUCTO", "producto",
-                        "modificó el producto '" + original.getNombreProducto() + "'. Cambios: " + cambios);
+                EventoAuditoria evento = new EventoAuditoria();
+                evento.setUsuario(usuario);
+                evento.setAccion("MODIFICAR PRODUCTO");
+                evento.setEntidad("producto");
+                evento.setDetalles("El usuario " + usuario + " modificó el producto '" 
+                        + original.getNombreProducto() + "'. Cambios: " + cambios);
+
+                reportesDAO.registrarEvento(evento);
             }
 
         } catch (Exception e) {
@@ -93,16 +78,22 @@ public class AuditoriaUtil {
     }
 
     /**
-     * 🔹 Registrar cambio de estado (activo/inactivo) del producto
+     * 🔹 Registrar cambio de estado (activo/inactivo) del producto.
      */
     public static void registrarCambioEstadoProducto(Producto producto, boolean nuevoEstado) {
         String usuario = (Sesion.getUsuarioActual() != null)
                 ? Sesion.getUsuarioActual().getNombre()
                 : "Sistema";
 
-        String detalle = "cambió el estado del producto '" + producto.getNombreProducto() + 
-                         "' a " + (nuevoEstado ? "ACTIVO" : "INACTIVO") + ".";
-        registrarAccion("CAMBIO ESTADO PRODUCTO", "producto", detalle);
+        EventoAuditoria evento = new EventoAuditoria();
+        evento.setUsuario(usuario);
+        evento.setAccion("CAMBIO ESTADO PRODUCTO");
+        evento.setEntidad("producto");
+        evento.setDetalles("El usuario " + usuario + " cambió el estado del producto '" 
+                + producto.getNombreProducto() + "' a " 
+                + (nuevoEstado ? "ACTIVO" : "INACTIVO") + ".");
+
+        reportesDAO.registrarEvento(evento);
     }
 
     // Métodos auxiliares

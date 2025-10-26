@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="600.0" style="-fx-background-color: #f4f4f4;" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.unpsjb.poo.controller.CodigosListaControlador">
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="502.0" style="-fx-background-color: #f4f4f4;" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.unpsjb.poo.controller.CodigosListaControlador">
    <children>
       <VBox layoutX="10.0" layoutY="10.0" prefHeight="430.0" prefWidth="580.0" style="-fx-background-color: white; -fx-border-color: #cccccc; -fx-border-width: 1; -fx-border-radius: 5; -fx-background-radius: 5;" AnchorPane.bottomAnchor="10.0" AnchorPane.leftAnchor="10.0" AnchorPane.rightAnchor="10.0" AnchorPane.topAnchor="10.0">
          <children>
@@ -43,8 +43,8 @@
                   <TableView fx:id="productosTable" prefHeight="300.0" style="-fx-border-color: #ddd; -fx-border-radius: 3;">
                     <columns>
                       <TableColumn fx:id="colCodigo" prefWidth="80.0" text="Código" />
-                      <TableColumn fx:id="colNombre" prefWidth="280.0" text="Nombre" />
-                      <TableColumn fx:id="colStock" prefWidth="80.0" text="Stock" />
+                      <TableColumn fx:id="colNombre" prefWidth="334.0" text="Nombre" />
+                      <TableColumn fx:id="colStock" prefWidth="60.0" text="Stock" />
                     </columns>
                      <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

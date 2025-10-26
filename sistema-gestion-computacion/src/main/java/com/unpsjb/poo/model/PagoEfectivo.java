@@ -20,4 +20,3 @@ public class PagoEfectivo implements EstrategiaPago {
     }
     
 }
-
