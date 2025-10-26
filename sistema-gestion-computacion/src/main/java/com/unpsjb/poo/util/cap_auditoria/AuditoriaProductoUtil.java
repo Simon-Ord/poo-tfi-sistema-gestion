@@ -1,109 +1,108 @@
 package com.unpsjb.poo.util.cap_auditoria;
 
-import com.unpsjb.poo.model.EventoAuditoria;
 import com.unpsjb.poo.model.productos.Producto;
-import com.unpsjb.poo.persistence.dao.ReportesDAO;
-import com.unpsjb.poo.util.Sesion;
 
 /**
- * 🧾 Clase específica para registrar auditorías relacionadas con productos.
- * 
- * Separa la lógica de comparación y registro de cambios de productos
- * del resto de AuditoriaUtil para mantener el código más limpio.
+ * 🧩 Clase concreta de auditoría para la entidad Producto.
+ * Hereda de AuditoriaBase, aplicando polimorfismo.
  */
-public class AuditoriaProductoUtil {
-
-    private static final ReportesDAO reportesDAO = new ReportesDAO();
+public class AuditoriaProductoUtil extends AuditoriaBase {
 
     /**
-     * 🔹 Registrar cambios entre un producto original y su versión modificada.
-     * Detecta qué campos fueron cambiados y los detalla.
+     * Implementa la comparación y registro de cambios específicos
+     * entre dos productos (original y modificado).
      */
-    public static void registrarCambioProducto(Producto original, Producto modificado) {
-        try {
-            String usuario = (Sesion.getUsuarioActual() != null)
-                    ? Sesion.getUsuarioActual().getNombre()
-                    : "Sistema";
+    @Override
+    public void registrarAccionEspecifica(Object original, Object modificado) {
+        if (!(original instanceof Producto) || !(modificado instanceof Producto)) return;
+        Producto pOriginal = (Producto) original;
+        Producto pModificado = (Producto) modificado;
 
-            StringBuilder cambios = new StringBuilder();
+        StringBuilder cambios = new StringBuilder();
 
-            if (!equalsNullSafe(original.getNombreProducto(), modificado.getNombreProducto()))
-                cambios.append("Nombre: '").append(nvl(original.getNombreProducto()))
-                        .append("' → '").append(nvl(modificado.getNombreProducto())).append("'. ");
+        // Comparación de nombre
+        if (!equalsNullSafe(pOriginal.getNombreProducto(), pModificado.getNombreProducto()))
+            cambios.append("Nombre: '").append(nvl(pOriginal.getNombreProducto()))
+                   .append("' → '").append(nvl(pModificado.getNombreProducto())).append("'. ");
 
-            if (!equalsNullSafe(original.getDescripcionProducto(), modificado.getDescripcionProducto()))
-                cambios.append("Descripción: '").append(nvl(original.getDescripcionProducto()))
-                        .append("' → '").append(nvl(modificado.getDescripcionProducto())).append("'. ");
+        // Comparación de descripción
+        if (!equalsNullSafe(pOriginal.getDescripcionProducto(), pModificado.getDescripcionProducto()))
+            cambios.append("Descripción: '").append(nvl(pOriginal.getDescripcionProducto()))
+                   .append("' → '").append(nvl(pModificado.getDescripcionProducto())).append("'. ");
 
-            if (original.getCategoria() != null && modificado.getCategoria() != null) {
-                if (!original.getCategoria().getNombre().equals(modificado.getCategoria().getNombre()))
-                    cambios.append("Categoría: '").append(original.getCategoria().getNombre())
-                            .append("' → '").append(modificado.getCategoria().getNombre()).append("'. ");
-            } else if (original.getCategoria() != null || modificado.getCategoria() != null) {
-                cambios.append("Categoría: '")
-                        .append(original.getCategoria() != null ? original.getCategoria().getNombre() : "Ninguna")
-                        .append("' → '")
-                        .append(modificado.getCategoria() != null ? modificado.getCategoria().getNombre() : "Ninguna")
-                        .append("'. ");
-            }
+        // Comparación de categoría
+        if (pOriginal.getCategoria() != null && pModificado.getCategoria() != null) {
+            if (!equalsNullSafe(pOriginal.getCategoria().getNombre(), pModificado.getCategoria().getNombre()))
+                cambios.append("Categoría: '").append(pOriginal.getCategoria().getNombre())
+                       .append("' → '").append(pModificado.getCategoria().getNombre()).append("'. ");
+        } else if (pOriginal.getCategoria() != null || pModificado.getCategoria() != null) {
+            cambios.append("Categoría: '")
+                   .append(pOriginal.getCategoria() != null ? pOriginal.getCategoria().getNombre() : "Ninguna")
+                   .append("' → '")
+                   .append(pModificado.getCategoria() != null ? pModificado.getCategoria().getNombre() : "Ninguna")
+                   .append("'. ");
+        }
 
-            if (original.getPrecioProducto() != null && modificado.getPrecioProducto() != null
-                    && original.getPrecioProducto().compareTo(modificado.getPrecioProducto()) != 0)
-                cambios.append("Precio: ").append(original.getPrecioProducto())
-                        .append(" → ").append(modificado.getPrecioProducto()).append(". ");
+        // Comparación de precio
+        if (pOriginal.getPrecioProducto() != null && pModificado.getPrecioProducto() != null
+                && pOriginal.getPrecioProducto().compareTo(pModificado.getPrecioProducto()) != 0)
+            cambios.append("Precio: ").append(pOriginal.getPrecioProducto())
+                   .append(" → ").append(pModificado.getPrecioProducto()).append(". ");
 
-            if (original.getStockProducto() != modificado.getStockProducto())
-                cambios.append("Stock: ").append(original.getStockProducto())
-                        .append(" → ").append(modificado.getStockProducto()).append(". ");
+        // Comparación de stock
+        if (pOriginal.getStockProducto() != pModificado.getStockProducto())
+            cambios.append("Stock: ").append(pOriginal.getStockProducto())
+                   .append(" → ").append(pModificado.getStockProducto()).append(". ");
 
-            if (original.isActivo() != modificado.isActivo())
-                cambios.append("Estado: ").append(original.isActivo() ? "Activo" : "Inactivo")
-                        .append(" → ").append(modificado.isActivo() ? "Activo" : "Inactivo").append(". ");
+        // Comparación de estado
+        if (pOriginal.isActivo() != pModificado.isActivo())
+            cambios.append("Estado: ").append(pOriginal.isActivo() ? "Activo" : "Inactivo")
+                   .append(" → ").append(pModificado.isActivo() ? "Activo" : "Inactivo").append(". ");
 
-            // Registrar solo si hubo algo que cambió
-            if (cambios.length() > 0) {
-                EventoAuditoria evento = new EventoAuditoria();
-                evento.setUsuario(usuario);
-                evento.setAccion("MODIFICAR PRODUCTO");
-                evento.setEntidad("producto");
-                evento.setDetalles("El usuario " + usuario + " modificó el producto '" 
-                        + original.getNombreProducto() + "'. Cambios: " + cambios);
-
-                reportesDAO.registrarEvento(evento);
-            }
-
-        } catch (Exception e) {
-            System.err.println("Error al registrar cambios de producto: " + e.getMessage());
+        // Registrar si hubo cambios
+        if (cambios.length() > 0) {
+            registrarEvento("MODIFICAR PRODUCTO", "producto",
+                    "El usuario " + getUsuarioActual() +
+                    " modificó el producto '" + pOriginal.getNombreProducto() +
+                    "'. Cambios: " + cambios);
         }
     }
 
     /**
-     * 🔹 Registrar cambio de estado (activo/inactivo) del producto.
+     * 🔹 Auditoría específica para cambio de estado.
      */
-    public static void registrarCambioEstadoProducto(Producto producto, boolean nuevoEstado) {
-        String usuario = (Sesion.getUsuarioActual() != null)
-                ? Sesion.getUsuarioActual().getNombre()
-                : "Sistema";
-
-        EventoAuditoria evento = new EventoAuditoria();
-        evento.setUsuario(usuario);
-        evento.setAccion("CAMBIO ESTADO PRODUCTO");
-        evento.setEntidad("producto");
-        evento.setDetalles("El usuario " + usuario + " cambió el estado del producto '" 
-                + producto.getNombreProducto() + "' a " 
-                + (nuevoEstado ? "ACTIVO" : "INACTIVO") + ".");
-
-        reportesDAO.registrarEvento(evento);
+    public void registrarCambioEstado(Producto producto, boolean nuevoEstado) {
+        registrarEvento("CAMBIO ESTADO PRODUCTO", "producto",
+                "El usuario " + getUsuarioActual() +
+                " cambió el estado del producto '" + producto.getNombreProducto() +
+                "' a " + (nuevoEstado ? "ACTIVO" : "INACTIVO") + ".");
     }
 
-    // Métodos auxiliares
-    private static boolean equalsNullSafe(Object a, Object b) {
+    // =============================================
+    // Métodos auxiliares internos (reutilizables)
+    // =============================================
+
+    private boolean equalsNullSafe(Object a, Object b) {
         if (a == null && b == null) return true;
         if (a == null || b == null) return false;
         return a.equals(b);
     }
 
-    private static String nvl(String valor) {
+    private String nvl(String valor) {
         return (valor != null && !valor.isEmpty()) ? valor : "(vacío)";
     }
+
+    // =============================================
+    // 🔄 Compatibilidad con el código anterior
+    // =============================================
+
+    /**
+     * Permite seguir usando la llamada anterior:
+     * AuditoriaProductoUtil.registrarCambioProducto(original, modificado);
+     */
+    public static void registrarCambioProducto(Producto original, Producto modificado) {
+        new AuditoriaProductoUtil().registrarAccionEspecifica(original, modificado);
+    }
 }
+
+

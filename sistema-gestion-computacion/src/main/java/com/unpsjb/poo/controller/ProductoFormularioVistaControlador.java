@@ -116,8 +116,12 @@ public class ProductoFormularioVistaControlador extends BaseControlador {
                 guardarDatosEnProducto(productoAEditar);
                 ok = productoAEditar.actualizar(); // Usar el método del modelo
                 if (ok) {
-                    AuditoriaProductoUtil.registrarCambioProducto(productoOriginal, productoAEditar);
+          AuditoriaProductoUtil auditor = new AuditoriaProductoUtil();
+           auditor.registrarAccionEspecifica(productoOriginal, productoAEditar);
+
                 }
+
+
             }
             if (ok) {
                 mostrarAlerta("Producto guardado correctamente.");

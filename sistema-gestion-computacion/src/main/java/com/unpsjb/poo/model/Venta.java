@@ -8,6 +8,7 @@ public class Venta {
     // 🧾 Atributos
     // ================================
     private int idVenta;
+        private String codigoVenta; // código único tipo FACT-0001 o TICK-0001
     private CarritoDeCompra carrito;
     private EstadoVenta estadoActualVenta;
     private String tipoFactura;
@@ -128,4 +129,16 @@ public class Venta {
     public void setClienteFactura(Cliente clienteFactura) {
         this.clienteFactura = clienteFactura;
     }
+
+
+
+
+public String getCodigoVenta() {
+    return codigoVenta;
+}
+
+public void setCodigoVenta(String codigoVenta) {
+    this.codigoVenta = codigoVenta;
+}
+
 }

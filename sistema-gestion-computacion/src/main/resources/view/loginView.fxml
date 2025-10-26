@@ -40,7 +40,7 @@
                   <TextField fx:id="txtUser" 
                              onKeyTyped="#eventKey" 
                              prefHeight="35.0"
-                             promptText="Ej:nombre_usuario"
+                             promptText="Ej:juan123"
                              style="-fx-background-radius: 8; -fx-padding: 5 10;"/>
 
                   <!-- Campo Contraseña -->

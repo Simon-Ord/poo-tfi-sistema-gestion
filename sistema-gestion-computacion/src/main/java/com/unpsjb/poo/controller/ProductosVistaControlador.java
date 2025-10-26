@@ -173,7 +173,8 @@ public class ProductosVistaControlador extends BaseControlador {
         if (ok) {
             // Registrar auditoría si hay usuario en sesión
             if (Sesion.getUsuarioActual() != null) {
-               AuditoriaProductoUtil.registrarCambioEstadoProducto(seleccionado, !estadoAnterior);
+                    AuditoriaProductoUtil auditor = new AuditoriaProductoUtil();
+           auditor.registrarAccionEspecifica(seleccionado, auditor);
             }            
             String estadoActual = seleccionado.isActivo() ? "Activo" : "Inactivo";
             mostrarAlerta("El producto cambió al estado: " + estadoActual);

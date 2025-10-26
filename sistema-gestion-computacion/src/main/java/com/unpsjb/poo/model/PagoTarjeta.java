@@ -20,5 +20,11 @@ public class PagoTarjeta implements EstrategiaPago {
     public double getComision() {
         return comision;
     }
+
+    @Override
+    public String getDescripcion() {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'getDescripcion'");
+    }
     
 }
