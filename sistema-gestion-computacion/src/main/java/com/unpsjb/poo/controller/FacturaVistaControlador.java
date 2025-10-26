@@ -196,28 +196,6 @@ public void handleAnadirItem() {
     
     // --- LÓGICA DE VENTANA MODAL (Listado de Códigos) ---
 
-    /*private void mostrarVentanaCodigos(List<Producto> productos) {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/view/CodigosListaVista.fxml"));
-            Parent root = loader.load();
-
-            CodigosListaControlador controlador = loader.getController();
-            controlador.setProductos(productos); // Pasa la lista
-
-            Stage stage = new Stage();
-            stage.setTitle("Lista de Códigos de Productos");
-            stage.initModality(Modality.APPLICATION_MODAL);
-            stage.setScene(new Scene(root));
-            stage.showAndWait();
-
-            // Recibe el código seleccionado
-            if (controlador.getCodigoSeleccionado() != null) {
-                txtCodigoProducto.setText(controlador.getCodigoSeleccionado().toString());
-            }
-        } catch (Exception e) {
-            mostrarAlerta("Error de Vista", "No se pudo cargar la ventana de códigos: " + e.getMessage(), Alert.AlertType.ERROR);
-        }
-    }*/
 
     private void mostrarVentanaCodigos(List<Producto> productos) {
         try {

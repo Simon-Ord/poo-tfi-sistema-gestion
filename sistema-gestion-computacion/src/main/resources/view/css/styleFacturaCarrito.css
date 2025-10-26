@@ -1,0 +1,167 @@
+/* ===== ESTILO PARA FACTURA - AGREGAR PRODUCTOS AL CARRITO ===== */
+
+/* Contenedor principal */
+.root {
+    -fx-background-color: linear-gradient(to bottom right, #f8f9fa, #e9ecef);
+}
+
+/* Título principal */
+.titulo {
+    -fx-font-size: 24px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #2c3e50;
+    -fx-padding: 10 0 15 0;
+}
+
+/* Panel de información del producto */
+.panel-info {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-border-color: #dee2e6;
+    -fx-border-radius: 10;
+    -fx-border-width: 1;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 2);
+}
+
+/* Subtítulo */
+.subtitulo {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #495057;
+}
+
+/* Labels en general */
+.label {
+    -fx-font-size: 13px;
+    -fx-text-fill: #495057;
+}
+
+/* TextFields */
+.text-field {
+    -fx-font-size: 13px;
+    -fx-padding: 8;
+    -fx-background-radius: 6;
+    -fx-border-radius: 6;
+    -fx-border-color: #ced4da;
+    -fx-border-width: 1;
+}
+
+.text-field:focused {
+    -fx-border-color: #007bff;
+    -fx-border-width: 2;
+}
+
+/* Botones - Estilo base */
+.button {
+    -fx-font-size: 13px;
+    -fx-font-weight: bold;
+    -fx-padding: 10 20 10 20;
+    -fx-background-radius: 8;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 4, 0, 0, 2);
+}
+
+.button:hover {
+    -fx-scale-y: 1.05;
+    -fx-scale-x: 1.05;
+}
+
+/* Botón Añadir (verde) */
+.btn-agregar {
+    -fx-background-color: linear-gradient(to bottom, #28a745, #218838);
+    -fx-text-fill: white;
+}
+
+.btn-agregar:hover {
+    -fx-background-color: linear-gradient(to bottom, #218838, #1e7e34);
+}
+
+/* Botón Quitar (rojo) */
+.btn-quitar {
+    -fx-background-color: linear-gradient(to bottom, #dc3545, #c82333);
+    -fx-text-fill: white;
+}
+
+.btn-quitar:hover {
+    -fx-background-color: linear-gradient(to bottom, #c82333, #bd2130);
+}
+
+/* Botón Listar (azul) */
+.btn-listar {
+    -fx-background-color: linear-gradient(to bottom, #007bff, #0056b3);
+    -fx-text-fill: white;
+}
+
+.btn-listar:hover {
+    -fx-background-color: linear-gradient(to bottom, #0056b3, #004085);
+}
+
+/* Tabla */
+.table-view {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-border-color: #dee2e6;
+    -fx-border-radius: 10;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 8, 0, 0, 2);
+}
+
+.table-view .column-header {
+    -fx-background-color: #343a40;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-font-size: 13px;
+    -fx-padding: 10;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: #343a40;
+}
+
+.table-row-cell {
+    -fx-cell-size: 35;
+}
+
+.table-row-cell:odd {
+    -fx-background-color: #f8f9fa;
+}
+
+.table-row-cell:even {
+    -fx-background-color: white;
+}
+
+.table-row-cell:selected {
+    -fx-background-color: #007bff;
+    -fx-text-fill: white;
+}
+
+.table-row-cell:hover {
+    -fx-background-color: #e7f3ff;
+}
+
+/* Panel del total */
+.panel-total {
+    -fx-background-color: linear-gradient(to right, #343a40, #23272b);
+    -fx-background-radius: 10;
+    -fx-padding: 15 20 15 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 8, 0, 0, 3);
+}
+
+.label-total {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-text-fill: white;
+}
+
+.label-total-monto {
+    -fx-font-size: 26px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #ffc107;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 3, 0, 0, 1);
+}
+
+/* Contenedor de la tabla */
+.tabla-container {
+    -fx-background-color: transparent;
+}
