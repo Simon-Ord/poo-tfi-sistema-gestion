@@ -4,9 +4,7 @@ import com.unpsjb.poo.persistence.dao.impl.VentaDAOImpl;
 
 public class Venta {
 
-    // ================================
-    // 🧾 Atributos
-    // ================================
+
     private int idVenta;
         private String codigoVenta; // código único tipo FACT-0001 o TICK-0001
     private CarritoDeCompra carrito;
@@ -18,17 +16,11 @@ public class Venta {
     // DAO compartido (patrón Singleton implícito)
     private static final VentaDAOImpl ventaDAO = new VentaDAOImpl();
 
-    // ================================
-    // 🏗️ Constructor
-    // ================================
     public Venta() {
         this.carrito = new CarritoDeCompra();
         this.estadoActualVenta = new EstadoAgregarProductos();
     }
 
-    // ================================
-    // ⚙️ Lógica de flujo de venta
-    // ================================
     public void siguientePaso() {
         this.estadoActualVenta.siguientePaso(this);
     }
@@ -46,9 +38,6 @@ public class Venta {
         this.estadoActualVenta = new EstadoAgregarProductos();
     }
 
-    // ================================
-    //  Persistencia
-    // ================================
     public void guardarVentaBD() {
         // Validaciones antes de guardar
         if (this.carrito == null || this.carrito.getItems().isEmpty()) {
@@ -79,9 +68,7 @@ public class Venta {
         System.out.println(" Venta guardada correctamente en la BD con ID: " + this.idVenta);
     }
 
-    // ================================
-    // 🔁 Getters y Setters
-    // ================================
+
     public int getIdVenta() {
         return idVenta;
     }
