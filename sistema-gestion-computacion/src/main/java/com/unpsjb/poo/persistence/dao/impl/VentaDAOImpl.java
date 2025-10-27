@@ -1,6 +1,11 @@
 package com.unpsjb.poo.persistence.dao.impl;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -113,11 +118,11 @@ public class VentaDAOImpl implements DAO<Venta> {
             }
 
             conexion.commit();
-            System.out.println("✅ Venta creada con código: " + codigoUnico);
+            System.out.println("Venta creada con código: " + codigoUnico);
             return true;
 
         } catch (SQLException e) {
-            System.err.println("❌ Error al insertar la venta: " + e.getMessage());
+            System.err.println("Error al insertar la venta: " + e.getMessage());
             e.printStackTrace();
             if (conexion != null) {
                 try { conexion.rollback(); } catch (SQLException ex) { }
@@ -134,7 +139,7 @@ public class VentaDAOImpl implements DAO<Venta> {
                     conexion.close();
                 }
             } catch (SQLException e) {
-                System.err.println("⚠️ Error al cerrar recursos: " + e.getMessage());
+                System.err.println(" Error al cerrar recursos: " + e.getMessage());
             }
         }
     }

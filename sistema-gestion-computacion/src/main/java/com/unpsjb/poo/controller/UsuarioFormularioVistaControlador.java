@@ -43,7 +43,7 @@ public class UsuarioFormularioVistaControlador {
             nuevo.setRol(cbRol.getValue());
             nuevo.setEstado(chkActivo.isSelected());
 
-            boolean ok = usuarioDAO.insertar(nuevo);
+            boolean ok = usuarioDAO.create(nuevo);
 
             if (ok) {
                 mostrarAlerta("Usuario agregado correctamente.");

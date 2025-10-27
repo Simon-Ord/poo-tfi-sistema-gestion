@@ -74,27 +74,27 @@ public class Cliente {
     // ========================
     public boolean guardar() {
         if (this.id == 0) {
-            return clienteDAO.insertar(this);
+            return clienteDAO.create(this);
         } else {
-            return clienteDAO.modificar(this);
+            return clienteDAO.update(this);
         }
     }
 
     public boolean eliminar() {
         this.activo = false;
-        return clienteDAO.modificar(this);
+        return clienteDAO.update(this);
     }
 
     public boolean actualizarEstado() {
-        return clienteDAO.modificar(this);
+        return clienteDAO.update(this);
     }
 
     public static List<Cliente> obtenerTodos() {
-        return clienteDAO.obtenerTodos();
+        return clienteDAO.findAll();
     }
 
     public static Cliente obtenerPorId(int id) {
-        return clienteDAO.obtenerPorId(id);
+        return clienteDAO.read(id).orElse(null);
     }
 
     public static List<Cliente> buscarPorNombre(String nombre) {

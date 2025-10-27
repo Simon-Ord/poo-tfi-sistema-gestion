@@ -40,7 +40,7 @@ public class ClientesVistaControlador extends BaseControlador {
 
     private void cargarClientesDesdeBD() {
         listaClientes.clear();
-        List<Cliente> clientesBD = clienteDAO.obtenerTodos();
+        List<Cliente> clientesBD = clienteDAO.findAll();
         listaClientes.addAll(clientesBD);
         tablaClientes.setItems(listaClientes);
     }
@@ -99,7 +99,7 @@ private void editarCliente() {
             mostrarAlerta("Debe seleccionar un cliente para eliminar.");
             return;
         }
-        boolean eliminado = clienteDAO.eliminar(seleccionado.getId());
+        boolean eliminado = clienteDAO.delete(seleccionado.getId());
         if (eliminado) {
             mostrarAlerta("Cliente eliminado correctamente.");
             cargarClientesDesdeBD();

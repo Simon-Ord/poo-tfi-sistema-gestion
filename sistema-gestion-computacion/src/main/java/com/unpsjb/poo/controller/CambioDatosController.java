@@ -59,7 +59,7 @@ public class CambioDatosController {
                 user.setContraseña(txtNuevaContrasena.getText().trim());
             }
 
-            boolean ok = usuarioDAO.modificar(user);
+            boolean ok = usuarioDAO.update(user);
 
             if (ok) {
                 mostrarAlerta("Datos actualizados correctamente.");

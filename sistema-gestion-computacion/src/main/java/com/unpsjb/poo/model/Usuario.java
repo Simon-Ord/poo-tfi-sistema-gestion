@@ -30,11 +30,11 @@ public class Usuario {
     // ===============================
 
     public boolean guardar() {
-        return dao.insertar(this);
+        return dao.create(this);
     }
 
     public boolean actualizar() {
-        return dao.modificar(this);
+        return dao.update(this);
     }
 
     public boolean desactivar() {
@@ -42,7 +42,7 @@ public class Usuario {
     }
 
     public static List<Usuario> obtenerTodos() {
-        return dao.obtenerTodos();
+        return dao.findAll();
     }
 
     public static Usuario verificarLogin(String usuario, String contraseña) {

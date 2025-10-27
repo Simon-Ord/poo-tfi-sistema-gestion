@@ -21,7 +21,6 @@ CREATE TABLE ventas (
 -- ==============================
 CREATE TABLE detalle_venta (
     id SERIAL PRIMARY KEY,
-
     venta_id INT NOT NULL,
     producto_id INT NOT NULL,
     cantidad INT NOT NULL CHECK (cantidad > 0),

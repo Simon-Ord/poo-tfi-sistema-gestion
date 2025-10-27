@@ -3,15 +3,16 @@ package com.unpsjb.poo.persistence.dao.impl;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.unpsjb.poo.model.Cliente;
 import com.unpsjb.poo.persistence.GestorDeConexion;
-import com.unpsjb.poo.persistence.dao.ClienteDAO;
+import com.unpsjb.poo.persistence.dao.DAO;
 
-public class ClienteDAOImpl implements ClienteDAO {
+public class ClienteDAOImpl implements DAO<Cliente> {
 
     @Override
-    public List<Cliente> obtenerTodos() {
+    public List<Cliente> findAll() {
         List<Cliente> lista = new ArrayList<>();
         String sql = "SELECT * FROM clientes WHERE activo = TRUE ORDER BY id";
         try (Connection conn = GestorDeConexion.getInstancia().getConexion();
@@ -37,7 +38,7 @@ public class ClienteDAOImpl implements ClienteDAO {
     }
 
     @Override
-    public boolean insertar(Cliente cliente) {
+    public boolean create(Cliente cliente) {
         String sql = "INSERT INTO clientes (nombre, cuit, telefono, direccion, email, tipo, activo) VALUES (?, ?, ?, ?, ?, ?, TRUE)";
         try (Connection conn = GestorDeConexion.getInstancia().getConexion();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -57,7 +58,7 @@ public class ClienteDAOImpl implements ClienteDAO {
     }
 
     @Override
-    public boolean modificar(Cliente cliente) {
+    public boolean update(Cliente cliente) {
         String sql = "UPDATE clientes SET nombre=?, cuit=?, telefono=?, direccion=?, email=?, tipo=?, activo=? WHERE id=?";
         try (Connection conn = GestorDeConexion.getInstancia().getConexion();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -79,7 +80,7 @@ public class ClienteDAOImpl implements ClienteDAO {
     }
 
     @Override
-    public boolean eliminar(int id) {
+    public boolean delete(int id) {
         String sql = "UPDATE clientes SET activo = FALSE WHERE id = ?";
         try (Connection conn = GestorDeConexion.getInstancia().getConexion();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -92,7 +93,7 @@ public class ClienteDAOImpl implements ClienteDAO {
     }
 
     @Override
-    public Cliente obtenerPorId(int id) {
+    public Optional<Cliente> read(int id) {
         String sql = "SELECT * FROM clientes WHERE id = ?";
         try (Connection conn = GestorDeConexion.getInstancia().getConexion();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -108,15 +109,20 @@ public class ClienteDAOImpl implements ClienteDAO {
                 c.setEmail(rs.getString("email"));
                 c.setTipo(rs.getString("tipo"));
                 c.setActivo(rs.getBoolean("activo"));
-                return c;
+                return Optional.of(c);
             }
         } catch (SQLException e) {
             System.err.println("Error al obtener cliente: " + e.getMessage());
         }
-        return null;
+        return Optional.empty();
     }
 
-    @Override
+    
+    /**
+     * Custom method for searching clientes by name.
+     * This method extends beyond the generic DAO interface to provide
+     * specific search functionality for Cliente entities.
+     */
     public List<Cliente> buscarPorNombre(String nombre) {
         List<Cliente> lista = new ArrayList<>();
         String sql = "SELECT * FROM clientes WHERE LOWER(nombre) LIKE LOWER(?) AND activo = TRUE";

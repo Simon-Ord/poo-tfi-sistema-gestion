@@ -3,13 +3,20 @@ package com.unpsjb.poo.persistence.dao.impl;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 import com.unpsjb.poo.model.Usuario;
 import com.unpsjb.poo.persistence.GestorDeConexion;
-import com.unpsjb.poo.persistence.dao.UsuarioDAO;
+import com.unpsjb.poo.persistence.dao.DAO;
 
-public class UsuarioDAOImpl implements UsuarioDAO {
+public class UsuarioDAOImpl implements DAO<Usuario> {
     @Override
+    public Optional<Usuario> read(int id) {
+        // Usuario uses String dni as primary key, not int id
+        // This method is not applicable for Usuario
+        throw new UnsupportedOperationException("Usuario uses String dni as primary key. Use custom methods instead.");
+    }
+    
     public Usuario verificarLogin(String usuario, String contraseña) {
         String sql = "SELECT * FROM usuarios WHERE usuario = ? AND contraseña = ? AND estado = TRUE";
         Connection conn = GestorDeConexion.getInstancia().getConexion();
@@ -49,7 +56,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
     }
 
     @Override
-    public List<Usuario> obtenerTodos() {
+    public List<Usuario> findAll() {
         List<Usuario> lista = new ArrayList<>();
         String sql = "SELECT * FROM usuarios ORDER BY nombre";
 
@@ -76,7 +83,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
     }
 
     @Override
-    public boolean insertar(Usuario usuario) {
+    public boolean create(Usuario usuario) {
         String sql = "INSERT INTO usuarios (dni, nombre, usuario, contraseña, rol, estado) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection conn = GestorDeConexion.getInstancia().getConexion();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -96,7 +103,7 @@ public class UsuarioDAOImpl implements UsuarioDAO {
     }
 
     @Override
-    public boolean modificar(Usuario usuario) {
+    public boolean update(Usuario usuario) {
         String sql = "UPDATE usuarios SET nombre = ?, usuario = ?, contraseña = ?, rol = ?, estado = ? WHERE dni = ?";
         try (Connection conn = GestorDeConexion.getInstancia().getConexion();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -116,6 +123,13 @@ public class UsuarioDAOImpl implements UsuarioDAO {
     }
 
     @Override
+    public boolean delete(int id) {
+        // Usuario uses String dni as primary key, not int id
+        // This method is not applicable for Usuario
+        throw new UnsupportedOperationException("Usuario uses String dni as primary key. Use eliminar(String dni) instead.");
+    }
+    
+    // Custom method for Usuario since it uses String dni as primary key
     public boolean eliminar(String dni) {
         // ahora solo desactiva
         String sql = "UPDATE usuarios SET estado = FALSE WHERE dni = ?";

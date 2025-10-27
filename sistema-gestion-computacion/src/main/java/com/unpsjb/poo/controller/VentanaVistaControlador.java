@@ -2,7 +2,6 @@ package com.unpsjb.poo.controller;
 
 import java.io.IOException;
 
-import static javafx.application.Platform.runLater;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -26,7 +25,6 @@ public class VentanaVistaControlador extends Region {
     public enum TipoVentana {
         VENTANA_PRINCIPAL, // Listas, gestión, reportes - puede maximizar y snap
         FORMULARIO, // Agregar/editar - solo puede minimizar
-        DIALOGO // Confirmaciones, alertas - funcionalidad mínima
     }
     // Enum para estados de ventana (solo Normal y Maximizada)
     public enum EstadoVentana {
@@ -121,7 +119,6 @@ public class VentanaVistaControlador extends Region {
         // Al clickear, traer al frente
         addEventHandler(MouseEvent.MOUSE_PRESSED, e -> {
             toFront();
-            // aplicarEfectoFoco(); POR AHORA COMENTE APLICAREFECTO PARA QUE NO HAYA EFECTO AL APRETAR LA VENTANA
         });
         setMinSize(MIN_W, MIN_H);
         setPrefSize(640, 420);
@@ -185,13 +182,6 @@ public class VentanaVistaControlador extends Region {
                 btnMax.setVisible(false);
                 btnMax.setManaged(false);
             }
-            case DIALOGO -> {
-                // Solo cerrar para diálogos
-                btnMin.setVisible(false);
-                btnMin.setManaged(false);
-                btnMax.setVisible(false);
-                btnMax.setManaged(false);
-            }
         }
     }
     // Agrega los botones apropiados a la barra de título según el tipo
@@ -199,40 +189,7 @@ public class VentanaVistaControlador extends Region {
         switch (tipoVentana) {
             case VENTANA_PRINCIPAL -> titleBar.getChildren().addAll(titleLbl, spacer, btnMin, btnMax, btnClose);
             case FORMULARIO -> titleBar.getChildren().addAll(titleLbl, spacer, btnMin, btnClose);
-            case DIALOGO -> titleBar.getChildren().addAll(titleLbl, spacer, btnClose);
         }
-    }
-     // Aplica un efecto visual sutil cuando la ventana recibe el foco
-    private void aplicarEfectoFoco() {
-        // Cambiar borde para indicar foco de forma elegante
-        frame.setStyle(
-            "-fx-background-color: transparent;" +
-            "-fx-background-radius: 10px;" +
-            "-fx-border-radius: 10px;" +
-            "-fx-border-color: linear-gradient(to bottom, #373838ff, #737577ff);" +
-            "-fx-border-width: 2px;" +
-            "-fx-effect: dropshadow(gaussian, rgba(93,173,226,0.4), 25, 0.4, 0, 6);"
-        );
-        // Programar volver al estilo normal después de un momento
-        runLater(() -> {
-            new Thread(() -> {
-                try {
-                    Thread.sleep(200);
-                    runLater(() -> {
-                        frame.setStyle(
-                            "-fx-background-color: transparent;" +
-                            "-fx-background-radius: 10px;" +
-                            "-fx-border-radius: 10px;" +
-                            "-fx-border-color: linear-gradient(to bottom, #606060, #404040);" +
-                            "-fx-border-width: 1px;" +
-                            "-fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 20, 0.3, 0, 5);"
-                        );
-                    });
-                } catch (InterruptedException ex) {
-                    // Ignorar interrupción
-                }
-            }).start();
-        });
     }
      // Cerrar la ventana de forma directa
     private void cerrarSinAnimacion() {
@@ -343,20 +300,7 @@ public class VentanaVistaControlador extends Region {
     // ==================================================
     //  MÉTODO DE UTILIDAD ESTÁTICO - CREAR VENTANA
     // ==================================================
-    
-    /**
-     * Crea y abre una ventana interna en el escritorio cargando una vista FXML.
-     * Este método simplifica el proceso de abrir vistas como subventanas con estilo moderno.
-     * 
-     * @param desktop El panel contenedor donde se agregará la ventana
-     * @param fxmlPath Ruta del archivo FXML a cargar
-     * @param titulo Título que se mostrará en la barra de la ventana
-     * @param ancho Ancho preferido de la ventana en píxeles
-     * @param alto Alto preferido de la ventana en píxeles
-     * @param tipo Tipo de ventana que determina las funcionalidades disponibles
-     * @return ResultadoVentana conteniendo la ventana creada y el controlador FXML cargado
-     * @throws RuntimeException si hay error al cargar el FXML
-     */
+    // Crea y abre una ventana interna con tipo especificado cargando el FXML 
     public static ResultadoVentana crearVentana(Pane desktop, String fxmlPath, String titulo, double ancho, double alto, TipoVentana tipo) {
         try {
             // Cargar el FXML
@@ -371,7 +315,7 @@ public class VentanaVistaControlador extends Region {
             // Agregar al escritorio y traer al frente
             desktop.getChildren().add(ventana);
             ventana.toFront();
-        
+
             return new ResultadoVentana(ventana, controller);
             
         } catch (IOException ex) {
@@ -419,14 +363,13 @@ public class VentanaVistaControlador extends Region {
         );
         alert.showAndWait();
     }
+    // ===================================================
+    //  METODOS DE CONVENIENCIA PARA SEGUN TIPO DE VENTANA
+    // ===================================================
     //Sobrecarga del método crearVentana con dimensiones por defecto.
     public static ResultadoVentana crearVentana(Pane desktop, String fxmlPath, String titulo) {
         return crearVentana(desktop, fxmlPath, titulo, 640, 420);
     }
-    // ===================================================
-    //  METODOS DE CONVENIENCIA PARA SEGUN TIPO DE VENTANA
-    // ===================================================
-
     // Crea un formulario (sin maximizar, solo minimizar)
     public static ResultadoVentana crearFormulario(Pane desktop, String fxmlPath, String titulo, double ancho, double alto) {
         return crearVentana(desktop, fxmlPath, titulo, ancho, alto, TipoVentana.FORMULARIO);
@@ -434,14 +377,6 @@ public class VentanaVistaControlador extends Region {
     // Crea un formulario con dimensiones típicas
     public static ResultadoVentana crearFormulario(Pane desktop, String fxmlPath, String titulo) {
         return crearVentana(desktop, fxmlPath, titulo, 400, 350, TipoVentana.FORMULARIO);
-    }
-    // Crea un diálogo simple (solo cerrar)
-    public static ResultadoVentana crearDialogo(Pane desktop, String fxmlPath, String titulo, double ancho, double alto) {
-        return crearVentana(desktop, fxmlPath, titulo, ancho, alto, TipoVentana.DIALOGO);
-    }
-    // Crea un diálogo con dimensiones típicas
-    public static ResultadoVentana crearDialogo(Pane desktop, String fxmlPath, String titulo) {
-        return crearVentana(desktop, fxmlPath, titulo, 350, 250, TipoVentana.DIALOGO);
     }
     // Clase contenedora para el resultado de crear una ventana.
     // Permite acceder tanto a la ventana como al controlador del FXML cargado.
@@ -455,11 +390,8 @@ public class VentanaVistaControlador extends Region {
         }
         public VentanaVistaControlador getVentana() {return ventana;}
         public Object getControlador() {return controlador;}
-        /**
-         * Obtiene el controlador con el tipo específico.
-         * @param <T> Tipo del controlador
-         * @return El controlador casteado al tipo solicitado
-         */
+
+        // Método para obtener el controlador con el tipo específico
         @SuppressWarnings("unchecked")
         public <T> T getControlador(Class<T> tipo) {
             return (T) controlador;
