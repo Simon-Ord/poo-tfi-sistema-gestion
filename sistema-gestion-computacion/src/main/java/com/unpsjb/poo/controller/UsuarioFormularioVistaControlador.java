@@ -5,7 +5,6 @@ import javafx.scene.Node;
 import javafx.scene.control.*;
 
 import com.unpsjb.poo.model.Usuario;
-import com.unpsjb.poo.persistence.dao.impl.UsuarioDAOImpl;
 import com.unpsjb.poo.util.cap_auditoria.AuditoriaUtil;
 
 public class UsuarioFormularioVistaControlador {
@@ -16,8 +15,6 @@ public class UsuarioFormularioVistaControlador {
     @FXML private PasswordField txtContraseña;
     @FXML private ChoiceBox<String> cbRol;
     @FXML private CheckBox chkActivo;
-
-    private final UsuarioDAOImpl usuarioDAO = new UsuarioDAOImpl();
 
     @FXML
     private void initialize() {
@@ -43,7 +40,7 @@ public class UsuarioFormularioVistaControlador {
             nuevo.setRol(cbRol.getValue());
             nuevo.setEstado(chkActivo.isSelected());
 
-            boolean ok = usuarioDAO.create(nuevo);
+            boolean ok = nuevo.guardar();
 
             if (ok) {
                 mostrarAlerta("Usuario agregado correctamente.");

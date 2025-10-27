@@ -1,7 +1,6 @@
 package com.unpsjb.poo.controller;
 
 import com.unpsjb.poo.model.Usuario;
-import com.unpsjb.poo.persistence.dao.impl.UsuarioDAOImpl;
 import com.unpsjb.poo.util.Sesion;
 import com.unpsjb.poo.util.cap_auditoria.AuditoriaUtil;
 
@@ -19,8 +18,6 @@ public class CambioDatosController {
     @FXML private TextField txtNuevoNombre;
     @FXML private TextField txtNuevoUsuario;
     @FXML private PasswordField txtNuevaContrasena;
-
-    private final UsuarioDAOImpl usuarioDAO = new UsuarioDAOImpl();
 
     @FXML
     private void guardarCambios() {
@@ -42,7 +39,7 @@ public class CambioDatosController {
             }
 
             // Verificar si el usuario existe
-            Usuario user = usuarioDAO.verificarLogin(usuarioActual, contrasenaActual);
+            Usuario user = Usuario.verificarLogin(usuarioActual, contrasenaActual);
             if (user == null) {
                 mostrarAlerta("Usuario o contraseña incorrectos.");
                 return;
@@ -59,7 +56,7 @@ public class CambioDatosController {
                 user.setContraseña(txtNuevaContrasena.getText().trim());
             }
 
-            boolean ok = usuarioDAO.update(user);
+            boolean ok = user.actualizar();
 
             if (ok) {
                 mostrarAlerta("Datos actualizados correctamente.");

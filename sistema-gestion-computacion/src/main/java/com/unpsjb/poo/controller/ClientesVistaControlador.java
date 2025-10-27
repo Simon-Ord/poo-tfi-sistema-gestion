@@ -3,7 +3,6 @@ package com.unpsjb.poo.controller;
 import java.util.List;
 
 import com.unpsjb.poo.model.Cliente;
-import com.unpsjb.poo.persistence.dao.impl.ClienteDAOImpl;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -22,7 +21,6 @@ public class ClientesVistaControlador extends BaseControlador {
     @FXML private TableColumn<Cliente, String> colEmail;
     @FXML private TableColumn<Cliente, String> colTipo;
 
-    private final ClienteDAOImpl clienteDAO = new ClienteDAOImpl();
     private final ObservableList<Cliente> listaClientes = FXCollections.observableArrayList();
 
     @FXML
@@ -40,7 +38,7 @@ public class ClientesVistaControlador extends BaseControlador {
 
     private void cargarClientesDesdeBD() {
         listaClientes.clear();
-        List<Cliente> clientesBD = clienteDAO.findAll();
+        List<Cliente> clientesBD = Cliente.obtenerTodos();
         listaClientes.addAll(clientesBD);
         tablaClientes.setItems(listaClientes);
     }
@@ -99,7 +97,7 @@ private void editarCliente() {
             mostrarAlerta("Debe seleccionar un cliente para eliminar.");
             return;
         }
-        boolean eliminado = clienteDAO.delete(seleccionado.getId());
+        boolean eliminado = seleccionado.eliminar();
         if (eliminado) {
             mostrarAlerta("Cliente eliminado correctamente.");
             cargarClientesDesdeBD();
