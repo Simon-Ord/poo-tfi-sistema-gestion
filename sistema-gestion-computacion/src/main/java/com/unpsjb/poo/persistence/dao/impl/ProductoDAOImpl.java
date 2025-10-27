@@ -27,7 +27,7 @@ public class ProductoDAOImpl implements DAO<Producto> {
             VALUES (?, ?, ?, ?, ?, ?, ?, CURRENT_TIMESTAMP)
             """;
         try (Connection conexion = GestorDeConexion.getInstancia().getConexion();
-             PreparedStatement pstmt = conexion.prepareStatement(sql)) {
+             PreparedStatement pstmt = conexion.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
             pstmt.setString(1, producto.getNombreProducto());
             pstmt.setString(2, producto.getDescripcionProducto());
@@ -45,7 +45,15 @@ public class ProductoDAOImpl implements DAO<Producto> {
             pstmt.setBoolean(7, producto.isActivo());
             int filas = pstmt.executeUpdate();
 
-            return filas > 0;
+            if (filas > 0) {
+                try (ResultSet keys = pstmt.getGeneratedKeys()) {
+                    if (keys.next()) {
+                        producto.setIdProducto(keys.getInt(1));
+                    }
+                }
+                return true;
+            }
+            return false;
 
         } catch (SQLException e) {
             System.err.println("Error al insertar el producto: " + e.getMessage());
@@ -269,7 +277,6 @@ public boolean delete(int id) {
 
     try (Connection conexion = GestorDeConexion.getInstancia().getConexion();
          PreparedStatement pstmt = conexion.prepareStatement(sql)) {
-
         // 1. Convertir el String de la interfaz a INT (porque codigoProducto es INT)
         int codigoInt = Integer.parseInt(codigo);
         pstmt.setInt(1, codigoInt);
@@ -286,10 +293,35 @@ public boolean delete(int id) {
     } catch (SQLException e) {
         System.err.println("Error al buscar producto por código: " + e.getMessage());
     }
-
     // Devuelve el producto encontrado (o vacío si no existe)
     return Optional.ofNullable(producto);
 
+    }
+
+    // Método para obtener el tipo de producto
+    public String obtenerTipoProducto(int idProducto) {
+        String sql = """
+            SELECT CASE 
+            WHEN EXISTS (SELECT 1 FROM productos_fisicos WHERE id_producto = ?) THEN 'FISICO'
+            WHEN EXISTS (SELECT 1 FROM productos_digitales WHERE id_producto = ?) THEN 'DIGITAL'
+            ELSE 'GENERICO' END AS tipo
+            """;
+        
+        try (Connection conexion = GestorDeConexion.getInstancia().getConexion();
+             PreparedStatement pstmt = conexion.prepareStatement(sql)) {
+            
+            pstmt.setInt(1, idProducto);
+            pstmt.setInt(2, idProducto);
+            
+            try (ResultSet rs = pstmt.executeQuery()) {
+                if (rs.next()) {
+                    return rs.getString("tipo");
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al determinar tipo de producto: " + e.getMessage());
+        }
+        return "GENERICO";
     }
     // ========================
     // Método auxiliar de mapeo

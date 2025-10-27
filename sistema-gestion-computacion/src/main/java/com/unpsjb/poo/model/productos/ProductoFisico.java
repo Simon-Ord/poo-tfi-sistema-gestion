@@ -1,5 +1,7 @@
 package com.unpsjb.poo.model.productos;
 
+import java.util.List;
+import com.unpsjb.poo.persistence.dao.impl.ProductoFisicoDAOImpl;
 
 public class ProductoFisico extends Producto {
     
@@ -10,6 +12,8 @@ public class ProductoFisico extends Producto {
     // enums públicos para permitir su uso desde DAO y otros paquetes
     public static enum TipoGarantia {FABRICANTE, TIENDA}
     public static enum EstadoFisico { NUEVO, USADO, REACONDICIONADO} 
+    
+    private static final ProductoFisicoDAOImpl productoFisicoDAO = new ProductoFisicoDAOImpl();
 
     // Constructor basico
     public ProductoFisico() {
@@ -42,6 +46,20 @@ public class ProductoFisico extends Producto {
         this.estadoFisico = estadoFisico;
     }
 
-
-
+    // Métodos de acceso a persistencia
+    public static List<ProductoFisico> obtenerTodosFisicos() {
+        return productoFisicoDAO.findAll();
+    }
+    
+    public static ProductoFisico obtenerPorId(int id) {
+        return productoFisicoDAO.read(id).orElse(null);
+    }
+    
+    public boolean guardarFisico() {
+        if (this.idProducto == 0) {
+            return productoFisicoDAO.create(this);
+        } else {
+            return productoFisicoDAO.update(this);
+        }
+    }
 }

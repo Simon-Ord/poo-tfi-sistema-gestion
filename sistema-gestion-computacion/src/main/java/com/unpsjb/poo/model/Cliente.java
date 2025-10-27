@@ -5,14 +5,6 @@ import java.util.List;
 
 import com.unpsjb.poo.persistence.dao.impl.ClienteDAOImpl;
 
-/**
- * Modelo del Cliente
- * 
- * 🔹 Aplica los principios de POO:
- * - Encapsulamiento → controla sus propios datos.
- * - Abstracción → el controlador no conoce el DAO.
- * - Responsabilidad única → lógica de negocio del cliente.
- */
 public class Cliente {
 
     private int id;

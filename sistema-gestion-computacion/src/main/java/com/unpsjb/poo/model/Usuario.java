@@ -1,6 +1,7 @@
 package com.unpsjb.poo.model;
 
 import java.util.List;
+
 import com.unpsjb.poo.persistence.dao.impl.UsuarioDAOImpl;
 
 
@@ -26,7 +27,29 @@ public class Usuario {
     }
 
     // ===============================
-    // 🔹 Métodos de persistencia (DAO)
+    // Getters y Setters
+    // ===============================
+
+    public String getDni() { return dni; }
+    public void setDni(String dni) { this.dni = dni; }
+
+    public String getNombre() { return nombre; }
+    public void setNombre(String nombre) { this.nombre = nombre; }
+
+    public String getUsuario() { return usuario; }
+    public void setUsuario(String usuario) { this.usuario = usuario; }
+
+    public String getContraseña() { return contraseña; }
+    public void setContraseña(String contraseña) { this.contraseña = contraseña; }
+
+    public String getRol() { return rol; }
+    public void setRol(String rol) { this.rol = rol; }
+
+    public boolean isEstado() { return estado; }
+    public void setEstado(boolean estado) { this.estado = estado; }
+
+    // ===============================
+    // Métodos de persistencia (DAO)
     // ===============================
 
     public boolean guardar() {
@@ -48,26 +71,4 @@ public class Usuario {
     public static Usuario verificarLogin(String usuario, String contraseña) {
         return dao.verificarLogin(usuario, contraseña);
     }
-
-    // ===============================
-    // 🔹 Getters y Setters
-    // ===============================
-
-    public String getDni() { return dni; }
-    public void setDni(String dni) { this.dni = dni; }
-
-    public String getNombre() { return nombre; }
-    public void setNombre(String nombre) { this.nombre = nombre; }
-
-    public String getUsuario() { return usuario; }
-    public void setUsuario(String usuario) { this.usuario = usuario; }
-
-    public String getContraseña() { return contraseña; }
-    public void setContraseña(String contraseña) { this.contraseña = contraseña; }
-
-    public String getRol() { return rol; }
-    public void setRol(String rol) { this.rol = rol; }
-
-    public boolean isEstado() { return estado; }
-    public void setEstado(boolean estado) { this.estado = estado; }
 }

@@ -17,14 +17,13 @@ public class Producto {
     protected boolean activo;
     protected Timestamp fechaCreacion;
     
-    // DAO estático compartido por todos los productos
+    // DAO estatico compartido por todos los productos
     private static final ProductoDAOImpl productoDAO = new ProductoDAOImpl();
     
     public Producto() {
-        // Constructor por defecto, necesario para el método Read en el DAO
+        // Constructor por defecto, lo implemento para el método Read en el DAO
         this.activo = true; // Por defecto los nuevos productos están activos
     }
-
 
     public int getIdProducto() {return idProducto;}
     public void setIdProducto(int idProducto) {this.idProducto = idProducto;}
@@ -63,42 +62,23 @@ public class Producto {
     public Timestamp getFechaCreacion() {return fechaCreacion;}
     public void setFechaCreacion(Timestamp fechaCreacion) {this.fechaCreacion = fechaCreacion;}
     
-    // ========================================
-    // ===== MÉTODOS DE LÓGICA DE NEGOCIO =====
-    // ========================================
+    // ========================
+    // Lógica de Negocio
+    // ========================
 
-    /**
-     * Cambia el estado del producto (activo/inactivo).
-     * Esta es lógica de negocio que pertenece al modelo.
-     */
+    // Cambia el estado de activo a inactivo o viceversa
     public void cambiarEstado() {
         this.activo = !this.activo;
     }
-    /**
-     * Activa el producto
-     */
-    public void activar() {
-        this.activo = true;
-    }
-    /**
-     * Desactiva el producto (eliminación lógica)
-     */
-    public void desactivar() {
+    // Desactiva el producto (eliminación lógica)
+     public void desactivar() {
         this.activo = false;
     }
-    /**
-     * Verifica si hay stock suficiente
-     * @param cantidadRequerida cantidad que se necesita
-     * @return true si hay stock suficiente
-     */
+    // Verifica si hay stock suficiente para una cantidad requerida
     public boolean tieneStockSuficiente(int cantidadRequerida) {
         return this.stockProducto >= cantidadRequerida && cantidadRequerida > 0;
     }
-    /**
-     * Reduce el stock del producto
-     * @param cantidad cantidad a reducir
-     * @return true si se pudo reducir, false si no hay stock suficiente
-     */
+    // Reduce el stock del producto
     public boolean reducirStock(int cantidad) {
         if (!tieneStockSuficiente(cantidad)) {
             return false;
@@ -106,19 +86,15 @@ public class Producto {
         this.stockProducto -= cantidad;
         return true;
     }
-    /**
-     * Aumenta el stock del producto
-     * @param cantidad cantidad a aumentar
-     */
+    // Aumenta el stock del producto
     public void aumentarStock(int cantidad) {
         if (cantidad > 0) {
             this.stockProducto += cantidad;
         }
     }
-    
-    // ========================================================
-    // ===== METODOS ESTATICOS PARA ACCESO A PERSISTENCIA =====
-    // ========================================================
+    // ========================
+    // Acceso a Persistencia
+    // ========================
     
     // Obtiene todos los productos activos desde la base de datos
     public static List<Producto> obtenerTodos() {
@@ -168,6 +144,11 @@ public class Producto {
     public boolean eliminar() {
         this.desactivar();
         return productoDAO.update(this);
+    }
+    
+    // Método para determinar el tipo de producto
+    public String obtenerTipoProducto() {
+        return this.idProducto == 0 ? "GENERICO" : productoDAO.obtenerTipoProducto(this.idProducto);
     }
     
     // ========================================

@@ -60,7 +60,7 @@ public class FabricanteDAOImpl implements DAO<Fabricante> {
     // ======================
     @Override
     public boolean update(Fabricante fabricante) {
-        String sql = "UPDATE fabricantes SET nombre = ? WHERE id_fabricante = ?";
+        String sql = "UPDATE fabricantes SET nombre = ? WHERE id = ?";
         try (Connection conexion = GestorDeConexion.getInstancia().getConexion();
              PreparedStatement pstmt = conexion.prepareStatement(sql)) {
             
@@ -137,8 +137,8 @@ public class FabricanteDAOImpl implements DAO<Fabricante> {
     // ========================
     private Fabricante mapResultSet(ResultSet rs) throws SQLException {
         Fabricante fabricante = new Fabricante();
-        fabricante.setId(rs.getInt("id_fabricante"));
-        fabricante.setNombre(rs.getString("nombre_fabricante"));
+        fabricante.setId(rs.getInt("id"));
+        fabricante.setNombre(rs.getString("nombre"));
         return fabricante;
     }
 }

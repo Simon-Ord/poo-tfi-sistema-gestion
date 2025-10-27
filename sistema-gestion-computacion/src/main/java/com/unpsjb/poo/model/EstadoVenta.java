@@ -1,5 +1,3 @@
-
-
 package com.unpsjb.poo.model;
 
 public interface EstadoVenta {

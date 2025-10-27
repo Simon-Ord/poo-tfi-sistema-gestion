@@ -56,21 +56,21 @@ public class ProductosVistaControlador extends BaseControlador {
         colCantidad.setCellValueFactory(c -> new javafx.beans.property.SimpleObjectProperty<>(c.getValue().getStockProducto()));
     }
 
-    // Configura la columna de estado con colores y formato
+    // Configura la columna de estado solo con colores de fondo translúcidos
     private void configurarColumnasEstado() {
-        colEstado.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty("●"));
-        // Configurar formato visual con colores
+        colEstado.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(""));
+        
         colEstado.setCellFactory(column -> {
             return new javafx.scene.control.TableCell<Producto, String>() {
                 @Override
                 protected void updateItem(String item, boolean empty) {
                     super.updateItem(item, empty);
-                    if (empty || item == null) {setText(null); setStyle("");
+                    if (empty) {
+                        setStyle("");
                     } else {
-                        setText(item);
                         Producto producto = getTableView().getItems().get(getIndex());
-                        String color = producto.isActivo() ? "green" : "red";
-                        setStyle("-fx-text-fill: " + color + "; -fx-font-size: 16px; -fx-alignment: center;");
+                        String backgroundColor = producto.isActivo() ? "rgba(40, 167, 69, 0.3)" : "rgba(220, 53, 69, 0.3)";
+                        setStyle("-fx-background-color: " + backgroundColor + ";");
                     }
                 }
             };

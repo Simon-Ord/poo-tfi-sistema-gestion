@@ -1,5 +1,7 @@
 package com.unpsjb.poo.model.productos;
 
+import java.util.List;
+import com.unpsjb.poo.persistence.dao.impl.ProductoDigitalDAOImpl;
 
 public class ProductoDigital extends Producto{
 
@@ -10,6 +12,7 @@ public class ProductoDigital extends Producto{
     // enum
     public enum TipoLicencia {PERPETUA, SUSCRIPCION, TRIAL}
     
+    private static final ProductoDigitalDAOImpl productoDigitalDAO = new ProductoDigitalDAOImpl();
 
     // Constructor basico
     public ProductoDigital() {
@@ -43,4 +46,20 @@ public class ProductoDigital extends Producto{
         this.duracionLicenciaDias = duracionLicenciaDias;
     }    
 
+    // Métodos de acceso a persistencia
+    public static List<ProductoDigital> obtenerTodosDigitales() {
+        return productoDigitalDAO.findAll();
+    }
+    
+    public static ProductoDigital obtenerPorId(int id) {
+        return productoDigitalDAO.read(id).orElse(null);
+    }
+    
+    public boolean guardarDigital() {
+        if (this.idProducto == 0) {
+            return productoDigitalDAO.create(this);
+        } else {
+            return productoDigitalDAO.update(this);
+        }
+    }
 }
