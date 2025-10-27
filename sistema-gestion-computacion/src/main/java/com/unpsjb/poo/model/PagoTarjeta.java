@@ -23,8 +23,7 @@ public class PagoTarjeta implements EstrategiaPago {
 
     @Override
     public String getDescripcion() {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getDescripcion'");
+        return "Pago con tarjeta de crédito/débito - Comisión del 5%";
     }
     
 }

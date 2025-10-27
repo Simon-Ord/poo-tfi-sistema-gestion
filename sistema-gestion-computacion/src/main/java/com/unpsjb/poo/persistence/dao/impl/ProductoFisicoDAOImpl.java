@@ -189,8 +189,13 @@ public class ProductoFisicoDAOImpl implements DAO<ProductoFisico> {
         p.setCodigoProducto(rs.getInt("codigo_producto"));
         p.setActivo(rs.getBoolean("activo"));
         p.setGarantiaMeses(rs.getInt("garantia_meses"));
-        p.setTipoGarantia(ProductoFisico.TipoGarantia.valueOf(rs.getString("tipo_garantia")));
-        p.setEstadoFisico(ProductoFisico.EstadoFisico.valueOf(rs.getString("estado_fisico")));
+        
+        // Manejo nullable para enums
+        String tipoGarantiaStr = rs.getString("tipo_garantia");
+        p.setTipoGarantia(tipoGarantiaStr != null ? ProductoFisico.TipoGarantia.valueOf(tipoGarantiaStr) : null);
+        
+        String estadoFisicoStr = rs.getString("estado_fisico");
+        p.setEstadoFisico(estadoFisicoStr != null ? ProductoFisico.EstadoFisico.valueOf(estadoFisicoStr) : null);
 
         if (rs.getTimestamp("fecha_creacion") != null) {
             p.setFechaCreacion(rs.getTimestamp("fecha_creacion"));

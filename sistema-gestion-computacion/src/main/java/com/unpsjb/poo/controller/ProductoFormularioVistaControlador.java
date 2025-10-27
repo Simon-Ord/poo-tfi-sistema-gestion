@@ -4,7 +4,11 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import com.unpsjb.poo.model.productos.Categoria;
+import com.unpsjb.poo.model.productos.Fabricante;
 import com.unpsjb.poo.model.productos.Producto;
+import com.unpsjb.poo.model.productos.ProductoDigital;
+import com.unpsjb.poo.model.productos.ProductoFisico;
+import com.unpsjb.poo.model.productos.ProveedorDigital;
 import com.unpsjb.poo.util.CopiarProductoUtil;
 import com.unpsjb.poo.util.Sesion;
 import com.unpsjb.poo.util.cap_auditoria.AuditoriaProductoUtil;
@@ -13,34 +17,98 @@ import com.unpsjb.poo.util.cap_auditoria.AuditoriaUtil;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.HBox;
 
 public class ProductoFormularioVistaControlador extends BaseControlador {
 
-    @FXML private TextField txtCodigo;
-    @FXML private TextField txtNombre;
-    @FXML private TextField txtDescripcion;
+    @FXML private javafx.scene.layout.VBox vboxPrincipal;
+    @FXML private ChoiceBox<String> cbTipoProducto;
+    @FXML private TextField txtNombre, txtDescripcion, txtCodigo, txtPrecio, txtStock;
     @FXML private ChoiceBox<Categoria> cbCategoria;
-    @FXML private TextField txtPrecio;
-    @FXML private TextField txtStock;
-
-    private Producto productoAEditar;       // si es null -> alta
-    private Producto productoOriginal;      // copia para comparar cambios
     
-    // Referencia a ProductoVistaControlador para actualizar la tabla al cerrar
+    // Campos específicos para Producto Físico
+    @FXML private Label lblFabricante, lblEstadoFisico, lblGarantia, lblTipoGarantia;
+    @FXML private HBox hboxFabricante;
+    @FXML private ChoiceBox<Fabricante> cbFabricante;
+    @FXML private ChoiceBox<String> cbEstadoFisico, cbTipoGarantia;
+    @FXML private TextField txtGarantiaMeses;
+    
+    // Campos específicos para Producto Digital
+    @FXML private Label lblProveedor, lblTipoLicencia, lblActivaciones, lblDuracion;
+    @FXML private HBox hboxProveedor;
+    @FXML private ChoiceBox<ProveedorDigital> cbProveedorDigital;
+    @FXML private ChoiceBox<String> cbTipoLicencia;
+    @FXML private TextField txtActivacionesMax, txtDuracionDias;
+
+    private Producto productoAEditar;
+    private Producto productoOriginal;
     private ProductosVistaControlador productosVista;
 
     @FXML
     private void initialize() {
         try {
             cargarCategorias();
-                } catch (Exception e) {
+            configurarTipoProducto();
+            cargarFabricantes();
+            cargarProveedoresDigitales();
+            configurarEnums();
+        } catch (Exception e) {
             System.err.println("Error al inicializar el formulario de productos: " + e.getMessage());
             e.printStackTrace();
         }
     }
 
-    // Método separado para cargar categorías
+    private void configurarTipoProducto() {
+        cbTipoProducto.getItems().addAll("GENÉRICO", "FÍSICO", "DIGITAL");
+        cbTipoProducto.setValue("GENÉRICO");
+        
+        cbTipoProducto.valueProperty().addListener((obs, oldVal, newVal) -> {
+            mostrarCamposSegunTipo(newVal);
+        });
+    }
+    
+    private void configurarEnums() {
+        // Estados físicos
+        cbEstadoFisico.getItems().addAll("NUEVO", "USADO", "REACONDICIONADO");
+        // Tipos de garantía
+        cbTipoGarantia.getItems().addAll("FABRICANTE", "TIENDA");
+        // Tipos de licencia
+        cbTipoLicencia.getItems().addAll("PERPETUA", "SUSCRIPCION", "TRIAL");
+    }
+    // Con el java.util.List.of() ahorro setters repetidos
+    private void mostrarCamposSegunTipo(String tipo) {
+        // Ocultar todos los campos específicos primero
+        java.util.List.of(lblFabricante, hboxFabricante, lblEstadoFisico, cbEstadoFisico,
+                lblGarantia, txtGarantiaMeses, lblTipoGarantia, cbTipoGarantia,
+                lblProveedor, hboxProveedor, lblTipoLicencia, cbTipoLicencia,
+                lblActivaciones, txtActivacionesMax, lblDuracion, txtDuracionDias)
+                .forEach(node -> { node.setVisible(false); node.setManaged(false); });
+        
+        // Mostrar campos según el tipo
+        if ("FÍSICO".equals(tipo)) {
+            java.util.List.of(lblFabricante, hboxFabricante, lblEstadoFisico, cbEstadoFisico, 
+                    lblGarantia, txtGarantiaMeses, lblTipoGarantia, cbTipoGarantia)
+                    .forEach(node -> { node.setVisible(true); node.setManaged(true); });
+            ajustarTamañoVentana(600.0);
+        } else if ("DIGITAL".equals(tipo)) {
+            java.util.List.of(lblProveedor, hboxProveedor, lblTipoLicencia, cbTipoLicencia,
+                    lblActivaciones, txtActivacionesMax, lblDuracion, txtDuracionDias)
+                    .forEach(node -> { node.setVisible(true); node.setManaged(true); });
+            ajustarTamañoVentana(600.0);
+        } else {
+            // Producto genérico - ventana más pequeña
+            ajustarTamañoVentana(300.0);
+        }
+    }
+    
+    private void ajustarTamañoVentana(double altura) {
+        if (vboxPrincipal != null) {
+            vboxPrincipal.setPrefHeight(altura);
+        }
+    }
+
     public void cargarCategorias(){
         try {
             List<Categoria> categorias = Categoria.obtenerTodas();
@@ -55,8 +123,31 @@ public class ProductoFormularioVistaControlador extends BaseControlador {
             e.printStackTrace();
         }
     }
+    
+    public void cargarFabricantes() {
+        try {
+            List<Fabricante> fabricantes = Fabricante.obtenerTodos();
+            if (fabricantes != null && !fabricantes.isEmpty()) {
+                cbFabricante.getItems().clear();
+                cbFabricante.getItems().addAll(fabricantes);
+            }
+        } catch (Exception e) {
+            System.err.println("Error al cargar fabricantes: " + e.getMessage());
+        }
+    }
+    
+    public void cargarProveedoresDigitales() {
+        try {
+            List<ProveedorDigital> proveedores = ProveedorDigital.obtenerTodos();
+            if (proveedores != null && !proveedores.isEmpty()) {
+                cbProveedorDigital.getItems().clear();
+                cbProveedorDigital.getItems().addAll(proveedores);
+            }
+        } catch (Exception e) {
+            System.err.println("Error al cargar proveedores digitales: " + e.getMessage());
+        }
+    }
 
-    /** Método usado por algunos controladores para configurar el producto a editar */
     public void setProducto(Producto p) {
         this.productoAEditar = p;
         if (p != null) {
@@ -65,17 +156,12 @@ public class ProductoFormularioVistaControlador extends BaseControlador {
         }
     }
 
-    // ESTE METODO CREO SE PUEDE BORRAR
-        public void setProductoAEditar(Producto p) {
-        setProducto(p);
-    }
+    public void setProductoAEditar(Producto p) {setProducto(p);}
 
-    /** Establecer referencia al controlador padre */
     public void setControladorPadre(ProductosVistaControlador productosVista) {
         this.productosVista = productosVista;
     }
 
-    // Carga los datos del producto a editar en los campos de la UI
     private void cargarDatosEnCampos(Producto producto) {
         if (producto != null) {
             txtCodigo.setText(String.valueOf(producto.getCodigoProducto()));
@@ -84,6 +170,41 @@ public class ProductoFormularioVistaControlador extends BaseControlador {
             cbCategoria.setValue(producto.getCategoria());
             txtPrecio.setText(producto.getPrecioProducto() != null ? producto.getPrecioProducto().toPlainString() : "");
             txtStock.setText(String.valueOf(producto.getStockProducto()));
+            
+            String tipo = producto.obtenerTipoProducto();
+            if ("FISICO".equals(tipo)) {
+                cbTipoProducto.setValue("FÍSICO");
+                ProductoFisico pf = ProductoFisico.obtenerPorId(producto.getIdProducto());
+                if (pf != null) {
+                    cbFabricante.setValue(pf.getFabricante());
+                    if (pf.getEstadoFisico() != null) {
+                        cbEstadoFisico.setValue(pf.getEstadoFisico().name());
+                    }
+                    if (pf.getGarantiaMeses() != null) {
+                        txtGarantiaMeses.setText(String.valueOf(pf.getGarantiaMeses()));
+                    }
+                    if (pf.getTipoGarantia() != null) {
+                        cbTipoGarantia.setValue(pf.getTipoGarantia().name());
+                    }
+                }
+            } else if ("DIGITAL".equals(tipo)) {
+                cbTipoProducto.setValue("DIGITAL");
+                ProductoDigital pd = ProductoDigital.obtenerPorId(producto.getIdProducto());
+                if (pd != null) {
+                    cbProveedorDigital.setValue(pd.getProveedorDigital());
+                    if (pd.getTipoLicencia() != null) {
+                        cbTipoLicencia.setValue(pd.getTipoLicencia().name());
+                    }
+                    if (pd.getActivacionesMax() != null) {
+                        txtActivacionesMax.setText(String.valueOf(pd.getActivacionesMax()));
+                    }
+                    if (pd.getDuracionLicenciaDias() != null) {
+                        txtDuracionDias.setText(String.valueOf(pd.getDuracionLicenciaDias()));
+                    }
+                }
+            } else {
+                cbTipoProducto.setValue("GENÉRICO");
+            }
         }
     }
 
@@ -94,51 +215,84 @@ public class ProductoFormularioVistaControlador extends BaseControlador {
             if (txtCodigo.getText().isEmpty() || txtNombre.getText().isEmpty() ||
                 txtPrecio.getText().isEmpty() || txtStock.getText().isEmpty() ||
                 cbCategoria.getValue() == null) {
-                mostrarAlerta("Todos los campos son obligatorios.");
+                mostrarAlerta("Todos los campos básicos son obligatorios.");
                 return;
             }
+            
             boolean ok;
             String usuario = (Sesion.getUsuarioActual() != null)
                     ? Sesion.getUsuarioActual().getNombre()
                     : "Desconocido";
+            
+            String tipoSeleccionado = cbTipoProducto.getValue();
+            
             if (productoAEditar == null) {
-                // Crear nuevo producto
-                Producto nuevo = new Producto();
-                guardarDatosEnProducto(nuevo);
-                // Por convención, los productos nuevos se crean activos
-                nuevo.setActivo(true);
-                ok = nuevo.guardar(); // Usar el método del modelo
+                // Crear nuevo producto según el tipo
+                if ("FÍSICO".equals(tipoSeleccionado)) {
+                    ProductoFisico nuevo = new ProductoFisico();
+                    guardarDatosEnProducto(nuevo);
+                    guardarDatosFisicos(nuevo);
+                    nuevo.setActivo(true);
+                    ok = nuevo.guardarFisico();
+                } else if ("DIGITAL".equals(tipoSeleccionado)) {
+                    ProductoDigital nuevo = new ProductoDigital();
+                    guardarDatosEnProducto(nuevo);
+                    guardarDatosDigitales(nuevo);
+                    nuevo.setActivo(true);
+                    ok = nuevo.guardarDigital();
+                } else {
+                    Producto nuevo = new Producto();
+                    guardarDatosEnProducto(nuevo);
+                    nuevo.setActivo(true);
+                    ok = nuevo.guardar();
+                }
+                
                 if (ok) {
                     AuditoriaUtil.registrarAccion(usuario, "CREAR PRODUCTO", "Producto");
                 }
             } else {
                 // Modificar producto existente
-                guardarDatosEnProducto(productoAEditar);
-                ok = productoAEditar.actualizar(); // Usar el método del modelo
-                if (ok) {
-          AuditoriaProductoUtil auditor = new AuditoriaProductoUtil();
-           auditor.registrarAccionEspecifica(productoOriginal, productoAEditar);
-
+                String tipoOriginal = productoAEditar.obtenerTipoProducto();
+                
+                if ("FISICO".equals(tipoOriginal)) {
+                    ProductoFisico pf = ProductoFisico.obtenerPorId(productoAEditar.getIdProducto());
+                    guardarDatosEnProducto(pf);
+                    guardarDatosFisicos(pf);
+                    ok = pf.guardarFisico();
+                } else if ("DIGITAL".equals(tipoOriginal)) {
+                    ProductoDigital pd = ProductoDigital.obtenerPorId(productoAEditar.getIdProducto());
+                    guardarDatosEnProducto(pd);
+                    guardarDatosDigitales(pd);
+                    ok = pd.guardarDigital();
+                } else {
+                    guardarDatosEnProducto(productoAEditar);
+                    ok = productoAEditar.actualizar();
                 }
-
-
+                
+                if (ok) {
+                    AuditoriaProductoUtil auditor = new AuditoriaProductoUtil();
+                    auditor.registrarAccionEspecifica(productoOriginal, productoAEditar);
+                }
             }
+            
             if (ok) {
                 mostrarAlerta("Producto guardado correctamente.");
+                // Refrescar la vista padre si existe
+                if (productosVista != null) {
+                    productosVista.cargarProductos();
+                }
                 cerrarVentana();
             } else {
                 mostrarAlerta("Error al guardar el producto. Revisa la consola.");
             }
 
         } catch (NumberFormatException nfe) {
-            mostrarAlerta("Formato numérico incorrecto (precio o stock).");
+            mostrarAlerta("Formato numérico incorrecto (precio, stock, etc).");
         } catch (Exception e) {
-            System.err.println("Error inesperado: " + e.getMessage());
             mostrarAlerta("Error inesperado: " + e.getMessage());
         }
     }
 
-    // Guarda los datos del formulario en el objeto Producto
     private void guardarDatosEnProducto(Producto producto) {
         if (producto != null) {
             try {
@@ -153,17 +307,142 @@ public class ProductoFormularioVistaControlador extends BaseControlador {
             }
         }
     }
+    
+    private void guardarDatosFisicos(ProductoFisico producto) {
+        producto.setFabricante(cbFabricante.getValue());
+        
+        if (cbEstadoFisico.getValue() != null) {
+            producto.setEstadoFisico(ProductoFisico.EstadoFisico.valueOf(cbEstadoFisico.getValue()));
+        }
+        if (txtGarantiaMeses.getText() != null && !txtGarantiaMeses.getText().trim().isEmpty()) {
+            producto.setGarantiaMeses(Integer.parseInt(txtGarantiaMeses.getText().trim()));
+        }
+        if (cbTipoGarantia.getValue() != null) {
+            producto.setTipoGarantia(ProductoFisico.TipoGarantia.valueOf(cbTipoGarantia.getValue()));
+        }
+    }
+    
+    private void guardarDatosDigitales(ProductoDigital producto) {
+        producto.setProveedorDigital(cbProveedorDigital.getValue());
+        
+        if (cbTipoLicencia.getValue() != null) {
+            producto.setTipoLicencia(ProductoDigital.TipoLicencia.valueOf(cbTipoLicencia.getValue()));
+        }
+        if (txtActivacionesMax.getText() != null && !txtActivacionesMax.getText().trim().isEmpty()) {
+            producto.setActivacionesMax(Integer.parseInt(txtActivacionesMax.getText().trim()));
+        }
+        if (txtDuracionDias.getText() != null && !txtDuracionDias.getText().trim().isEmpty()) {
+            producto.setDuracionLicenciaDias(Integer.parseInt(txtDuracionDias.getText().trim()));
+        }
+    }
 
     @FXML
     public void agregarCategoria() {
         try {
-            // Crear y mostrar la ventana del formulario de categoría
             crearFormulario("/view/formularios/CategoriaForm.fxml", "Agregar Nueva Categoría");
-            // Recargar categorías por si se creó una nueva
             cargarCategorias();
         } catch (Exception e) {
-            System.err.println("Error al abrir el formulario: " + e.getMessage());
             mostrarAlerta("Error al abrir el formulario: " + e.getMessage());
+        }
+    }
+    
+    @FXML
+    private void agregarFabricante() {
+        try {
+            VentanaVistaControlador.ResultadoVentana resultado = crearFormulario("/view/formularios/FabricanteForm.fxml", "Agregar Nuevo Fabricante");
+            if (resultado != null && resultado.getControlador() != null) {
+                FabricanteFormularioVistaControlador controlador = (FabricanteFormularioVistaControlador) resultado.getControlador();
+                controlador.setControladorPadre(this);
+            }
+        } catch (Exception e) {
+            mostrarAlerta("Error al abrir el formulario: " + e.getMessage());
+        }
+    }
+    
+    @FXML
+    private void modificarFabricante() {
+        Fabricante seleccionado = cbFabricante.getValue();
+        if (seleccionado == null) {
+            mostrarAlerta("Debe seleccionar un fabricante para modificar.");
+            return;
+        }
+
+        try {
+            VentanaVistaControlador.ResultadoVentana resultado = crearFormulario("/view/formularios/FabricanteForm.fxml", "Modificar Fabricante");
+            if (resultado != null && resultado.getControlador() != null) {
+                FabricanteFormularioVistaControlador controlador = (FabricanteFormularioVistaControlador) resultado.getControlador();
+                controlador.setFabricanteAEditar(seleccionado);
+                controlador.setControladorPadre(this);
+            }
+        } catch (Exception e) {
+            mostrarAlerta("Error al abrir el formulario: " + e.getMessage());
+        }
+    }
+    
+    @FXML
+    private void eliminarFabricante() {
+        Fabricante seleccionado = cbFabricante.getValue();
+        if (seleccionado == null) {
+            mostrarAlerta("Debe seleccionar un fabricante para eliminar.");
+            return;
+        }
+
+        if (seleccionado.eliminar()) {
+            mostrarAlerta("Fabricante eliminado correctamente.");
+            cargarFabricantes();
+            cbFabricante.setValue(null);
+        } else {
+            mostrarAlerta("Error al eliminar el fabricante. Puede estar en uso por productos.");
+        }
+    }
+    
+    @FXML
+    private void agregarProveedorDigital() {
+        try {
+            VentanaVistaControlador.ResultadoVentana resultado = crearFormulario("/view/formularios/ProveedorDigitalForm.fxml", "Agregar Nuevo Proveedor Digital");
+            if (resultado != null && resultado.getControlador() != null) {
+                ProveedorDigitalFormularioVistaControlador controlador = (ProveedorDigitalFormularioVistaControlador) resultado.getControlador();
+                controlador.setControladorPadre(this);
+            }
+        } catch (Exception e) {
+            mostrarAlerta("Error al abrir el formulario: " + e.getMessage());
+        }
+    }
+    
+    @FXML
+    private void modificarProveedorDigital() {
+        ProveedorDigital seleccionado = cbProveedorDigital.getValue();
+        if (seleccionado == null) {
+            mostrarAlerta("Debe seleccionar un proveedor digital para modificar.");
+            return;
+        }
+
+        try {
+            VentanaVistaControlador.ResultadoVentana resultado = crearFormulario("/view/formularios/ProveedorDigitalForm.fxml", "Modificar Proveedor Digital");
+            if (resultado != null && resultado.getControlador() != null) {
+                ProveedorDigitalFormularioVistaControlador controlador = (ProveedorDigitalFormularioVistaControlador) resultado.getControlador();
+                controlador.setProveedorDigitalAEditar(seleccionado);
+                controlador.setControladorPadre(this);
+            }
+        } catch (Exception e) {
+            mostrarAlerta("Error al abrir el formulario: " + e.getMessage());
+        }
+    }
+    
+    @FXML
+    private void eliminarProveedorDigital() {
+        ProveedorDigital seleccionado = cbProveedorDigital.getValue();
+        if (seleccionado == null) {
+            mostrarAlerta("Debe seleccionar un proveedor digital para eliminar.");
+            return;
+        }
+
+        if (seleccionado.eliminar()) {
+            mostrarAlerta("Proveedor digital eliminado correctamente.");
+            cargarProveedoresDigitales();
+            cbProveedorDigital.setValue(null);
+        } else {
+            mostrarAlerta("Error al eliminar el proveedor digital. Puede estar en uso por productos.");
         }
     }
 
@@ -173,7 +452,6 @@ public class ProductoFormularioVistaControlador extends BaseControlador {
         if (productosVista != null) {
             productosVista.cargarProductos();
         }
-        // Para ventanas internas, usar el método de BaseControlador
         BaseControlador.cerrarVentanaInterna(txtCodigo);
     }
 

@@ -196,7 +196,22 @@ public class ProductosVistaControlador extends BaseControlador {
 
     @FXML
     private void detallesProducto() {
-        mostrarAlerta("Función de detalles aún no implementada.");
+        Producto seleccionado = tablaProductos.getSelectionModel().getSelectedItem();
+        if (seleccionado == null) {
+            mostrarAlerta("Selecciona un producto para ver sus detalles.");
+            return;
+        }
+
+        try {
+            VentanaVistaControlador.ResultadoVentana resultado = crearFormulario("/view/DetallesProducto.fxml", "Detalles del Producto", 600, 500);
+            if (resultado != null && resultado.getControlador() != null) {
+                DetallesProductoControlador controlador = (DetallesProductoControlador) resultado.getControlador();
+                controlador.setProducto(seleccionado);
+            }
+        } catch (Exception e) {
+            System.err.println("Error al abrir los detalles del producto: " + e.getMessage());
+            mostrarAlerta("Error al abrir los detalles: " + e.getMessage());
+        }
     }
 
     /** Mostrar alertas */

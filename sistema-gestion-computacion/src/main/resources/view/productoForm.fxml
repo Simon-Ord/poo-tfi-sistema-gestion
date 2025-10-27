@@ -10,7 +10,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox prefHeight="365.0" prefWidth="381.0" spacing="15" style="-fx-background-color: linear-gradient(to bottom right, #1c1f2b, #242a3a); -fx-padding: 25; -fx-background-radius: 10;" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.unpsjb.poo.controller.ProductoFormularioVistaControlador">
+<VBox fx:id="vboxPrincipal" prefHeight="400.0" prefWidth="450.0" spacing="15" style="-fx-background-color: linear-gradient(to bottom right, #1c1f2b, #242a3a); -fx-padding: 25; -fx-background-radius: 10;" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.unpsjb.poo.controller.ProductoFormularioVistaControlador">
 
     <Label style="-fx-font-size: 22px; -fx-text-fill: white; -fx-font-weight: bold;" text="Agregar / Editar Producto" />
 
@@ -20,17 +20,20 @@
             <ColumnConstraints percentWidth="65" />
         </columnConstraints>
 
-        <Label text="Código:" textFill="WHITE" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-        <TextField fx:id="txtCodigo" promptText="Ej: 001" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+        <Label text="Tipo Producto:" textFill="WHITE" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+        <ChoiceBox fx:id="cbTipoProducto" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
-        <Label text="Nombre:" textFill="WHITE" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-        <TextField fx:id="txtNombre" promptText="Ej: Hisense U7N" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+        <Label text="Código:" textFill="WHITE" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+        <TextField fx:id="txtCodigo" promptText="Ej: 001" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-        <Label text="Descripción:" textFill="WHITE" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-        <TextField fx:id="txtDescripcion" promptText="Ej: monitor pc" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+        <Label text="Nombre:" textFill="WHITE" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+        <TextField fx:id="txtNombre" promptText="Ej: Hisense U7N" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
-        <Label text="Categoría:" textFill="WHITE" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-      <HBox prefHeight="0.0" prefWidth="90.0" GridPane.columnIndex="1" GridPane.rowIndex="3">
+        <Label text="Descripción:" textFill="WHITE" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+        <TextField fx:id="txtDescripcion" promptText="Ej: monitor pc" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+        <Label text="Categoría:" textFill="WHITE" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+      <HBox prefHeight="0.0" prefWidth="90.0" GridPane.columnIndex="1" GridPane.rowIndex="4">
          <children>
               <ChoiceBox fx:id="cbCategoria" maxWidth="204.0" minWidth="0.0" prefHeight="25.0" prefWidth="189.0" style="-fx-text-fill: white;" />
               
@@ -38,12 +41,56 @@
          </children>
       </HBox>
 
-        <Label text="Precio:" textFill="WHITE" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-        <TextField fx:id="txtPrecio" promptText="Ej: 500,60" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+        <Label text="Precio:" textFill="WHITE" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+        <TextField fx:id="txtPrecio" promptText="Ej: 500,60" GridPane.columnIndex="1" GridPane.rowIndex="5" />
 
-        <Label text="Stock:" textFill="WHITE" GridPane.columnIndex="0" GridPane.rowIndex="5" />
-        <TextField fx:id="txtStock" promptText="Ej: 3" GridPane.columnIndex="1" GridPane.rowIndex="5" />
+        <Label text="Stock:" textFill="WHITE" GridPane.columnIndex="0" GridPane.rowIndex="6" />
+        <TextField fx:id="txtStock" promptText="Ej: 3" GridPane.columnIndex="1" GridPane.rowIndex="6" />
+        
+        <!-- Campos específicos para Producto Físico -->
+        <Label fx:id="lblFabricante" text="Fabricante:" textFill="WHITE" visible="false" GridPane.columnIndex="0" GridPane.rowIndex="7" />
+        <HBox fx:id="hboxFabricante" spacing="5" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="7">
+            <children>
+                <ChoiceBox fx:id="cbFabricante" prefWidth="120.0" />
+                <Button alignment="CENTER" mnemonicParsing="false" onAction="#agregarFabricante" prefHeight="25.0" prefWidth="30.0" text="+" />
+                <Button alignment="CENTER" mnemonicParsing="false" onAction="#modificarFabricante" prefHeight="25.0" prefWidth="30.0" text="✎" />
+                <Button alignment="CENTER" mnemonicParsing="false" onAction="#eliminarFabricante" prefHeight="25.0" prefWidth="30.0" text="×" />
+            </children>
+        </HBox>
+        
+        <Label fx:id="lblEstadoFisico" text="Estado:" textFill="WHITE" visible="false" GridPane.columnIndex="0" GridPane.rowIndex="8" />
+        <ChoiceBox fx:id="cbEstadoFisico" prefWidth="200.0" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+        
+        <Label fx:id="lblGarantia" text="Garantía (meses):" textFill="WHITE" visible="false" GridPane.columnIndex="0" GridPane.rowIndex="9" />
+        <TextField fx:id="txtGarantiaMeses" promptText="Ej: 12" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+        
+        <Label fx:id="lblTipoGarantia" text="Tipo Garantía:" textFill="WHITE" visible="false" GridPane.columnIndex="0" GridPane.rowIndex="10" />
+        <ChoiceBox fx:id="cbTipoGarantia" prefWidth="200.0" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+        
+        <!-- Campos específicos para Producto Digital -->
+        <Label fx:id="lblProveedor" text="Proveedor:" textFill="WHITE" visible="false" GridPane.columnIndex="0" GridPane.rowIndex="7" />
+        <HBox fx:id="hboxProveedor" spacing="5" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="7">
+            <children>
+                <ChoiceBox fx:id="cbProveedorDigital" prefWidth="120.0" />
+                <Button alignment="CENTER" mnemonicParsing="false" onAction="#agregarProveedorDigital" prefHeight="25.0" prefWidth="30.0" text="+" />
+                <Button alignment="CENTER" mnemonicParsing="false" onAction="#modificarProveedorDigital" prefHeight="25.0" prefWidth="30.0" text="✎" />
+                <Button alignment="CENTER" mnemonicParsing="false" onAction="#eliminarProveedorDigital" prefHeight="25.0" prefWidth="30.0" text="×" />
+            </children>
+        </HBox>
+        
+        <Label fx:id="lblTipoLicencia" text="Tipo Licencia:" textFill="WHITE" visible="false" GridPane.columnIndex="0" GridPane.rowIndex="8" />
+        <ChoiceBox fx:id="cbTipoLicencia" prefWidth="200.0" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="8" />
+        
+        <Label fx:id="lblActivaciones" text="Activaciones Máx:" textFill="WHITE" visible="false" GridPane.columnIndex="0" GridPane.rowIndex="9" />
+        <TextField fx:id="txtActivacionesMax" promptText="Ej: 5" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="9" />
+        
+        <Label fx:id="lblDuracion" text="Duración (días):" textFill="WHITE" visible="false" GridPane.columnIndex="0" GridPane.rowIndex="10" />
+        <TextField fx:id="txtDuracionDias" promptText="Ej: 365" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="10" />
+        
       <rowConstraints>
+         <RowConstraints />
+         <RowConstraints />
+         <RowConstraints />
          <RowConstraints />
          <RowConstraints />
          <RowConstraints />

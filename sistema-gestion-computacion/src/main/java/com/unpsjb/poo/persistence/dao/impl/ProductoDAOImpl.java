@@ -277,6 +277,7 @@ public boolean delete(int id) {
 
     try (Connection conexion = GestorDeConexion.getInstancia().getConexion();
          PreparedStatement pstmt = conexion.prepareStatement(sql)) {
+
         // 1. Convertir el String de la interfaz a INT (porque codigoProducto es INT)
         int codigoInt = Integer.parseInt(codigo);
         pstmt.setInt(1, codigoInt);
