@@ -1,5 +1,5 @@
 -- ======================
--- 🗂️ TABLA DE CATEGORÍA
+-- TABLA DE CATEGORÍA
 -- ======================
 CREATE TABLE categorias (
     id_categoria SERIAL PRIMARY KEY,
@@ -10,8 +10,8 @@ CREATE TABLE categorias (
 -- VERIFICAR CONTENIDO DE LA TABLA
 SELECT * FROM categorias;
 -- ======================
--- 🛒 TABLA DE PRODUCTOS 
---  =====================
+-- TABLA DE PRODUCTOS 
+-- ======================
 CREATE TABLE productos (
     id_producto SERIAL PRIMARY KEY,
     nombre_producto VARCHAR(100) NOT NULL,
@@ -26,7 +26,7 @@ CREATE TABLE productos (
 -- VERIFICAR CONTENIDO DE LA TABLA
 SELECT * FROM productos;
 -- =================================
--- 🏢 TABLA DE PROVEEDORES DIGITALES
+-- TABLA DE PROVEEDORES DIGITALES
 -- =================================
 CREATE TABLE proveedores_digitales (
     id SERIAL PRIMARY KEY,
@@ -35,7 +35,7 @@ CREATE TABLE proveedores_digitales (
 -- VERIFICAR CONTENIDO DE LA TABLA
 SELECT * FROM proveedores_digitales;
 -- ======================
--- 🏭 TABLA DE FABRICANTE
+-- TABLA DE FABRICANTE
 -- ======================
 CREATE TABLE fabricantes (
     id SERIAL PRIMARY KEY,
@@ -45,7 +45,7 @@ CREATE TABLE fabricantes (
 SELECT * FROM fabricantes;
 
 -- ===========================
--- 📦 TABLA PRODUCTOS FÍSICOS
+-- TABLA PRODUCTOS FÍSICOS
 -- ===========================
 CREATE TABLE productos_fisicos (
     id_producto INT PRIMARY KEY,
@@ -57,7 +57,7 @@ CREATE TABLE productos_fisicos (
     FOREIGN KEY (id_fabricante) REFERENCES fabricantes(id)
 );
 -- ============================
--- 💾 TABLA PRODUCTOS DIGITALES
+-- TABLA PRODUCTOS DIGITALES
 -- ============================
 CREATE TABLE productos_digitales (
     id_producto INT PRIMARY KEY,
@@ -84,14 +84,6 @@ INSERT INTO fabricantes (nombre) VALUES
 INSERT INTO categorias (nombre_categoria) VALUES
 ('Computadoras'), ('Notebooks'), ('Periféricos'), ('Componentes'), ('Accesorios'), ('Software'),
 ('Monitores'), ('Almacenamiento');
--- Insertar productos de ejemplo
-INSERT INTO productos (nombre_producto, descripcion_producto, stock_producto, precio_producto, categoria_id, codigo_producto, activo)
-VALUES 
-    ('Monitor LG 24''', 'Monitor Full HD de 24 pulgadas', 15, 199.99, 1, 1001, TRUE),
-    ('Mouse Logitech MX Master 3', 'Mouse inalámbrico de alta precisión', 30, 99.99, 2, 1002, TRUE),
-    ('Teclado Mecánico Corsair K70', 'Teclado mecánico retroiluminado', 20, 129.99, 3, 1003, TRUE),
-    ('Disco Duro SSD Samsung 1TB', 'Unidad de estado sólido de 1TB', 10, 149.99, 5, 1004, TRUE),
-    ('Software Antivirus Norton', 'Protección completa contra virus y malware', 50, 39.99, 8, 1005, TRUE);
 
 
 

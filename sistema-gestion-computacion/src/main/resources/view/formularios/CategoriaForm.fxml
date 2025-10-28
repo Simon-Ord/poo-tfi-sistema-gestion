@@ -14,10 +14,10 @@ xmlns="http://javafx.com/javafx/24.0.1"
 xmlns:fx="http://javafx.com/fxml/1"
 fx:controller="com.unpsjb.poo.controller.CategoriaFormularioVistaControlador">
 
-	<!-- Título -->
+
 	<Label style="-fx-font-size: 22px; -fx-text-fill: white; -fx-font-weight: bold;" text="Agregar Categoría" />
 
-	<!-- Contenido principal -->
+	
 	<GridPane hgap="15" vgap="15">
 		<columnConstraints>
 			<ColumnConstraints halignment="RIGHT" />
@@ -28,12 +28,12 @@ fx:controller="com.unpsjb.poo.controller.CategoriaFormularioVistaControlador">
 			<RowConstraints vgrow="NEVER" />
 		</rowConstraints>
 
-		<!-- Nombre -->
+		
 		<Label style="-fx-text-fill: white;" text="Nombre:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
 		<TextField fx:id="txtNombre" promptText="Nombre de la categoría" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 	</GridPane>
 
-	<!-- Botones -->
+
 	<HBox alignment="CENTER" spacing="20">
 		<Button fx:id="btnGuardar" onAction="#guardarCategoria" style="-fx-background-color: #4CAF50; -fx-text-fill: white; -fx-font-weight: bold;         -fx-background-radius: 10; -fx-padding: 8 18;" text="Guardar" />
 

@@ -1,5 +1,5 @@
 -- =============================================================
--- 💰 TABLA DE VENTAS/FACTURAS (Completa para el sistema)
+-- TABLA DE VENTAS/FACTURAS 
 -- =============================================================
 
 -- Crear la tabla de ventas mejorada
@@ -17,7 +17,7 @@ CREATE TABLE ventas (
 );
 
 -- ==============================
--- 📄 TABLA DE DETALLE DE VENTA
+-- TABLA DE DETALLE DE VENTA
 -- ==============================
 CREATE TABLE detalle_venta (
     id SERIAL PRIMARY KEY,

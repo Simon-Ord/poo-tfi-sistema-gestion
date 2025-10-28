@@ -1,6 +1,6 @@
--- Active: 1760230244890@@127.0.0.1@5432@tienda_computacion
+-- Active: 1760980557043@@127.0.0.1@5432@tienda_computacion
 -- =============================================================
--- 🧱 TABLAS PRINCIPALES DEL SISTEMA
+-- TABLAS PRINCIPALES DEL SISTEMA
 -- =============================================================
 
 CREATE TABLE usuarios (
@@ -12,8 +12,9 @@ CREATE TABLE usuarios (
     estado BOOLEAN DEFAULT TRUE,
     fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
+
 -- ====================
--- 🧑‍🤝‍🧑 TABLA DE CLIENTES
+-- TABLA DE CLIENTES
 -- ====================
 
 CREATE TABLE clientes (
@@ -25,33 +26,31 @@ CREATE TABLE clientes (
     fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- =============================================================
--- 💰 TABLA DE FACTURAS (simplificada)
--- =============================================================
-CREATE TABLE facturas (
+CREATE TABLE clientes (
     id SERIAL PRIMARY KEY,
-    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    cliente_id INT,
-    total DECIMAL(12,2) NOT NULL,
-    FOREIGN KEY (cliente_id) REFERENCES clientes(id)
+    nombre VARCHAR(100) NOT NULL,
+    cuit VARCHAR(11),
+    telefono VARCHAR(40),
+    direccion VARCHAR(200),
+    email VARCHAR(100)
 );
--- ==============================
--- 📄 TABLA DE DETALLE DE FACTURA
--- ==============================
-CREATE TABLE detalle_factura (
+
+CREATE TABLE clientes (
     id SERIAL PRIMARY KEY,
-    factura_id INT,
-    producto_id INT,
-    cantidad INT NOT NULL,
-    precio_unitario DECIMAL(10,2) NOT NULL,
-    subtotal DECIMAL(12,2) NOT NULL,
-    FOREIGN KEY (factura_id) REFERENCES facturas(id),
-    FOREIGN KEY (producto_id) REFERENCES productos(id_producto)
+    nombre VARCHAR(100) NOT NULL,
+    cuit VARCHAR(11),
+    telefono VARCHAR(40),
+    direccion VARCHAR(200),
+    email VARCHAR(100),
+    tipo VARCHAR(50),
+    activo BOOLEAN DEFAULT TRUE
 );
 
 
+DROP TABLE IF EXISTS clientes CASCADE;
+
 -- =============================================================
--- 🕵️‍♂️ TABLA DE AUDITORÍA (registrada por Java)
+-- TABLA DE AUDITORÍA 
 -- =============================================================
 
 CREATE TABLE auditoria (
@@ -64,9 +63,8 @@ CREATE TABLE auditoria (
     id_referencia VARCHAR(50)
 );
 
-
 -- =============================================================
--- 🕓 TABLA DE SESIONES (controladas desde Java)
+-- TABLA DE SESIONES 
 -- =============================================================
 
 CREATE TABLE sesiones (
@@ -77,16 +75,15 @@ CREATE TABLE sesiones (
     estado VARCHAR(20) DEFAULT 'ACTIVA' CHECK (estado IN ('ACTIVA', 'CERRADA'))
 );
 
-
 -- =============================================================
--- 🔐 USUARIO ADMINISTRADOR INICIAL
+-- USUARIO ADMINISTRADOR INICIAL
 -- =============================================================
 
 INSERT INTO usuarios (dni, nombre, usuario, contraseña, rol, estado)
 VALUES ('1234', 'ALEXIS', '1', '1', 'ADMINISTRADOR', true);
 
 -- =============================================================
--- 🔍 CONSULTAS DE PRUEBA
+-- CONSULTAS DE PRUEBA
 -- =============================================================
 
 SELECT * FROM clientes;

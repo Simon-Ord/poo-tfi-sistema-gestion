@@ -203,13 +203,12 @@ public class ProductosVistaControlador extends BaseControlador {
         }
 
         try {
-            VentanaVistaControlador.ResultadoVentana resultado = crearFormulario("/view/DetallesProducto.fxml", "Detalles del Producto", 600, 500);
+            VentanaVistaControlador.ResultadoVentana resultado = crearFormulario("/view/DetallesProducto.fxml", "Detalles del Producto", 530, 570);
             if (resultado != null && resultado.getControlador() != null) {
                 DetallesProductoControlador controlador = (DetallesProductoControlador) resultado.getControlador();
                 controlador.setProducto(seleccionado);
             }
         } catch (Exception e) {
-            System.err.println("Error al abrir los detalles del producto: " + e.getMessage());
             mostrarAlerta("Error al abrir los detalles: " + e.getMessage());
         }
     }

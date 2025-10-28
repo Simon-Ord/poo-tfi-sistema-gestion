@@ -11,12 +11,12 @@
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.unpsjb.poo.controller.ReportesControlador">
 
-    <!-- 🔹 Título -->
+  
     <Label styleClass="titulo-principal" text="📊 Auditoría y Reportes del Sistema">
         <font><Font size="22.0" /></font>
     </Label>
 
-    <!-- 🔍 Panel de búsqueda -->
+  
     <GridPane hgap="15" vgap="10" styleClass="panel-busqueda">
         <columnConstraints>
             <ColumnConstraints hgrow="NEVER" minWidth="60" prefWidth="80" />
@@ -25,7 +25,7 @@
             <ColumnConstraints hgrow="ALWAYS" minWidth="150" prefWidth="200" />
         </columnConstraints>
 
-        <!-- 🧍 Usuario -->
+       
         <Label styleClass="etiqueta" text="👤 Usuario:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
         <TextField fx:id="txtUsuario"
                    promptText="nombre del usuario (ej: Alexis,Simon,Elias,Marcos..)"
@@ -35,7 +35,7 @@
             </tooltip>
         </TextField>
 
-        <!-- ⚙️ Acción -->
+        
         <Label styleClass="etiqueta" text="🛠️ Acción:" GridPane.columnIndex="2" GridPane.rowIndex="0" />
         <TextField fx:id="txtAccion"
                    promptText="Ej: Crear, Modificar, Eliminar, Iniciar Sesión..."
@@ -45,7 +45,7 @@
             </tooltip>
         </TextField>
 
-        <!-- 🧾 Entidad -->
+       
         <Label styleClass="etiqueta" text="📦 Entidad:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
         <TextField fx:id="txtEntidad"
                    promptText="Ej: Usuario, Producto, Sesión..."
@@ -55,7 +55,7 @@
             </tooltip>
         </TextField>
 
-        <!-- 🔘 Botones -->
+       
         <HBox alignment="CENTER_LEFT" spacing="10"
               GridPane.columnIndex="3" GridPane.rowIndex="1">
             <Button onAction="#buscar" styleClass="boton-accion" text="🔍 Buscar">
@@ -77,7 +77,7 @@
         </rowConstraints>
     </GridPane>
 
-    <!-- 🧾 Tabla de resultados -->
+     
     <ScrollPane fitToWidth="true" fitToHeight="true"
                 hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED"
                 VBox.vgrow="ALWAYS">
@@ -94,7 +94,7 @@
         </TableView>
     </ScrollPane>
 
-    <!-- 🧠 Pie de ayuda -->
+    
     <Label text=" Puede combinar filtros. Ejemplo: buscar 'crear' en acción y 'producto' en entidad.Y te lo podes hacer un PDF"
            styleClass="texto-ayuda" />
 
