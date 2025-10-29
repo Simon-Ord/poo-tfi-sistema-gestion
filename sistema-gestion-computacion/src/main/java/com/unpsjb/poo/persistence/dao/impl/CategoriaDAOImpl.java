@@ -117,34 +117,6 @@ public class CategoriaDAOImpl implements DAO<Categoria> {
         return findAllActivas(); // Por defecto solo activas
     }
 
-    // =====================================
-    // BUSCAR CATEGORIAS POR NOMBRE PARCIAL
-    // =====================================
-    public List<Categoria> findByNombre(String nombre) {
-        String sql = """
-            SELECT * FROM categorias 
-            WHERE LOWER(nombre_categoria) LIKE LOWER(?) AND activo = true
-            ORDER BY nombre_categoria
-            """;
-        
-        List<Categoria> categorias = new ArrayList<>();
-        
-        try (Connection conexion = GestorDeConexion.getInstancia().getConexion();
-             PreparedStatement pstmt = conexion.prepareStatement(sql)) {
-
-            pstmt.setString(1, "%" + nombre + "%");
-            ResultSet rs = pstmt.executeQuery();
-
-            while (rs.next()) {
-                categorias.add(mapResultSetToCategoria(rs));
-            }
-
-        } catch (SQLException e) {
-            System.err.println("Error al buscar categorías por nombre: " + e.getMessage());
-        }
-        
-        return categorias;
-    }
     // ========================
     // OBTENER TODAS LAS ACTIVAS
     // ========================

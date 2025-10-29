@@ -17,23 +17,6 @@ CREATE TABLE usuarios (
 -- TABLA DE CLIENTES
 -- ====================
 
-CREATE TABLE clientes (
-    id SERIAL PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL,
-    direccion VARCHAR(150),
-    telefono VARCHAR(30),
-    email VARCHAR(100),
-    fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-
-CREATE TABLE clientes (
-    id SERIAL PRIMARY KEY,
-    nombre VARCHAR(100) NOT NULL,
-    cuit VARCHAR(11),
-    telefono VARCHAR(40),
-    direccion VARCHAR(200),
-    email VARCHAR(100)
-);
 
 CREATE TABLE clientes (
     id SERIAL PRIMARY KEY,

@@ -185,8 +185,7 @@ Implementado para manejar diferentes métodos de pago:
 
 ### 3.4. Diagrama de Diseño ------- INSERTAR UMLS 
 
-### 3.5. ** Prototipo de la IGU (WireFrame) ** --- INSERT SCREENSHOTS
-
+### 3.5. ** Prototipo de la IGU (WireFrame)
 
 ## 4. Stack Tecnológico
 

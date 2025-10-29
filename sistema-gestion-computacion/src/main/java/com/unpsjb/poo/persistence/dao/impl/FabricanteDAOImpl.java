@@ -112,26 +112,7 @@ public class FabricanteDAOImpl implements DAO<Fabricante> {
         }
         return fabricantes;
     }
-
-    // =============================
-    // Buscar fabricante por nombre
-    // =============================
-    public Optional<Fabricante> findByNombre(String nombre) {
-        String sql = "SELECT * FROM fabricantes WHERE nombre = ?";
-        try (Connection conexion = GestorDeConexion.getInstancia().getConexion();
-             PreparedStatement pstmt = conexion.prepareStatement(sql)) {
-            
-            pstmt.setString(1, nombre);
-            try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
-                    return Optional.of(mapResultSet(rs));
-                }
-            }
-        } catch (SQLException e) {
-            System.err.println("Error al buscar el fabricante por nombre: " + e.getMessage());
-        }
-        return Optional.empty();
-    }
+    
     // ========================
     // Método auxiliar de mapeo
     // ========================

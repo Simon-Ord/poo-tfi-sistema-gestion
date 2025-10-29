@@ -202,8 +202,8 @@ public void handleAnadirItem() {
 
     private void mostrarVentanaCodigos(List<Producto> productos) {
         try {
-            // Usar el patrón crearFormulario heredado de BaseControlador
-            VentanaVistaControlador.ResultadoVentana resultado = crearFormulario(
+            // Usar el patrón crearVentana heredado de BaseControlador
+            VentanaVistaControlador.ResultadoVentana resultado = crearVentana(
                 "/view/CodigosListaVista.fxml", 
                 "Lista de Códigos de Productos", 
                 500, 
