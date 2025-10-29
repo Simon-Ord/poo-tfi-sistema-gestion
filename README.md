@@ -183,9 +183,13 @@ Implementado para manejar diferentes métodos de pago:
 
 - Procesamiento asíncrono de exportación de PDF
 
-### 3.4. Diagrama de Diseño ------- INSERTAR UMLS 
+### 3.4. Diagrama de Diseño
+<img width="1391" height="396" alt="diagrama-patrones-strategy" src="https://github.com/user-attachments/assets/1725ec7f-d242-48d1-9158-e27bf6873465" />
+<img width="1563" height="396" alt="diagrama-patrones-state-" src="https://github.com/user-attachments/assets/9b817484-6b3f-4d36-a487-aaf079f189a4" />
+
 
 ### 3.5. ** Prototipo de la IGU (WireFrame) ** --- INSERT SCREENSHOTS
+![IMAGEN_SISTEMA](https://github.com/user-attachments/assets/58e1f114-c341-4179-8d5e-8b9fd24a15a5)
 
 
 ## 4. Stack Tecnológico
