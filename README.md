@@ -91,7 +91,7 @@ El sistema implementa un flujo de venta mediante el patrón State, con las sigui
 - Control de roles (ADMINISTRADOR, EMPLEADO)
 - Gestión de permisos según rol
 - Estado de usuario (activo/inactivo)
-- Cambio de contraseña
+- Cambio de usuario y contraseña
 - Auditoría de acciones por usuario
 
 ### 2.5. Sistema de Reportes y Auditoría
@@ -99,7 +99,7 @@ El sistema implementa un flujo de venta mediante el patrón State, con las sigui
 - Registro automático de todas las multiples del sistema
 - Consulta de auditoría por:
 - Usuario que realizó la acción
-- Tipo de acción (INSERT, UPDATE, DELETE, LOGIN, etc.)
+- Tipo de acción (insertar,modificar,eliminiar ,login etc.)
 - Entidad afectada (productos, clientes, ventas, etc.)
 - Rango de fechas
 - Exportación de reportes a PDF
@@ -145,6 +145,8 @@ Implementado para toda la capa de persistencia:
 Implementado en:
 - `GestorDeConexion` - Gestión centralizada de conexiones a base de datos
 - DAOs compartidos entre instancias de modelos
+- `Sesion`-Mantener una única instancia de la sesión activa en todo el sistema, asegurando que exista un solo usuario logueado a la vez durante la ejecución de la aplicación
+
 
 ### 3.2 Patrones de Diseño Adicional
 
