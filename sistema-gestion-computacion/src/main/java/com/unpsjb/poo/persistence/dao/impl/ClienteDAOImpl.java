@@ -1,6 +1,10 @@
 package com.unpsjb.poo.persistence.dao.impl;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -14,7 +18,7 @@ public class ClienteDAOImpl implements DAO<Cliente> {
     @Override
     public List<Cliente> findAll() {
         List<Cliente> lista = new ArrayList<>();
-        String sql = "SELECT * FROM clientes WHERE activo = TRUE ORDER BY id";
+        String sql = "SELECT * FROM clientes ORDER BY id";
         try (Connection conn = GestorDeConexion.getInstancia().getConexion();
              Statement stmt = conn.createStatement();
              ResultSet rs = stmt.executeQuery(sql)) {
@@ -79,18 +83,19 @@ public class ClienteDAOImpl implements DAO<Cliente> {
         }
     }
 
-    @Override
-    public boolean delete(int id) {
-        String sql = "UPDATE clientes SET activo = FALSE WHERE id = ?";
-        try (Connection conn = GestorDeConexion.getInstancia().getConexion();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setInt(1, id);
-            return stmt.executeUpdate() > 0;
-        } catch (SQLException e) {
-            System.err.println("Error al desactivar cliente: " + e.getMessage());
-            return false;
-        }
+@Override
+public boolean delete(int id) {
+    String sql = "UPDATE clientes SET activo = NOT activo WHERE id = ?";
+    try (Connection conn = GestorDeConexion.getInstancia().getConexion();
+         PreparedStatement stmt = conn.prepareStatement(sql)) {
+        stmt.setInt(1, id);
+        return stmt.executeUpdate() > 0;
+    } catch (SQLException e) {
+        System.err.println("Error al cambiar estado del cliente: " + e.getMessage());
+        return false;
     }
+}
+
 
     @Override
     public Optional<Cliente> read(int id) {
@@ -117,12 +122,7 @@ public class ClienteDAOImpl implements DAO<Cliente> {
         return Optional.empty();
     }
 
-    
-    /**
-     * Custom method for searching clientes by name.
-     * This method extends beyond the generic DAO interface to provide
-     * specific search functionality for Cliente entities.
-     */
+
     public List<Cliente> buscarPorNombre(String nombre) {
         List<Cliente> lista = new ArrayList<>();
         String sql = "SELECT * FROM clientes WHERE LOWER(nombre) LIKE LOWER(?) AND activo = TRUE";

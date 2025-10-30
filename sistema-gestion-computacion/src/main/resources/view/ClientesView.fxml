@@ -38,12 +38,13 @@
                 <TableView fx:id="tablaClientes" prefHeight="330" prefWidth="700"
                            style="-fx-background-color: transparent;">
                     <columns>
-                        <TableColumn fx:id="colId" text="ID" prefWidth="60" />
+                        
                         <TableColumn fx:id="colNombre" text="Nombre" prefWidth="160" />
                         <TableColumn fx:id="colCuit" text="CUIT" prefWidth="100" />
                         <TableColumn fx:id="colTelefono" text="Teléfono" prefWidth="100" />
                         <TableColumn fx:id="colEmail" text="Email" prefWidth="150" />
                         <TableColumn fx:id="colTipo" text="Tipo de Cliente" prefWidth="120" />
+                        <TableColumn fx:id="colActivo"   text="Estado"          prefWidth="90"/>
                     </columns>
                 </TableView>
 
