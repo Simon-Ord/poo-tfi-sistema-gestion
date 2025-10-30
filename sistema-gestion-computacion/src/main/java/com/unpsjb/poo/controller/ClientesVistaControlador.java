@@ -3,8 +3,6 @@ package com.unpsjb.poo.controller;
 import java.util.List;
 
 import com.unpsjb.poo.model.Cliente;
-import com.unpsjb.poo.util.Sesion;
-import com.unpsjb.poo.util.cap_auditoria.AuditoriaClienteUtil;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -16,26 +14,29 @@ import javafx.scene.control.TableView;
 public class ClientesVistaControlador extends BaseControlador {
 
     @FXML private TableView<Cliente> tablaClientes;
-    @FXML private TableColumn<Cliente, Integer> colId;
     @FXML private TableColumn<Cliente, String> colNombre;
     @FXML private TableColumn<Cliente, String> colCuit;
     @FXML private TableColumn<Cliente, String> colTelefono;
     @FXML private TableColumn<Cliente, String> colEmail;
     @FXML private TableColumn<Cliente, String> colTipo;
+    @FXML private TableColumn<Cliente, String> colActivo; 
 
     private final ObservableList<Cliente> listaClientes = FXCollections.observableArrayList();
 
     @FXML
     public void initialize() {
-        // Vincular columnas
-        colId.setCellValueFactory(data -> new javafx.beans.property.SimpleObjectProperty<>(data.getValue().getId()));
+    
+        System.out.println(" Inicializando pantalla de clientes...");
+        cargarClientesDesdeBD();
         colNombre.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getNombre()));
         colCuit.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getCuit()));
         colTelefono.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getTelefono()));
         colEmail.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getEmail()));
         colTipo.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getTipo()));
+        colActivo.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().isActivo() ? "Activo" : "Inactivo"
+    )
+);
 
-        cargarClientesDesdeBD();
     }
 
     private void cargarClientesDesdeBD() {
@@ -94,19 +95,17 @@ public class ClientesVistaControlador extends BaseControlador {
             return;
         }
 
-        boolean eliminado = seleccionado.eliminar();
-        if (eliminado) {
-            mostrarAlerta("Cliente eliminado correctamente.");
+        boolean estabaActivo = seleccionado.isActivo();
 
-            //Auditoría: cambio de estado
-            AuditoriaClienteUtil auditor = new AuditoriaClienteUtil();
-            auditor.registrarCambioEstado(seleccionado, false);
-
-            cargarClientesDesdeBD();
+        boolean ok = seleccionado.eliminar(); 
+        if (ok) {
+            String msg = estabaActivo ? "Cliente inactivado." : "Cliente activado.";
+            mostrarAlerta(msg);
+            cargarClientesDesdeBD(); 
         } else {
-            mostrarAlerta("No se pudo eliminar el cliente.");
-        }
+            mostrarAlerta("No se pudo actualizar el estado del cliente.");
     }
+}
 
     private void mostrarAlerta(String mensaje) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);

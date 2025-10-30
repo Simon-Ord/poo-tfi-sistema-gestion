@@ -73,9 +73,9 @@ public class Cliente {
     }
 
     public boolean eliminar() {
-        this.activo = false;
-        return clienteDAO.update(this);
-    }
+    return clienteDAO.delete(this.id);
+  }
+
 
     public boolean actualizarEstado() {
         return clienteDAO.update(this);
