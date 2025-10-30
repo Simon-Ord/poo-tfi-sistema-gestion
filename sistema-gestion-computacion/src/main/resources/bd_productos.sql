@@ -21,7 +21,7 @@ CREATE TABLE productos (
     categoria_id INTEGER REFERENCES categorias(id_categoria),
     codigo_producto INT UNIQUE NOT NULL,
     activo BOOLEAN DEFAULT TRUE,
-    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- <--- CAMPO AÑADIDO
+    fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 -- VERIFICAR CONTENIDO DE LA TABLA
 SELECT * FROM productos;

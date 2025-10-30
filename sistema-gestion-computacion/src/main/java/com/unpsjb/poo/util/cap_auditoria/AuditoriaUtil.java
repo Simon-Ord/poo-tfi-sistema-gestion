@@ -31,7 +31,7 @@ public class AuditoriaUtil extends AuditoriaBase {
             evento.setUsuario(usuario);
             evento.setAccion(accion.toUpperCase());
             evento.setEntidad(entidad.toLowerCase());
-            evento.setDetalles("El usuario " + usuario + " " + detalles);
+            evento.setDetalles(detalles);
 
             reportesDAO.registrarEvento(evento);
         } catch (Exception e) {

@@ -425,9 +425,7 @@ public void handleMetodoPagoSelected() {
     }
 }
 
-/**
- * Llamado por el botón "Registrar venta". FINALIZA el State y la transacción.
- */
+
 @FXML
 public void handleRegistrarVenta() {
     if (estrategiaPagoSeleccionada == null) {
@@ -436,36 +434,22 @@ public void handleRegistrarVenta() {
     }
 
     try {
-        // ======================================
-        // 1️⃣ Se ejecuta el guardado de la venta
-        // ======================================
-        miVenta.siguientePaso(); // <-- 🔹 DESPUÉS DE ESTA LÍNEA
+     
+        miVenta.siguientePaso();
         
-
-        // ======================================
-        // 2️⃣ 🔹 REGISTRAR AUDITORÍA DE LA VENTA
-        // ======================================
-
-        // Ahora que miVenta tiene el ID y el Código de Venta generados por el DAO,
-        // podemos auditar la transacción completa.
-        auditoriaVentaUtil.registrarVenta(miVenta); // ⬅️ LA CONEXIÓN ES AQUÍ
+        auditoriaVentaUtil.registrarVenta(miVenta);
 
 
-        // ======================================
-        // 3️⃣ Actualizar vistas y resetear estado
-        // ======================================
         actualizarVisibilidadVistas(miVenta.getEstadoActual().getVistaID());
         inicializarVistaAgregarProductos();
         vistaDatosFacturaInicializada = false;
         vistaConfirmacionPagoInicializada = false;
 
-        // ======================================
-        // 4️⃣ Confirmación al usuario
-        // ======================================
+
         mostrarAlerta("Éxito", "Venta registrada y auditada correctamente.", Alert.AlertType.INFORMATION);
 
     } catch (Exception e) {
-        System.err.println("❌ Error al registrar venta: " + e.getMessage());
+        System.err.println("Error al registrar venta: " + e.getMessage());
         e.printStackTrace();
         mostrarAlerta("Error", "No se pudo completar la venta: " + e.getMessage(), Alert.AlertType.ERROR);
     }
@@ -496,7 +480,6 @@ public void handleExportarPDF() {
 
         // Crear el generador de PDF
         com.unpsjb.poo.util.Exporter_pdf.PDFFactura pdfGenerator = new com.unpsjb.poo.util.Exporter_pdf.PDFFactura(miVenta);
-        //com.unpsjb.poo.util.PDFTicket pdfGenerator = new com.unpsjb.poo.util.PDFTicket(miVenta);
 
         // Generar nombre de archivo
         String tipoDoc = "FACTURA".equals(miVenta.getTipoFactura()) ? "Factura" : "Ticket";
@@ -524,12 +507,7 @@ public void handleExportarPDF() {
             "Error al generar el PDF: " + e.getMessage(), 
             Alert.AlertType.ERROR);
     }
-}
-
-
-
-
-    
+}   
     // -------------------------------------------------------------------------
     // LÓGICA DE NAVEGACIÓN (PATRÓN STATE)
     // -------------------------------------------------------------------------
@@ -621,10 +599,7 @@ private void inicializarVistaDatosFactura() {
     Node vistaAMostrar = vistaMap.get(nuevaVistaID);
     
     if (vistaAMostrar != null) {
-        
-        // **********************************************
-        // LÓGICA DE INICIALIZACIÓN DEMORADA (AQUÍ DENTRO)
-        // **********************************************
+
         if (nuevaVistaID.equals("FacturaDatosVenta")) {
             inicializarVistaDatosFactura();
 

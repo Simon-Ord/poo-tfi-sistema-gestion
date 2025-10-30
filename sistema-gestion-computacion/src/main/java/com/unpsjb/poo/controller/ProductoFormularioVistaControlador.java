@@ -208,90 +208,110 @@ public class ProductoFormularioVistaControlador extends BaseControlador {
         }
     }
 
-    @FXML
-    private void guardarProducto() {
-        try {
-            // Validaciones básicas
-            if (txtCodigo.getText().isEmpty() || txtNombre.getText().isEmpty() ||
-                txtPrecio.getText().isEmpty() || txtStock.getText().isEmpty() ||
-                cbCategoria.getValue() == null) {
-                mostrarAlerta("Todos los campos básicos son obligatorios.");
-                return;
-            }
-            
-            boolean ok;
-            String usuario = (Sesion.getUsuarioActual() != null)
-                    ? Sesion.getUsuarioActual().getNombre()
-                    : "Desconocido";
-            
-            String tipoSeleccionado = cbTipoProducto.getValue();
-            
-            if (productoAEditar == null) {
-                // Crear nuevo producto según el tipo
-                if ("FÍSICO".equals(tipoSeleccionado)) {
-                    ProductoFisico nuevo = new ProductoFisico();
-                    guardarDatosEnProducto(nuevo);
-                    guardarDatosFisicos(nuevo);
-                    nuevo.setActivo(true);
-                    ok = nuevo.guardarFisico();
-                } else if ("DIGITAL".equals(tipoSeleccionado)) {
-                    ProductoDigital nuevo = new ProductoDigital();
-                    guardarDatosEnProducto(nuevo);
-                    guardarDatosDigitales(nuevo);
-                    nuevo.setActivo(true);
-                    ok = nuevo.guardarDigital();
-                } else {
-                    Producto nuevo = new Producto();
-                    guardarDatosEnProducto(nuevo);
-                    nuevo.setActivo(true);
-                    ok = nuevo.guardar();
-                }
-                
-                if (ok) {
-                    AuditoriaUtil.registrarAccion(usuario, "CREAR PRODUCTO", "Producto");
-                }
+//------------------------
+@FXML
+private void guardarProducto() {
+    try {
+        // Validaciones básicas
+        if (txtCodigo.getText().isEmpty() || txtNombre.getText().isEmpty() ||
+            txtPrecio.getText().isEmpty() || txtStock.getText().isEmpty() ||
+            cbCategoria.getValue() == null) {
+            mostrarAlerta("Todos los campos básicos son obligatorios.");
+            return;
+        }
+
+        String usuario = (Sesion.getUsuarioActual() != null)
+                ? Sesion.getUsuarioActual().getNombre()
+                : "Desconocido";
+
+        String tipoSeleccionado = cbTipoProducto.getValue();
+        boolean ok = false;
+        String mensajeUsuario = "";
+
+        // ========================================================
+        // CREACIÓN DE NUEVO PRODUCTO
+        // ========================================================
+        if (productoAEditar == null) {
+            Producto nuevo = switch (tipoSeleccionado) {
+                case "FÍSICO" -> new ProductoFisico();
+                case "DIGITAL" -> new ProductoDigital();
+                default -> new Producto();
+            };
+
+            guardarDatosEnProducto(nuevo);
+
+            if (nuevo instanceof ProductoFisico pf) {
+                guardarDatosFisicos(pf);
+                ok = pf.guardarFisico();
+            } else if (nuevo instanceof ProductoDigital pd) {
+                guardarDatosDigitales(pd);
+                ok = pd.guardarDigital();
             } else {
-                // Modificar producto existente
-                String tipoOriginal = productoAEditar.obtenerTipoProducto();
-                
-                if ("FISICO".equals(tipoOriginal)) {
-                    ProductoFisico pf = ProductoFisico.obtenerPorId(productoAEditar.getIdProducto());
-                    guardarDatosEnProducto(pf);
-                    guardarDatosFisicos(pf);
-                    ok = pf.guardarFisico();
-                } else if ("DIGITAL".equals(tipoOriginal)) {
-                    ProductoDigital pd = ProductoDigital.obtenerPorId(productoAEditar.getIdProducto());
-                    guardarDatosEnProducto(pd);
-                    guardarDatosDigitales(pd);
-                    ok = pd.guardarDigital();
-                } else {
-                    guardarDatosEnProducto(productoAEditar);
-                    ok = productoAEditar.actualizar();
-                }
-                
-                if (ok) {
-                    AuditoriaProductoUtil auditor = new AuditoriaProductoUtil();
-                    auditor.registrarAccionEspecifica(productoOriginal, productoAEditar);
-                }
+                ok = nuevo.guardar();
             }
-            
+      // auditoria
             if (ok) {
-                mostrarAlerta("Producto guardado correctamente.");
-                // Refrescar la vista padre si existe
-                if (productosVista != null) {
-                    productosVista.cargarProductos();
-                }
-                cerrarVentana();
-            } else {
-                mostrarAlerta("Error al guardar el producto. Revisa la consola.");
+                String tipo = tipoSeleccionado.toUpperCase();
+                AuditoriaUtil.registrarAccion(
+                        "CREAR PRODUCTO", "producto",
+                        " creó un producto " + tipo + ": '" + nuevo.getNombreProducto() + "'.");
+                mensajeUsuario = "Se creó un nuevo producto " + tipo + ":\n" + nuevo.getNombreProducto();
             }
 
-        } catch (NumberFormatException nfe) {
-            mostrarAlerta("Formato numérico incorrecto (precio, stock, etc).");
-        } catch (Exception e) {
-            mostrarAlerta("Error inesperado: " + e.getMessage());
+        // ========================================================
+        //  MODIFICACIÓN DE PRODUCTO EXISTENTE
+        // ========================================================
+        } else {
+            // Clonar estado original antes de modificar
+            Producto original = CopiarProductoUtil.copiarProducto(productoOriginal);
+
+            Producto actualizado = switch (productoAEditar.obtenerTipoProducto()) {
+                case "FISICO" -> ProductoFisico.obtenerPorId(productoAEditar.getIdProducto());
+                case "DIGITAL" -> ProductoDigital.obtenerPorId(productoAEditar.getIdProducto());
+                default -> productoAEditar;
+            };
+
+            guardarDatosEnProducto(actualizado);
+
+            if (actualizado instanceof ProductoFisico pf) {
+                guardarDatosFisicos(pf);
+                ok = pf.guardarFisico();
+            } else if (actualizado instanceof ProductoDigital pd) {
+                guardarDatosDigitales(pd);
+                ok = pd.guardarDigital();
+            } else {
+                ok = actualizado.actualizar();
+            }
+
+            if (ok) {
+                String resumen = AuditoriaProductoUtil.generarResumenCambios(original, actualizado);
+                if (!resumen.isEmpty()) {
+                    AuditoriaProductoUtil.registrarCambioProducto(original, actualizado);
+                    mensajeUsuario = "Producto modificado:\n" + resumen;
+                } else {
+                    mensajeUsuario = "No hubo cambios relevantes en el producto.";
+                }
+            }
         }
+
+        if (ok) {
+            mostrarAlerta(mensajeUsuario);
+            if (productosVista != null) {
+                productosVista.cargarProductos();
+            }
+            cerrarVentana();
+        } else {
+            mostrarAlerta("Error al guardar el producto. Ver consola.");
+        }
+
+    } catch (NumberFormatException nfe) {
+        mostrarAlerta("Formato numérico incorrecto (precio, stock, etc).");
+    } catch (Exception e) {
+        mostrarAlerta("Error inesperado: " + e.getMessage());
+        e.printStackTrace();
     }
+}
+
 
     private void guardarDatosEnProducto(Producto producto) {
         if (producto != null) {

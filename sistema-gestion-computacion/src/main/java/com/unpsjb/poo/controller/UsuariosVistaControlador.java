@@ -42,7 +42,7 @@ public class UsuariosVistaControlador extends BaseControlador {
 
             if (resultado != null && resultado.getVentana() != null) {
                 resultado.getVentana().parentProperty().addListener((obs, oldVal, newVal) -> {
-                    if (newVal == null) {
+                    if (newVal ==null) {
                         cargarUsuarios();
                     }
                 });

@@ -159,40 +159,44 @@ public class ProductosVistaControlador extends BaseControlador {
     }
 
     /** Cambiar estado activo/inactivo */
-    @FXML private void cambiarEstadoProducto() {
-        Producto seleccionado = tablaProductos.getSelectionModel().getSelectedItem();
-        if (seleccionado == null) {
-            mostrarAlerta("Seleccione un producto para cambiar su estado.");
-            return;
-        }
-        // Guardar el estado anterior para auditoría y mensaje
-        boolean estadoAnterior = seleccionado.isActivo();
-        // Cambiar el estado y persistir
-        seleccionado.cambiarEstado(); 
-        boolean ok = seleccionado.actualizar();
-        if (ok) {
-            // Registrar auditoría si hay usuario en sesión
-            if (Sesion.getUsuarioActual() != null) {
-                    AuditoriaProductoUtil auditor = new AuditoriaProductoUtil();
-           auditor.registrarAccionEspecifica(seleccionado, auditor);
-            }            
-            String estadoActual = seleccionado.isActivo() ? "Activo" : "Inactivo";
-            mostrarAlerta("El producto cambió al estado: " + estadoActual);
-            cargarProductos();
-        } else {
-            mostrarAlerta("Error al cambiar el estado del producto.");
-        }
+    @FXML
+private void cambiarEstadoProducto() {
+    Producto seleccionado = tablaProductos.getSelectionModel().getSelectedItem();
+    if (seleccionado == null) {
+        mostrarAlerta("Seleccione un producto para cambiar su estado.");
+        return;
     }
 
-    /** Mostrar productos inactivos */
-    @FXML private void mostrarProductosInactivos() {
-        if (chBoxInactivos.isSelected()) {
-            List<Producto> productosInactivos = Producto.obtenerTodosCompleto();
-            tablaProductos.setItems(FXCollections.observableArrayList(productosInactivos));
-        } else {
-            tablaProductos.setItems(backingList);
-        }
+    // Guardar estado anterior
+    boolean estadoAnterior = seleccionado.isActivo();
+
+    // Cambiar el estado
+    seleccionado.cambiarEstado(); 
+    boolean ok = seleccionado.actualizar();
+
+    if (ok) {
+        // Registrar acción de auditoría
+        String usuario = (Sesion.getUsuarioActual() != null)
+                ? Sesion.getUsuarioActual().getNombre()
+                : "Desconocido";
+
+        String nuevoEstado = seleccionado.isActivo() ? "ACTIVO" : "INACTIVO";
+
+        AuditoriaUtil.registrarAccion(
+                "CAMBIAR ESTADO PRODUCTO",
+                "producto",
+                " cambió el estado del producto '" + seleccionado.getNombreProducto() +
+                "' de " + (estadoAnterior ? "ACTIVO" : "INACTIVO") +
+                " a " + nuevoEstado + "."
+        );
+
+        mostrarAlerta(" El producto cambió al estado: " + nuevoEstado);
+        cargarProductos();
+
+    } else {
+        mostrarAlerta(" Error al cambiar el estado del producto.");
     }
+}
 
     @FXML
     private void detallesProducto() {

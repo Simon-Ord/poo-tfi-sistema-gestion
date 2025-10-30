@@ -45,7 +45,7 @@ public class LoginVistaControlador {
             if (user != null) {
                 Sesion.iniciarSesion(user);
 
-                // 🔹 Registrar inicio de sesión usando AuditoriaUtil
+                // Registrar inicio de sesión usando AuditoriaUtil
                 AuditoriaUtil.registrarAccion(
                     "INICIAR SESIÓN",
                     "sesion",

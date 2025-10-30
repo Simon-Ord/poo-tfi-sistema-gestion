@@ -1,108 +1,79 @@
 package com.unpsjb.poo.util.cap_auditoria;
 
 import com.unpsjb.poo.model.productos.Producto;
+import com.unpsjb.poo.model.productos.ProductoDigital;
+import com.unpsjb.poo.model.productos.ProductoFisico;
+import com.unpsjb.poo.util.Sesion;
 
-/**
- * 🧩 Clase concreta de auditoría para la entidad Producto.
- * Hereda de AuditoriaBase, aplicando polimorfismo.
- */
-public class AuditoriaProductoUtil extends AuditoriaBase {
+public class AuditoriaProductoUtil {
 
     /**
-     * Implementa la comparación y registro de cambios específicos
-     * entre dos productos (original y modificado).
+     * Genera un resumen legible de los cambios entre el producto original y el actualizado.
      */
-    @Override
-    public void registrarAccionEspecifica(Object original, Object modificado) {
-        if (!(original instanceof Producto) || !(modificado instanceof Producto)) return;
-        Producto pOriginal = (Producto) original;
-        Producto pModificado = (Producto) modificado;
+    public static String generarResumenCambios(Producto original, Producto modificado) {
+        StringBuilder sb = new StringBuilder();
 
-        StringBuilder cambios = new StringBuilder();
-
-        // Comparación de nombre
-        if (!equalsNullSafe(pOriginal.getNombreProducto(), pModificado.getNombreProducto()))
-            cambios.append("Nombre: '").append(nvl(pOriginal.getNombreProducto()))
-                   .append("' → '").append(nvl(pModificado.getNombreProducto())).append("'. ");
-
-        // Comparación de descripción
-        if (!equalsNullSafe(pOriginal.getDescripcionProducto(), pModificado.getDescripcionProducto()))
-            cambios.append("Descripción: '").append(nvl(pOriginal.getDescripcionProducto()))
-                   .append("' → '").append(nvl(pModificado.getDescripcionProducto())).append("'. ");
-
-        // Comparación de categoría
-        if (pOriginal.getCategoria() != null && pModificado.getCategoria() != null) {
-            if (!equalsNullSafe(pOriginal.getCategoria().getNombre(), pModificado.getCategoria().getNombre()))
-                cambios.append("Categoría: '").append(pOriginal.getCategoria().getNombre())
-                       .append("' → '").append(pModificado.getCategoria().getNombre()).append("'. ");
-        } else if (pOriginal.getCategoria() != null || pModificado.getCategoria() != null) {
-            cambios.append("Categoría: '")
-                   .append(pOriginal.getCategoria() != null ? pOriginal.getCategoria().getNombre() : "Ninguna")
-                   .append("' → '")
-                   .append(pModificado.getCategoria() != null ? pModificado.getCategoria().getNombre() : "Ninguna")
-                   .append("'. ");
+        if (!original.getNombreProducto().equals(modificado.getNombreProducto())) {
+            sb.append("\n• Nombre: '").append(original.getNombreProducto())
+              .append("' → '").append(modificado.getNombreProducto()).append("'");
         }
 
-        // Comparación de precio
-        if (pOriginal.getPrecioProducto() != null && pModificado.getPrecioProducto() != null
-                && pOriginal.getPrecioProducto().compareTo(pModificado.getPrecioProducto()) != 0)
-            cambios.append("Precio: ").append(pOriginal.getPrecioProducto())
-                   .append(" → ").append(pModificado.getPrecioProducto()).append(". ");
+        if (original.getPrecioProducto() != modificado.getPrecioProducto()) {
+            sb.append("\n• Precio: ").append(original.getPrecioProducto())
+              .append(" → ").append(modificado.getPrecioProducto());
+        }
 
-        // Comparación de stock
-        if (pOriginal.getStockProducto() != pModificado.getStockProducto())
-            cambios.append("Stock: ").append(pOriginal.getStockProducto())
-                   .append(" → ").append(pModificado.getStockProducto()).append(". ");
+        if (original.getStockProducto() != modificado.getStockProducto()) {
+            sb.append("\n• Stock: ").append(original.getStockProducto())
+              .append(" → ").append(modificado.getStockProducto());
+        }
 
-        // Comparación de estado
-        if (pOriginal.isActivo() != pModificado.isActivo())
-            cambios.append("Estado: ").append(pOriginal.isActivo() ? "Activo" : "Inactivo")
-                   .append(" → ").append(pModificado.isActivo() ? "Activo" : "Inactivo").append(". ");
+        if (original.getCategoria() != null && modificado.getCategoria() != null &&
+            !original.getCategoria().getNombre().equals(modificado.getCategoria().getNombre())) {
+            sb.append("\n• Categoría: ").append(original.getCategoria().getNombre())
+              .append(" → ").append(modificado.getCategoria().getNombre());
+        }
 
-        // Registrar si hubo cambios
-        if (cambios.length() > 0) {
-            registrarEvento("MODIFICAR PRODUCTO", "producto",
-                    "El usuario " + getUsuarioActual() +
-                    " modificó el producto '" + pOriginal.getNombreProducto() +
-                    "'. Cambios: " + cambios);
+        // Subtipo específico
+        if (original instanceof ProductoFisico && modificado instanceof ProductoFisico) {
+            ProductoFisico o = (ProductoFisico) original;
+            ProductoFisico m = (ProductoFisico) modificado;
+            if (!o.getFabricante().equals(m.getFabricante())) {
+                sb.append("\n• Fabricante: ").append(o.getFabricante()).append(" → ").append(m.getFabricante());
+            }
+        } else if (original instanceof ProductoDigital && modificado instanceof ProductoDigital) {
+            ProductoDigital o = (ProductoDigital) original;
+            ProductoDigital m = (ProductoDigital) modificado;
+            if (!o.getProveedorDigital().equals(m.getProveedorDigital())) {
+                sb.append("\n• Proveedor: ").append(o.getProveedorDigital()).append(" → ").append(m.getProveedorDigital());
+            }
+        }
+
+        return sb.toString();
+    }
+
+    /**
+     * Registra el cambio de producto en la tabla de auditoría.
+     */
+    public static void registrarCambioProducto(Producto original, Producto actualizado) {
+        String resumen = generarResumenCambios(original, actualizado);
+
+        String usuario = (Sesion.getUsuarioActual() != null)
+                ? Sesion.getUsuarioActual().getNombre()
+                : "Desconocido";
+
+        if (!resumen.isEmpty()) {
+            AuditoriaUtil.registrarAccion(
+                "MODIFICAR PRODUCTO",
+                "producto",
+                "El usuario " + usuario + " modifico el producto '" +
+                actualizado.getNombreProducto() + "': " + resumen
+            );
         }
     }
 
-    /**
-     * 🔹 Auditoría específica para cambio de estado.
-     */
-    public void registrarCambioEstado(Producto producto, boolean nuevoEstado) {
-        registrarEvento("CAMBIO ESTADO PRODUCTO", "producto",
-                "El usuario " + getUsuarioActual() +
-                " cambió el estado del producto '" + producto.getNombreProducto() +
-                "' a " + (nuevoEstado ? "ACTIVO" : "INACTIVO") + ".");
-    }
-
-    // =============================================
-    // Métodos auxiliares internos (reutilizables)
-    // =============================================
-
-    private boolean equalsNullSafe(Object a, Object b) {
-        if (a == null && b == null) return true;
-        if (a == null || b == null) return false;
-        return a.equals(b);
-    }
-
-    private String nvl(String valor) {
-        return (valor != null && !valor.isEmpty()) ? valor : "(vacío)";
-    }
-
-    // =============================================
-    // 🔄 Compatibilidad con el código anterior
-    // =============================================
-
-    /**
-     * Permite seguir usando la llamada anterior:
-     * AuditoriaProductoUtil.registrarCambioProducto(original, modificado);
-     */
-    public static void registrarCambioProducto(Producto original, Producto modificado) {
-        new AuditoriaProductoUtil().registrarAccionEspecifica(original, modificado);
+    public void registrarAccionEspecifica(Producto seleccionado, AuditoriaProductoUtil auditor) {
+        // TODO Auto-generated method stub
+        throw new UnsupportedOperationException("Unimplemented method 'registrarAccionEspecifica'");
     }
 }
-
-

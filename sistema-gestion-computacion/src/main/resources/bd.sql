@@ -27,6 +27,7 @@ CREATE TABLE clientes (
     email VARCHAR(100),
     tipo VARCHAR(50),
     activo BOOLEAN DEFAULT TRUE
+
 );
 
 
