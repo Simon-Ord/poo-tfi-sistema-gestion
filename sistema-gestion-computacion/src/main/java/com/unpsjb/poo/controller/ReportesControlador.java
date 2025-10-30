@@ -16,10 +16,6 @@ import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.List;
 
-/**
- * Controlador de la vista de reportes/auditoría.
- * Ahora se comunica solo con el modelo (EventoAuditoria), no directamente con el DAO.
- */
 public class ReportesControlador {
 
     @FXML private TextField txtUsuario;
@@ -33,26 +29,22 @@ public class ReportesControlador {
     @FXML private TableColumn<EventoAuditoria, String> colDetalles;
 
     private List<EventoAuditoria> resultados;
-
-    private static final SimpleDateFormat DATE_FORMAT =
-            new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
+    private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
 
     @FXML
     public void initialize() {
-        // Formatear fecha
         colFecha.setCellValueFactory(c -> {
             Timestamp fechaHora = c.getValue().getFechaHora();
             String fechaFormateada = fechaHora != null ? DATE_FORMAT.format(fechaHora) : "";
             return new javafx.beans.property.SimpleStringProperty(fechaFormateada);
         });
 
-        // Otras columnas
         colUsuario.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getUsuario()));
         colAccion.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getAccion()));
         colEntidad.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getEntidad()));
         colDetalles.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getDetalles()));
 
-        // Celdas multilinea para "detalles"
+        // Celdas con texto multilinea
         colDetalles.setCellFactory(tc -> {
             TableCell<EventoAuditoria, String> cell = new TableCell<>() {
                 private final Text text = new Text();
@@ -70,10 +62,10 @@ public class ReportesControlador {
             return cell;
         });
 
-        buscar(); // carga inicial
+        buscar();
     }
 
-    /** Busca registros de auditoría según los filtros */
+    /** Busca registros filtrados */
     @FXML
     private void buscar() {
         resultados = EventoAuditoria.obtenerEventos(
@@ -89,7 +81,7 @@ public class ReportesControlador {
         }
     }
 
-    /** Exporta los resultados actuales a PDF */
+    /** Exporta los resultados a PDF en un hilo separado */
     @FXML
     public void exportarPDF() {
         if (resultados == null || resultados.isEmpty()) {
@@ -100,20 +92,30 @@ public class ReportesControlador {
         FileChooser fc = new FileChooser();
         fc.setTitle("Guardar Reporte de Auditoría (PDF)");
         fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivo PDF", "*.pdf"));
-
         Stage stage = (Stage) tablaReportes.getScene().getWindow();
         File file = fc.showSaveDialog(stage);
 
         if (file != null) {
-            PDFExporter pdf = new PDFReporte(resultados);
-            boolean ok = pdf.export(file.getAbsolutePath());
+            // 🔹 Creamos un hilo para no bloquear la interfaz
+            Thread hiloExportar = new Thread(() -> {
+                PDFExporter pdf = new PDFReporte(resultados);
+                boolean ok = pdf.export(file.getAbsolutePath());
 
-            mostrarAlerta(ok
-                    ? "Exportación completada correctamente.\nUbicación: " + file.getAbsolutePath()
-                    : "Error al exportar el PDF.");
+                // 🔹 Volvemos al hilo principal (UI) para mostrar el mensaje
+                javafx.application.Platform.runLater(() -> {
+                    mostrarAlerta(ok
+                            ? " Exportación completada correctamente.\nUbicación: " + file.getAbsolutePath()
+                            : " Error al exportar el PDF.");
+                });
+            });
+
+            //  Marcamos el hilo como secundario (no bloquea cierre del programa)
+            hiloExportar.setDaemon(true);
+            hiloExportar.start();
         }
     }
 
+    /** Muestra un mensaje en pantalla */
     private void mostrarAlerta(String msg) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setHeaderText(null);
