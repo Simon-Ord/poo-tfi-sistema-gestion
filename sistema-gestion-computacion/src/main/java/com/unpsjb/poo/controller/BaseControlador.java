@@ -45,7 +45,7 @@ public class BaseControlador {
         }
         return null;
     }
-    // Metodo para crear ventana interna principal devolviendo la ventana + el controlador (con maximizar y minimizar)
+    // Metodo para crear ventana con tamaño personalizado
     protected VentanaVistaControlador.ResultadoVentana crearVentana(String fxmlPath, String titulo, double ancho, double alto) {
         Pane desktop = obtenerDesktopPrincipal();
         if (desktop != null) {
@@ -55,20 +55,13 @@ public class BaseControlador {
             return null;
         }
     }
-    // Metodo para crear ventana interna NO principal con tamaño determinado (sin maximizar, solo minimizar)
-    protected VentanaVistaControlador.ResultadoVentana crearFormulario(String fxmlPath, String titulo) {
-        return crearFormulario(fxmlPath, titulo, 400, 350);
+    // Metodo para crear ventana con tamaño por defecto
+    protected VentanaVistaControlador.ResultadoVentana crearVentana(String fxmlPath, String titulo) {
+        return crearVentana(fxmlPath, titulo, 640, 420);
     }
-    
-    // Metodo para crear ventana interna NO principal devolviendo la ventana + el controlador 
-    protected VentanaVistaControlador.ResultadoVentana crearFormulario(String fxmlPath, String titulo, double ancho, double alto) {
-        Pane desktop = obtenerDesktopPrincipal();
-        if (desktop != null) {
-            return VentanaVistaControlador.crearFormulario(desktop, fxmlPath, titulo, ancho, alto);
-        } else {
-            System.err.println("Error: No se pudo obtener el desktop principal");
-            return null;
-        }
+    // Metodo para crear ventana pequeña (tamaño típico de formulario)
+    protected VentanaVistaControlador.ResultadoVentana crearVentanaPequena(String fxmlPath, String titulo) {
+        return crearVentana(fxmlPath, titulo, 400, 350);
     }
     // Metodo para cerrar ventana interna buscando el VentanaVistaControlador que tiene su nodo
     protected static void cerrarVentanaInterna(Node nodo) {

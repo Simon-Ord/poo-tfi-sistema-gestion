@@ -132,7 +132,7 @@ public class ProductosVistaControlador extends BaseControlador {
 
     /** Agregar producto */
     @FXML private void agregarProducto() {
-        crearFormulario("/view/productoForm.fxml", "Agregar Nuevo Producto");
+        crearVentanaPequena("/view/productoForm.fxml", "Agregar Nuevo Producto");
         cargarProductos(); // Recargar datos después de cerrar la ventana
     }
 
@@ -146,7 +146,7 @@ public class ProductosVistaControlador extends BaseControlador {
         
         // Abrir ventana y configurar el controlador
         VentanaVistaControlador.ResultadoVentana resultado = 
-            crearFormulario("/view/productoForm.fxml", "Modificar Producto");
+            crearVentanaPequena("/view/productoForm.fxml", "Modificar Producto");
         
         if (resultado != null) {
             ProductoFormularioVistaControlador controlador = 
@@ -207,7 +207,7 @@ private void cambiarEstadoProducto() {
         }
 
         try {
-            VentanaVistaControlador.ResultadoVentana resultado = crearFormulario("/view/DetallesProducto.fxml", "Detalles del Producto", 530, 570);
+            VentanaVistaControlador.ResultadoVentana resultado = crearVentana("/view/DetallesProducto.fxml", "Detalles del Producto", 530, 570);
             if (resultado != null && resultado.getControlador() != null) {
                 DetallesProductoControlador controlador = (DetallesProductoControlador) resultado.getControlador();
                 controlador.setProducto(seleccionado);

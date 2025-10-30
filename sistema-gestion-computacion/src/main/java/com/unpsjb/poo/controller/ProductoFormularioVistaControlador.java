@@ -359,7 +359,7 @@ private void guardarProducto() {
     @FXML
     public void agregarCategoria() {
         try {
-            crearFormulario("/view/formularios/CategoriaForm.fxml", "Agregar Nueva Categoría");
+            crearVentanaPequena("/view/formularios/CategoriaForm.fxml", "Agregar Nueva Categoría");
             cargarCategorias();
         } catch (Exception e) {
             mostrarAlerta("Error al abrir el formulario: " + e.getMessage());
@@ -369,7 +369,7 @@ private void guardarProducto() {
     @FXML
     private void agregarFabricante() {
         try {
-            VentanaVistaControlador.ResultadoVentana resultado = crearFormulario("/view/formularios/FabricanteForm.fxml", "Agregar Nuevo Fabricante");
+            VentanaVistaControlador.ResultadoVentana resultado = crearVentanaPequena("/view/formularios/FabricanteForm.fxml", "Agregar Nuevo Fabricante");
             if (resultado != null && resultado.getControlador() != null) {
                 FabricanteFormularioVistaControlador controlador = (FabricanteFormularioVistaControlador) resultado.getControlador();
                 controlador.setControladorPadre(this);
@@ -388,7 +388,7 @@ private void guardarProducto() {
         }
 
         try {
-            VentanaVistaControlador.ResultadoVentana resultado = crearFormulario("/view/formularios/FabricanteForm.fxml", "Modificar Fabricante");
+            VentanaVistaControlador.ResultadoVentana resultado = crearVentanaPequena("/view/formularios/FabricanteForm.fxml", "Modificar Fabricante");
             if (resultado != null && resultado.getControlador() != null) {
                 FabricanteFormularioVistaControlador controlador = (FabricanteFormularioVistaControlador) resultado.getControlador();
                 controlador.setFabricanteAEditar(seleccionado);
@@ -419,7 +419,7 @@ private void guardarProducto() {
     @FXML
     private void agregarProveedorDigital() {
         try {
-            VentanaVistaControlador.ResultadoVentana resultado = crearFormulario("/view/formularios/ProveedorDigitalForm.fxml", "Agregar Nuevo Proveedor Digital");
+            VentanaVistaControlador.ResultadoVentana resultado = crearVentanaPequena("/view/formularios/ProveedorDigitalForm.fxml", "Agregar Nuevo Proveedor Digital");
             if (resultado != null && resultado.getControlador() != null) {
                 ProveedorDigitalFormularioVistaControlador controlador = (ProveedorDigitalFormularioVistaControlador) resultado.getControlador();
                 controlador.setControladorPadre(this);
@@ -438,7 +438,7 @@ private void guardarProducto() {
         }
 
         try {
-            VentanaVistaControlador.ResultadoVentana resultado = crearFormulario("/view/formularios/ProveedorDigitalForm.fxml", "Modificar Proveedor Digital");
+            VentanaVistaControlador.ResultadoVentana resultado = crearVentanaPequena("/view/formularios/ProveedorDigitalForm.fxml", "Modificar Proveedor Digital");
             if (resultado != null && resultado.getControlador() != null) {
                 ProveedorDigitalFormularioVistaControlador controlador = (ProveedorDigitalFormularioVistaControlador) resultado.getControlador();
                 controlador.setProveedorDigitalAEditar(seleccionado);

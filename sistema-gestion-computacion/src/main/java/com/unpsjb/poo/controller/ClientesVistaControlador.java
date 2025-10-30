@@ -47,7 +47,7 @@ public class ClientesVistaControlador extends BaseControlador {
     @FXML
     private void agregarCliente() {
         try {
-            crearFormulario("/view/ClienteForm.fxml", "Agregar Cliente");
+            crearVentanaPequena("/view/ClienteForm.fxml", "Agregar Cliente");
             // 🔁 Refrescar después de cerrar el formulario
             cargarClientesDesdeBD();
         } catch (Exception e) {
@@ -68,7 +68,7 @@ private void editarCliente() {
     try {
         // Abrir el formulario como ventana interna
         VentanaVistaControlador.ResultadoVentana resultado = 
-            crearFormulario("/view/ClienteForm.fxml", "Editar Cliente");
+            crearVentanaPequena("/view/ClienteForm.fxml", "Editar Cliente");
         
         if (resultado != null) {
             // Obtener el controlador del formulario

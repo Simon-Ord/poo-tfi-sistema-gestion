@@ -38,7 +38,7 @@ public class UsuariosVistaControlador extends BaseControlador {
     @FXML
     private void agregarUsuario() {
         try {
-            var resultado = crearFormulario("/view/UsuarioForm.fxml", "Agregar Nuevo Usuario");
+            var resultado = crearVentanaPequena("/view/UsuarioForm.fxml", "Agregar Nuevo Usuario");
 
             if (resultado != null && resultado.getVentana() != null) {
                 resultado.getVentana().parentProperty().addListener((obs, oldVal, newVal) -> {

@@ -113,25 +113,6 @@ public class ProveedorDigitalDAOImpl implements DAO<ProveedorDigital> {
         }
         return proveedores;
     }
-    // ===========================
-    // Buscar proveedor por nombre
-    // ===========================
-    public Optional<ProveedorDigital> findByNombre(String nombre) {
-        String sql = "SELECT * FROM proveedores_digitales WHERE nombre = ?";
-        try (Connection conexion = GestorDeConexion.getInstancia().getConexion();
-             PreparedStatement pstmt = conexion.prepareStatement(sql)) {
-            
-            pstmt.setString(1, nombre);
-            try (ResultSet rs = pstmt.executeQuery()) {
-                if (rs.next()) {
-                    return Optional.of(mapResultSet(rs));
-                }
-            }
-        } catch (SQLException e) {
-            System.err.println("Error al buscar el proveedor digital por nombre: " + e.getMessage());
-        }
-        return Optional.empty();
-    }
     // ========================
     // Método auxiliar de mapeo
     // ========================

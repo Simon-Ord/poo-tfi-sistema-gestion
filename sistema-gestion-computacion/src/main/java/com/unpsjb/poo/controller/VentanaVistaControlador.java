@@ -21,45 +21,21 @@ import javafx.scene.layout.StackPane;
 
 public class VentanaVistaControlador extends Region {
 
-    // Enum para tipos de ventana (determina funcionalidades)
-    public enum TipoVentana {
-        VENTANA_PRINCIPAL, // Listas, gestión, reportes - puede maximizar y snap
-        FORMULARIO, // Agregar/editar - solo puede minimizar
-    }
-    // Enum para estados de ventana (solo Normal y Maximizada)
-    public enum EstadoVentana {
-        NORMAL, MAXIMIZADA
-    }
-
     private static final double HEADER_HEIGHT = 34;
     private static final double MIN_W = 360;
     private static final double MIN_H = 220;
-    private static final double RESIZE_MARGIN = 8;
     private final BorderPane frame = new BorderPane();
     private final HBox titleBar = new HBox(8);
     private final Label titleLbl = new Label();
-    private final Button btnMin = new Button("⎯");
-    private final Button btnMax = new Button("⧉");
     private final Button btnClose = new Button("⨯");
     private final StackPane contentHolder = new StackPane();
 
-    private boolean minimized = false;
     // Variables para arrastre simple
     private double dragOffsetX, dragOffsetY;
-    // Variables para maximización
-    private EstadoVentana estadoActual = EstadoVentana.NORMAL;
-    private double posicionAnteriorX, posicionAnteriorY;
-    private double tamañoAnteriorW, tamañoAnteriorH;
-    private TipoVentana tipoVentana; // Determina qué funcionalidades están habilitadas
 
-    // Constructor principal con tipo de ventana
-    public VentanaVistaControlador(String title, Node content, TipoVentana tipo) {
-        this.tipoVentana = tipo;
-        inicializarVentana(title, content);
-    }
-    // Constructor compatible (por defecto es ventana principal)
+    // Constructor principal
     public VentanaVistaControlador(String title, Node content) {
-        this(title, content, TipoVentana.VENTANA_PRINCIPAL);
+        inicializarVentana(title, content);
     }
     private void inicializarVentana(String title, Node content) {
         // Configurar título con estilo más elegante
@@ -105,29 +81,12 @@ public class VentanaVistaControlador extends Region {
         enableDrag();
         // Configurar acciones de los botones
         btnClose.setOnAction(e -> cerrarSinAnimacion());
-        btnMin.setOnAction(e -> toggleMinimize());
-        // Solo ventanas principales pueden maximizar
-        if (tipoVentana == TipoVentana.VENTANA_PRINCIPAL) {
-            btnMax.setOnAction(e -> toggleMaximizar());
-            // Doble click en la barra de título para maximizar/restaurar
-            titleBar.setOnMouseClicked(e -> {
-                if (e.getClickCount() == 2) {
-                    toggleMaximizar();
-                }
-            });
-        }
         // Al clickear, traer al frente
         addEventHandler(MouseEvent.MOUSE_PRESSED, e -> {
             toFront();
         });
         setMinSize(MIN_W, MIN_H);
         setPrefSize(640, 420);
-    }
-    private void toggleMinimize() {
-        minimized = !minimized;
-        contentHolder.setVisible(!minimized);
-        contentHolder.setManaged(!minimized);
-        requestLayout();
     }
      // Estilo para los botones de la barra de titulo
     private void configurarBotonModerno(Button boton, String texto, String colorNormal, String colorHover) {
@@ -166,79 +125,19 @@ public class VentanaVistaControlador extends Region {
                 "-fx-border-width: 1px;");
         });
     }
-     // Configura los botones según el tipo de ventana
+     // Configura los botones
     private void configurarBotonesPorTipo() {
-        // Siempre configurar botón cerrar
+        // Configurar botón cerrar
         configurarBotonModerno(btnClose, "×", "#e74c3c", "#c0392b");
-        // Configurar botón minimizar según el tipo
-        switch (tipoVentana) {
-            case VENTANA_PRINCIPAL -> {
-                configurarBotonModerno(btnMin, "−", "#95a5a6", "#7f8c8d");
-                configurarBotonModerno(btnMax, "⧉", "#3498db", "#2980b9");
-            }
-            case FORMULARIO -> {
-                configurarBotonModerno(btnMin, "−", "#95a5a6", "#7f8c8d");
-                // Ocultar botón maximizar para formularios
-                btnMax.setVisible(false);
-                btnMax.setManaged(false);
-            }
-        }
     }
-    // Agrega los botones apropiados a la barra de título según el tipo
+    // Agrega los botones a la barra de título
     private void agregarBotonesPorTipo(Region spacer) {
-        switch (tipoVentana) {
-            case VENTANA_PRINCIPAL -> titleBar.getChildren().addAll(titleLbl, spacer, btnMin, btnMax, btnClose);
-            case FORMULARIO -> titleBar.getChildren().addAll(titleLbl, spacer, btnMin, btnClose);
-        }
+        titleBar.getChildren().addAll(titleLbl, spacer, btnClose);
     }
      // Cerrar la ventana de forma directa
     private void cerrarSinAnimacion() {
         if (getParent() != null) {
             ((Pane) getParent()).getChildren().remove(this);
-        }
-    }
-    // ====================================
-    //       SISTEMA DE MAXIMIZACIÓN
-    // ====================================
-
-    // Alterna entre maximizado y normal
-    private void toggleMaximizar() {
-        if (estadoActual == EstadoVentana.MAXIMIZADA) {
-            restaurarVentana();
-        } else {
-            maximizarVentana();
-        }
-    }
-    // Maximiza la ventana para ocupar todo el área disponible del contenedor
-    private void maximizarVentana() {
-        if (getParent() == null) return;
-        // Guardar estado anterior
-        guardarEstadoAnterior();
-        // Obtener dimensiones del contenedor padre
-        double parentWidth = getParent().getBoundsInLocal().getWidth();
-        double parentHeight = getParent().getBoundsInLocal().getHeight();
-        // Maximizar
-        relocate(0, 0);
-        setPrefSize(parentWidth, parentHeight);
-        estadoActual = EstadoVentana.MAXIMIZADA;
-        // Actualizar icono del botón
-        btnMax.setText("🗗");
-    }
-    // Restaura la ventana a su estado anterior
-    private void restaurarVentana() {
-        relocate(posicionAnteriorX, posicionAnteriorY);
-        setPrefSize(tamañoAnteriorW, tamañoAnteriorH);
-        estadoActual = EstadoVentana.NORMAL;
-        // Restaurar icono del botón
-        btnMax.setText("⧉");
-    }
-    // Guarda el estado actual antes de un cambio de estado
-    private void guardarEstadoAnterior() {
-        if (estadoActual == EstadoVentana.NORMAL) {
-            posicionAnteriorX = getLayoutX();
-            posicionAnteriorY = getLayoutY();
-            tamañoAnteriorW = getPrefWidth();
-            tamañoAnteriorH = getPrefHeight();
         }
     }
     // ====================================
@@ -249,16 +148,8 @@ public class VentanaVistaControlador extends Region {
     // Funcionalidad básica de mover ventanas
     private void enableDrag() {
         titleBar.setOnMousePressed(e -> {
-            // Si está maximizada, restaurar a tamaño normal
-            if (estadoActual == EstadoVentana.MAXIMIZADA) {
-                restaurarVentana();
-                // Ajustar la posición del mouse relativa a la ventana restaurada
-                dragOffsetX = getPrefWidth() * (e.getSceneX() / getParent().getBoundsInLocal().getWidth());
-                dragOffsetY = e.getSceneY() - getLayoutY();
-            } else {
-                dragOffsetX = e.getSceneX() - getLayoutX();
-                dragOffsetY = e.getSceneY() - getLayoutY();
-            }
+            dragOffsetX = e.getSceneX() - getLayoutX();
+            dragOffsetY = e.getSceneY() - getLayoutY();
             setCursor(Cursor.MOVE);
             toFront();
         });
@@ -290,25 +181,22 @@ public class VentanaVistaControlador extends Region {
     protected void layoutChildren() {
         double w = getWidth();
         double h = getHeight();
-        // altura cuando está minimizado
-        double wantedH = minimized ? HEADER_HEIGHT : h;
-
-        frame.resizeRelocate(0, 0, w, wantedH);
+        // Siempre usar la altura completa
+        frame.resizeRelocate(0, 0, w, h);
     }
-    private static class Delta { double x, y; }
 
     // ==================================================
     //  MÉTODO DE UTILIDAD ESTÁTICO - CREAR VENTANA
     // ==================================================
-    // Crea y abre una ventana interna con tipo especificado cargando el FXML 
-    public static ResultadoVentana crearVentana(Pane desktop, String fxmlPath, String titulo, double ancho, double alto, TipoVentana tipo) {
+    // Crea y abre una ventana interna cargando el FXML 
+    public static ResultadoVentana crearVentana(Pane desktop, String fxmlPath, String titulo, double ancho, double alto) {
         try {
             // Cargar el FXML
             FXMLLoader loader = new FXMLLoader(VentanaVistaControlador.class.getResource(fxmlPath));
             Node content = loader.load();
             Object controller = loader.getController();
-            // Crear la ventana con el tipo especificado
-            VentanaVistaControlador ventana = new VentanaVistaControlador(titulo, content, tipo);
+            // Crear la ventana
+            VentanaVistaControlador ventana = new VentanaVistaControlador(titulo, content);
             ventana.setPrefSize(ancho, alto);
             // Posicionar la ventana con un algoritmo de cascada inteligente
             posicionarVentanaInteligente(desktop, ventana);
@@ -323,10 +211,6 @@ public class VentanaVistaControlador extends Region {
                 "No se pudo cargar la vista " + fxmlPath + "\n\nDetalle: " + ex.getMessage());
             throw new RuntimeException("Error al crear ventana desde " + fxmlPath, ex);
         }
-    }
-    // Crea y abre una ventana interna (por defecto VENTANA_PRINCIPAL)
-    public static ResultadoVentana crearVentana(Pane desktop, String fxmlPath, String titulo, double ancho, double alto) {
-        return crearVentana(desktop, fxmlPath, titulo, ancho, alto, TipoVentana.VENTANA_PRINCIPAL);
     }
     // Posiciona la ventana de manera inteligente para evitar superposiciones excesivas
     private static void posicionarVentanaInteligente(Pane desktop, VentanaVistaControlador ventana) {
@@ -364,19 +248,11 @@ public class VentanaVistaControlador extends Region {
         alert.showAndWait();
     }
     // ===================================================
-    //  METODOS DE CONVENIENCIA PARA SEGUN TIPO DE VENTANA
+    //  METODOS DE CONVENIENCIA
     // ===================================================
     //Sobrecarga del método crearVentana con dimensiones por defecto.
     public static ResultadoVentana crearVentana(Pane desktop, String fxmlPath, String titulo) {
         return crearVentana(desktop, fxmlPath, titulo, 640, 420);
-    }
-    // Crea un formulario (sin maximizar, solo minimizar)
-    public static ResultadoVentana crearFormulario(Pane desktop, String fxmlPath, String titulo, double ancho, double alto) {
-        return crearVentana(desktop, fxmlPath, titulo, ancho, alto, TipoVentana.FORMULARIO);
-    }
-    // Crea un formulario con dimensiones típicas
-    public static ResultadoVentana crearFormulario(Pane desktop, String fxmlPath, String titulo) {
-        return crearVentana(desktop, fxmlPath, titulo, 400, 350, TipoVentana.FORMULARIO);
     }
     // Clase contenedora para el resultado de crear una ventana.
     // Permite acceder tanto a la ventana como al controlador del FXML cargado.

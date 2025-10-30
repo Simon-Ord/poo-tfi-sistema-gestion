@@ -91,7 +91,7 @@ El sistema implementa un flujo de venta mediante el patrón State, con las sigui
 - Control de roles (ADMINISTRADOR, EMPLEADO)
 - Gestión de permisos según rol
 - Estado de usuario (activo/inactivo)
-- Cambio de usuario y contraseña
+- Cambio de contraseña
 - Auditoría de acciones por usuario
 
 ### 2.5. Sistema de Reportes y Auditoría
@@ -99,7 +99,7 @@ El sistema implementa un flujo de venta mediante el patrón State, con las sigui
 - Registro automático de todas las multiples del sistema
 - Consulta de auditoría por:
 - Usuario que realizó la acción
-- Tipo de acción (insertar,modificar,eliminiar ,login etc.)
+- Tipo de acción (INSERT, UPDATE, DELETE, LOGIN, etc.)
 - Entidad afectada (productos, clientes, ventas, etc.)
 - Rango de fechas
 - Exportación de reportes a PDF
@@ -145,8 +145,6 @@ Implementado para toda la capa de persistencia:
 Implementado en:
 - `GestorDeConexion` - Gestión centralizada de conexiones a base de datos
 - DAOs compartidos entre instancias de modelos
-- `Sesion`-Mantener una única instancia de la sesión activa en todo el sistema, asegurando que exista un solo usuario logueado a la vez durante la ejecución de la aplicación
-
 
 ### 3.2 Patrones de Diseño Adicional
 
@@ -185,14 +183,9 @@ Implementado para manejar diferentes métodos de pago:
 
 - Procesamiento asíncrono de exportación de PDF
 
-### 3.4. Diagrama de Diseño
-<img width="1391" height="396" alt="diagrama-patrones-strategy" src="https://github.com/user-attachments/assets/1725ec7f-d242-48d1-9158-e27bf6873465" />
-<img width="1563" height="396" alt="diagrama-patrones-state-" src="https://github.com/user-attachments/assets/9b817484-6b3f-4d36-a487-aaf079f189a4" />
+### 3.4. Diagrama de Diseño ------- INSERTAR UMLS 
 
-
-### 3.5. ** Prototipo de la IGU (WireFrame) ** --- INSERT SCREENSHOTS
-![IMAGEN_SISTEMA](https://github.com/user-attachments/assets/58e1f114-c341-4179-8d5e-8b9fd24a15a5)
-
+### 3.5. ** Prototipo de la IGU (WireFrame)
 
 ## 4. Stack Tecnológico
 

@@ -45,8 +45,8 @@ public class PrincipalVistaControlador implements Initializable {
             String rol = Sesion.getUsuarioActual().getRol();
             if (rol != null && rol.equalsIgnoreCase("EMPLEADO")) {
                 // Desactivar botones restringidos para empleados
-                btnUsuarios.setDisable(true);
-                btnReportes.setDisable(true);
+                btnUsuarios.setVisible(false);
+                btnReportes.setVisible(false);
             }
         } else {
             lblNombreUsuario.setText("Usuario: Desconocido");
@@ -80,12 +80,7 @@ public class PrincipalVistaControlador implements Initializable {
     @FXML
     private void modificarUsuarioAction(ActionEvent event) {
         try {
-            VentanaVistaControlador.crearFormulario(
-                desktop,
-                "/view/cambioDatosView.fxml",
-                "Modificar Usuario",
-                450,
-                400
+            VentanaVistaControlador.crearVentana(desktop,"/view/cambioDatosView.fxml","Modificar Usuario",450,400
             );
         } catch (Exception e) {
             e.printStackTrace();
@@ -106,7 +101,7 @@ public class PrincipalVistaControlador implements Initializable {
     }
 
     @FXML private void agregarProducto() {
-        VentanaVistaControlador.crearFormulario(desktop, "/view/productoForm.fxml", "Agregar Producto", 400, 300);
+        VentanaVistaControlador.crearVentana(desktop, "/view/productoForm.fxml", "Agregar Producto", 400, 300);
     }
 
     @FXML private void categoriasAction(){
@@ -114,7 +109,7 @@ public class PrincipalVistaControlador implements Initializable {
     }
 
     @FXML private void agregarCategoria() {
-        VentanaVistaControlador.crearFormulario(desktop, "/view/formularios/categoriaForm.fxml", "Agregar Categoría", 400, 300);
+        VentanaVistaControlador.crearVentana(desktop, "/view/formularios/categoriaForm.fxml", "Agregar Categoría", 400, 300);
     }
 
     // =====================

@@ -87,7 +87,7 @@ public class CategoriasVistaControlador extends BaseControlador {
     /** Agregar nueva categoría */
     @FXML
     private void agregarCategoria() {
-        crearFormulario("/view/formularios/CategoriaForm.fxml", "Agregar Categoría");
+        crearVentanaPequena("/view/formularios/CategoriaForm.fxml", "Agregar Categoría");
         cargarCategorias(); // Recargar datos después de cerrar la ventana
     }
 
@@ -101,7 +101,7 @@ public class CategoriasVistaControlador extends BaseControlador {
         }
 
         // TODO: Implementar paso de datos al formulario para edición
-        crearFormulario("/view/formularios/CategoriaForm.fxml", "Modificar Categoría");
+        crearVentanaPequena("/view/formularios/CategoriaForm.fxml", "Modificar Categoría");
         cargarCategorias(); // Recargar datos después de cerrar la ventana
     }
 
