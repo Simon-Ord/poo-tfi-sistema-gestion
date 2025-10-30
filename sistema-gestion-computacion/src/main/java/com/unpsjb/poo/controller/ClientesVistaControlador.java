@@ -3,6 +3,8 @@ package com.unpsjb.poo.controller;
 import java.util.List;
 
 import com.unpsjb.poo.model.Cliente;
+import com.unpsjb.poo.util.Sesion;
+import com.unpsjb.poo.util.cap_auditoria.AuditoriaClienteUtil;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -48,7 +50,6 @@ public class ClientesVistaControlador extends BaseControlador {
     private void agregarCliente() {
         try {
             crearVentanaPequena("/view/ClienteForm.fxml", "Agregar Cliente");
-            // 🔁 Refrescar después de cerrar el formulario
             cargarClientesDesdeBD();
         } catch (Exception e) {
             mostrarAlerta("No se pudo abrir el formulario de cliente: " + e.getMessage());
@@ -57,39 +58,34 @@ public class ClientesVistaControlador extends BaseControlador {
     }
 
     // Botón: Editar cliente
-   @FXML
-private void editarCliente() {
-    Cliente seleccionado = tablaClientes.getSelectionModel().getSelectedItem();
-    if (seleccionado == null) {
-        mostrarAlerta("Debe seleccionar un cliente para editar.");
-        return;
-    }
-
-    try {
-        // Abrir el formulario como ventana interna
-        VentanaVistaControlador.ResultadoVentana resultado = 
-            crearVentanaPequena("/view/ClienteForm.fxml", "Editar Cliente");
-        
-        if (resultado != null) {
-            // Obtener el controlador del formulario
-            ClienteFormularioVistaControlador controlador = 
-                resultado.getControlador(ClienteFormularioVistaControlador.class);
-            if (controlador != null) {
-                controlador.setClienteEditable(seleccionado); // ⚡ Le pasamos el cliente seleccionado
-            }
+    @FXML
+    private void editarCliente() {
+        Cliente seleccionado = tablaClientes.getSelectionModel().getSelectedItem();
+        if (seleccionado == null) {
+            mostrarAlerta("Debe seleccionar un cliente para editar.");
+            return;
         }
 
-        // Refrescar la tabla
-        cargarClientesDesdeBD();
+        try {
+            VentanaVistaControlador.ResultadoVentana resultado = 
+                crearVentanaPequena("/view/ClienteForm.fxml", "Editar Cliente");
 
-    } catch (Exception e) {
-        mostrarAlerta("No se pudo abrir el formulario de edición: " + e.getMessage());
-        e.printStackTrace();
+            if (resultado != null) {
+                ClienteFormularioVistaControlador controlador = 
+                    resultado.getControlador(ClienteFormularioVistaControlador.class);
+                if (controlador != null) {
+                    controlador.setClienteEditable(seleccionado);
+                }
+            }
+
+            cargarClientesDesdeBD();
+        } catch (Exception e) {
+            mostrarAlerta("No se pudo abrir el formulario de edición: " + e.getMessage());
+            e.printStackTrace();
+        }
     }
-}
 
-
-    // Botón: Eliminar cliente
+    // Botón: Eliminar cliente (baja lógica)
     @FXML
     private void eliminarCliente() {
         Cliente seleccionado = tablaClientes.getSelectionModel().getSelectedItem();
@@ -97,9 +93,15 @@ private void editarCliente() {
             mostrarAlerta("Debe seleccionar un cliente para eliminar.");
             return;
         }
+
         boolean eliminado = seleccionado.eliminar();
         if (eliminado) {
             mostrarAlerta("Cliente eliminado correctamente.");
+
+            //Auditoría: cambio de estado
+            AuditoriaClienteUtil auditor = new AuditoriaClienteUtil();
+            auditor.registrarCambioEstado(seleccionado, false);
+
             cargarClientesDesdeBD();
         } else {
             mostrarAlerta("No se pudo eliminar el cliente.");

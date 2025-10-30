@@ -15,23 +15,23 @@ public class AuditoriaProductoUtil {
 
         if (!original.getNombreProducto().equals(modificado.getNombreProducto())) {
             sb.append("\n• Nombre: '").append(original.getNombreProducto())
-              .append("' → '").append(modificado.getNombreProducto()).append("'");
+              .append("' --> '").append(modificado.getNombreProducto()).append("'");
         }
 
         if (original.getPrecioProducto() != modificado.getPrecioProducto()) {
             sb.append("\n• Precio: ").append(original.getPrecioProducto())
-              .append(" → ").append(modificado.getPrecioProducto());
+              .append(" --> ").append(modificado.getPrecioProducto());
         }
 
         if (original.getStockProducto() != modificado.getStockProducto()) {
             sb.append("\n• Stock: ").append(original.getStockProducto())
-              .append(" → ").append(modificado.getStockProducto());
+              .append(" --> ").append(modificado.getStockProducto());
         }
 
         if (original.getCategoria() != null && modificado.getCategoria() != null &&
             !original.getCategoria().getNombre().equals(modificado.getCategoria().getNombre())) {
             sb.append("\n• Categoría: ").append(original.getCategoria().getNombre())
-              .append(" → ").append(modificado.getCategoria().getNombre());
+              .append(" -->").append(modificado.getCategoria().getNombre());
         }
 
         // Subtipo específico
@@ -66,8 +66,8 @@ public class AuditoriaProductoUtil {
             AuditoriaUtil.registrarAccion(
                 "MODIFICAR PRODUCTO",
                 "producto",
-                "El usuario " + usuario + " modifico el producto '" +
-                actualizado.getNombreProducto() + "': " + resumen
+                " modifico el producto '" +
+                actualizado.getNombreProducto() + "'(antes --> despues)" + resumen
             );
         }
     }

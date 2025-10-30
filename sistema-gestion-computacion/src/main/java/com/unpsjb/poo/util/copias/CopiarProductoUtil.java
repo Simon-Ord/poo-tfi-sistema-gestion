@@ -1,4 +1,4 @@
-package com.unpsjb.poo.util;
+package com.unpsjb.poo.util.copias;
 
 import com.unpsjb.poo.model.productos.Producto;
 

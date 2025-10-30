@@ -9,10 +9,10 @@ import com.unpsjb.poo.model.productos.Producto;
 import com.unpsjb.poo.model.productos.ProductoDigital;
 import com.unpsjb.poo.model.productos.ProductoFisico;
 import com.unpsjb.poo.model.productos.ProveedorDigital;
-import com.unpsjb.poo.util.CopiarProductoUtil;
 import com.unpsjb.poo.util.Sesion;
 import com.unpsjb.poo.util.cap_auditoria.AuditoriaProductoUtil;
 import com.unpsjb.poo.util.cap_auditoria.AuditoriaUtil;
+import com.unpsjb.poo.util.copias.CopiarProductoUtil;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;

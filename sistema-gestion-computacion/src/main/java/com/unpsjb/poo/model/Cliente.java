@@ -92,4 +92,19 @@ public class Cliente {
     public static List<Cliente> buscarPorNombre(String nombre) {
         return clienteDAO.buscarPorNombre(nombre);
     }
+
+    public Object getApellido() {
+        
+        throw new UnsupportedOperationException("Unimplemented method 'getApellido'");
+    }
+
+    public Object getIdCliente() {
+       
+        throw new UnsupportedOperationException("Unimplemented method 'getIdCliente'");
+    }
+
+    public void setIdCliente(Object idCliente) {
+     
+        throw new UnsupportedOperationException("Unimplemented method 'setIdCliente'");
+    }
 }
