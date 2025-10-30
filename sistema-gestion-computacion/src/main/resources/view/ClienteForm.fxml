@@ -55,7 +55,14 @@
 
         <!-- Tipo de Cliente -->
         <Label text="Tipo de Cliente:" GridPane.rowIndex="5" GridPane.columnIndex="0" style="-fx-text-fill: white;" />
-        <ChoiceBox fx:id="cbTipoCliente" GridPane.rowIndex="5" GridPane.columnIndex="1" />
+        <ChoiceBox fx:id="cbTipoCliente" GridPane.rowIndex="5" GridPane.columnIndex="1"
+            style="-fx-background-color: #6878a1ff;
+                    -fx-text-fill: white;
+                    -fx-mark-color: #4CAF50;
+                    -fx-prompt-text-fill: #eeddddff;
+                    -fx-background-radius: 6;" />
+
+
     </GridPane>
 
     <!-- 🔹 Botones -->
