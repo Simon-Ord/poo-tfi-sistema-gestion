@@ -12,11 +12,11 @@ public class AuditoriaVentaUtil extends AuditoriaBase {
         if (!(nuevo instanceof Venta)) return;
         Venta ventaOriginal = (Venta) nuevo;
 
-        // ✅ Recuperar desde BD los datos persistidos reales
+        //  Recuperar desde BD los datos persistidos reales
         Venta venta = ventaDAO.findByCodigo(ventaOriginal.getCodigoVenta());
         if (venta == null) venta = ventaOriginal;
 
-        // 🧾 Datos descriptivos
+        //  Datos descriptivos
         String cliente = (venta.getClienteFactura() != null && venta.getClienteFactura().getNombre() != null)
                 ? venta.getClienteFactura().getNombre()
                 : "Consumidor Final";
@@ -25,9 +25,9 @@ public class AuditoriaVentaUtil extends AuditoriaBase {
                 ? venta.getTipoFactura()
                 : "SIN TIPO";
 
-String metodo = (venta.getMetodoPagoTexto() != null && !venta.getMetodoPagoTexto().isBlank())
-        ? venta.getMetodoPagoTexto()
-        : "Sin método";
+            String metodo = (venta.getMetodoPagoTexto() != null && !venta.getMetodoPagoTexto().isBlank())
+           ? venta.getMetodoPagoTexto()
+           : "Sin método";
 
 
         String codigo = (venta.getCodigoVenta() != null && !venta.getCodigoVenta().isBlank())

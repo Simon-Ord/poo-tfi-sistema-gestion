@@ -27,6 +27,9 @@ public class ReportesControlador {
     @FXML private TableColumn<EventoAuditoria, String> colAccion;
     @FXML private TableColumn<EventoAuditoria, String> colEntidad;
     @FXML private TableColumn<EventoAuditoria, String> colDetalles;
+    @FXML private DatePicker dpDesde;
+@FXML private DatePicker dpHasta;
+
 
     private List<EventoAuditoria> resultados;
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
@@ -66,13 +69,22 @@ public class ReportesControlador {
     }
 
     /** Busca registros filtrados */
-    @FXML
-    private void buscar() {
-        resultados = EventoAuditoria.obtenerEventos(
-                txtUsuario.getText(),
-                txtEntidad.getText(),
-                txtAccion.getText()
-        );
+@FXML
+private void buscar() {
+    java.sql.Date fechaDesde = (dpDesde.getValue() != null)
+            ? java.sql.Date.valueOf(dpDesde.getValue()) : null;
+    java.sql.Date fechaHasta = (dpHasta.getValue() != null)
+            ? java.sql.Date.valueOf(dpHasta.getValue()) : null;
+
+    resultados = EventoAuditoria.obtenerEventos(
+            txtUsuario.getText(),
+            txtEntidad.getText(),
+            txtAccion.getText(),
+            fechaDesde,
+            fechaHasta
+    );
+
+        
 
         tablaReportes.setItems(FXCollections.observableArrayList(resultados));
 
@@ -80,6 +92,27 @@ public class ReportesControlador {
             mostrarAlerta("No se encontraron registros de auditoría con los filtros especificados.");
         }
     }
+
+    @FXML
+private void filtrarPorFecha() {
+    if (dpDesde.getValue() == null || dpHasta.getValue() == null) {
+        mostrarAlerta("Debe seleccionar ambas fechas para filtrar.");
+        return;
+    }
+
+    List<EventoAuditoria> filtrados = EventoAuditoria.obtenerEventosPorRangoFechas(
+            dpDesde.getValue(), dpHasta.getValue()
+    );
+
+    tablaReportes.setItems(FXCollections.observableArrayList(filtrados));
+
+    if (filtrados.isEmpty()) {
+        mostrarAlerta("No se encontraron registros en el rango de fechas seleccionado.");
+    } else {
+        resultados = filtrados; // actualizamos la lista actual (para exportar PDF)
+    }
+}
+
 
     /** Exporta los resultados a PDF en un hilo separado */
     @FXML
