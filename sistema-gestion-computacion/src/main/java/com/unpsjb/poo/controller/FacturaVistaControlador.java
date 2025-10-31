@@ -308,6 +308,7 @@ public void handleCargarCliente() {
  * Aquí se llena el ComboBox y se muestran los datos de resumen.
  */
 private void inicializarVistaConfirmacionPago() {
+    System.out.println("Inicializando Vista de Confirmación de Pago...");
     // 1. Chequeo CRÍTICO: Si el ComboBox es null, asumimos que toda la vista falló la inyección.
     if (cbMetodoPago == null) {
         System.err.println("Error: El ComboBox/Vista 3 no está inyectado. Revise el FXML.");
@@ -345,7 +346,7 @@ private void inicializarVistaConfirmacionPago() {
     if (lblTotalFinal == null || lblComisionPago == null) {
         // Si fallan los labels, forzamos el fin para evitar el NullPointerException en handleMetodoPagoSelected()
         System.err.println("Error: Faltan inyecciones críticas de Label en Vista 3.");
-        return; 
+        //return; 
     }
     
     // Si no es nulo, ejecutamos la lógica que actualiza los labels
@@ -396,7 +397,28 @@ private void mostrarResumenVenta() {
     if (lblTotalFinal != null) {
         lblTotalFinal.setText("$ " + String.format("%.2f", subtotalConIVA));
     }
-}
+
+      if (vboxItemsLista != null) {
+        vboxItemsLista.getChildren().clear();
+        for (ItemCarrito item: miVenta.getCarrito().getItems()) {
+            String itemTexto = String.format("%s - Cantidad: %d - Subtotal: $%.2f",
+                item.getProducto().getNombreProducto(),
+                item.getCantidad(),
+                item.getSubtotal().doubleValue()
+            );
+            
+            Label lblItem = new Label(itemTexto);
+            lblItem.setStyle("-fx-padding: 5; -fx-font-size: 12px;");
+            vboxItemsLista.getChildren().add(lblItem);
+            if (scrollPaneItems != null) {
+                System.out.println("Productos cargados. ScrollPaneItems no es nulo.");
+                scrollPaneItems.setContent(vboxItemsLista);
+        }
+        }
+    } 
+        
+    }
+
 /**
  * Llamado por el ComboBox. Aplica la Estrategia de Pago seleccionada.
  */
@@ -606,6 +628,7 @@ private void inicializarVistaDatosFactura() {
         } else if (nuevaVistaID.equals("FacturaConfirmarVenta")) {
             inicializarVistaConfirmacionPago();
         }
+
         // **********************************************
         
         vistaAMostrar.setVisible(true);

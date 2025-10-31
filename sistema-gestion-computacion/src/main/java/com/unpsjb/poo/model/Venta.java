@@ -116,6 +116,7 @@ public class Venta {
     public void setClienteFactura(Cliente clienteFactura) {
         this.clienteFactura = clienteFactura;
     }
+    
 
 
 
