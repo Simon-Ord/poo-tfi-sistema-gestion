@@ -25,9 +25,10 @@ public class AuditoriaVentaUtil extends AuditoriaBase {
                 ? venta.getTipoFactura()
                 : "SIN TIPO";
 
-        String metodo = (venta.getEstrategiaPago() != null && venta.getEstrategiaPago().getDescripcion() != null)
-                ? venta.getEstrategiaPago().getDescripcion()
-                : "Sin método";
+String metodo = (venta.getMetodoPagoTexto() != null && !venta.getMetodoPagoTexto().isBlank())
+        ? venta.getMetodoPagoTexto()
+        : "Sin método";
+
 
         String codigo = (venta.getCodigoVenta() != null && !venta.getCodigoVenta().isBlank())
                 ? venta.getCodigoVenta()

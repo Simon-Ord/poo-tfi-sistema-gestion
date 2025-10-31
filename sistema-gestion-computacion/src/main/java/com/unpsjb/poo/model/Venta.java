@@ -13,9 +13,37 @@ public class Venta {
     private EstrategiaPago estrategiaPago;
     private Cliente clienteFactura;
     private BigDecimal total; 
+    private String metodoPagoTexto; // solo para auditorías o reportes
+
+public String getMetodoPagoTexto() {
+    // Si no hay texto pero sí una estrategia, devolvemos el nombre de la estrategia
+    if ((metodoPagoTexto == null || metodoPagoTexto.isBlank()) && estrategiaPago != null) {
+        return estrategiaPago.getNombreMetodoPago();
+    }
+    return metodoPagoTexto;
+}
+
+public void setMetodoPagoTexto(String metodoPagoTexto) {
+    this.metodoPagoTexto = metodoPagoTexto;
+}
+
 
     // DAO compartido (patrón Singleton implícito)
     private static final VentaDAOImpl ventaDAO = new VentaDAOImpl();
+
+    // ✅ Convierte el texto del método de pago en una EstrategiaPago concreta
+public static EstrategiaPago convertirMetodoPago(String metodoTexto) {
+    if (metodoTexto == null) return null;
+
+    switch (metodoTexto.toUpperCase()) {
+        case "EFECTIVO":
+            return new PagoEfectivo();
+        case "TARJETA":
+            return new PagoTarjeta();
+        default:
+            return null;
+    }
+}
 
     public Venta() {
         this.carrito = new CarritoDeCompra();

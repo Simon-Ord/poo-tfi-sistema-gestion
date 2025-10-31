@@ -164,58 +164,63 @@ public class VentaDAOImpl implements DAO<Venta> {
     @Override
     public List<Venta> findAll() { return new ArrayList<>(); }
 
-    // ✅ NUEVO MÉTODO: Buscar venta por código
-    public Venta findByCodigo(String codigoVenta) {
-        String sql = """
-            SELECT 
-                v.id AS id_venta,
-                v.codigo_venta,
-                v.tipo_factura,
-                v.metodo_pago,
-                v.subtotal,
-                v.iva,
-                v.total,
-                c.id AS cliente_id,
-                c.nombre AS cliente_nombre
-            FROM ventas v
-            LEFT JOIN clientes c ON v.cliente_id = c.id
-            WHERE v.codigo_venta = ?
-            """;
+// ✅ NUEVO MÉTODO: Buscar venta por código
+public Venta findByCodigo(String codigoVenta) {
+    String sql = """
+        SELECT 
+            v.id AS id_venta,
+            v.codigo_venta,
+            v.tipo_factura,
+            v.metodo_pago,
+            v.subtotal,
+            v.iva,
+            v.total,
+            c.id AS cliente_id,
+            c.nombre AS cliente_nombre
+        FROM ventas v
+        LEFT JOIN clientes c ON v.cliente_id = c.id
+        WHERE v.codigo_venta = ?
+        """;
 
-        try (Connection conn = GestorDeConexion.getInstancia().getConexion();
-             PreparedStatement ps = conn.prepareStatement(sql)) {
+    try (Connection conn = GestorDeConexion.getInstancia().getConexion();
+         PreparedStatement ps = conn.prepareStatement(sql)) {
 
-            ps.setString(1, codigoVenta);
-            ResultSet rs = ps.executeQuery();
+        ps.setString(1, codigoVenta);
+        ResultSet rs = ps.executeQuery();
 
-            if (rs.next()) {
-                Venta venta = new Venta();
-                venta.setIdVenta(rs.getInt("id_venta"));
-                venta.setCodigoVenta(rs.getString("codigo_venta"));
-                venta.setTipoFactura(rs.getString("tipo_factura"));
+        if (rs.next()) {
+            Venta venta = new Venta();
+            venta.setIdVenta(rs.getInt("id_venta"));
+            venta.setCodigoVenta(rs.getString("codigo_venta"));
+            venta.setTipoFactura(rs.getString("tipo_factura"));
 
-                // Cargar cliente
-                int clienteId = rs.getInt("cliente_id");
-                if (clienteId != 0) {
-                    Cliente cliente = new Cliente();
-                    cliente.setId(clienteId);
-                    cliente.setNombre(rs.getString("cliente_nombre"));
-                    venta.setClienteFactura(cliente);
-                }
+            // ✅ Cargar cliente si existe
+            int clienteId = rs.getInt("cliente_id");
+            if (clienteId != 0) {
+                Cliente cliente = new Cliente();
+                cliente.setId(clienteId);
+                cliente.setNombre(rs.getString("cliente_nombre"));
+                venta.setClienteFactura(cliente);
+            }
 
-// ✅ Método de pago (texto plano)
-        //   venta.setMetodoPagoTexto(rs.getString("metodo_pago"));
+            // ✅ Reconstruir EstrategiaPago desde texto
+            
+       venta.setEstrategiaPago(Venta.convertirMetodoPago(rs.getString("metodo_pago")));
+
+            venta.setMetodoPagoTexto(rs.getString("metodo_pago"));
+
 
             // ✅ Total (BigDecimal)
             venta.setTotal(rs.getBigDecimal("total"));
 
-                return venta;
-            }
-
-        } catch (SQLException e) {
-            System.err.println("Error al buscar venta por código: " + e.getMessage());
-            e.printStackTrace();
+            return venta;
         }
-        return null;
+
+    } catch (SQLException e) {
+        System.err.println("Error al buscar venta por código: " + e.getMessage());
+        e.printStackTrace();
     }
+    return null;
+}
+
 }
