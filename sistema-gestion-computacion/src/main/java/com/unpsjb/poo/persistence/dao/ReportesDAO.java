@@ -4,6 +4,7 @@ import com.unpsjb.poo.model.EventoAuditoria;
 import com.unpsjb.poo.persistence.GestorDeConexion;
 
 import java.sql.*;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -32,39 +33,60 @@ public class ReportesDAO {
     }
 
     /** Obtiene eventos filtrados según usuario, entidad o acción */
-    public List<EventoAuditoria> obtenerEventos(String usuario, String entidad, String accion) {
-        List<EventoAuditoria> lista = new ArrayList<>();
-        StringBuilder sql = new StringBuilder("SELECT * FROM auditoria WHERE 1=1 ");
+public List<EventoAuditoria> obtenerEventos(String usuario, String entidad, String accion, java.sql.Date desde, java.sql.Date hasta) {
+    List<EventoAuditoria> lista = new ArrayList<>();
+    StringBuilder sql = new StringBuilder("SELECT * FROM auditoria WHERE 1=1 ");
 
-        if (usuario != null && !usuario.isEmpty()) sql.append("AND usuario ILIKE ? ");
-        if (entidad != null && !entidad.isEmpty()) sql.append("AND entidad_afectada ILIKE ? ");
-        if (accion != null && !accion.isEmpty()) sql.append("AND accion ILIKE ? ");
-        sql.append("ORDER BY fecha_hora DESC LIMIT 200");
+    if (usuario != null && !usuario.isEmpty()) sql.append("AND usuario ILIKE ? ");
+    if (entidad != null && !entidad.isEmpty()) sql.append("AND entidad_afectada ILIKE ? ");
+    if (accion != null && !accion.isEmpty()) sql.append("AND accion ILIKE ? ");
+    if (desde != null) sql.append("AND fecha_hora >= ? ");
+    if (hasta != null) sql.append("AND fecha_hora < ? ");
 
-        try (Connection conn = GestorDeConexion.getInstancia().getConexion();
-             PreparedStatement ps = conn.prepareStatement(sql.toString())) {
+    sql.append("ORDER BY fecha_hora DESC LIMIT 500");
 
-            int index = 1;
-            if (usuario != null && !usuario.isEmpty()) ps.setString(index++, "%" + usuario + "%");
-            if (entidad != null && !entidad.isEmpty()) ps.setString(index++, "%" + entidad + "%");
-            if (accion != null && !accion.isEmpty()) ps.setString(index++, "%" + accion + "%");
+    try (Connection conn = GestorDeConexion.getInstancia().getConexion();
+         PreparedStatement ps = conn.prepareStatement(sql.toString())) {
 
-            ResultSet rs = ps.executeQuery();
-            while (rs.next()) {
-                EventoAuditoria ev = new EventoAuditoria();
-                ev.setId(rs.getLong("id"));
-                ev.setFechaHora(rs.getTimestamp("fecha_hora"));
-                ev.setUsuario(rs.getString("usuario"));
-                ev.setAccion(rs.getString("accion"));
-                ev.setEntidad(rs.getString("entidad_afectada"));
-                ev.setDetalles(rs.getString("descripcion"));
-                lista.add(ev);
-            }
-
-        } catch (SQLException e) {
-            System.err.println("Error de SQL en ReportesDAO: " + e.getMessage());
+        int index = 1;
+        if (usuario != null && !usuario.isEmpty()) ps.setString(index++, "%" + usuario + "%");
+        if (entidad != null && !entidad.isEmpty()) ps.setString(index++, "%" + entidad + "%");
+        if (accion != null && !accion.isEmpty()) ps.setString(index++, "%" + accion + "%");
+        if (desde != null) ps.setDate(index++, desde);
+        if (hasta != null) {
+            java.util.Calendar c = java.util.Calendar.getInstance();
+            c.setTime(hasta);
+            c.add(java.util.Calendar.DAY_OF_MONTH, 1);
+            java.sql.Date hastaInclusive = new java.sql.Date(c.getTimeInMillis());
+            ps.setDate(index++, hastaInclusive);
         }
 
-        return lista;
+        ResultSet rs = ps.executeQuery();
+        while (rs.next()) {
+            EventoAuditoria ev = new EventoAuditoria();
+            ev.setId(rs.getLong("id"));
+            ev.setFechaHora(rs.getTimestamp("fecha_hora"));
+            ev.setUsuario(rs.getString("usuario"));
+            ev.setAccion(rs.getString("accion"));
+            ev.setEntidad(rs.getString("entidad_afectada"));
+            ev.setDetalles(rs.getString("descripcion"));
+            lista.add(ev);
+        }
+    } catch (SQLException e) {
+        System.err.println("Error de SQL en ReportesDAO: " + e.getMessage());
     }
+
+    return lista;
+
+
+}
+
+    /**
+     */
+    public List<EventoAuditoria> obtenerEventosPorRangoFechas(LocalDate desde, LocalDate hasta) {
+        java.sql.Date sqlDesde = (desde != null) ? java.sql.Date.valueOf(desde) : null;
+        java.sql.Date sqlHasta = (hasta != null) ? java.sql.Date.valueOf(hasta) : null;
+        return obtenerEventos(null, null, null, sqlDesde, sqlHasta);
+    }
+
 }

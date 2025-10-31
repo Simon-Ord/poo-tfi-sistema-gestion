@@ -1,6 +1,7 @@
 package com.unpsjb.poo.model;
 
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.util.List;
 import com.unpsjb.poo.persistence.dao.ReportesDAO;
 
@@ -20,8 +21,13 @@ public class EventoAuditoria {
 
     private static final ReportesDAO dao = new ReportesDAO();
 
+    public static List<EventoAuditoria> obtenerEventosPorRangoFechas(LocalDate desde, LocalDate hasta) {
+    return new ReportesDAO().obtenerEventosPorRangoFechas(desde, hasta);
+}
+
+
     // ==============================
-    // 🔹 Métodos de persistencia
+    // Métodos de persistencia
     // ==============================
 
     /** Guarda este evento de auditoría en la base de datos */
@@ -36,12 +42,15 @@ public class EventoAuditoria {
     }
 
     /** Obtiene una lista de eventos filtrados */
-    public static List<EventoAuditoria> obtenerEventos(String usuario, String entidad, String accion) {
-        return dao.obtenerEventos(usuario, entidad, accion);
-    }
+public static List<EventoAuditoria> obtenerEventos(String usuario, String entidad, String accion,
+                                      java.sql.Date desde, java.sql.Date hasta) {
+    ReportesDAO dao = new ReportesDAO();
+    return dao.obtenerEventos(usuario, entidad, accion, desde, hasta);
+}
+
 
     // ==============================
-    // 🔹 Getters / Setters
+    // Getters / Setters
     // ==============================
 
     public long getId() { return id; }
