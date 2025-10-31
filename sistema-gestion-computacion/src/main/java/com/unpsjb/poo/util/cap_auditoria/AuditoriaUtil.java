@@ -5,21 +5,14 @@ import com.unpsjb.poo.persistence.dao.ReportesDAO;
 import com.unpsjb.poo.util.Sesion;
 
 /**
- * ✅ Clase utilitaria genérica para registrar auditorías del sistema.
- * 
- * 🔹 Aplica el principio de HERENCIA desde AuditoriaBase.
- * 🔹 Se utiliza para registrar eventos globales (usuarios, clientes, ventas, etc.)
- * 🔹 Los cambios específicos de productos se manejan en AuditoriaProductoUtil.
+  Clase utilitaria genérica para registrar auditorías del sistema.
  */
 public class AuditoriaUtil extends AuditoriaBase {
 
     private static final ReportesDAO reportesDAO = new ReportesDAO();
 
     /**
-     * 🔹 Registra una acción genérica sobre cualquier entidad.
-     * 
-     * Ejemplo:
-     * AuditoriaUtil.registrarAccion("CREAR", "cliente", "creó un nuevo cliente Juan Pérez");
+     *  Registra una acción genérica sobre cualquier entidad.
      */
     public static void registrarAccion(String accion, String entidad, String detalles) {
         try {
@@ -35,12 +28,12 @@ public class AuditoriaUtil extends AuditoriaBase {
 
             reportesDAO.registrarEvento(evento);
         } catch (Exception e) {
-            System.err.println("⚠️ Error al registrar auditoría genérica: " + e.getMessage());
+            System.err.println(" Error al registrar auditoría genérica: " + e.getMessage());
         }
     }
 
-    /**
-     * 🔹 Implementación de acción específica genérica (heredada de AuditoriaBase).
+    /*
+     *  Implementación de acción específica genérica (heredada de AuditoriaBase).
      * 
      * En este caso, no compara objetos, solo registra acciones generales.
      */

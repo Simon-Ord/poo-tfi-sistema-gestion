@@ -10,7 +10,6 @@
             stylesheets="@../css/styleUsuariosDark.css"
             style="-fx-background-color: linear-gradient(to bottom right, #1c1f2b, #242a3a);">
 
-    
     <top>
         <HBox alignment="CENTER" style="-fx-padding: 20;">
             <Label text="Gestión de Clientes"
@@ -18,14 +17,12 @@
         </HBox>
     </top>
 
-    
     <center>
         <VBox alignment="CENTER" spacing="20">
             <padding>
                 <Insets top="10" right="20" bottom="20" left="20" />
             </padding>
 
-            
             <VBox spacing="15" prefWidth="750" alignment="CENTER"
                   style="-fx-background-color: rgba(255,255,255,0.1);
                          -fx-background-radius: 15;
@@ -34,25 +31,39 @@
                          -fx-padding: 25;
                          -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 15, 0.3, 0, 4);">
 
-                
                 <TableView fx:id="tablaClientes" prefHeight="330" prefWidth="700"
                            style="-fx-background-color: transparent;">
                     <columns>
-                        
                         <TableColumn fx:id="colNombre" text="Nombre" prefWidth="160" />
                         <TableColumn fx:id="colCuit" text="CUIT" prefWidth="100" />
                         <TableColumn fx:id="colTelefono" text="Teléfono" prefWidth="100" />
                         <TableColumn fx:id="colEmail" text="Email" prefWidth="150" />
                         <TableColumn fx:id="colTipo" text="Tipo de Cliente" prefWidth="120" />
-                        <TableColumn fx:id="colActivo"   text="Estado"          prefWidth="90"/>
+                        <TableColumn fx:id="colActivo" text="Estado" prefWidth="90"/>
                     </columns>
                 </TableView>
 
-                
                 <HBox alignment="CENTER" spacing="15">
-                    <Button text="Agregar Cliente" onAction="#agregarCliente" styleClass="btn-accion" />
-                    <Button text="Editar Cliente" onAction="#editarCliente" styleClass="btn-accion" />
-                    <Button text="Eliminar/Ocultar Cliente" onAction="#eliminarCliente" styleClass="btn-accion" />
+                    <!--  Botón Agregar -->
+                    <Button text=" Agregar Cliente" onAction="#agregarCliente" styleClass="btn-accion">
+                        <tooltip>
+                            <Tooltip text="Permite registrar un nuevo cliente en el sistema." />
+                        </tooltip>
+                    </Button>
+
+                    <!--  Botón Editar -->
+                    <Button text=" Editar Cliente" onAction="#editarCliente" styleClass="btn-accion">
+                        <tooltip>
+                            <Tooltip text="Abre el formulario para modificar los datos del cliente seleccionado." />
+                        </tooltip>
+                    </Button>
+
+                    <!--  Botón Eliminar -->
+                    <Button text=" activiar/desactivar" onAction="#eliminarCliente" styleClass="btn-accion">
+                        <tooltip>
+                            <Tooltip text="Desactiva el cliente seleccionado o lo activa" />
+                        </tooltip>
+                    </Button>
                 </HBox>
             </VBox>
         </VBox>

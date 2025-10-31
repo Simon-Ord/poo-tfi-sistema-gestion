@@ -62,6 +62,7 @@ public class ClienteFormularioVistaControlador {
                 clienteEditable.setTipo(cbTipoCliente.getValue());
 
                 if (clienteEditable.guardar()) {
+                    // auditoria usando el accion de cliente (polimorfismo)
                     new AuditoriaClienteUtil().registrarAccionEspecifica(original, clienteEditable);
                     mostrarAlerta(" Cliente actualizado correctamente.");
                 } else {

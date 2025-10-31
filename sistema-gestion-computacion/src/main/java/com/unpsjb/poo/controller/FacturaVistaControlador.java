@@ -458,15 +458,14 @@ public void handleRegistrarVenta() {
     try {
      
         miVenta.siguientePaso();
-        
-        auditoriaVentaUtil.registrarVenta(miVenta);
-
-
         actualizarVisibilidadVistas(miVenta.getEstadoActual().getVistaID());
         inicializarVistaAgregarProductos();
         vistaDatosFacturaInicializada = false;
         vistaConfirmacionPagoInicializada = false;
-
+        //-------------------
+        // auditoriaaaaaaaaaaa
+        //------------------------
+auditoriaVentaUtil.registrarCreacion(miVenta);
 
         mostrarAlerta("Éxito", "Venta registrada y auditada correctamente.", Alert.AlertType.INFORMATION);
 

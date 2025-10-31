@@ -1,18 +1,8 @@
 package com.unpsjb.poo.persistence.dao.impl;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Types;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-
-import com.unpsjb.poo.model.CarritoDeCompra;
-import com.unpsjb.poo.model.ItemCarrito;
-import com.unpsjb.poo.model.Venta;
+import java.sql.*;
+import java.util.*;
+import com.unpsjb.poo.model.*;
 import com.unpsjb.poo.persistence.GestorDeConexion;
 import com.unpsjb.poo.persistence.dao.DAO;
 
@@ -139,15 +129,11 @@ public class VentaDAOImpl implements DAO<Venta> {
                     conexion.close();
                 }
             } catch (SQLException e) {
-                System.err.println(" Error al cerrar recursos: " + e.getMessage());
+                System.err.println("Error al cerrar recursos: " + e.getMessage());
             }
         }
     }
 
-    /**
-     * Genera un código único basado en el tipo y la fecha.
-     * Ejemplo: FACT-20251026-004 o TICK-20251026-012
-     */
     private String generarCodigoVenta(String tipo, Connection conn) throws SQLException {
         String prefijo = tipo.equalsIgnoreCase("FACTURA") ? "FACT" : "TICK";
         String fecha = new java.text.SimpleDateFormat("yyyyMMdd").format(new java.util.Date());
@@ -170,19 +156,66 @@ public class VentaDAOImpl implements DAO<Venta> {
     }
 
     @Override
-    public boolean update(Venta venta) {
-        return false;
-    }
+    public boolean update(Venta venta) { return false; }
 
     @Override
-    public boolean delete(int id) {
-        return false;
-    }
+    public boolean delete(int id) { return false; }
 
     @Override
-    public List<Venta> findAll() {
-        return new ArrayList<>();
+    public List<Venta> findAll() { return new ArrayList<>(); }
+
+    // ✅ NUEVO MÉTODO: Buscar venta por código
+    public Venta findByCodigo(String codigoVenta) {
+        String sql = """
+            SELECT 
+                v.id AS id_venta,
+                v.codigo_venta,
+                v.tipo_factura,
+                v.metodo_pago,
+                v.subtotal,
+                v.iva,
+                v.total,
+                c.id AS cliente_id,
+                c.nombre AS cliente_nombre
+            FROM ventas v
+            LEFT JOIN clientes c ON v.cliente_id = c.id
+            WHERE v.codigo_venta = ?
+            """;
+
+        try (Connection conn = GestorDeConexion.getInstancia().getConexion();
+             PreparedStatement ps = conn.prepareStatement(sql)) {
+
+            ps.setString(1, codigoVenta);
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                Venta venta = new Venta();
+                venta.setIdVenta(rs.getInt("id_venta"));
+                venta.setCodigoVenta(rs.getString("codigo_venta"));
+                venta.setTipoFactura(rs.getString("tipo_factura"));
+
+                // Cargar cliente
+                int clienteId = rs.getInt("cliente_id");
+                if (clienteId != 0) {
+                    Cliente cliente = new Cliente();
+                    cliente.setId(clienteId);
+                    cliente.setNombre(rs.getString("cliente_nombre"));
+                    venta.setClienteFactura(cliente);
+                }
+
+// ✅ Método de pago (texto plano)
+        //   venta.setMetodoPagoTexto(rs.getString("metodo_pago"));
+
+            // ✅ Total (BigDecimal)
+            venta.setTotal(rs.getBigDecimal("total"));
+
+                return venta;
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error al buscar venta por código: " + e.getMessage());
+            e.printStackTrace();
+        }
+        return null;
     }
 }
-
-

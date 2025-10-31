@@ -1,17 +1,18 @@
 package com.unpsjb.poo.model;
 
 import com.unpsjb.poo.persistence.dao.impl.VentaDAOImpl;
+import java.math.BigDecimal;
 
 public class Venta {
 
-
     private int idVenta;
-        private String codigoVenta; // código único tipo FACT-0001 o TICK-0001
+    private String codigoVenta; // código único tipo FACT-0001 o TICK-0001
     private CarritoDeCompra carrito;
     private EstadoVenta estadoActualVenta;
     private String tipoFactura;
     private EstrategiaPago estrategiaPago;
     private Cliente clienteFactura;
+    private BigDecimal total; 
 
     // DAO compartido (patrón Singleton implícito)
     private static final VentaDAOImpl ventaDAO = new VentaDAOImpl();
@@ -62,12 +63,13 @@ public class Venta {
         boolean exito = ventaDAO.create(this);
 
         if (!exito) {
-            throw new RuntimeException(" Error al guardar la venta en la base de datos.");
+            throw new RuntimeException("Error al guardar la venta en la base de datos.");
         }
 
-        System.out.println(" Venta guardada correctamente en la BD con ID: " + this.idVenta);
+        System.out.println("Venta guardada correctamente en la BD con ID: " + this.idVenta);
     }
 
+    // 🔹 Getters y Setters
 
     public int getIdVenta() {
         return idVenta;
@@ -116,17 +118,21 @@ public class Venta {
     public void setClienteFactura(Cliente clienteFactura) {
         this.clienteFactura = clienteFactura;
     }
-    
 
+    public String getCodigoVenta() {
+        return codigoVenta;
+    }
 
+    public void setCodigoVenta(String codigoVenta) {
+        this.codigoVenta = codigoVenta;
+    }
 
+    public BigDecimal getTotal() {
+        return total;
+    }
 
-public String getCodigoVenta() {
-    return codigoVenta;
-}
-
-public void setCodigoVenta(String codigoVenta) {
-    this.codigoVenta = codigoVenta;
-}
+    public void setTotal(BigDecimal total) {
+        this.total = total;
+    }
 
 }

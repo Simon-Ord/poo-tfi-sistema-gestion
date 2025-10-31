@@ -96,12 +96,12 @@ public class ReportesControlador {
         File file = fc.showSaveDialog(stage);
 
         if (file != null) {
-            // 🔹 Creamos un hilo para no bloquear la interfaz
+            //  Creamos un hilo para no bloquear la interfaz
             Thread hiloExportar = new Thread(() -> {
                 PDFExporter pdf = new PDFReporte(resultados);
                 boolean ok = pdf.export(file.getAbsolutePath());
 
-                // 🔹 Volvemos al hilo principal (UI) para mostrar el mensaje
+                //  Volvemos al hilo principal (UI) para mostrar el mensaje
                 javafx.application.Platform.runLater(() -> {
                     mostrarAlerta(ok
                             ? " Exportación completada correctamente.\nUbicación: " + file.getAbsolutePath()

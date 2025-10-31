@@ -46,11 +46,7 @@ public class AuditoriaClienteUtil extends AuditoriaBase {
     }
 
     public void registrarCreacion(Cliente cliente) {
-        String usuario = (Sesion.getUsuarioActual() != null)
-                ? Sesion.getUsuarioActual().getNombre()
-                : "Desconocido";
-
-        registrarEvento(
+     registrarEvento(
                 "CREAR CLIENTE",
                 "cliente",
               " agrego un nuevo cliente: " + cliente.getNombre()
@@ -73,7 +69,7 @@ public class AuditoriaClienteUtil extends AuditoriaBase {
     }
 
     /**
-     * 🧠 Registra las modificaciones entre dos versiones del cliente.
+     *  Registra las modificaciones entre dos versiones del cliente.
      */
     @Override
     public void registrarAccionEspecifica(Object original, Object modificado) {

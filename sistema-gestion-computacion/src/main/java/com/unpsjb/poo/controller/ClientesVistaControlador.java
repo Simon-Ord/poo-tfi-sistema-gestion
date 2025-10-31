@@ -3,6 +3,7 @@ package com.unpsjb.poo.controller;
 import java.util.List;
 
 import com.unpsjb.poo.model.Cliente;
+import com.unpsjb.poo.util.cap_auditoria.AuditoriaClienteUtil;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -87,25 +88,36 @@ public class ClientesVistaControlador extends BaseControlador {
     }
 
     // Botón: Eliminar cliente (baja lógica)
-    @FXML
-    private void eliminarCliente() {
-        Cliente seleccionado = tablaClientes.getSelectionModel().getSelectedItem();
-        if (seleccionado == null) {
-            mostrarAlerta("Debe seleccionar un cliente para eliminar.");
-            return;
-        }
+@FXML
+private void eliminarCliente() {
+    Cliente seleccionado = tablaClientes.getSelectionModel().getSelectedItem();
+    if (seleccionado == null) {
+        mostrarAlerta("Debe seleccionar un cliente para activar o desactivar.");
+        return;
+    }
 
-        boolean estabaActivo = seleccionado.isActivo();
+    boolean estadoAnterior = seleccionado.isActivo();
 
-        boolean ok = seleccionado.eliminar(); 
-        if (ok) {
-            String msg = estabaActivo ? "Cliente inactivado." : "Cliente activado.";
-            mostrarAlerta(msg);
-            cargarClientesDesdeBD(); 
-        } else {
-            mostrarAlerta("No se pudo actualizar el estado del cliente.");
+    // Alterna el estado (baja lógica)
+    boolean ok = seleccionado.eliminar(); // este método ya cambia activo <-> inactivo en la BD
+
+    if (ok) {
+        // 🔸 Registrar auditoría del cambio de estado
+        AuditoriaClienteUtil auditor = new AuditoriaClienteUtil();
+        auditor.registrarCambioEstado(seleccionado, !estadoAnterior);
+
+        // Mensaje al usuario
+        String msg = estadoAnterior
+                ? "Cliente desactivado correctamente."
+                : "Cliente reactivado correctamente.";
+
+        mostrarAlerta(msg);
+        cargarClientesDesdeBD();
+    } else {
+        mostrarAlerta("No se pudo cambiar el estado del cliente.");
     }
 }
+
 
     private void mostrarAlerta(String mensaje) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
