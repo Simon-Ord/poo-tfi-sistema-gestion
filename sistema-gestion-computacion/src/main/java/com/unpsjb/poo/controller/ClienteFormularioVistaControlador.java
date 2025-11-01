@@ -20,6 +20,8 @@ public class ClienteFormularioVistaControlador {
     @FXML private Button btnCancelar;
 
     private Cliente clienteEditable;
+    // Campo para almacenar la referencia al controlador de la ventana principal
+    private FacturaVistaControlador facturaControlador;
 
     @FXML
     public void initialize() {
@@ -46,6 +48,9 @@ public class ClienteFormularioVistaControlador {
                 nuevo.setActivo(true);
 
                 if (nuevo.guardar()) {
+                    if (facturaControlador != null) {
+                        facturaControlador.setClienteTemporal(nuevo.getCuit(),nuevo.getNombre());
+                    }
                     new AuditoriaClienteUtil().registrarCreacion(nuevo);
                     mostrarAlerta(" Cliente agregado correctamente.");
                 } else {
@@ -62,6 +67,7 @@ public class ClienteFormularioVistaControlador {
                 clienteEditable.setTipo(cbTipoCliente.getValue());
 
                 if (clienteEditable.guardar()) {
+                    // auditoria usando el accion de cliente (polimorfismo)
                     new AuditoriaClienteUtil().registrarAccionEspecifica(original, clienteEditable);
                     mostrarAlerta(" Cliente actualizado correctamente.");
                 } else {
@@ -104,4 +110,9 @@ public class ClienteFormularioVistaControlador {
         alert.setContentText(mensaje);
         alert.showAndWait();
     }
+
+    // Método para recibir la referencia (setter llamado desde FacturaVistaControlador)
+    public void setFacturaControlador(FacturaVistaControlador controlador) {
+    this.facturaControlador = controlador;
+  }
 }

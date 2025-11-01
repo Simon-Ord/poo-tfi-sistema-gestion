@@ -1,48 +1,58 @@
 package com.unpsjb.poo.util.cap_auditoria;
 
 import com.unpsjb.poo.model.Venta;
+import com.unpsjb.poo.persistence.dao.impl.VentaDAOImpl;
 
-/**
- * ✅ Clase utilitaria para registrar auditorías de ventas.
- * Registra la creación de una venta, indicando quién la hizo,
- * a qué cliente, el tipo de comprobante, método y código único.
- */
 public class AuditoriaVentaUtil extends AuditoriaBase {
 
-    public void registrarVenta(Venta venta) {
-        if (venta == null) return;
+    private static final VentaDAOImpl ventaDAO = new VentaDAOImpl();
 
-        String usuario = getUsuarioActual();
-        String cliente = (venta.getClienteFactura() != null)
+    @Override
+    public void registrarCreacion(Object nuevo) {
+        if (!(nuevo instanceof Venta)) return;
+        Venta ventaOriginal = (Venta) nuevo;
+
+        //  Recuperar desde BD los datos persistidos reales
+        Venta venta = ventaDAO.findByCodigo(ventaOriginal.getCodigoVenta());
+        if (venta == null) venta = ventaOriginal;
+
+        //  Datos descriptivos
+        String cliente = (venta.getClienteFactura() != null && venta.getClienteFactura().getNombre() != null)
                 ? venta.getClienteFactura().getNombre()
                 : "Consumidor Final";
-        String tipo = (venta.getTipoFactura() != null)
+
+        String tipo = (venta.getTipoFactura() != null && !venta.getTipoFactura().isBlank())
                 ? venta.getTipoFactura()
-                : "Desconocido";
-        String metodo = (venta.getEstrategiaPago() != null)
-                ? venta.getEstrategiaPago().getDescripcion()
-                : "Sin método";
-        String codigo = (venta.getCodigoVenta() != null)
+                : "SIN TIPO";
+
+            String metodo = (venta.getMetodoPagoTexto() != null && !venta.getMetodoPagoTexto().isBlank())
+           ? venta.getMetodoPagoTexto()
+           : "Sin método";
+
+
+        String codigo = (venta.getCodigoVenta() != null && !venta.getCodigoVenta().isBlank())
                 ? venta.getCodigoVenta()
                 : "N/A";
-        
-        // 🚨 CORRECCIÓN APLICADA AQUÍ: 
-        // Se llama a getTotal() y se convierte a double para el formato String.
-        double total = (venta.getCarrito() != null)
-                ? venta.getCarrito().getTotal().doubleValue()
-                : 0.0;
 
-        String detalles = String.format(
-            "El usuario %s realizó una %s (%s) al cliente '%s' con código %s. Total: $%.2f.",
-            usuario, tipo, metodo, cliente, codigo, total
-        );
+        String total = (venta.getTotal() != null)
+                ? String.format("$%.2f", venta.getTotal().doubleValue())
+                : "$0.00";
 
-        registrarEvento("REGISTRAR VENTA", "venta", detalles);
+        // Formato por filas, estilo más legible
+        StringBuilder detalles = new StringBuilder();
+        detalles.append("Registró una VENTA:\n")
+                .append(" - Tipo: ").append(tipo).append("\n")
+                .append(" - Método de Pago: ").append(metodo).append("\n")
+                .append(" - Cliente: ").append(cliente).append("\n")
+                .append(" - Código: ").append(codigo).append("\n")
+                .append(" - Total: ").append(total);
+
+        // Guardar el evento de auditoría
+        registrarEvento("REGISTRAR VENTA", "venta", detalles.toString());
     }
 
     @Override
     public void registrarAccionEspecifica(Object original, Object modificado) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'registrarAccionEspecifica'");
+        // No aplica para ventas
     }
 }

@@ -249,7 +249,7 @@ private void guardarProducto() {
             } else {
                 ok = nuevo.guardar();
             }
-      // auditoria
+      // auditoria en la crearcon del prodcto se conecta con auditoriautuil
             if (ok) {
                 String tipo = tipoSeleccionado.toUpperCase();
                 AuditoriaUtil.registrarAccion(
@@ -286,7 +286,9 @@ private void guardarProducto() {
             if (ok) {
                 String resumen = AuditoriaProductoUtil.generarResumenCambios(original, actualizado);
                 if (!resumen.isEmpty()) {
-                    AuditoriaProductoUtil.registrarCambioProducto(original, actualizado);
+                 AuditoriaProductoUtil auditor = new AuditoriaProductoUtil();
+                auditor.registrarAccionEspecifica(productoOriginal, productoAEditar);
+
                     mensajeUsuario = "Producto modificado:\n" + resumen;
                 } else {
                     mensajeUsuario = "No hubo cambios relevantes en el producto.";

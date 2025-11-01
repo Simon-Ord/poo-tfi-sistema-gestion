@@ -11,73 +11,57 @@
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="com.unpsjb.poo.controller.ReportesControlador">
 
-  
     <Label styleClass="titulo-principal" text="📊 Auditoría y Reportes del Sistema">
         <font><Font size="22.0" /></font>
     </Label>
 
-  
-    <GridPane hgap="15" vgap="10" styleClass="panel-busqueda">
-        <columnConstraints>
-            <ColumnConstraints hgrow="NEVER" minWidth="60" prefWidth="80" />
-            <ColumnConstraints hgrow="ALWAYS" minWidth="150" prefWidth="200" />
-            <ColumnConstraints hgrow="NEVER" minWidth="60" prefWidth="80" />
-            <ColumnConstraints hgrow="ALWAYS" minWidth="150" prefWidth="200" />
-        </columnConstraints>
+    <!--  PANEL DE FILTROS ORGANIZADO -->
+<GridPane hgap="15" vgap="12" styleClass="panel-busqueda">
+    <columnConstraints>
+        <ColumnConstraints hgrow="NEVER" minWidth="80" prefWidth="100" />
+        <ColumnConstraints hgrow="ALWAYS" minWidth="150" prefWidth="200" />
+        <ColumnConstraints hgrow="NEVER" minWidth="80" prefWidth="100" />
+        <ColumnConstraints hgrow="ALWAYS" minWidth="150" prefWidth="200" />
+    </columnConstraints>
 
-       
-        <Label styleClass="etiqueta" text="👤 Usuario:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-        <TextField fx:id="txtUsuario"
-                   promptText="nombre del usuario (ej: Alexis,Simon,Elias,Marcos..)"
-                   GridPane.columnIndex="1" GridPane.rowIndex="0">
-            <tooltip>
-                <Tooltip text="Filtra los registros según el nombre del usuario que realizó la acción." />
-            </tooltip>
-        </TextField>
+    <!--  FILA 1: Fechas -->
+    <Label styleClass="etiqueta" text="📆 Desde:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+    <DatePicker fx:id="dpDesde" promptText="Seleccione fecha inicial"
+                GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
-        
-        <Label styleClass="etiqueta" text="🛠️ Acción:" GridPane.columnIndex="2" GridPane.rowIndex="0" />
-        <TextField fx:id="txtAccion"
-                   promptText="Ej: Crear, Modificar, Eliminar, Iniciar Sesión..."
-                   GridPane.columnIndex="3" GridPane.rowIndex="0">
-            <tooltip>
-                <Tooltip text="Indique el tipo de acción que desea buscar (crear, modificar, eliminar...)" />
-            </tooltip>
-        </TextField>
+    <Label styleClass="etiqueta" text="📆 Hasta:" GridPane.columnIndex="2" GridPane.rowIndex="0" />
+    <DatePicker fx:id="dpHasta" promptText="Seleccione fecha final"
+                GridPane.columnIndex="3" GridPane.rowIndex="0" />
 
-       
-        <Label styleClass="etiqueta" text="📦 Entidad:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-        <TextField fx:id="txtEntidad"
-                   promptText="Ej: Usuario, Producto, Sesión..."
-                   GridPane.columnIndex="1" GridPane.rowIndex="1">
-            <tooltip>
-                <Tooltip text="Filtra los registros según la entidad afectada (usuario, producto, sesión...)" />
-            </tooltip>
-        </TextField>
+    <!-- FILA 2: Usuario y Acción -->
+    <Label styleClass="etiqueta" text="👤 Usuario:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+    <TextField fx:id="txtUsuario" promptText="ej:Alexis,Simon,Elias,Marcos.."
+               GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-       
-        <HBox alignment="CENTER_LEFT" spacing="10"
-              GridPane.columnIndex="3" GridPane.rowIndex="1">
-            <Button onAction="#buscar" styleClass="boton-accion" text="🔍 Buscar">
-                <tooltip>
-                    <Tooltip text="Realiza la búsqueda según los filtros ingresados." />
-                </tooltip>
-            </Button>
+    <Label styleClass="etiqueta" text="🛠️ Acción:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+    <TextField fx:id="txtAccion" promptText="Ej: Crear, Modificar, Eliminar..."
+               GridPane.columnIndex="3" GridPane.rowIndex="1" />
 
-            <Button onAction="#exportarPDF" styleClass="boton-accion" text="📄 Exportar PDF">
-                <tooltip>
-                    <Tooltip text="Guarda los resultados actuales en un archivo PDF." />
-                </tooltip>
-            </Button>
-        </HBox>
+    <!--  FILA 3: Entidad + Botones -->
+    <Label styleClass="etiqueta" text="📦 Entidad:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+    <TextField fx:id="txtEntidad" promptText="Ej: Usuario, Producto, Sesión..."
+               GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
-        <rowConstraints>
-            <RowConstraints />
-            <RowConstraints />
-        </rowConstraints>
-    </GridPane>
+    <HBox alignment="CENTER_LEFT" spacing="12"
+          GridPane.columnIndex="3" GridPane.rowIndex="2">
+        <Button onAction="#buscar" styleClass="boton-accion" text="🔍 Buscar" />
+        <Button onAction="#exportarPDF" styleClass="boton-accion" text="📄 Exportar PDF" />
+    </HBox>
 
-     
+    <rowConstraints>
+        <RowConstraints />
+        <RowConstraints />
+        <RowConstraints />
+    </rowConstraints>
+</GridPane>
+
+
+    <!-- TABLA -->
     <ScrollPane fitToWidth="true" fitToHeight="true"
                 hbarPolicy="AS_NEEDED" vbarPolicy="AS_NEEDED"
                 VBox.vgrow="ALWAYS">
@@ -94,8 +78,6 @@
         </TableView>
     </ScrollPane>
 
-    
-    <Label text=" Puede combinar filtros. Ejemplo: buscar 'crear' en acción y 'producto' en entidad.Y te lo podes hacer un PDF"
+    <Label text="Puede combinar filtros. Ejemplo: buscar 'crear' en acción y 'producto' en entidad,fecha y luego generar PDF."
            styleClass="texto-ayuda" />
-
 </VBox>
