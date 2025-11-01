@@ -57,7 +57,7 @@ public class PrincipalVistaControlador implements Initializable {
             Image logo = new Image(getClass().getResource("/images/logoMundoPC.png").toExternalForm());
             logoImage.setImage(logo);
         } catch (Exception e) {
-            System.err.println("⚠️ No se pudo cargar el logo: " + e.getMessage());
+            System.err.println(" No se pudo cargar el logo: " + e.getMessage());
         }
     }
 

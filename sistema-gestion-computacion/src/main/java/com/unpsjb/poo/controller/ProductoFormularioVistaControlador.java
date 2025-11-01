@@ -297,7 +297,7 @@ private void guardarProducto() {
         if (ok) {
             mostrarAlerta(mensajeUsuario);
             if (productosVista != null) {
-                productosVista.cargarProductos();
+                productosVista.buscarProductos();
             }
             cerrarVentana();
         } else {
@@ -470,7 +470,7 @@ private void guardarProducto() {
 
     private void cerrarVentana() {
         if (productosVista != null) {
-            productosVista.cargarProductos();
+            productosVista.buscarProductos();
         }
         BaseControlador.cerrarVentanaInterna(txtCodigo);
     }

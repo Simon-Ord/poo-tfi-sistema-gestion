@@ -9,7 +9,6 @@ import com.unpsjb.poo.util.cap_auditoria.AuditoriaProductoUtil;
 import com.unpsjb.poo.util.cap_auditoria.AuditoriaUtil;
 
 import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
@@ -35,14 +34,12 @@ public class ProductosVistaControlador extends BaseControlador {
     @FXML private TextField txtBuscar;
     @FXML private CheckBox chBoxInactivos;
 
-    private ObservableList<Producto> backingList = FXCollections.observableArrayList();
-
     @FXML
     public void initialize() {
         configurarColumnas();
         configurarColumnasEstado();
         configurarListeners();
-        cargarProductos();
+        buscarProductos(); 
     }
 
     //Configura las columnas básicas de la tabla
@@ -93,20 +90,11 @@ public class ProductosVistaControlador extends BaseControlador {
         }
     }
 
-    /** Carga todos los productos activos en la tabla */
-    public void cargarProductos() {
-        // Obtener productos a través del modelo, NO del DAO
-        List<Producto> lista = Producto.obtenerTodos();
-        backingList = FXCollections.observableArrayList(lista);
-        tablaProductos.setItems(backingList);
-        tablaProductos.refresh();
-    }
-
     // ==================================
     // BOTONES Y ACCIONES DEL CONTROLADOR
     // ==================================
     /** Buscar productos */
-    @FXML private void buscarProductos() {
+    @FXML public void buscarProductos() {
         String q = (txtBuscar != null && txtBuscar.getText() != null)
                 ? txtBuscar.getText().trim().toLowerCase()
                 : "";
@@ -125,15 +113,13 @@ public class ProductosVistaControlador extends BaseControlador {
         if (txtBuscar != null) {
             txtBuscar.clear(); // Esto activará automáticamente el listener y hará la búsqueda
         }
-        if (chBoxInactivos != null) {
-            chBoxInactivos.setSelected(false); // También resetear el checkbox
-        }
+        // Mantener el estado del checkbox - el usuario eligió ver inactivos por alguna razón
     }
 
     /** Agregar producto */
     @FXML private void agregarProducto() {
         crearVentanaPequena("/view/productoForm.fxml", "Agregar Nuevo Producto");
-        cargarProductos(); // Recargar datos después de cerrar la ventana
+        buscarProductos(); // Usar buscarProductos() directamente
     }
 
     /** Modificar producto */
@@ -191,7 +177,7 @@ private void cambiarEstadoProducto() {
         );
 
         mostrarAlerta(" El producto cambió al estado: " + nuevoEstado);
-        cargarProductos();
+        buscarProductos(); // Usar buscarProductos() directamente
 
     } else {
         mostrarAlerta(" Error al cambiar el estado del producto.");

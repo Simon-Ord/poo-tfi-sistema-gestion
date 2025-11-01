@@ -33,16 +33,50 @@ public class CategoriasVistaControlador extends BaseControlador {
     @FXML
     public void initialize() {
         // Configurar columnas de la tabla
+        configurarColumnas();
+        configurarColumnasEstado();
+        configurarListeners();
+        cargarCategorias();
+    }
+    
+    private void configurarColumnas() {
         colNombre.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getNombre()));
-        colEstado.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getEstadoTexto()));
         colFechaCreacion.setCellValueFactory(c -> {
             String fecha = c.getValue().getFechaCreacion() != null 
                 ? c.getValue().getFechaCreacion().format(DateTimeFormatter.ofPattern("dd/MM/yyyy"))
                 : "";
             return new javafx.beans.property.SimpleStringProperty(fecha);
         });
-
-        cargarCategorias();
+    }
+    
+    private void configurarColumnasEstado() {
+        colEstado.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(""));
+        
+        colEstado.setCellFactory(column -> {
+            return new javafx.scene.control.TableCell<Categoria, String>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) {
+                        setStyle("");
+                    } else {
+                        Categoria categoria = getTableView().getItems().get(getIndex());
+                        String backgroundColor = categoria.isActivo() ? "rgba(40, 167, 69, 0.3)" : "rgba(220, 53, 69, 0.3)";
+                        setStyle("-fx-background-color: " + backgroundColor + ";");
+                    }
+                }
+            };
+        });
+        colEstado.setVisible(false);
+    }
+    
+    private void configurarListeners() {
+        if (chBoxInactivas != null) {
+            chBoxInactivas.selectedProperty().addListener((observable, oldValue, newValue) -> {
+                colEstado.setVisible(newValue);
+                cargarCategorias();
+            });
+        }
     }
 
     /** Cargar categorías en la tabla */
@@ -53,12 +87,6 @@ public class CategoriasVistaControlador extends BaseControlador {
         
         backingList = FXCollections.observableArrayList(lista);
         tablaCategorias.setItems(backingList);
-    }
-
-    /** Alternar mostrar inactivas */
-    @FXML
-    private void mostrarCategoriasInactivas() {
-        cargarCategorias();
     }
 
     /** Buscar categorías */

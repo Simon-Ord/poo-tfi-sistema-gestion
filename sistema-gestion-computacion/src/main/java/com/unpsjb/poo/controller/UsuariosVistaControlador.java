@@ -9,6 +9,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 
@@ -19,14 +20,52 @@ public class UsuariosVistaControlador extends BaseControlador {
     @FXML private TableColumn<Usuario, String> colNombre;
     @FXML private TableColumn<Usuario, String> colRol;
     @FXML private TableColumn<Usuario, Boolean> colActivo;
+    @FXML private TableColumn<Usuario, String> colEstado;
+    
+    @FXML private CheckBox chBoxInactivos;
 
     @FXML
     public void initialize() {
+        configurarColumnas();
+        configurarColumnasEstado();
+        configurarListeners();
+        cargarUsuarios();
+    }
+    
+    private void configurarColumnas() {
         colDni.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getDni()));
         colNombre.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getNombre()));
         colRol.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getRol()));
-        colActivo.setCellValueFactory(c -> new javafx.beans.property.SimpleObjectProperty<>(c.getValue().isEstado()));
-        cargarUsuarios();
+    }
+    
+    private void configurarColumnasEstado() {
+        colEstado.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(""));
+        
+        colEstado.setCellFactory(column -> {
+            return new javafx.scene.control.TableCell<Usuario, String>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) {
+                        setStyle("");
+                    } else {
+                        Usuario usuario = getTableView().getItems().get(getIndex());
+                        String backgroundColor = usuario.isEstado() ? "rgba(40, 167, 69, 0.3)" : "rgba(220, 53, 69, 0.3)";
+                        setStyle("-fx-background-color: " + backgroundColor + ";");
+                    }
+                }
+            };
+        });
+        colEstado.setVisible(false);
+    }
+    
+    private void configurarListeners() {
+        if (chBoxInactivos != null) {
+            chBoxInactivos.selectedProperty().addListener((observable, oldValue, newValue) -> {
+                colEstado.setVisible(newValue);
+                cargarUsuarios();
+            });
+        }
     }
     @FXML
     private void cargarUsuarios() {

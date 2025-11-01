@@ -1,11 +1,13 @@
 package com.unpsjb.poo.controller;
 
-import javafx.fxml.FXML;
-import javafx.scene.Node;
-import javafx.scene.control.*;
-
 import com.unpsjb.poo.model.Usuario;
 import com.unpsjb.poo.util.cap_auditoria.AuditoriaUtil;
+
+import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextField;
 
 public class UsuarioFormularioVistaControlador {
 
@@ -14,12 +16,10 @@ public class UsuarioFormularioVistaControlador {
     @FXML private TextField txtUsuario;
     @FXML private PasswordField txtContraseña;
     @FXML private ChoiceBox<String> cbRol;
-    @FXML private CheckBox chkActivo;
 
     @FXML
     private void initialize() {
         cbRol.getItems().addAll("ADMINISTRADOR", "EMPLEADO");
-        chkActivo.setSelected(true);
     }
 
     @FXML
@@ -38,7 +38,7 @@ public class UsuarioFormularioVistaControlador {
             nuevo.setUsuario(txtUsuario.getText().trim());
             nuevo.setContraseña(txtContraseña.getText().trim());
             nuevo.setRol(cbRol.getValue());
-            nuevo.setEstado(chkActivo.isSelected());
+
 
             boolean ok = nuevo.guardar();
 

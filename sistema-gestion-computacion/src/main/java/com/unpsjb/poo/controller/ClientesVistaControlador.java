@@ -8,6 +8,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 
@@ -20,6 +21,9 @@ public class ClientesVistaControlador extends BaseControlador {
     @FXML private TableColumn<Cliente, String> colEmail;
     @FXML private TableColumn<Cliente, String> colTipo;
     @FXML private TableColumn<Cliente, String> colActivo; 
+    @FXML private TableColumn<Cliente, String> colEstado;
+    
+    @FXML private CheckBox chBoxInactivos;
 
     private final ObservableList<Cliente> listaClientes = FXCollections.observableArrayList();
 
@@ -27,16 +31,48 @@ public class ClientesVistaControlador extends BaseControlador {
     public void initialize() {
     
         System.out.println(" Inicializando pantalla de clientes...");
+        configurarColumnas();
+        configurarColumnasEstado();
+        configurarListeners();
         cargarClientesDesdeBD();
+    }
+    
+    private void configurarColumnas() {
         colNombre.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getNombre()));
         colCuit.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getCuit()));
         colTelefono.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getTelefono()));
         colEmail.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getEmail()));
         colTipo.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getTipo()));
-        colActivo.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().isActivo() ? "Activo" : "Inactivo"
-    )
-);
-
+    }
+    
+    private void configurarColumnasEstado() {
+        colEstado.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(""));
+        
+        colEstado.setCellFactory(column -> {
+            return new javafx.scene.control.TableCell<Cliente, String>() {
+                @Override
+                protected void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    if (empty) {
+                        setStyle("");
+                    } else {
+                        Cliente cliente = getTableView().getItems().get(getIndex());
+                        String backgroundColor = cliente.isActivo() ? "rgba(40, 167, 69, 0.3)" : "rgba(220, 53, 69, 0.3)";
+                        setStyle("-fx-background-color: " + backgroundColor + ";");
+                    }
+                }
+            };
+        });
+        colEstado.setVisible(false);
+    }
+    
+    private void configurarListeners() {
+        if (chBoxInactivos != null) {
+            chBoxInactivos.selectedProperty().addListener((observable, oldValue, newValue) -> {
+                colEstado.setVisible(newValue);
+                cargarClientesDesdeBD();
+            });
+        }
     }
 
     private void cargarClientesDesdeBD() {

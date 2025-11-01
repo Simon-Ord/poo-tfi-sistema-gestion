@@ -1,49 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
 
-
-
-
-
-<VBox spacing="10"
-      xmlns="http://javafx.com/javafx/21"
-      xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="com.unpsjb.poo.controller.UsuarioFormularioVistaControlador"
-      stylesheets="@css/styleUsuarioForm.css">
+<VBox spacing="10" stylesheets="@css/styleUsuarioForm.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.unpsjb.poo.controller.UsuarioFormularioVistaControlador">
 
     <padding>
-        <Insets top="20" right="20" bottom="20" left="20"/>
+        <Insets bottom="20" left="20" right="20" top="20" />
     </padding>
 
-<Label text="Agregar Nuevo Usuario" styleClass="titulo"/>
+<Label styleClass="titulo" text="Agregar Nuevo Usuario" />
 
   <GridPane hgap="10" vgap="10">
-       <Label text="DNI:" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
-       <TextField fx:id="txtDni" GridPane.rowIndex="0" GridPane.columnIndex="1" promptText="Ej: 40123456"/>
+       <Label text="DNI:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+       <TextField fx:id="txtDni" promptText="Ej: 40123456" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
-       <Label text="Nombre y apellido:" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
-       <TextField fx:id="txtNombre" GridPane.rowIndex="1" GridPane.columnIndex="1" promptText="Ej: Luis Fernández"/>
+       <Label text="Nombre y apellido:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
+       <TextField fx:id="txtNombre" promptText="Ej: Luis Fernández" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
-       <Label text="Usuario:" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
-       <TextField fx:id="txtUsuario" GridPane.rowIndex="2" GridPane.columnIndex="1" promptText="Ej: lfernandez"/>
+       <Label text="Usuario:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+       <TextField fx:id="txtUsuario" promptText="Ej: lfernandez" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
-        <Label text="Contraseña:" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
-        <PasswordField fx:id="txtContraseña" GridPane.rowIndex="3" GridPane.columnIndex="1" promptText="Ej: ********"/>
+        <Label text="Contraseña:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+        <PasswordField fx:id="txtContraseña" promptText="Ej: ********" GridPane.columnIndex="1" GridPane.rowIndex="3" />
 
 
-        <Label text="Rol:" GridPane.rowIndex="4" GridPane.columnIndex="0"/>
-        <ChoiceBox fx:id="cbRol" GridPane.rowIndex="4" GridPane.columnIndex="1"/>
-
-        <Label text="Activo:" GridPane.rowIndex="5" GridPane.columnIndex="0"/>
-        <CheckBox fx:id="chkActivo" GridPane.rowIndex="5" GridPane.columnIndex="1"/>
+        <Label text="Rol:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+        <ChoiceBox fx:id="cbRol" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+      <columnConstraints>
+         <ColumnConstraints />
+         <ColumnConstraints />
+      </columnConstraints>
+      <rowConstraints>
+         <RowConstraints />
+         <RowConstraints />
+         <RowConstraints />
+         <RowConstraints />
+         <RowConstraints />
+         <RowConstraints />
+      </rowConstraints>
     </GridPane>
 
-    <HBox spacing="10" alignment="center">
-        <Button text="Guardar" onAction="#guardarUsuario"/>
-        <Button text="Cancelar" onAction="#cancelar"/>
+    <HBox alignment="center" spacing="10">
+        <Button onAction="#guardarUsuario" text="Guardar" />
+        <Button onAction="#cancelar" text="Cancelar" />
     </HBox>
 
 </VBox>
