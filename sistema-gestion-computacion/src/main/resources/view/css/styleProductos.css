@@ -50,6 +50,17 @@
   -fx-border-color: #7aa7ff;
 }
 
+/* texto de ChoiceBox en blanco */
+.choice-box .label {
+  -fx-font-weight: normal;
+  -fx-text-fill: white;
+}
+
+.combo-box .label {
+  -fx-font-weight: normal;
+  -fx-text-fill: white;
+}
+
 /* ----- Botones (consistentes, sin cambio de color fuerte) ----- */
 #btnRegistrar, #btnModificar, #btnEliminar, #btnCancelar,
 #btnAgregarCategoria, #btnAgregarFabricante {

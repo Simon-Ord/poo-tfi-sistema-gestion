@@ -16,7 +16,7 @@
 .label {
     -fx-text-fill: #e5e9f0;
     -fx-font-size: 14px;
-    -fx-font-weight: bold;
+    -fx-font-weight: normal; /* Cambiar a normal para quitar negrita */
 }
 
 .label:first-of-type {
@@ -47,9 +47,38 @@
     -fx-effect: dropshadow(three-pass-box, rgba(109,140,255,0.3), 5, 0, 0, 3);
 }
 
+/* ChoiceBox con contraste */
+.choice-box .label {
+    -fx-font-weight: normal;
+    -fx-text-fill: #e6e9f0;
+}
+
+/* Arreglar el popup del ChoiceBox para que las opciones sean legibles */
+.choice-box .context-menu {
+    -fx-background-color: #3b4255;
+    -fx-border-color: #4f5872;
+}
+
+.choice-box .menu-item .label {
+    -fx-text-fill: #000000 !important; /* Texto negro para las opciones */
+    -fx-font-weight: normal;
+}
+
+.choice-box .menu-item {
+    -fx-background-color: #ffffff; /* Fondo blanco para las opciones */
+}
+
+.choice-box .menu-item:focused {
+    -fx-background-color: #e6f0ff; /* Fondo azul claro al hacer hover */
+}
+
+.choice-box .menu-item:focused .label {
+    -fx-text-fill: #000000 !important; /* Mantener texto negro en hover */
+}
+
 /* =======================
-   BOTONES
-   ======================= */
+BOTONES
+======================= */
 .button {
     -fx-font-size: 14px;
     -fx-font-weight: bold;

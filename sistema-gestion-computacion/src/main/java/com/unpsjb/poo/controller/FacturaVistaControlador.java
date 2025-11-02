@@ -19,7 +19,6 @@ import com.unpsjb.poo.util.cap_auditoria.AuditoriaVentaUtil;
 
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML; // Necesario para la ventana emergente
-import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;

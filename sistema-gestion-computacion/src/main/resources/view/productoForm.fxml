@@ -4,13 +4,14 @@
 <?import javafx.scene.control.ChoiceBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox fx:id="vboxPrincipal" prefHeight="400.0" prefWidth="450.0" spacing="15" style="-fx-background-color: linear-gradient(to bottom right, #1c1f2b, #242a3a); -fx-padding: 25; -fx-background-radius: 10;" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.unpsjb.poo.controller.ProductoFormularioVistaControlador">
+<VBox fx:id="vboxPrincipal" prefHeight="400.0" prefWidth="450.0" spacing="15" style="-fx-background-color: linear-gradient(to bottom right, #1c1f2b, #242a3a); -fx-padding: 25; -fx-background-radius: 10;" stylesheets="@css/styleUsuarioForm.css" xmlns="http://javafx.com/javafx/24.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="com.unpsjb.poo.controller.ProductoFormularioVistaControlador">
 
     <Label style="-fx-font-size: 22px; -fx-text-fill: white; -fx-font-weight: bold;" text="Agregar / Editar Producto" />
 
@@ -52,9 +53,21 @@
         <HBox fx:id="hboxFabricante" spacing="5" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="7">
             <children>
                 <ChoiceBox fx:id="cbFabricante" prefWidth="120.0" />
-                <Button alignment="CENTER" mnemonicParsing="false" onAction="#agregarFabricante" prefHeight="25.0" prefWidth="30.0" text="+" />
-                <Button alignment="CENTER" mnemonicParsing="false" onAction="#modificarFabricante" prefHeight="25.0" prefWidth="30.0" text="✎" />
-                <Button alignment="CENTER" mnemonicParsing="false" onAction="#eliminarFabricante" prefHeight="25.0" prefWidth="30.0" text="×" />
+                <Button alignment="CENTER" mnemonicParsing="false" onAction="#agregarFabricante" prefHeight="25.0" prefWidth="30.0" text="+">
+                    <tooltip>
+                        <Tooltip text="Agregar nuevo fabricante" />
+                    </tooltip>
+                </Button>
+                <Button alignment="CENTER" mnemonicParsing="false" onAction="#modificarFabricante" prefHeight="25.0" prefWidth="30.0" text="✎">
+                    <tooltip>
+                        <Tooltip text="Modificar fabricante seleccionado" />
+                    </tooltip>
+                </Button>
+                <Button alignment="CENTER" mnemonicParsing="false" onAction="#eliminarFabricante" prefHeight="25.0" prefWidth="30.0" text="×">
+                    <tooltip>
+                        <Tooltip text="Eliminar fabricante seleccionado" />
+                    </tooltip>
+                </Button>
             </children>
         </HBox>
         
@@ -72,9 +85,21 @@
         <HBox fx:id="hboxProveedor" spacing="5" visible="false" GridPane.columnIndex="1" GridPane.rowIndex="7">
             <children>
                 <ChoiceBox fx:id="cbProveedorDigital" prefWidth="120.0" />
-                <Button alignment="CENTER" mnemonicParsing="false" onAction="#agregarProveedorDigital" prefHeight="25.0" prefWidth="30.0" text="+" />
-                <Button alignment="CENTER" mnemonicParsing="false" onAction="#modificarProveedorDigital" prefHeight="25.0" prefWidth="30.0" text="✎" />
-                <Button alignment="CENTER" mnemonicParsing="false" onAction="#eliminarProveedorDigital" prefHeight="25.0" prefWidth="30.0" text="×" />
+                <Button alignment="CENTER" mnemonicParsing="false" onAction="#agregarProveedorDigital" prefHeight="25.0" prefWidth="30.0" text="+">
+                    <tooltip>
+                        <Tooltip text="Agregar nuevo proveedor digital" />
+                    </tooltip>
+                </Button>
+                <Button alignment="CENTER" mnemonicParsing="false" onAction="#modificarProveedorDigital" prefHeight="25.0" prefWidth="30.0" text="✎">
+                    <tooltip>
+                        <Tooltip text="Modificar proveedor digital seleccionado" />
+                    </tooltip>
+                </Button>
+                <Button alignment="CENTER" mnemonicParsing="false" onAction="#eliminarProveedorDigital" prefHeight="25.0" prefWidth="30.0" text="×">
+                    <tooltip>
+                        <Tooltip text="Eliminar proveedor digital seleccionado" />
+                    </tooltip>
+                </Button>
             </children>
         </HBox>
         

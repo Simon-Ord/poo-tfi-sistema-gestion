@@ -46,7 +46,10 @@ public class PrincipalVistaControlador implements Initializable {
             if (rol != null && rol.equalsIgnoreCase("EMPLEADO")) {
                 // Desactivar botones restringidos para empleados
                 btnUsuarios.setVisible(false);
+                btnUsuarios.setManaged(false);
                 btnReportes.setVisible(false);
+                btnReportes.setManaged(false);
+
             }
         } else {
             lblNombreUsuario.setText("Usuario: Desconocido");

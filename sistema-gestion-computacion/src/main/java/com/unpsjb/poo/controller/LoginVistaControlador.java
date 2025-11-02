@@ -1,6 +1,7 @@
 package com.unpsjb.poo.controller;
 
 import java.io.IOException;
+import java.util.Objects;
 
 import com.unpsjb.poo.model.Usuario;
 import com.unpsjb.poo.util.Sesion;
@@ -16,6 +17,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.stage.Stage;
 
 public class LoginVistaControlador {
@@ -59,6 +61,9 @@ public class LoginVistaControlador {
                 stage.setScene(new Scene(root));
                 stage.setMaximized(true);
                 stage.show();
+                stage.setResizable(false);
+                stage.getIcons().add(new Image(Objects.requireNonNull(
+                getClass().getResource("/images/logoMundoPC.png"), "null").toExternalForm()));
 
                 Stage loginStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
                 loginStage.close();

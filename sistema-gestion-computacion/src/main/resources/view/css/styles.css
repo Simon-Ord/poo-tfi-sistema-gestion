@@ -13,6 +13,11 @@
     -fx-font-weight: bold;
 }
 
+/* Estilo global para ComboBox y ChoiceBox - quitar negrita */
+.choice-box .label, .combo-box .label {
+    -fx-font-weight: normal !important;
+}
+
 /* Estilo para ventanas internas (simulando el envoltorio del sistema) */
 .ventana-interna {
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0.3, 2, 2);
