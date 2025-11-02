@@ -1,11 +1,9 @@
 package com.unpsjb.poo.controller;
 
 import com.unpsjb.poo.model.Usuario;
-import com.unpsjb.poo.util.Sesion;
 import com.unpsjb.poo.util.cap_auditoria.AuditoriaUtil;
 
 import javafx.fxml.FXML;
-import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
@@ -53,7 +51,7 @@ public class CambioDatosController {
                 user.setUsuario(txtNuevoUsuario.getText().trim());
             }
             if (!txtNuevaContrasena.getText().trim().isEmpty()) {
-                user.setContraseña(txtNuevaContrasena.getText().trim());
+                user.setContraseña(txtNuevaContrasena.getText().trim()); // Ahora hashea automáticamente
             }
 
             boolean ok = user.actualizar();

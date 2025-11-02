@@ -1,6 +1,10 @@
 package com.unpsjb.poo.persistence.dao.impl;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -16,7 +20,101 @@ public class UsuarioDAOImpl implements DAO<Usuario> {
         // This method is not applicable for Usuario
         throw new UnsupportedOperationException("Usuario uses String dni as primary key. Use custom methods instead.");
     }
-    
+    // =======================================
+    // Metodo  para obtener todos los usuarios
+    // =======================================
+    @Override
+    public List<Usuario> findAll() {
+        List<Usuario> lista = new ArrayList<>();
+        String sql = "SELECT * FROM usuarios ORDER BY nombre";
+
+        try (Connection conn = GestorDeConexion.getInstancia().getConexion();
+             Statement stmt = conn.createStatement();
+             ResultSet rs = stmt.executeQuery(sql)) {
+
+            while (rs.next()) {
+                Usuario u = new Usuario();
+                u.setDni(rs.getString("dni"));
+                u.setNombre(rs.getString("nombre"));
+                u.setUsuario(rs.getString("usuario"));
+                u.setContraseña(rs.getString("contraseña"));
+                u.setRol(rs.getString("rol"));
+                u.setEstado(rs.getBoolean("estado"));
+                lista.add(u);
+            }
+
+        } catch (SQLException e) {
+            System.err.println("Error al obtener usuarios: " + e.getMessage());
+        }
+
+        return lista;
+    }
+    // ==================================
+    // Metodo para crear un nuevo usuario
+    // ==================================
+    @Override
+    public boolean create(Usuario usuario) {
+        String sql = "INSERT INTO usuarios (dni, nombre, usuario, contraseña, rol, estado) VALUES (?, ?, ?, ?, ?, ?)";
+        try (Connection conn = GestorDeConexion.getInstancia().getConexion();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, usuario.getDni());
+            stmt.setString(2, usuario.getNombre());
+            stmt.setString(3, usuario.getUsuario());
+            stmt.setString(4, usuario.getContraseña());
+            stmt.setString(5, usuario.getRol());
+            stmt.setBoolean(6, usuario.isEstado());
+
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Error SQL al insertar usuario: " + e.getMessage());
+            return false;
+        }
+    }
+    // ==================================
+    // Metodo para modificar un usuario
+    // ==================================
+    @Override
+    public boolean update(Usuario usuario) {
+        String sql = "UPDATE usuarios SET nombre = ?, usuario = ?, contraseña = ?, rol = ?, estado = ? WHERE dni = ?";
+        try (Connection conn = GestorDeConexion.getInstancia().getConexion();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+
+            stmt.setString(1, usuario.getNombre());
+            stmt.setString(2, usuario.getUsuario());
+            stmt.setString(3, usuario.getContraseña());
+            stmt.setString(4, usuario.getRol());
+            stmt.setBoolean(5, usuario.isEstado());
+            stmt.setString(6, usuario.getDni());
+
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Error al modificar usuario: " + e.getMessage());
+            return false;
+        }
+    }
+    // ==================================
+    // Metodo para desactivar un usuario
+    // ==================================
+    @Override
+    public boolean delete(int id) {
+        throw new UnsupportedOperationException("Usuario usa String dni como clave primaria. uso eliminar(String dni) en su lugar.");
+    }
+    public boolean eliminar(String dni) {
+        // ahora solo desactiva
+        String sql = "UPDATE usuarios SET estado = FALSE WHERE dni = ?";
+        try (Connection conn = GestorDeConexion.getInstancia().getConexion();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, dni);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Error al desactivar usuario: " + e.getMessage());
+            return false;
+        }
+    }
+    // ===========================
+    // Metodo para verificar login
+    // ===========================
     public Usuario verificarLogin(String usuario, String contraseña) {
         String sql = "SELECT * FROM usuarios WHERE usuario = ? AND contraseña = ? AND estado = TRUE";
         Connection conn = GestorDeConexion.getInstancia().getConexion();
@@ -53,93 +151,5 @@ public class UsuarioDAOImpl implements DAO<Usuario> {
             }
         }
         return null;
-    }
-
-    @Override
-    public List<Usuario> findAll() {
-        List<Usuario> lista = new ArrayList<>();
-        String sql = "SELECT * FROM usuarios ORDER BY nombre";
-
-        try (Connection conn = GestorDeConexion.getInstancia().getConexion();
-             Statement stmt = conn.createStatement();
-             ResultSet rs = stmt.executeQuery(sql)) {
-
-            while (rs.next()) {
-                Usuario u = new Usuario();
-                u.setDni(rs.getString("dni"));
-                u.setNombre(rs.getString("nombre"));
-                u.setUsuario(rs.getString("usuario"));
-                u.setContraseña(rs.getString("contraseña"));
-                u.setRol(rs.getString("rol"));
-                u.setEstado(rs.getBoolean("estado"));
-                lista.add(u);
-            }
-
-        } catch (SQLException e) {
-            System.err.println("Error al obtener usuarios: " + e.getMessage());
-        }
-
-        return lista;
-    }
-
-    @Override
-    public boolean create(Usuario usuario) {
-        String sql = "INSERT INTO usuarios (dni, nombre, usuario, contraseña, rol, estado) VALUES (?, ?, ?, ?, ?, ?)";
-        try (Connection conn = GestorDeConexion.getInstancia().getConexion();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, usuario.getDni());
-            stmt.setString(2, usuario.getNombre());
-            stmt.setString(3, usuario.getUsuario());
-            stmt.setString(4, usuario.getContraseña());
-            stmt.setString(5, usuario.getRol());
-            stmt.setBoolean(6, usuario.isEstado());
-
-            return stmt.executeUpdate() > 0;
-        } catch (SQLException e) {
-            System.err.println("Error SQL al insertar usuario: " + e.getMessage());
-            return false;
-        }
-    }
-
-    @Override
-    public boolean update(Usuario usuario) {
-        String sql = "UPDATE usuarios SET nombre = ?, usuario = ?, contraseña = ?, rol = ?, estado = ? WHERE dni = ?";
-        try (Connection conn = GestorDeConexion.getInstancia().getConexion();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, usuario.getNombre());
-            stmt.setString(2, usuario.getUsuario());
-            stmt.setString(3, usuario.getContraseña());
-            stmt.setString(4, usuario.getRol());
-            stmt.setBoolean(5, usuario.isEstado());
-            stmt.setString(6, usuario.getDni());
-
-            return stmt.executeUpdate() > 0;
-        } catch (SQLException e) {
-            System.err.println("Error al modificar usuario: " + e.getMessage());
-            return false;
-        }
-    }
-
-    @Override
-    public boolean delete(int id) {
-        // Usuario uses String dni as primary key, not int id
-        // This method is not applicable for Usuario
-        throw new UnsupportedOperationException("Usuario uses String dni as primary key. Use eliminar(String dni) instead.");
-    }
-    
-    // Custom method for Usuario since it uses String dni as primary key
-    public boolean eliminar(String dni) {
-        // ahora solo desactiva
-        String sql = "UPDATE usuarios SET estado = FALSE WHERE dni = ?";
-        try (Connection conn = GestorDeConexion.getInstancia().getConexion();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-            stmt.setString(1, dni);
-            return stmt.executeUpdate() > 0;
-        } catch (SQLException e) {
-            System.err.println("Error al desactivar usuario: " + e.getMessage());
-            return false;
-        }
     }
 }

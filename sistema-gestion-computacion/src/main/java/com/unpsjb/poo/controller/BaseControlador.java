@@ -25,7 +25,6 @@ public class BaseControlador {
             }
         } catch (Exception e) {
             System.err.println("Error al obtener desktop principal: " + e.getMessage());
-            e.printStackTrace();
         }
         return null;
     }

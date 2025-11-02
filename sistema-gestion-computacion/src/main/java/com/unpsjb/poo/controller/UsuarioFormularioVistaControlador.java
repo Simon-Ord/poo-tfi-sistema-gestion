@@ -36,8 +36,9 @@ public class UsuarioFormularioVistaControlador {
             nuevo.setDni(txtDni.getText().trim());
             nuevo.setNombre(txtNombre.getText().trim());
             nuevo.setUsuario(txtUsuario.getText().trim());
-            nuevo.setContraseña(txtContraseña.getText().trim());
+            nuevo.setContraseña(txtContraseña.getText().trim()); // Ahora hashea automáticamente
             nuevo.setRol(cbRol.getValue());
+            // nuevo.setEstado(true); 
 
 
             boolean ok = nuevo.guardar();
