@@ -61,7 +61,7 @@ public class LoginVistaControlador {
                 stage.setScene(new Scene(root));
                 stage.setMaximized(true);
                 stage.show();
-                stage.setResizable(false);
+                //stage.setResizable(false);
                 stage.getIcons().add(new Image(Objects.requireNonNull(
                 getClass().getResource("/images/logoMundoPC.png"), "null").toExternalForm()));
 

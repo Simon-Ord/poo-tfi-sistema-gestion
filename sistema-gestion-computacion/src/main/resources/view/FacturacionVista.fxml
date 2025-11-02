@@ -24,12 +24,12 @@
      <center>
         <StackPane fx:id="contentStackPane">
 
-            <AnchorPane fx:id="FacturaAgregarProductos" prefHeight="550.0" prefWidth="750.0" visible="false">
-                <children>
-                    <VBox spacing="15" styleClass="root" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
-                        <padding>
-                            <Insets bottom="25" left="25" right="25" top="25" />
-                        </padding>
+                    <AnchorPane fx:id="FacturaAgregarProductos" prefHeight="320.0" prefWidth="700.0">
+            <children>
+                <VBox spacing="12" styleClass="root" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <padding>
+                        <Insets bottom="15" left="20" right="20" top="15" />
+                    </padding>
 
                         <Label styleClass="titulo" text="Agregar Productos al Carrito" />
 
@@ -55,7 +55,7 @@
                             <Button onAction="#handleListarCodigos" styleClass="btn-listar" text="Listar Codigos" />
                         </HBox>
 
-                        <TableView fx:id="carritoTable" prefHeight="280">
+                        <TableView fx:id="carritoTable" prefHeight="140">
                             <columns>
                                 <TableColumn fx:id="colCodigo" prefWidth="100" text="Código">
                                     <cellValueFactory><PropertyValueFactory property="producto.codigoProducto" /></cellValueFactory>
@@ -84,25 +84,25 @@
             </AnchorPane>
 
 
-<AnchorPane fx:id="FacturaDatosVenta" visible="false">
+            <AnchorPane fx:id="FacturaDatosVenta" prefHeight="320.0" prefWidth="700.0" visible="false">
                 <children>
-                    <VBox spacing="25" styleClass="root" AnchorPane.bottomAnchor="20.0" AnchorPane.leftAnchor="20.0" AnchorPane.rightAnchor="20.0" AnchorPane.topAnchor="20.0">
+                    <VBox spacing="15" styleClass="root" AnchorPane.bottomAnchor="15.0" AnchorPane.leftAnchor="15.0" AnchorPane.rightAnchor="15.0" AnchorPane.topAnchor="15.0">
                         <padding>
-                            <Insets bottom="25" left="25" right="25" top="25" />
+                            <Insets bottom="15" left="20" right="20" top="15" />
                         </padding>
 
                         <Label styleClass="titulo" text="Seleccionar Tipo de Factura" />
 
-                        <VBox spacing="15" styleClass="panel-info">
+                        <VBox spacing="12" styleClass="panel-info">
                             <Label styleClass="label-form" text="Seleccione el Tipo de Factura:" />
                             <ComboBox fx:id="cbTipoFactura" onAction="#handleTipoFacturaSelected" prefWidth="250" promptText="Tipo de Factura" styleClass="combo-box-custom" />
                         </VBox>
                         
-                        <VBox fx:id="panelDatosCliente" spacing="15" styleClass="panel-info" visible="false">
+                        <VBox fx:id="panelDatosCliente" spacing="10" styleClass="panel-info" visible="false">
                             <Label styleClass="label-form" text="Cliente para Factura" />
                             
                             <!-- Mostrar información del cliente seleccionado -->
-                            <VBox fx:id="vboxClienteInfo" spacing="8" styleClass="cliente-info" visible="false">
+                            <VBox fx:id="vboxClienteInfo" spacing="6" styleClass="cliente-info" visible="false">
                                 <Label fx:id="lblClienteSeleccionado" styleClass="label-value" text="Cliente: [Nombre del cliente]" />
                                 <Label fx:id="lblCuitSeleccionado" styleClass="label-secondary" text="CUIT: [CUIT del cliente]" />
                             </VBox>
@@ -130,31 +130,31 @@
 
 
         
-            <AnchorPane fx:id="FacturaConfirmarVenta" prefHeight="400.0" prefWidth="600.0" visible="false">
+            <AnchorPane fx:id="FacturaConfirmarVenta" prefHeight="320.0" prefWidth="700.0" visible="false">
                 <children>
-                    <VBox spacing="20" styleClass="root" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                    <VBox spacing="12" styleClass="root" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                         <padding>
-                            <Insets bottom="20" left="25" right="25" top="20" />
+                            <Insets bottom="15" left="20" right="20" top="15" />
                         </padding>
                         
                         <Label styleClass="titulo" text="Confirmar Venta y Pago" />
                         
                         <!-- Resumen de venta -->
-                        <VBox spacing="12" styleClass="panel-info">
+                        <VBox spacing="8" styleClass="panel-info">
                             <Label styleClass="subtitulo" text="Resumen de Venta" />
                             <Separator prefWidth="200.0" />
                             
-                            <GridPane hgap="15" vgap="8">
+                            <GridPane hgap="15" vgap="6">
                                 <columnConstraints>
-                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="150.0" minWidth="10.0" prefWidth="150.0" />
-                                    <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="300.0" />
+                                    <ColumnConstraints hgrow="SOMETIMES" maxWidth="140.0" minWidth="10.0" prefWidth="140.0" />
+                                    <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="280.0" />
                                 </columnConstraints>
                                 
                                 <rowConstraints>
-                                    <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                    <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                    <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                                    <RowConstraints minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES" />
                                 </rowConstraints>
                                 
                                 <children>
@@ -173,15 +173,15 @@
                             </GridPane>
                             
                             <Label styleClass="label-form" text="Productos de la operacion:" />
-                            <ScrollPane fx:id="scrollPaneItems" fitToWidth="true" maxHeight="180" minHeight="100" prefHeight="140" styleClass="scroll-pane-productos">
+                            <ScrollPane fx:id="scrollPaneItems" fitToWidth="true" maxHeight="80" minHeight="60" prefHeight="70" styleClass="scroll-pane-productos">
                                 <content>
-                                    <VBox fx:id="vboxItemsLista" spacing="5" styleClass="vbox-productos" />
+                                    <VBox fx:id="vboxItemsLista" spacing="3" styleClass="vbox-productos" />
                                 </content>
                             </ScrollPane>
                         </VBox>
                         
                         <!-- Metodo de pago -->
-                        <VBox spacing="12" styleClass="panel-info">
+                        <VBox spacing="8" styleClass="panel-info">
                             <Label styleClass="subtitulo" text="Metodo de Pago" />
                             
                             <HBox alignment="CENTER_LEFT" spacing="15">

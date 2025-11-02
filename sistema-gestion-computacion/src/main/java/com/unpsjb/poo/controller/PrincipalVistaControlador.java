@@ -132,7 +132,7 @@ public class PrincipalVistaControlador implements Initializable {
     // =====================
     @FXML private void facturarAction(ActionEvent event) {
         try {
-            VentanaVistaControlador.crearVentana(desktop, "/view/FacturacionVista.fxml", "Generar Factura", 800, 600);
+            VentanaVistaControlador.crearVentana(desktop, "/view/FacturacionVista.fxml", "Generar Factura", 700, 400);
         } catch (Exception e) {
             e.printStackTrace();
             new Alert(Alert.AlertType.ERROR, "Error al abrir la vista de facturación: " + e.getMessage()).showAndWait();
