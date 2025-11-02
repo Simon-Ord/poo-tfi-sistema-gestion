@@ -24,17 +24,16 @@ import javafx.scene.layout.HBox;
 public class ProductoFormularioVistaControlador extends BaseControlador {
 
     @FXML private javafx.scene.layout.VBox vboxPrincipal;
+    @FXML private Label lblTitulo;
     @FXML private ChoiceBox<String> cbTipoProducto;
     @FXML private TextField txtNombre, txtDescripcion, txtCodigo, txtPrecio, txtStock;
     @FXML private ChoiceBox<Categoria> cbCategoria;
-    
     // Campos específicos para Producto Físico
     @FXML private Label lblFabricante, lblEstadoFisico, lblGarantia, lblTipoGarantia;
     @FXML private HBox hboxFabricante;
     @FXML private ChoiceBox<Fabricante> cbFabricante;
     @FXML private ChoiceBox<String> cbEstadoFisico, cbTipoGarantia;
     @FXML private TextField txtGarantiaMeses;
-    
     // Campos específicos para Producto Digital
     @FXML private Label lblProveedor, lblTipoLicencia, lblActivaciones, lblDuracion;
     @FXML private HBox hboxProveedor;
@@ -54,6 +53,7 @@ public class ProductoFormularioVistaControlador extends BaseControlador {
             cargarFabricantes();
             cargarProveedoresDigitales();
             configurarEnums();
+            txtCodigo.setEditable(false); // campo de código como solo lectura
         } catch (Exception e) {
             System.err.println("Error al inicializar el formulario de productos: " + e.getMessage());
             e.printStackTrace();
@@ -151,8 +151,21 @@ public class ProductoFormularioVistaControlador extends BaseControlador {
     public void setProducto(Producto p) {
         this.productoAEditar = p;
         if (p != null) {
+            // Editando producto existente
             this.productoOriginal = CopiarProductoUtil.copiarProducto(p);
             cargarDatosEnCampos(p);
+            // Cambiar título a "Modificar"
+            if (lblTitulo != null) {
+                lblTitulo.setText("Modificar Producto");
+            }
+        } else {
+            // Creando producto nuevo - autogenerar código
+            int codigoAutomatico = Producto.generarCodigoAutomatico();
+            txtCodigo.setText(String.valueOf(codigoAutomatico));
+            // Asegurar que el título sea "Agregar" para nuevos
+            if (lblTitulo != null) {
+                lblTitulo.setText("Agregar Producto");
+            }
         }
     }
 

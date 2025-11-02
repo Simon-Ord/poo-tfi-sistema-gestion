@@ -14,7 +14,7 @@ xmlns="http://javafx.com/javafx/24.0.1"
 xmlns:fx="http://javafx.com/fxml/1"
 fx:controller="com.unpsjb.poo.controller.FabricanteFormularioVistaControlador">
 
-	<Label style="-fx-font-size: 22px; -fx-text-fill: white; -fx-font-weight: bold;" text="Agregar Fabricante" />
+	<Label fx:id="lblTitulo" style="-fx-font-size: 22px; -fx-text-fill: white; -fx-font-weight: bold;" text="Agregar Fabricante" />
 
 	<GridPane hgap="15" vgap="15">
 		<columnConstraints>

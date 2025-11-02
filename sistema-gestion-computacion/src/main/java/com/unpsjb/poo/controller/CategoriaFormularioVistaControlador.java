@@ -6,6 +6,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 /**
@@ -14,6 +15,7 @@ import javafx.scene.control.TextField;
 public class CategoriaFormularioVistaControlador {
 
     @FXML private TextField txtNombre;
+    @FXML private Label lblTitulo;
 
     private Categoria categoriaAEditar = null;
 
@@ -29,6 +31,15 @@ public class CategoriaFormularioVistaControlador {
         this.categoriaAEditar = categoria;
         if (categoria != null && txtNombre != null) {
             txtNombre.setText(categoria.getNombre());
+            // Cambiar título a "Modificar"
+            if (lblTitulo != null) {
+                lblTitulo.setText("Modificar Categoría");
+            }
+        } else {
+            // Asegurar que el título sea "Agregar" para nuevos
+            if (lblTitulo != null) {
+                lblTitulo.setText("Agregar Categoría");
+            }
         }
     }
 

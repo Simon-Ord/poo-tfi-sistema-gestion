@@ -127,9 +127,16 @@ public class CategoriasVistaControlador extends BaseControlador {
             mostrarAlerta("Selecciona una categoría para modificar");
             return;
         }
-
-        // TODO: Implementar paso de datos al formulario para edición
-        crearVentanaPequena("/view/formularios/CategoriaForm.fxml", "Modificar Categoría");
+        // Abrir ventana y configurar el controlador
+        VentanaVistaControlador.ResultadoVentana resultado = 
+            crearVentanaPequena("/view/formularios/CategoriaForm.fxml", "Modificar Categoría");
+        if (resultado != null) {
+            CategoriaFormularioVistaControlador controlador = 
+                (CategoriaFormularioVistaControlador) resultado.getControlador(); 
+            if (controlador != null) {
+                controlador.setCategoriaAEditar(seleccionada);
+            }
+        }
         cargarCategorias(); // Recargar datos después de cerrar la ventana
     }
 

@@ -15,7 +15,7 @@ xmlns:fx="http://javafx.com/fxml/1"
 fx:controller="com.unpsjb.poo.controller.CategoriaFormularioVistaControlador">
 
 
-	<Label style="-fx-font-size: 22px; -fx-text-fill: white; -fx-font-weight: bold;" text="Agregar Categoría" />
+	<Label fx:id="lblTitulo" style="-fx-font-size: 22px; -fx-text-fill: white; -fx-font-weight: bold;" text="Agregar Categoría" />
 
 	
 	<GridPane hgap="15" vgap="15">

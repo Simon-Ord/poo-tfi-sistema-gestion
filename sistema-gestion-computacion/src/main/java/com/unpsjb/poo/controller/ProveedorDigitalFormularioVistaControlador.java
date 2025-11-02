@@ -6,6 +6,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
 /**
@@ -14,6 +15,7 @@ import javafx.scene.control.TextField;
 public class ProveedorDigitalFormularioVistaControlador {
 
     @FXML private TextField txtNombre;
+    @FXML private Label lblTitulo;
 
     private ProveedorDigital proveedorAEditar = null;
     private ProductoFormularioVistaControlador controladorPadre = null;
@@ -30,6 +32,15 @@ public class ProveedorDigitalFormularioVistaControlador {
         this.proveedorAEditar = proveedor;
         if (proveedor != null && txtNombre != null) {
             txtNombre.setText(proveedor.getNombre());
+            // Cambiar título a "Modificar"
+            if (lblTitulo != null) {
+                lblTitulo.setText("Modificar Proveedor Digital");
+            }
+        } else {
+            // Asegurar que el título sea "Agregar" para nuevos
+            if (lblTitulo != null) {
+                lblTitulo.setText("Agregar Proveedor Digital");
+            }
         }
     }
 

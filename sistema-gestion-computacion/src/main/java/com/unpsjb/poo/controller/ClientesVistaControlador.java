@@ -154,12 +154,38 @@ private void eliminarCliente() {
     }
 }
 
-
     private void mostrarAlerta(String mensaje) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Gestión de Clientes");
         alert.setHeaderText(null);
         alert.setContentText(mensaje);
         alert.showAndWait();
+    }
+    // ===== MÉTODOS PARA MODO SELECCIÓN EN FACTURACIÓN =====
+    private boolean modoSeleccion = false;
+    private FacturaVistaControlador facturaControlador;
+    
+    // Activa el modo selección para facturación
+    public void setModoSeleccion(boolean modoSeleccion) {
+        this.modoSeleccion = modoSeleccion;
+        if (modoSeleccion) {
+            // Agregar listener para doble clic cuando está en modo selección
+            tablaClientes.setOnMouseClicked(event -> {
+                if (event.getClickCount() == 2 && facturaControlador != null) {
+                    Cliente seleccionado = tablaClientes.getSelectionModel().getSelectedItem();
+                    if (seleccionado != null && seleccionado.isActivo()) {
+                        facturaControlador.setClienteSeleccionado(seleccionado);
+                        // Cerrar la ventana
+                        BaseControlador.cerrarVentanaInterna(tablaClientes);
+                    } else if (seleccionado != null && !seleccionado.isActivo()) {
+                        mostrarAlerta("No se puede seleccionar un cliente inactivo.");
+                    }
+                }
+            });
+        }
+    }
+    // Establece la referencia al controlador de facturación
+    public void setFacturaControlador(FacturaVistaControlador facturaControlador) {
+        this.facturaControlador = facturaControlador;
     }
 }

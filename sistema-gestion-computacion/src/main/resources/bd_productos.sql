@@ -87,7 +87,20 @@ INSERT INTO categorias (nombre_categoria) VALUES
 ('Monitores'), ('Almacenamiento');
 
 
-
-
-
+-- Insertar productos de ejemplo
+INSERT INTO productos (nombre_producto, descripcion_producto, stock_producto, precio_producto, categoria_id, codigo_producto) VALUES
+('Notebook Dell Inspiron 15', 'Notebook Dell Inspiron 15 con procesador Intel i5, 8GB RAM, 256GB SSD.', 10, 799.99, 2, 10003),
+('Monitor Samsung 24"', 'Monitor Samsung de 24 pulgadas Full HD.', 15, 149.99, 7, 10005),
+('Teclado Mecánico Logitech', 'Teclado mecánico Logitech con retroiluminación RGB.', 20, 89.99, 3, 10004),
+('Disco Duro Externo Seagate 1TB', 'Disco duro externo Seagate de 1TB USB 3.0.', 25, 59.99, 8, 10006),
+('Software Antivirus Norton', 'Software antivirus Norton para protección completa.', 30, 39.99, 6, 10007);
+-- Insertar productos físicos de ejemplo
+INSERT INTO productos_fisicos (id_producto, id_fabricante, garantia_meses, tipo_garantia, estado_fisico) VALUES
+(1, 1, 24, 'FABRICANTE', 'NUEVO'),
+(2, 2, 12, 'TIENDA', 'NUEVO'),
+(3, 3, 6, 'TIENDA', 'NUEVO'),
+(4, 4, 12, 'FABRICANTE', 'NUEVO');
+-- Insertar productos digitales de ejemplo
+INSERT INTO productos_digitales (id_producto, id_proveedor_digital, tipo_licencia, activaciones_max, duracion_licencia_dias) VALUES
+(5, 1, 'SUSCRIPCION', 5, 365);
 

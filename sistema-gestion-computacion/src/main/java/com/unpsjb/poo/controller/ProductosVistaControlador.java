@@ -118,8 +118,18 @@ public class ProductosVistaControlador extends BaseControlador {
 
     /** Agregar producto */
     @FXML private void agregarProducto() {
-        crearVentanaPequena("/view/productoForm.fxml", "Agregar Nuevo Producto");
-        buscarProductos(); // Usar buscarProductos() directamente
+        // Abrir ventana y configurar el controlador
+        VentanaVistaControlador.ResultadoVentana resultado = 
+            crearVentanaPequena("/view/productoForm.fxml", "Agregar Nuevo Producto");
+        
+        if (resultado != null) {
+            ProductoFormularioVistaControlador controlador = 
+                (ProductoFormularioVistaControlador) resultado.getControlador(); 
+            if (controlador != null) {
+                controlador.setProducto(null); // Null indica que es un producto nuevo - autogenera código
+                controlador.setControladorPadre(this); // Pasar referencia de este controlador
+            }
+        }
     }
 
     /** Modificar producto */

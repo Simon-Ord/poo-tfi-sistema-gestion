@@ -71,6 +71,15 @@ public class Producto {
     // Lógica de Negocio
     // ========================
 
+    // Generacion automatica de codigo para un nuevo producto
+    public static int generarCodigoAutomatico() {
+        try {
+            int maxCodigo = productoDAO.obtenerCodigoMaximo();
+            return maxCodigo == 0 ? 1000 : maxCodigo + 1;
+        } catch (Exception e) {
+            return 90000 + (int)(Math.random() * 9999); // Fallback 90000-99999
+        }
+    }
     // Cambia el estado de activo a inactivo o viceversa
     public void cambiarEstado() {
         this.activo = !this.activo;

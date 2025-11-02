@@ -15,11 +15,31 @@ import com.unpsjb.poo.persistence.GestorDeConexion;
 import com.unpsjb.poo.persistence.dao.DAO;
 
 public class ProductoDAOImpl implements DAO<Producto> {
+    
     // ===============
-    //  Crear producto
+    // Obtener código máximo para generación automática
+    // ===============
+    public int obtenerCodigoMaximo() {
+        String sql = "SELECT COALESCE(MAX(codigo_producto), 0) FROM productos";
+        try (Connection conexion = GestorDeConexion.getInstancia().getConexion();
+             PreparedStatement pstmt = conexion.prepareStatement(sql);
+             ResultSet rs = pstmt.executeQuery()) {
+            return rs.next() ? rs.getInt(1) : 0;
+        } catch (SQLException e) {
+            throw new RuntimeException("Error obteniendo código máximo", e);
+        }
+    }
+    
+    // ===============
+    //  Crear producto
     // ===============
     @Override
     public boolean create(Producto producto) {
+        // Autogenerar código si no está asignado
+        if (producto.getCodigoProducto() == 0) {
+            producto.setCodigoProducto(Producto.generarCodigoAutomatico());
+        }
+        
         String sql = """
             INSERT INTO productos 
             (nombre_producto, descripcion_producto, stock_producto, precio_producto, categoria_id, 

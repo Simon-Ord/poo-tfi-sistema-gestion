@@ -18,7 +18,6 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.MenuButton;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -41,7 +40,7 @@ public class PrincipalVistaControlador implements Initializable {
         if (Sesion.getUsuarioActual() != null) {
             lblNombreUsuario.setText("Usuario: " + Sesion.getUsuarioActual().getNombre());
 
-            // 🔹 CONTROL DE ACCESO SEGÚN ROL
+            // CONTROL DE ACCESO SEGÚN ROL
             String rol = Sesion.getUsuarioActual().getRol();
             if (rol != null && rol.equalsIgnoreCase("EMPLEADO")) {
                 // Desactivar botones restringidos para empleados
@@ -53,14 +52,6 @@ public class PrincipalVistaControlador implements Initializable {
             }
         } else {
             lblNombreUsuario.setText("Usuario: Desconocido");
-        }
-
-        // 🔹 Cargar logo desde resources
-        try {
-            Image logo = new Image(getClass().getResource("/images/logoMundoPC.png").toExternalForm());
-            logoImage.setImage(logo);
-        } catch (Exception e) {
-            System.err.println(" No se pudo cargar el logo: " + e.getMessage());
         }
     }
 
@@ -104,7 +95,16 @@ public class PrincipalVistaControlador implements Initializable {
     }
 
     @FXML private void agregarProducto() {
-        VentanaVistaControlador.crearVentana(desktop, "/view/productoForm.fxml", "Agregar Producto", 400, 300);
+        VentanaVistaControlador.ResultadoVentana resultado = 
+            VentanaVistaControlador.crearVentana(desktop, "/view/productoForm.fxml", "Agregar Producto", 400, 300);
+        
+        if (resultado != null) {
+            ProductoFormularioVistaControlador controlador = 
+                (ProductoFormularioVistaControlador) resultado.getControlador(); 
+            if (controlador != null) {
+                controlador.setProducto(null); // Null indica que es un producto nuevo - autogenera código
+            }
+        }
     }
 
     @FXML private void categoriasAction(){
