@@ -61,7 +61,7 @@ public class ProductoFormularioVistaControlador extends BaseControlador {
     }
 
     private void configurarTipoProducto() {
-        cbTipoProducto.getItems().addAll("GENÉRICO", "FÍSICO", "DIGITAL");
+        cbTipoProducto.getItems().addAll("GENÉRICO", "FISICO", "DIGITAL");
         cbTipoProducto.setValue("GENÉRICO");
         
         cbTipoProducto.valueProperty().addListener((obs, oldVal, newVal) -> {
@@ -87,7 +87,7 @@ public class ProductoFormularioVistaControlador extends BaseControlador {
                 .forEach(node -> { node.setVisible(false); node.setManaged(false); });
         
         // Mostrar campos según el tipo
-        if ("FÍSICO".equals(tipo)) {
+        if ("FISICO".equals(tipo)) {
             java.util.List.of(lblFabricante, hboxFabricante, lblEstadoFisico, cbEstadoFisico, 
                     lblGarantia, txtGarantiaMeses, lblTipoGarantia, cbTipoGarantia)
                     .forEach(node -> { node.setVisible(true); node.setManaged(true); });
@@ -173,7 +173,7 @@ public class ProductoFormularioVistaControlador extends BaseControlador {
             
             String tipo = producto.obtenerTipoProducto();
             if ("FISICO".equals(tipo)) {
-                cbTipoProducto.setValue("FÍSICO");
+                cbTipoProducto.setValue("FISICO");
                 ProductoFisico pf = ProductoFisico.obtenerPorId(producto.getIdProducto());
                 if (pf != null) {
                     cbFabricante.setValue(pf.getFabricante());
@@ -207,7 +207,6 @@ public class ProductoFormularioVistaControlador extends BaseControlador {
             }
         }
     }
-
 //------------------------
 @FXML
 private void guardarProducto() {
@@ -223,32 +222,24 @@ private void guardarProducto() {
         String usuario = (Sesion.getUsuarioActual() != null)
                 ? Sesion.getUsuarioActual().getNombre()
                 : "Desconocido";
-
         String tipoSeleccionado = cbTipoProducto.getValue();
         boolean ok = false;
         String mensajeUsuario = "";
-
         // ========================================================
         // CREACIÓN DE NUEVO PRODUCTO
         // ========================================================
         if (productoAEditar == null) {
             Producto nuevo = switch (tipoSeleccionado) {
-                case "FÍSICO" -> new ProductoFisico();
+                case "FISICO" -> new ProductoFisico();
                 case "DIGITAL" -> new ProductoDigital();
                 default -> new Producto();
             };
 
             guardarDatosEnProducto(nuevo);
-
-            if (nuevo instanceof ProductoFisico pf) {
-                guardarDatosFisicos(pf);
-                ok = pf.guardarFisico();
-            } else if (nuevo instanceof ProductoDigital pd) {
-                guardarDatosDigitales(pd);
-                ok = pd.guardarDigital();
-            } else {
-                ok = nuevo.guardar();
-            }
+            nuevo.procesarDatosEspecificos(this); // Cada producto sabe cómo procesar sus datos específicos
+            
+            ok = nuevo.guardar();
+            
       // auditoria en la crearcon del prodcto se conecta con auditoriautuil
             if (ok) {
                 String tipo = tipoSeleccionado.toUpperCase();
@@ -257,7 +248,6 @@ private void guardarProducto() {
                         " creó un producto " + tipo + ": '" + nuevo.getNombreProducto() + "'.");
                 mensajeUsuario = "Se creó un nuevo producto " + tipo + ":\n" + nuevo.getNombreProducto();
             }
-
         // ========================================================
         //  MODIFICACIÓN DE PRODUCTO EXISTENTE
         // ========================================================
@@ -272,16 +262,8 @@ private void guardarProducto() {
             };
 
             guardarDatosEnProducto(actualizado);
-
-            if (actualizado instanceof ProductoFisico pf) {
-                guardarDatosFisicos(pf);
-                ok = pf.guardarFisico();
-            } else if (actualizado instanceof ProductoDigital pd) {
-                guardarDatosDigitales(pd);
-                ok = pd.guardarDigital();
-            } else {
-                ok = actualizado.actualizar();
-            }
+            actualizado.procesarDatosEspecificos(this);
+            ok = actualizado.guardar();
 
             if (ok) {
                 String resumen = AuditoriaProductoUtil.generarResumenCambios(original, actualizado);
@@ -313,8 +295,7 @@ private void guardarProducto() {
         e.printStackTrace();
     }
 }
-
-
+    // Guardar datos comunes cargados en la vista en el producto
     private void guardarDatosEnProducto(Producto producto) {
         if (producto != null) {
             try {
@@ -329,8 +310,8 @@ private void guardarProducto() {
             }
         }
     }
-    
-    private void guardarDatosFisicos(ProductoFisico producto) {
+    // Guardar datos específicos cargados en la vista de productos físicos 
+    public void guardarDatosFisicos(ProductoFisico producto) {
         producto.setFabricante(cbFabricante.getValue());
         
         if (cbEstadoFisico.getValue() != null) {
@@ -343,8 +324,8 @@ private void guardarProducto() {
             producto.setTipoGarantia(ProductoFisico.TipoGarantia.valueOf(cbTipoGarantia.getValue()));
         }
     }
-    
-    private void guardarDatosDigitales(ProductoDigital producto) {
+    // Guardar datos específicos cargados en la vista de productos digitales
+    public void guardarDatosDigitales(ProductoDigital producto) {
         producto.setProveedorDigital(cbProveedorDigital.getValue());
         
         if (cbTipoLicencia.getValue() != null) {
@@ -357,9 +338,10 @@ private void guardarProducto() {
             producto.setDuracionLicenciaDias(Integer.parseInt(txtDuracionDias.getText().trim()));
         }
     }
-
-    @FXML
-    public void agregarCategoria() {
+    // ==========================================
+    // Gestion de los subformularios de entidades
+    // ==========================================
+    @FXML public void agregarCategoria() {
         try {
             crearVentanaPequena("/view/formularios/CategoriaForm.fxml", "Agregar Nueva Categoría");
             cargarCategorias();
@@ -367,9 +349,7 @@ private void guardarProducto() {
             mostrarAlerta("Error al abrir el formulario: " + e.getMessage());
         }
     }
-    
-    @FXML
-    private void agregarFabricante() {
+    @FXML private void agregarFabricante() {
         try {
             VentanaVistaControlador.ResultadoVentana resultado = crearVentanaPequena("/view/formularios/FabricanteForm.fxml", "Agregar Nuevo Fabricante");
             if (resultado != null && resultado.getControlador() != null) {
@@ -380,15 +360,12 @@ private void guardarProducto() {
             mostrarAlerta("Error al abrir el formulario: " + e.getMessage());
         }
     }
-    
-    @FXML
-    private void modificarFabricante() {
+    @FXML private void modificarFabricante() {
         Fabricante seleccionado = cbFabricante.getValue();
         if (seleccionado == null) {
             mostrarAlerta("Debe seleccionar un fabricante para modificar.");
             return;
         }
-
         try {
             VentanaVistaControlador.ResultadoVentana resultado = crearVentanaPequena("/view/formularios/FabricanteForm.fxml", "Modificar Fabricante");
             if (resultado != null && resultado.getControlador() != null) {
@@ -400,9 +377,7 @@ private void guardarProducto() {
             mostrarAlerta("Error al abrir el formulario: " + e.getMessage());
         }
     }
-    
-    @FXML
-    private void eliminarFabricante() {
+    @FXML private void eliminarFabricante() {
         Fabricante seleccionado = cbFabricante.getValue();
         if (seleccionado == null) {
             mostrarAlerta("Debe seleccionar un fabricante para eliminar.");
@@ -417,9 +392,7 @@ private void guardarProducto() {
             mostrarAlerta("Error al eliminar el fabricante. Puede estar en uso por productos.");
         }
     }
-    
-    @FXML
-    private void agregarProveedorDigital() {
+    @FXML private void agregarProveedorDigital() {
         try {
             VentanaVistaControlador.ResultadoVentana resultado = crearVentanaPequena("/view/formularios/ProveedorDigitalForm.fxml", "Agregar Nuevo Proveedor Digital");
             if (resultado != null && resultado.getControlador() != null) {
@@ -430,15 +403,12 @@ private void guardarProducto() {
             mostrarAlerta("Error al abrir el formulario: " + e.getMessage());
         }
     }
-    
-    @FXML
-    private void modificarProveedorDigital() {
+    @FXML private void modificarProveedorDigital() {
         ProveedorDigital seleccionado = cbProveedorDigital.getValue();
         if (seleccionado == null) {
             mostrarAlerta("Debe seleccionar un proveedor digital para modificar.");
             return;
         }
-
         try {
             VentanaVistaControlador.ResultadoVentana resultado = crearVentanaPequena("/view/formularios/ProveedorDigitalForm.fxml", "Modificar Proveedor Digital");
             if (resultado != null && resultado.getControlador() != null) {
@@ -450,15 +420,12 @@ private void guardarProducto() {
             mostrarAlerta("Error al abrir el formulario: " + e.getMessage());
         }
     }
-    
-    @FXML
-    private void eliminarProveedorDigital() {
+    @FXML private void eliminarProveedorDigital() {
         ProveedorDigital seleccionado = cbProveedorDigital.getValue();
         if (seleccionado == null) {
             mostrarAlerta("Debe seleccionar un proveedor digital para eliminar.");
             return;
         }
-
         if (seleccionado.eliminar()) {
             mostrarAlerta("Proveedor digital eliminado correctamente.");
             cargarProveedoresDigitales();
@@ -467,7 +434,7 @@ private void guardarProducto() {
             mostrarAlerta("Error al eliminar el proveedor digital. Puede estar en uso por productos.");
         }
     }
-
+    // ==========================================
     @FXML private void cancelar() {cerrarVentana();}
 
     private void cerrarVentana() {
@@ -476,7 +443,6 @@ private void guardarProducto() {
         }
         BaseControlador.cerrarVentanaInterna(txtCodigo);
     }
-
     private void mostrarAlerta(String mensaje) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setHeaderText(null);

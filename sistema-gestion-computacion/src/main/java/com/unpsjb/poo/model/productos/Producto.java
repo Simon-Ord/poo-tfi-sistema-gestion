@@ -4,6 +4,7 @@ import java.math.BigDecimal;
 import java.sql.Timestamp;
 import java.util.List;
 
+import com.unpsjb.poo.controller.ProductoFormularioVistaControlador;
 import com.unpsjb.poo.persistence.dao.impl.ProductoDAOImpl;
 
 public class Producto {
@@ -61,7 +62,11 @@ public class Producto {
 
     public Timestamp getFechaCreacion() {return fechaCreacion;}
     public void setFechaCreacion(Timestamp fechaCreacion) {this.fechaCreacion = fechaCreacion;}
-    
+
+    @Override
+    public String toString() {
+        return "Producto: " + nombreProducto + " ($" + precioProducto + ")";
+    }
     // ========================
     // Lógica de Negocio
     // ========================
@@ -150,6 +155,27 @@ public class Producto {
     public String obtenerTipoProducto() {
         return this.idProducto == 0 ? "GENERICO" : productoDAO.obtenerTipoProducto(this.idProducto);
     }
+    // ========================================
+    // Método base para procesar datos específicos del formulario
+    public void procesarDatosEspecificos(ProductoFormularioVistaControlador controlador) {}
     
+    // ========================================
+    // Detalle del producto para la UI
+    public String detallesProductoUI() {
+        StringBuilder sb = new StringBuilder();
+        sb.append("═══════════════════════════════════════════════════\n");
+        sb.append("                INFORMACIÓN BÁSICA\n");
+        sb.append("═══════════════════════════════════════════════════\n\n");
+        
+        sb.append("Código: ").append(this.codigoProducto).append("\n");
+        sb.append("Nombre: ").append(this.nombreProducto).append("\n");
+        sb.append("Descripción: ").append(this.descripcionProducto).append("\n");
+        sb.append("Categoría: ").append(this.categoria != null ? this.categoria.getNombre() : "Sin categoría").append("\n");
+        sb.append("Precio: $").append(this.precioProducto).append("\n");
+        sb.append("Stock: ").append(this.stockProducto).append(" unidades\n");
+        sb.append("Estado: ").append(this.activo ? "Activo" : "Inactivo").append("\n");
+        
+        return sb.toString();
+    }
     // ========================================
 }
