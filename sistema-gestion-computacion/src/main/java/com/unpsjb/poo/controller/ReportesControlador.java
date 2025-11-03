@@ -4,14 +4,12 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.text.Text;
-import javafx.stage.FileChooser;
-import javafx.stage.Stage;
+
 
 import com.unpsjb.poo.model.EventoAuditoria;
 import com.unpsjb.poo.util.Exporter_pdf.PDFExporter;
 import com.unpsjb.poo.util.Exporter_pdf.PDFReporte;
 
-import java.io.File;
 import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.List;
@@ -114,39 +112,37 @@ private void filtrarPorFecha() {
 }
 
 
-    /** Exporta los resultados a PDF en un hilo separado */
-    @FXML
-    public void exportarPDF() {
-        if (resultados == null || resultados.isEmpty()) {
-            mostrarAlerta("No hay datos cargados o filtrados para exportar.");
-            return;
-        }
-
-        FileChooser fc = new FileChooser();
-        fc.setTitle("Guardar Reporte de Auditoría (PDF)");
-        fc.getExtensionFilters().add(new FileChooser.ExtensionFilter("Archivo PDF", "*.pdf"));
-        Stage stage = (Stage) tablaReportes.getScene().getWindow();
-        File file = fc.showSaveDialog(stage);
-
-        if (file != null) {
-            //  Creamos un hilo para no bloquear la interfaz
-            Thread hiloExportar = new Thread(() -> {
-                PDFExporter pdf = new PDFReporte(resultados);
-                boolean ok = pdf.export(file.getAbsolutePath());
-
-                //  Volvemos al hilo principal (UI) para mostrar el mensaje
-                javafx.application.Platform.runLater(() -> {
-                    mostrarAlerta(ok
-                            ? " Exportación completada correctamente.\nUbicación: " + file.getAbsolutePath()
-                            : " Error al exportar el PDF.");
-                });
-            });
-
-            //  Marcamos el hilo como secundario (no bloquea cierre del programa)
-            hiloExportar.setDaemon(true);
-            hiloExportar.start();
-        }
+/** Exporta los resultados a PDF automáticamente en un hilo separado */
+@FXML
+public void exportarPDF() {
+    if (resultados == null || resultados.isEmpty()) {
+        mostrarAlerta("No hay datos cargados o filtrados para exportar.");
+        return;
     }
+
+    //  Generar nombre automático y ruta 
+    String timestamp = new java.text.SimpleDateFormat("yyyyMMdd_HHmmss").format(new java.util.Date());
+    String fileName = "Reporte_MUNDO_PC_" + timestamp + ".pdf";
+    String filePath = System.getProperty("user.home") + "/" + fileName;
+
+    //  Crear hilo para exportar sin bloquear la interfaz
+    Thread hiloExportar = new Thread(() -> {
+        PDFExporter pdf = new PDFReporte(resultados);
+        boolean ok = pdf.export(filePath);
+
+        // 🖥️ Volver al hilo de la interfaz para mostrar mensaje
+        javafx.application.Platform.runLater(() -> {
+            mostrarAlerta(ok
+                    ? "Exportación completada correctamente.\nUbicación: " + filePath
+                    : " Error al exportar el PDF.");
+        });
+    });
+
+    // 🔹 Marcamos el hilo como daemon (no bloquea el cierre del programa)
+    hiloExportar.setDaemon(true);
+    hiloExportar.start();
+}
+
 
     /** Muestra un mensaje en pantalla */
     private void mostrarAlerta(String msg) {

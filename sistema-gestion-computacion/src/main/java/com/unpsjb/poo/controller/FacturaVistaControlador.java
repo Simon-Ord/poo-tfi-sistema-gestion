@@ -15,6 +15,7 @@ import com.unpsjb.poo.model.PagoTarjeta;
 import com.unpsjb.poo.model.Venta;
 import com.unpsjb.poo.model.productos.Producto;
 import com.unpsjb.poo.util.cap_auditoria.AuditoriaVentaUtil;
+import com.unpsjb.poo.util.Exporter_pdf.PDFExporter;
 import com.unpsjb.poo.util.Exporter_pdf.PDFFactura;
 
 import javafx.collections.FXCollections;
