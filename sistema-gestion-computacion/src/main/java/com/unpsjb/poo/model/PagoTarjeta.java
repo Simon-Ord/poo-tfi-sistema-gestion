@@ -8,7 +8,7 @@ public class PagoTarjeta implements EstrategiaPago {
         double montoConComision = monto * (1 + comision);
         // Lógica para procesar el pago con tarjeta
         System.out.println("Procesando pago con TARJETA por $: " + montoConComision + " (incluye comisión del 5%)");
-        return true; // Asumimos que el pago siempre es exitoso en este caso
+        return true; 
     }
 
     @Override

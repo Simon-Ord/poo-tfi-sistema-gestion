@@ -33,47 +33,28 @@ public class EstadoDatosFactura implements EstadoVenta {
     }
 
     @Override
-    public void manejarSolicitud(Venta venta, String tipoSolicitud, Object... parametros) {
-        switch (tipoSolicitud) {
-            case "VALIDAR_TRANSICION":
-                // Valida si se puede avanzar al siguiente paso
-                String tipoFactura = venta.getTipoFactura();
-                if (tipoFactura == null || tipoFactura.isEmpty()) {
-                    throw new IllegalStateException("Debe seleccionar el tipo de factura (Factura/Ticket).");
-                }
-                
-                if ("FACTURA".equals(tipoFactura)) {
-                    Cliente cliente = venta.getClienteFactura();
-                    if (cliente == null || cliente.getCuit() == null || cliente.getCuit().isBlank()) {
-                        throw new IllegalStateException("Para FACTURA, debe cargar los datos fiscales del cliente (CUIT).");
-                    }
-                }
-                break;
-                
-            case "VALIDAR_TIPO_FACTURA":
-                // Valida la selección del tipo de factura
-                if (parametros.length > 0 && parametros[0] instanceof String) {
-                    String tipo = (String) parametros[0];
-                    if (!"Factura".equals(tipo) && !"Ticket".equals(tipo)) {
-                        throw new IllegalArgumentException("Tipo de factura inválido: " + tipo);
-                    }
-                }
-                break;
-                
-            case "VALIDAR_CLIENTE_FACTURA":
-                // Valida que el cliente esté completo para facturas
-                if (parametros.length > 0 && parametros[0] instanceof Cliente) {
-                    Cliente cliente = (Cliente) parametros[0];
-                    if (cliente.getCuit() == null || cliente.getCuit().isBlank()) {
-                        throw new IllegalArgumentException("El cliente debe tener CUIT para generar una factura.");
-                    }
-                }
-                break;
-                
-            default:
-                System.out.println("Solicitud no reconocida en EstadoDatosFactura: " + tipoSolicitud);
+    public void validarTransicion(Venta venta) {
+        // Valida si se puede avanzar al siguiente paso
+        String tipoFactura = venta.getTipoFactura();
+        if (tipoFactura == null || tipoFactura.isEmpty()) {
+            throw new IllegalStateException("Debe seleccionar el tipo de factura (Factura/Ticket).");
+        }
+        
+        if ("FACTURA".equals(tipoFactura)) {
+            Cliente cliente = venta.getClienteFactura();
+            if (cliente == null || cliente.getCuit() == null || cliente.getCuit().isBlank()) {
+                throw new IllegalStateException("Para FACTURA, debe cargar los datos fiscales del cliente (CUIT).");
+            }
         }
     }
+
+    @Override
+    public void limpiarEstado(Venta venta) {
+        // Limpia los datos específicos de este estado
+        venta.setTipoFactura(null);
+        venta.setClienteFactura(null);
+    }
+
     @Override
     public void inicializarVista(Map<String, Node> vistaMap, Venta venta) {
         System.out.println("Inicializando vista: " + getNombreEstado());
@@ -96,4 +77,3 @@ public class EstadoDatosFactura implements EstadoVenta {
         return "FacturaDatosVenta";
     }
 }
- 

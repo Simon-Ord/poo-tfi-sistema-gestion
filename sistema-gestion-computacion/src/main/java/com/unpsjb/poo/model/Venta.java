@@ -26,8 +26,6 @@ public String getMetodoPagoTexto() { return (metodoPagoTexto == null || metodoPa
     && estrategiaPago != null ? estrategiaPago.getNombreMetodoPago() : metodoPagoTexto; }
 public void setMetodoPagoTexto(String metodoPagoTexto) { this.metodoPagoTexto = metodoPagoTexto; }
 
-
-    // DAO compartido (patrón Singleton implícito)
     private static final VentaDAOImpl ventaDAO = new VentaDAOImpl();
 
     // Convierte el texto del método de pago en una EstrategiaPago concreta
@@ -60,22 +58,19 @@ public static EstrategiaPago convertirMetodoPago(String metodoTexto) {
     public void volverPaso() {
         this.estadoActualVenta.volverPaso(this);
     }
-    // Metodo que delega la solicitud al estado actual
-    public void manejarSolicitud(String tipoSolicitud, Object... parametros) {
-        this.estadoActualVenta.manejarSolicitud(this, tipoSolicitud, parametros);
-    }
     // Delega la inicialización de la vista al estado actual.
     public void inicializarVistaActual(Map<String, Node> vistaMap) {
         this.estadoActualVenta.inicializarVista(vistaMap, this);
     }
+    
     // Valida si se puede avanzar al siguiente paso.
     public void validarTransicion() {
-        this.manejarSolicitud("VALIDAR_TRANSICION");
+        this.estadoActualVenta.validarTransicion(this);
     }
 
     public void cancelar() {
         // Delegar la limpieza específica del estado antes de resetear
-        this.manejarSolicitud("LIMPIAR_ESTADO");
+        this.estadoActualVenta.limpiarEstado(this);
         // Limpia los datos de la venta actual
         if (this.carrito != null) {
             this.carrito.vaciarCarrito(); // Vacía la lista de ítems

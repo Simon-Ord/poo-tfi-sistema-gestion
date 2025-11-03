@@ -10,8 +10,9 @@ public interface EstadoVenta {
     void siguientePaso(Venta venta);
     void volverPaso(Venta venta);
     
-    // Método principal: maneja TODAS las solicitudes dependientes del estado
-    void manejarSolicitud(Venta venta, String tipoSolicitud, Object... parametros);
+    // Métodos específicos de gestión del estado
+    void validarTransicion(Venta venta);
+    void limpiarEstado(Venta venta);
     
     // Métodos de información del estado
     String getNombreEstado();

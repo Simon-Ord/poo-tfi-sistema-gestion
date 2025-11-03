@@ -16,7 +16,6 @@ import com.unpsjb.poo.model.Venta;
 import com.unpsjb.poo.model.productos.Producto;
 import com.unpsjb.poo.util.cap_auditoria.AuditoriaVentaUtil;
 import com.unpsjb.poo.util.Exporter_pdf.PDFExporter;
-import com.unpsjb.poo.util.Exporter_pdf.PDFFactura;
 
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -30,26 +29,24 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 
 public class FacturaVistaControlador extends BaseControlador implements Initializable {
 
     private boolean vistaDatosFacturaInicializada = false;
 
-    // 1. INYECCIÓN DE VISTAS MAESTRAS
-    @FXML private StackPane contentStackPane;
+    // INYECCIÓN DE VISTAS MAESTRAS
     @FXML private Node FacturaAgregarProductos; 
     @FXML private Node FacturaDatosVenta;    
     @FXML private Node FacturaConfirmarVenta; 
 
-    // 2. INYECCIÓN DE ELEMENTOS DEL PASO 1 - Agregar Productos
+    // INYECCIÓN DE ELEMENTOS DEL PASO 1 - Agregar Productos
     @FXML private TextField txtCodigoProducto; 
     @FXML private TextField txtCantidad; 
     @FXML private TableView<ItemCarrito> carritoTable; 
     @FXML private Label lblTotalParcial; 
     
-    // 3. INYECCIÓN DE ELEMENTOS DEL PASO 2 - Datos de Venta
+    // INYECCIÓN DE ELEMENTOS DEL PASO 2 - Datos de Venta
     @FXML private ComboBox <String> cbTipoFactura;
     @FXML private VBox panelDatosCliente; 
     @FXML private VBox vboxClienteInfo;
@@ -58,47 +55,43 @@ public class FacturaVistaControlador extends BaseControlador implements Initiali
     @FXML private Button btnCargarCliente;
     @FXML private Button btnAgregarCliente;
     @FXML private HBox hboxCambiarCliente;
-    @FXML private Button btnCambiarCliente;
     @FXML private Label lblEstadoCliente;
     @FXML private Label lblTotalVenta; 
     
-    // 4. INYECCIÓN DE ELEMENTOS DEL PASO 3 - Confirmación de Venta
+    // INYECCIÓN DE ELEMENTOS DEL PASO 3 - Confirmación de Venta
     @FXML private Label lblTipoFacturaResumen;
     @FXML private Label lblClienteResumen;
     @FXML private Label lblMontoSinIVAResumen;
     @FXML private Label lblIVAResumen;
-    @FXML private Label lblComisionPago; // Para mostrar la comisión del pago
-    @FXML private ScrollPane scrollPaneItems; // El contenedor para la lista de productos
-    @FXML private ComboBox<EstrategiaPago> cbMetodoPago; // El ComboBox usará objetos EstrategiaPago
+    @FXML private Label lblComisionPago; 
+    @FXML private ScrollPane scrollPaneItems; 
+    @FXML private ComboBox<EstrategiaPago> cbMetodoPago; 
     @FXML private VBox vboxItemsLista;
-    @FXML private Label lblPrecioTotalCarrito; // Label para el total final
-    @FXML private Button btnExportarPDF; // Botón para exportar PDF
+    @FXML private Label lblPrecioTotalCarrito; 
+    @FXML private Button btnExportarPDF; 
     
-    // 5. BOTONES DE NAVEGACIÓN
+    // BOTONES DE NAVEGACIÓN
     @FXML private Button btnVolver; // Botón "Atrás" para navegar estados
     @FXML private Button btnSiguiente; // Botón "Siguiente" para navegar estados
 
     private boolean vistaConfirmacionPagoInicializada = false;
     private final AuditoriaVentaUtil auditoriaVentaUtil = new AuditoriaVentaUtil();
-    
-    // 5. MODELO DE DATOS Y ESTADO
+    // MODELO DE DATOS Y ESTADO
     private Venta miVenta;
     private Map<String, Node> vistaMap;
-    
+
+    // INICIALIZACIÓN DEL MODELO
     @Override 
     public void initialize(URL url, ResourceBundle rb) {
-    // 1. INICIALIZACIÓN DEL MODELO (Lógica de Negocio)
-    miVenta = new Venta(); 
-    // 2. MAPEO DE VISTAS (Debe hacerse después de que JavaFX inyectó los Nodos)
-    // NOTA CLAVE: Las variables de inyección @FXML ya contienen sus valores aquí.
-    vistaMap = new HashMap<>();
+    miVenta = new Venta(); // Crear nueva venta al iniciar la vista
+    vistaMap = new HashMap<>(); // Inicializar el mapa de vistas
 
     // Los nombres de las claves deben coincidir con lo que devuelve estado.getVistaID()
     vistaMap.put("FacturaAgregarProductos", FacturaAgregarProductos); 
     vistaMap.put("FacturaDatosVenta", FacturaDatosVenta); 
     vistaMap.put("FacturaConfirmarVenta", FacturaConfirmarVenta); 
-    // 3. CONFIGURACIÓN DE LA UI INICIAL
     
+    // CONFIGURACIÓN DE LA UI INICIAL
     // a. Configurar la tabla: enlazar la TableView con la lista observable del Carrito
     carritoTable.setItems(FXCollections.observableArrayList(miVenta.getCarrito().getItems()));
     // b. Mostrar la primera vista: Usar el ID del estado inicial (EstadoAgregarProductos)
@@ -109,7 +102,6 @@ public class FacturaVistaControlador extends BaseControlador implements Initiali
     if (btnExportarPDF != null) {
         btnExportarPDF.setDisable(true);
     }
-    // e. PATRÓN STATE: Configurar UI inicial según el estado
     manejarSolicitudesUIDelEstado();
 }
 //Recalcula el total del Carrito y actualiza el Label de la interfaz.
@@ -174,7 +166,7 @@ private void actualizarTotalParcial() {
     }
     @FXML public void handleListarCodigos() {
         try {
-            List<Producto> listaProductos = Producto.buscarProductos(""); // Buscar todos
+            List<Producto> listaProductos = Producto.obtenerTodos(); // Buscar todos
             abrirVentanaCodigos(listaProductos);
         } catch (Exception e) {
             mostrarAlerta("Error de DB", "No se pudo cargar la lista de productos: " + e.getMessage(), Alert.AlertType.ERROR);
@@ -429,29 +421,47 @@ private void actualizarListaProductos() {
 // ===================================
 // Llamado por el botón "Exportar PDF".
 @FXML public void handleExportarPDF() {
-    try {
-        String rutaArchivo = generarPDFFactura();
-        mostrarAlerta("Éxito", "PDF generado exitosamente en:\n" + rutaArchivo, Alert.AlertType.INFORMATION);
-    } catch (Exception e) {
-        mostrarAlerta("Error", "Error al generar el PDF: " + e.getMessage(), Alert.AlertType.ERROR);
-    }
-}
-// Genera el PDF de la factura y retorna la ruta del archivo generado
-private String generarPDFFactura() {
-    PDFFactura pdfGenerator = new PDFFactura(miVenta);
-    String tipoDoc = "FACTURA".equals(miVenta.getTipoFactura()) ? "Factura" : "Ticket";
+    // Generar nombre automático y ruta 
+    String tipoDoc = "FACTURA".equalsIgnoreCase(miVenta.getTipoFactura()) ? "Factura" : "Ticket";
     String timestamp = new java.text.SimpleDateFormat("yyyyMMdd_HHmmss").format(new java.util.Date());
     String fileName = tipoDoc + "_" + timestamp + ".pdf";
     String filePath = System.getProperty("user.home") + "/" + fileName;
-    boolean success = pdfGenerator.export(filePath);
-    if (!success) {
-        throw new RuntimeException("No se pudo generar el PDF. Verifique los datos de la venta.");
+    
+    try {
+        // Crear el generador de PDF según tipo de factura
+        PDFExporter pdfGenerator;
+        if ("FACTURA".equalsIgnoreCase(miVenta.getTipoFactura())) {
+            pdfGenerator = new com.unpsjb.poo.util.Exporter_pdf.PDFFactura(miVenta);
+        } else {
+            pdfGenerator = new com.unpsjb.poo.util.Exporter_pdf.PDFTicket(miVenta);
+        }
+
+        // Crear hilo para exportar el PDF (no bloquea la interfaz)
+        Thread hiloExportar = new Thread(() -> {
+            boolean ok = pdfGenerator.export(filePath);
+
+            // Volvemos al hilo principal para mostrar el mensaje
+            javafx.application.Platform.runLater(() -> {
+                if (ok) {
+                    mostrarAlerta("Éxito", tipoDoc + " generado correctamente en:\n" + filePath,
+                            Alert.AlertType.INFORMATION);
+                } else {
+                    mostrarAlerta("Error", "No se pudo generar el " + tipoDoc + ".", Alert.AlertType.ERROR);
+                }
+            });
+        });
+
+        // Hilo secundario (no bloquea cierre del programa)
+        hiloExportar.setDaemon(true);
+        hiloExportar.start();
+        
+    } catch (Exception e) {
+        mostrarAlerta("Error", "Error al inicializar exportación: " + e.getMessage(), Alert.AlertType.ERROR);
     }
-    return filePath;
 }
 // -------------------------------------------------------------------------
 // LÓGICA DE NAVEGACIÓN (PATRÓN STATE)
-// ------------------------------------------------------------------------- // Llamado por el botón "Siguiente" en el BorderPane.
+// ------------------------------------------------------------------------- 
 // Avanza la Venta al siguiente estado secuencial (Paso 1 -> Paso 2 -> Paso 3).
 @FXML public void handleSiguientePaso() {
     try {
@@ -464,13 +474,11 @@ private String generarPDFFactura() {
         mostrarAlerta("Error", "Error al avanzar: " + e.getMessage(), Alert.AlertType.ERROR);
     }
 }
-
 // Retrocede la Venta al estado anterior.
 @FXML public void handleVolverPaso() {
     try {
         miVenta.volverPaso();
         actualizarVistaSegunEstado();
-
         // Actualización específica para vista de datos
         if ("FacturaDatosVenta".equals(miVenta.getEstadoActual().getVistaID())) {
             lblTotalVenta.setText("Total de Venta: $ " + miVenta.getCarrito().getTotal());
@@ -497,7 +505,6 @@ private String generarPDFFactura() {
 private void actualizarVistaSegunEstado() {
     String vistaID = miVenta.getEstadoActual().getVistaID();
     actualizarVisibilidadVistas(vistaID);
-    // PATRÓN STATE: Delegar la inicialización específica al estado actual
     miVenta.inicializarVistaActual(vistaMap);
     // Manejar solicitudes específicas del estado para la UI
     manejarSolicitudesUIDelEstado();
@@ -505,60 +512,48 @@ private void actualizarVistaSegunEstado() {
 // Maneja las solicitudes específicas de UI que envían los estados.
 private void manejarSolicitudesUIDelEstado() {
     String estadoActual = miVenta.getEstadoActual().getNombreEstado();
+    configurarBotonVolver(estadoActual);
+    configurarBotonSiguiente(estadoActual);
+}
+private void configurarBotonVolver(String estadoActual) {
+    if (btnVolver == null) return;
+    boolean mostrar = switch (estadoActual) {
+        case "Agregar Productos" -> false; // No hay paso anterior
+        case "Datos de Factura", "Confirmación de Pago" -> true;
+        default -> true;
+    };
+    configurarVisibilidadBoton(btnVolver, mostrar);
+}
+private void configurarBotonSiguiente(String estadoActual) {
+    if (btnSiguiente == null) return;
     
-    // Configurar visibilidad de botones según el estado actual
-    if (btnVolver != null) {
-        switch (estadoActual) {
-            case "Agregar Productos":
-                btnVolver.setVisible(false); // No hay paso anterior
-                btnVolver.setManaged(false); // Quitar del layout para reposicionar otros botones
-                break;
-            case "Datos de Factura":
-            case "Confirmación de Pago":
-                btnVolver.setVisible(true); // Permitir retroceder
-                btnVolver.setManaged(true); // Incluir en el layout
-                break;
-            default:
-                btnVolver.setVisible(true);
-                btnVolver.setManaged(true);
-        }
-    }
-    // Configurar visibilidad del botón Siguiente según el estado actual
-    if (btnSiguiente != null) {
-        switch (estadoActual) {
-            case "Confirmación de Pago":
-                btnSiguiente.setVisible(false); // No hay paso siguiente en el estado final
-                btnSiguiente.setManaged(false); // Quitar del layout para reposicionar otros botones
-                break;
-            case "Agregar Productos":
-            case "Datos de Factura":
-                btnSiguiente.setVisible(true); // Permitir avanzar
-                btnSiguiente.setManaged(true); // Incluir en el layout
-                break;
-            default:
-                btnSiguiente.setVisible(true);
-                btnSiguiente.setManaged(true);
-        }
-    }
+    boolean mostrar = switch (estadoActual) {
+        case "Confirmación de Pago" -> false; // Último paso
+        case "Agregar Productos", "Datos de Factura" -> true;
+        default -> true;
+    };
+    configurarVisibilidadBoton(btnSiguiente, mostrar);
+}
+private void configurarVisibilidadBoton(Button boton, boolean visible) {
+    boton.setVisible(visible);
+    boton.setManaged(visible);
 }
 private void resetearEstadoVistas() {
     vistaDatosFacturaInicializada = false;
     vistaConfirmacionPagoInicializada = false;
     
-    if ("FacturaAgregarProductos".equals(miVenta.getEstadoActual().getVistaID())) {
-        inicializarVistaAgregarProductos(); 
-    }
+    // Resetear las 3 vistas porque cancelar siempre vuelve al campo 1
+    inicializarVistaAgregarProductos();
+    limpiarInfoCliente();
+    if (cbTipoFactura != null) cbTipoFactura.getSelectionModel().clearSelection();
+    if (panelDatosCliente != null) panelDatosCliente.setVisible(false);
 }
     // -------------------------------------------------------------------------
     // MÉTODOS DE UTILIDAD
     // -------------------------------------------------------------------------
-
-
-
     private void actualizarVisibilidadVistas(String nuevaVistaID) {
         // Ocultar todas las vistas
         vistaMap.values().forEach(node -> node.setVisible(false));
-        
         Node vistaAMostrar = vistaMap.get(nuevaVistaID);
         
         if (vistaAMostrar != null) {
@@ -574,6 +569,19 @@ private void resetearEstadoVistas() {
         } else {
             System.err.println("Error FATAL: La vista " + nuevaVistaID + " no está mapeada.");
         }
+    }
+    private void mostrarAlerta(String titulo, String mensaje, Alert.AlertType tipo) {
+        Alert alert = new Alert(tipo);
+        alert.setTitle(titulo);
+        alert.setHeaderText(null);
+        alert.setContentText(mensaje);
+        alert.showAndWait();
+    }
+    // Método utilitario para actualizar el estado del cliente de forma consistente
+    private void actualizarEstadoCliente(String mensaje, boolean visible, boolean esError) {
+        lblEstadoCliente.setText(mensaje);
+        lblEstadoCliente.setStyle(esError ? "-fx-text-fill: red;" : "-fx-text-fill: green;");
+        lblEstadoCliente.setVisible(visible);
     }
     // Métodos auxiliares para inicialización específica de JavaFX
     private void inicializarComponentesVistaDatos() {
@@ -591,35 +599,18 @@ private void resetearEstadoVistas() {
         }
         actualizarResumenYSeleccionarPago();
     }
-    private void mostrarAlerta(String titulo, String mensaje, Alert.AlertType tipo) {
-        Alert alert = new Alert(tipo);
-        alert.setTitle(titulo);
-        alert.setHeaderText(null);
-        alert.setContentText(mensaje);
-        alert.showAndWait();
-    }
-    // Método utilitario para actualizar el estado del cliente de forma consistente
-    private void actualizarEstadoCliente(String mensaje, boolean visible, boolean esError) {
-        lblEstadoCliente.setText(mensaje);
-        lblEstadoCliente.setStyle(esError ? "-fx-text-fill: red;" : "-fx-text-fill: green;");
-        lblEstadoCliente.setVisible(visible);
-    }
     private void inicializarVistaAgregarProductos() {
-    // 1. Limpiar visualmente la tabla (aunque el modelo esté limpio, la tabla debe reflejarlo)
-    if (carritoTable != null) {
+    if (carritoTable != null) { // 1. Limpiar visualmente la tabla
         carritoTable.getItems().clear();
     }
-    // 2. Resetear el Label del Total Parcial a 0.00
-    if (lblTotalParcial != null) { 
+    if (lblTotalParcial != null) { // 2. Resetear el Label del Total Parcial a 0.00
         lblTotalParcial.setText("$ 0.00"); 
     }
-    // 3. Limpiar campos de entrada
-    if (txtCodigoProducto != null) {
+    if (txtCodigoProducto != null) { // 3. Limpiar campos de entrada
         txtCodigoProducto.clear();
     }
     if (txtCantidad != null) {
         txtCantidad.clear();
     }
 }
-
 }
