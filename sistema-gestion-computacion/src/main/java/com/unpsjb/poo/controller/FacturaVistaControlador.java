@@ -14,6 +14,7 @@ import com.unpsjb.poo.model.PagoTarjeta;
 import com.unpsjb.poo.model.Venta;
 import com.unpsjb.poo.model.productos.Producto;
 import com.unpsjb.poo.util.cap_auditoria.AuditoriaVentaUtil;
+import com.unpsjb.poo.util.Exporter_pdf.PDFExporter;
 import com.unpsjb.poo.util.Exporter_pdf.PDFFactura;
 
 import javafx.collections.FXCollections;
@@ -525,55 +526,65 @@ auditoriaVentaUtil.registrarCreacion(miVenta);
 /**
  * Llamado por el botón "Exportar PDF".
  */
-@FXML public void handleExportarPDF() {
+@FXML
+public void handleExportarPDF() {
     // Validar que haya datos para exportar
     if (miVenta.getCarrito() == null || miVenta.getCarrito().getItems().isEmpty()) {
         mostrarAlerta("Error", "No hay productos en el carrito para exportar.", Alert.AlertType.WARNING);
         return;
     }
-    
+
     if (miVenta.getTipoFactura() == null) {
         mostrarAlerta("Error", "Debe seleccionar el tipo de factura antes de exportar.", Alert.AlertType.WARNING);
         return;
     }
-    
+
     if (miVenta.getEstrategiaPago() == null) {
         mostrarAlerta("Error", "Debe seleccionar un método de pago antes de exportar.", Alert.AlertType.WARNING);
         return;
     }
-    
-    try {
 
-        // Crear el generador de PDF
-        PDFFactura pdfGenerator = new com.unpsjb.poo.util.Exporter_pdf.PDFFactura(miVenta);
+    try {
+        // Crear el generador de PDF según tipo de factura
+        PDFExporter pdfGenerator;
+        if ("FACTURA".equalsIgnoreCase(miVenta.getTipoFactura())) {
+            pdfGenerator = new com.unpsjb.poo.util.Exporter_pdf.PDFFactura(miVenta);
+        } else {
+            pdfGenerator = new com.unpsjb.poo.util.Exporter_pdf.PDFTicket(miVenta);
+        }
 
         // Generar nombre de archivo
-        String tipoDoc = "FACTURA".equals(miVenta.getTipoFactura()) ? "Factura" : "Ticket";
+        String tipoDoc = "FACTURA".equalsIgnoreCase(miVenta.getTipoFactura()) ? "Factura" : "Ticket";
         String timestamp = new java.text.SimpleDateFormat("yyyyMMdd_HHmmss").format(new java.util.Date());
         String fileName = tipoDoc + "_" + timestamp + ".pdf";
         String filePath = System.getProperty("user.home") + "/" + fileName;
-        
-        // Exportar el PDF
-        boolean success = pdfGenerator.export(filePath);
-        
-        if (success) {
-            mostrarAlerta("Éxito", 
-                "PDF generado exitosamente en:\n" + filePath, 
-                Alert.AlertType.INFORMATION);
-        } else {
-            mostrarAlerta("Error", 
-                "No se pudo generar el PDF. Verifique los datos de la venta.", 
-                Alert.AlertType.ERROR);
-        }
-        
+
+        //  Crear hilo para exportar el PDF (no bloquea la interfaz)
+        Thread hiloExportar = new Thread(() -> {
+            boolean ok = pdfGenerator.export(filePath);
+
+            // Volvemos al hilo principal para mostrar el mensaje
+            javafx.application.Platform.runLater(() -> {
+                if (ok) {
+                    mostrarAlerta("Éxito", tipoDoc + " generado correctamente en:\n" + filePath,
+                            Alert.AlertType.INFORMATION);
+                } else {
+                    mostrarAlerta("Error", "No se pudo generar el " + tipoDoc + ".", Alert.AlertType.ERROR);
+                }
+            });
+        });
+
+        // Hilo secundario (no bloquea cierre del programa)
+        hiloExportar.setDaemon(true);
+        hiloExportar.start();
+
     } catch (Exception e) {
         System.err.println("Error al exportar PDF: " + e.getMessage());
         e.printStackTrace();
-        mostrarAlerta("Error", 
-            "Error al generar el PDF: " + e.getMessage(), 
-            Alert.AlertType.ERROR);
+        mostrarAlerta("Error", "Error al generar el PDF: " + e.getMessage(), Alert.AlertType.ERROR);
     }
-}   
+}
+
     // -------------------------------------------------------------------------
     // LÓGICA DE NAVEGACIÓN (PATRÓN STATE)
     // -------------------------------------------------------------------------
