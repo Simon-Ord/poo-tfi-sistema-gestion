@@ -5,10 +5,10 @@
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.control.cell.PropertyValueFactory?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
@@ -57,10 +57,10 @@
 
                         <TableView fx:id="carritoTable" prefHeight="180">
                             <columns>
-                                                                <TableColumn text="Código" prefWidth="80.0">
+                                                                <TableColumn prefWidth="80.0" text="Código">
                                     <cellValueFactory><PropertyValueFactory property="codigoProducto" /></cellValueFactory>
                                 </TableColumn>
-                                <TableColumn text="Producto" prefWidth="200.0">
+                                <TableColumn prefWidth="200.0" text="Producto">
                                     <cellValueFactory><PropertyValueFactory property="nombreProducto" /></cellValueFactory>
                                 </TableColumn>
                                 <TableColumn fx:id="colPrecio" prefWidth="110" text="Precio">
@@ -178,15 +178,15 @@
                         </VBox>
                         
                         <!-- Método de pago (lado derecho) -->
-                        <VBox spacing="6" styleClass="panel-info" HBox.hgrow="NEVER" prefWidth="250.0">
+                        <VBox prefWidth="250.0" spacing="6" styleClass="panel-info" HBox.hgrow="NEVER">
                             <Label styleClass="subtitulo" text="Método de Pago" />
                             
                             <ComboBox fx:id="cbMetodoPago" onAction="#handleMetodoPagoSelected" prefWidth="220" promptText="Seleccione método" styleClass="combo-box-custom" />
                             <Label fx:id="lblComisionPago" styleClass="label-comision" text="Comisión: +0.00%" />
                             
                             <VBox spacing="8">
-                                <Button onAction="#handleExportarPDF" styleClass="btn-secondary" text="Exportar PDF" prefWidth="220" />
-                                <Button onAction="#handleRegistrarVenta" styleClass="btn-primary" text="Registrar Venta" prefWidth="220" />
+                                <Button fx:id="btnExportarPDF" onAction="#handleExportarPDF" prefWidth="220" styleClass="btn-secondary" text="Exportar PDF" />
+                                <Button onAction="#handleRegistrarVenta" prefWidth="220" styleClass="btn-primary" text="Registrar Venta" />
                             </VBox>
                         </VBox>
                     </HBox>
@@ -210,10 +210,14 @@
 
 
     <bottom>
-        <HBox alignment="CENTER" spacing="20" style="-fx-padding: 10 10 10 10;">
-            <Button onAction="#handleCancelarVenta" text="Cancelar Venta" />
-            <Button onAction="#handleVolverPaso" text="Atrás" />
-            <Button onAction="#handleSiguientePaso" text="Siguiente" />
+        <HBox alignment="CENTER" spacing="20" style="-fx-padding: 10 10 10 10;" BorderPane.alignment="CENTER">
+            <Button onAction="#handleCancelarVenta" text="Nueva Venta">
+                <tooltip>
+                    <Tooltip text="Reinicia el proceso de facturación y vuelve al estado inicial para comenzar una nueva venta" />
+                </tooltip>
+            </Button>
+            <Button fx:id="btnVolver" onAction="#handleVolverPaso" text="Atrás" />
+            <Button fx:id="btnSiguiente" onAction="#handleSiguientePaso" text="Siguiente" />
         </HBox>
     </bottom>
 </BorderPane>

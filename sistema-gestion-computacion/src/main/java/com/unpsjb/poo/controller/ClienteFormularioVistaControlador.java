@@ -1,12 +1,14 @@
 package com.unpsjb.poo.controller;
 
 import com.unpsjb.poo.model.Cliente;
-import com.unpsjb.poo.util.Sesion;
 import com.unpsjb.poo.util.cap_auditoria.AuditoriaClienteUtil;
 import com.unpsjb.poo.util.copias.CopiarClienteUtil;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
+import javafx.scene.control.ChoiceBox;
+import javafx.scene.control.TextField;
 
 public class ClienteFormularioVistaControlador {
 
@@ -49,7 +51,7 @@ public class ClienteFormularioVistaControlador {
 
                 if (nuevo.guardar()) {
                     if (facturaControlador != null) {
-                        facturaControlador.setClienteTemporal(nuevo.getCuit(),nuevo.getNombre());
+                        facturaControlador.setClienteTemporal(nuevo);
                     }
                     new AuditoriaClienteUtil().registrarCreacion(nuevo);
                     mostrarAlerta(" Cliente agregado correctamente.");

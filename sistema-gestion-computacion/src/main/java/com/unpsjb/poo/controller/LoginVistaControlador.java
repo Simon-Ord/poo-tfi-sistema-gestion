@@ -18,6 +18,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
 
 public class LoginVistaControlador {
@@ -28,7 +29,7 @@ public class LoginVistaControlador {
     @FXML private TextField txtUser;
 
     @FXML
-    void eventKey(ActionEvent event) {}
+    void eventKey(KeyEvent event) {}
 
     @FXML
     void btnLoginAction(ActionEvent event) {
