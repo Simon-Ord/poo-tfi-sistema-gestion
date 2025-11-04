@@ -6,24 +6,28 @@ import com.unpsjb.poo.util.Sesion;
 
 /**
  * Clase base abstracta para todas las auditorías del sistema.
- * Define el comportamiento común y las operaciones polimórficas.
+ *
+ * Define el comportamiento común:
+ *  - Obtener usuario actual
+ *  - Registrar evento genérico
+ *  - Métodos polimórficos para creación y modificación
+ *
+ * Aplica el PRINCIPIO DE POLIMORFISMO:
+ * cada subclase define cómo audita sus propias entidades.
  */
 public abstract class AuditoriaBase {
 
+    /** DAO responsable de insertar registros de auditoría */
     protected static final ReportesDAO reportesDAO = new ReportesDAO();
 
-    /**
-     * Obtiene el nombre del usuario actual en sesión.
-     */
+    /** Devuelve el nombre del usuario en sesión o "Sistema" si no hay ninguno */
     protected String getUsuarioActual() {
         return (Sesion.getUsuarioActual() != null)
                 ? Sesion.getUsuarioActual().getNombre()
                 : "Sistema";
     }
 
-    /**
-     * Registra un evento genérico en la auditoría.
-     */
+    /** Registra un evento genérico de auditoría en la base de datos */
     protected void registrarEvento(String accion, String entidad, String detalles) {
         EventoAuditoria evento = new EventoAuditoria();
         evento.setUsuario(getUsuarioActual());
@@ -33,16 +37,15 @@ public abstract class AuditoriaBase {
         reportesDAO.registrarEvento(evento);
     }
 
-    /**
-     * Método abstracto: cada tipo de auditoría define cómo registrar sus modificaciones.
-     */
+    // ---------------------------------------------------------------------
+    // Métodos polimórficos a redefinir por las subclases
+    // ---------------------------------------------------------------------
+
+    /** Cómo registrar una modificación (cada entidad define su versión) */
     public abstract void registrarAccionEspecifica(Object original, Object modificado);
 
-    /**
-     * Método opcional: registrar la creación de una nueva entidad.
-     * Las hijas lo sobrescriben si lo necesitan.
-     */
+    /** Cómo registrar una creación (opcional, redefinido si aplica) */
     public void registrarCreacion(Object nuevo) {
-        // Por defecto no hace nada
+        // Implementación vacía — las subclases la sobrescriben si la usan
     }
 }

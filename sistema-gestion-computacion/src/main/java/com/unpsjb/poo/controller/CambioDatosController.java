@@ -59,7 +59,7 @@ public class CambioDatosController {
             if (ok) {
                 mostrarAlerta("Datos actualizados correctamente.");
 
-                // ✅ Registrar evento con AuditoriaManager
+                // Registrar evento con AuditoriaManager
                 AuditoriaUtil.registrarAccion(
                     "MODIFICAR DATOS",
                     "usuario",

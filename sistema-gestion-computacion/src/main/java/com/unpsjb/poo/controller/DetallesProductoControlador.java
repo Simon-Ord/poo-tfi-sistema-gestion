@@ -11,7 +11,7 @@ import javafx.scene.control.TextArea;
 public class DetallesProductoControlador {
 
     @FXML private TextArea txtDetalles;
-    // Establece el producto y sus detalles usando polimorfismo
+    // Establece el producto y sus detalles
     public void setProducto(Producto producto) {
         if (producto == null) {
             txtDetalles.setText("No se ha seleccionado ningún producto.");

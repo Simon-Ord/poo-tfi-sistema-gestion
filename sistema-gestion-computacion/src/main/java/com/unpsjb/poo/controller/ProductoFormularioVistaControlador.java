@@ -10,7 +10,6 @@ import com.unpsjb.poo.model.productos.ProductoDigital;
 import com.unpsjb.poo.model.productos.ProductoFisico;
 import com.unpsjb.poo.model.productos.ProveedorDigital;
 import com.unpsjb.poo.util.cap_auditoria.AuditoriaProductoUtil;
-import com.unpsjb.poo.util.cap_auditoria.AuditoriaUtil;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -215,6 +214,7 @@ private void guardarProducto() {
         String tipoSeleccionado = cbTipoProducto.getValue();
         boolean ok;
         String mensajeUsuario = "";
+        
         // ========================================================
         // CREACIÓN DE NUEVO PRODUCTO
         // ========================================================
@@ -229,32 +229,37 @@ private void guardarProducto() {
             
             ok = nuevo.guardar();
             
-      // auditoria en la crearcon del prodcto se conecta con auditoriautuil
+            // Auditoría de crear producto 
             if (ok) {
+                AuditoriaProductoUtil auditor = new AuditoriaProductoUtil();
+                auditor.registrarCreacion(nuevo);
                 String tipo = tipoSeleccionado.toUpperCase();
-                AuditoriaUtil.registrarAccion(
-                        "CREAR PRODUCTO", "producto",
-                        " creó un producto " + tipo + ": '" + nuevo.getNombreProducto() + "'.");
                 mensajeUsuario = "Se creó un nuevo producto " + tipo + ":\n" + nuevo.getNombreProducto();
             }
+            
         // ========================================================
         //  MODIFICACIÓN DE PRODUCTO EXISTENTE
         // ========================================================
         } else {
-            // clonar estado original antes de modificar
+            // Polimorfismo: clonar estado original antes de modificar
             Producto original = productoOriginal.clonar();
-            // cada subclase sabe cómo obtener su instancia completa
+            // Polimorfismo: cada subclase sabe cómo obtener su instancia completa desde BD
             Producto actualizado = productoAEditar.obtenerInstanciaCompleta();
 
+            // Cargar nuevos datos del formulario
             guardarDatosEnProducto(actualizado);
+            // Polimorfismo: cada subclase procesa sus datos específicos
             actualizado.procesarDatosEspecificos(this);
-            ok = actualizado.guardar();
             
+            ok = actualizado.guardar();
 
             if (ok) {
+                // Polimorfismo: auditoría compara y registra cambios automáticamente
                 AuditoriaProductoUtil auditor = new AuditoriaProductoUtil();
                 auditor.registrarAccionEspecifica(original, actualizado);
                 mensajeUsuario = "Producto modificado correctamente.";
+            } else {
+                mensajeUsuario = "Error al modificar el producto.";
             }
         }
         if (ok) {

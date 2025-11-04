@@ -143,12 +143,12 @@ public class ProductoDigital extends Producto{
         if (this.proveedorDigital != null && orig.getProveedorDigital() != null &&
             !this.proveedorDigital.getNombre().equals(orig.getProveedorDigital().getNombre())) {
             sb.append("\n• Proveedor: ").append(orig.getProveedorDigital().getNombre())
-              .append(" → ").append(this.proveedorDigital.getNombre());
+            .append(" → ").append(this.proveedorDigital.getNombre());
         }
         if (this.tipoLicencia != null && orig.getTipoLicencia() != null &&
             !this.tipoLicencia.equals(orig.getTipoLicencia())) {
             sb.append("\n• Tipo de Licencia: ").append(orig.getTipoLicencia())
-              .append(" → ").append(this.tipoLicencia);
+            .append(" → ").append(this.tipoLicencia);
         }
         return sb.toString();
     }
@@ -158,17 +158,9 @@ public class ProductoDigital extends Producto{
     @Override
     public Producto clonar() {
         ProductoDigital copia = new ProductoDigital();
-        // Atributos base
-        copia.setIdProducto(this.idProducto);
-        copia.setNombreProducto(this.nombreProducto);
-        copia.setDescripcionProducto(this.descripcionProducto);
-        copia.setPrecioProducto(this.precioProducto);
-        copia.setStockProducto(this.stockProducto);
-        copia.setCodigoProducto(this.codigoProducto);
-        copia.setCategoria(this.categoria);
-        copia.setActivo(this.activo);
-        copia.setFechaCreacion(this.fechaCreacion);
-        // Atributos específicos
+        // Reutilizar método padre para copiar atributos base
+        copiarAtributosBase(copia);
+        // Atributos específicos de ProductoDigital
         copia.setProveedorDigital(this.proveedorDigital);
         copia.setTipoLicencia(this.tipoLicencia);
         copia.setActivacionesMax(this.activacionesMax);
@@ -176,4 +168,6 @@ public class ProductoDigital extends Producto{
         return copia;
     }
     // ========================================
+
+
 }

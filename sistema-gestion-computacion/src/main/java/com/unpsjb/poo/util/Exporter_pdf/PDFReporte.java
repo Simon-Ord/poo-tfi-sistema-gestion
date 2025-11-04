@@ -9,7 +9,7 @@ import java.text.SimpleDateFormat;
 import java.util.List;
 
 
-public class PDFReporte extends PDFExporter {
+public class PDFReporte extends PDFExportar {
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     private final List<EventoAuditoria> eventos;

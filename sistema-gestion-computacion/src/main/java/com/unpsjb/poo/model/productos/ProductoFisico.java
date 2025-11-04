@@ -155,17 +155,9 @@ public class ProductoFisico extends Producto {
     @Override
     public Producto clonar() {
         ProductoFisico copia = new ProductoFisico();
-        // Atributos base
-        copia.setIdProducto(this.idProducto);
-        copia.setNombreProducto(this.nombreProducto);
-        copia.setDescripcionProducto(this.descripcionProducto);
-        copia.setPrecioProducto(this.precioProducto);
-        copia.setStockProducto(this.stockProducto);
-        copia.setCodigoProducto(this.codigoProducto);
-        copia.setCategoria(this.categoria);
-        copia.setActivo(this.activo);
-        copia.setFechaCreacion(this.fechaCreacion);
-        // Atributos específicos
+        // Reutilizar método padre para copiar atributos base
+        copiarAtributosBase(copia);
+        // Atributos específicos de ProductoFisico
         copia.setFabricante(this.fabricante);
         copia.setEstadoFisico(this.estadoFisico);
         copia.setGarantiaMeses(this.garantiaMeses);
@@ -173,4 +165,6 @@ public class ProductoFisico extends Producto {
         return copia;
     }
     // ========================================
+
+
 }

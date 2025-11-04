@@ -8,6 +8,7 @@ import com.unpsjb.poo.controller.ProductoFormularioVistaControlador;
 import com.unpsjb.poo.persistence.dao.impl.ProductoDAOImpl;
 
 public class Producto {
+
     protected int idProducto;
     protected String nombreProducto;
     protected String descripcionProducto;
@@ -180,6 +181,12 @@ public class Producto {
     // Las subclases sobrescriben para copiar sus atributos específicos para Auditoria
     public Producto clonar() {
         Producto copia = new Producto();
+        copiarAtributosBase(copia);
+        return copia;
+    }
+    
+    // Método auxiliar para copiar atributos base (reutilizable por subclases)
+    protected void copiarAtributosBase(Producto copia) {
         copia.setIdProducto(this.idProducto);
         copia.setNombreProducto(this.nombreProducto);
         copia.setDescripcionProducto(this.descripcionProducto);
@@ -189,7 +196,6 @@ public class Producto {
         copia.setCategoria(this.categoria);
         copia.setActivo(this.activo);
         copia.setFechaCreacion(this.fechaCreacion);
-        return copia;
     }
     
     // ========================================
@@ -211,4 +217,11 @@ public class Producto {
         return sb.toString();
     }
     // ========================================
+
+    public String compararDatosEspecificos(Producto otro) {
+    // Por defecto, no hay campos específicos que comparar.
+    return "";
+}
+
+
 }

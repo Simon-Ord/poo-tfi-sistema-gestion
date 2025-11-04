@@ -106,7 +106,6 @@ public class UsuariosVistaControlador extends BaseControlador {
         if (ok) {
             mostrarAlerta(nuevoEstado ? "Usuario activado correctamente." : "Usuario desactivado correctamente.");
             cargarUsuarios();
-
             AuditoriaUtil.registrarAccion(
                 nuevoEstado ? "ACTIVAR USUARIO" : "DESACTIVAR USUARIO",
                 "usuario",
