@@ -24,6 +24,8 @@ public class ClienteFormularioVistaControlador {
     private Cliente clienteEditable;
     // Campo para almacenar la referencia al controlador de la ventana principal
     private FacturaVistaControlador facturaControlador;
+    // Referencia al controlador padre de clientes para actualizar la tabla
+    private ClientesVistaControlador clientesVista;
 
     @FXML
     public void initialize() {
@@ -54,6 +56,10 @@ public class ClienteFormularioVistaControlador {
                         facturaControlador.setClienteTemporal(nuevo);
                     }
                     new AuditoriaClienteUtil().registrarCreacion(nuevo);
+                    // Actualizar tabla de clientes si existe referencia
+                    if (clientesVista != null) {
+                        clientesVista.buscarClientes();
+                    }
                     mostrarAlerta(" Cliente agregado correctamente.");
                 } else {
                     mostrarAlerta("Error al guardar cliente.");
@@ -71,6 +77,10 @@ public class ClienteFormularioVistaControlador {
                 if (clienteEditable.guardar()) {
                     // auditoria usando el accion de cliente (polimorfismo)
                     new AuditoriaClienteUtil().registrarAccionEspecifica(original, clienteEditable);
+                    // Actualizar tabla de clientes si existe referencia
+                    if (clientesVista != null) {
+                        clientesVista.buscarClientes();
+                    }
                     mostrarAlerta(" Cliente actualizado correctamente.");
                 } else {
                     mostrarAlerta(" Error al actualizar cliente.");
@@ -115,6 +125,11 @@ public class ClienteFormularioVistaControlador {
 
     // Método para recibir la referencia (setter llamado desde FacturaVistaControlador)
     public void setFacturaControlador(FacturaVistaControlador controlador) {
-    this.facturaControlador = controlador;
-  }
+        this.facturaControlador = controlador;
+    }
+
+    // Método para establecer la referencia al controlador padre de clientes
+    public void setControladorPadre(ClientesVistaControlador clientesVista) {
+        this.clientesVista = clientesVista;
+    }
 }

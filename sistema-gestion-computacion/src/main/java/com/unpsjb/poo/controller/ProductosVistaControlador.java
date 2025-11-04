@@ -5,7 +5,6 @@ import java.util.List;
 
 import com.unpsjb.poo.model.productos.Producto;
 import com.unpsjb.poo.util.Sesion;
-import com.unpsjb.poo.util.cap_auditoria.AuditoriaProductoUtil;
 import com.unpsjb.poo.util.cap_auditoria.AuditoriaUtil;
 
 import javafx.collections.FXCollections;
@@ -16,7 +15,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 
-
 // Controlador para la vista de productos.
 
 public class ProductosVistaControlador extends BaseControlador {
@@ -26,10 +24,9 @@ public class ProductosVistaControlador extends BaseControlador {
     @FXML private TableColumn<Producto, String> colNombre;
     @FXML private TableColumn<Producto, String> colDescripcion;
     @FXML private TableColumn<Producto, String> colCategoria;
-    @FXML private TableColumn<Producto, String> colFabricante;
     @FXML private TableColumn<Producto, BigDecimal> colPrecio;
     @FXML private TableColumn<Producto, Integer> colCantidad;
-    @FXML private TableColumn<Producto, String> colEstado; // Nueva columna para estado
+    @FXML private TableColumn<Producto, String> colEstado;
 
     @FXML private TextField txtBuscar;
     @FXML private CheckBox chBoxInactivos;
@@ -52,11 +49,9 @@ public class ProductosVistaControlador extends BaseControlador {
         colPrecio.setCellValueFactory(c -> new javafx.beans.property.SimpleObjectProperty<>(c.getValue().getPrecioProducto()));
         colCantidad.setCellValueFactory(c -> new javafx.beans.property.SimpleObjectProperty<>(c.getValue().getStockProducto()));
     }
-
-    // Configura la columna de estado solo con colores de fondo translúcidos
+    // Configura la columna de estado solo con colores
     private void configurarColumnasEstado() {
         colEstado.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(""));
-        
         colEstado.setCellFactory(column -> {
             return new javafx.scene.control.TableCell<Producto, String>() {
                 @Override
@@ -89,7 +84,6 @@ public class ProductosVistaControlador extends BaseControlador {
             });
         }
     }
-
     // ==================================
     // BOTONES Y ACCIONES DEL CONTROLADOR
     // ==================================
@@ -107,21 +101,17 @@ public class ProductosVistaControlador extends BaseControlador {
         }
         tablaProductos.setItems(FXCollections.observableArrayList(resultados));
     }
-
     /** Limpiar búsqueda */
     @FXML private void limpiarBusqueda() {
         if (txtBuscar != null) {
-            txtBuscar.clear(); // Esto activará automáticamente el listener y hará la búsqueda
+            txtBuscar.clear(); 
         }
-        // Mantener el estado del checkbox - el usuario eligió ver inactivos por alguna razón
     }
-
     /** Agregar producto */
     @FXML private void agregarProducto() {
         // Abrir ventana y configurar el controlador
         VentanaVistaControlador.ResultadoVentana resultado = 
-            crearVentanaPequena("/view/productoForm.fxml", "Agregar Nuevo Producto");
-        
+            crearVentana("/view/productoForm.fxml", "Agregar Nuevo Producto");
         if (resultado != null) {
             ProductoFormularioVistaControlador controlador = 
                 (ProductoFormularioVistaControlador) resultado.getControlador(); 
@@ -131,7 +121,6 @@ public class ProductosVistaControlador extends BaseControlador {
             }
         }
     }
-
     /** Modificar producto */
     @FXML private void modificarProducto() {
         Producto productoSeleccionado = tablaProductos.getSelectionModel().getSelectedItem();
@@ -139,45 +128,37 @@ public class ProductosVistaControlador extends BaseControlador {
             mostrarAlerta("Debe seleccionar un producto para modificarlo.");
             return;
         }
-        
         // Abrir ventana y configurar el controlador
         VentanaVistaControlador.ResultadoVentana resultado = 
-            crearVentanaPequena("/view/productoForm.fxml", "Modificar Producto");
-        
+            crearVentana("/view/productoForm.fxml", "Modificar Producto");
         if (resultado != null) {
             ProductoFormularioVistaControlador controlador = 
                 (ProductoFormularioVistaControlador) resultado.getControlador(); 
             if (controlador != null) {
-                controlador.setProductoAEditar(productoSeleccionado);
-                controlador.setControladorPadre(this); // ← ¡Pasar referencia de este controlador!
+                controlador.setProducto(productoSeleccionado);
+                controlador.setControladorPadre(this); // Pasar referencia de este controlador
             }
         }
     }
-
     /** Cambiar estado activo/inactivo */
     @FXML
-private void cambiarEstadoProducto() {
+    private void cambiarEstadoProducto() {
     Producto seleccionado = tablaProductos.getSelectionModel().getSelectedItem();
     if (seleccionado == null) {
         mostrarAlerta("Seleccione un producto para cambiar su estado.");
         return;
     }
-
     // Guardar estado anterior
     boolean estadoAnterior = seleccionado.isActivo();
-
     // Cambiar el estado
     seleccionado.cambiarEstado(); 
     boolean ok = seleccionado.actualizar();
-
     if (ok) {
         // Registrar acción de auditoría
         String usuario = (Sesion.getUsuarioActual() != null)
                 ? Sesion.getUsuarioActual().getNombre()
                 : "Desconocido";
-
         String nuevoEstado = seleccionado.isActivo() ? "ACTIVO" : "INACTIVO";
-
         AuditoriaUtil.registrarAccion(
                 "CAMBIAR ESTADO PRODUCTO",
                 "producto",
@@ -185,15 +166,12 @@ private void cambiarEstadoProducto() {
                 "' de " + (estadoAnterior ? "ACTIVO" : "INACTIVO") +
                 " a " + nuevoEstado + "."
         );
-
         mostrarAlerta(" El producto cambió al estado: " + nuevoEstado);
-        buscarProductos(); // Usar buscarProductos() directamente
-
+        buscarProductos(); // Refrescar tabla
     } else {
         mostrarAlerta(" Error al cambiar el estado del producto.");
     }
 }
-
     @FXML
     private void detallesProducto() {
         Producto seleccionado = tablaProductos.getSelectionModel().getSelectedItem();
@@ -201,18 +179,18 @@ private void cambiarEstadoProducto() {
             mostrarAlerta("Selecciona un producto para ver sus detalles.");
             return;
         }
-
         try {
+            // Polimorfismo: cada subclase sabe cómo obtener su instancia completa
+            Producto productoCompleto = seleccionado.obtenerInstanciaCompleta();
             VentanaVistaControlador.ResultadoVentana resultado = crearVentana("/view/DetallesProducto.fxml", "Detalles del Producto", 530, 570);
             if (resultado != null && resultado.getControlador() != null) {
                 DetallesProductoControlador controlador = (DetallesProductoControlador) resultado.getControlador();
-                controlador.setProducto(seleccionado);
+                controlador.setProducto(productoCompleto);
             }
         } catch (Exception e) {
             mostrarAlerta("Error al abrir los detalles: " + e.getMessage());
         }
     }
-
     /** Mostrar alertas */
     private void mostrarAlerta(String msg) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);

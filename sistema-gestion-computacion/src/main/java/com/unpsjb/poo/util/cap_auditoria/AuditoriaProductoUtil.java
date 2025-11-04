@@ -1,9 +1,6 @@
 package com.unpsjb.poo.util.cap_auditoria;
 
 import com.unpsjb.poo.model.productos.Producto;
-import com.unpsjb.poo.model.productos.ProductoDigital;
-import com.unpsjb.poo.model.productos.ProductoFisico;
-import com.unpsjb.poo.util.Sesion;
 
 public class AuditoriaProductoUtil extends AuditoriaBase {
 
@@ -31,21 +28,8 @@ public class AuditoriaProductoUtil extends AuditoriaBase {
               .append(" → ").append(modificado.getCategoria().getNombre());
         }
 
-        if (original instanceof ProductoFisico && modificado instanceof ProductoFisico) {
-            ProductoFisico o = (ProductoFisico) original;
-            ProductoFisico m = (ProductoFisico) modificado;
-            if (!o.getFabricante().equals(m.getFabricante())) {
-                sb.append("\n• Fabricante: ").append(o.getFabricante())
-                  .append(" → ").append(m.getFabricante());
-            }
-        } else if (original instanceof ProductoDigital && modificado instanceof ProductoDigital) {
-            ProductoDigital o = (ProductoDigital) original;
-            ProductoDigital m = (ProductoDigital) modificado;
-            if (!o.getProveedorDigital().equals(m.getProveedorDigital())) {
-                sb.append("\n• Proveedor: ").append(o.getProveedorDigital())
-                  .append(" → ").append(m.getProveedorDigital());
-            }
-        }
+        // Cada subclase genera sus cambios específicos
+        sb.append(modificado.generarCambiosEspecificos(original));
 
         return sb.toString();
     }

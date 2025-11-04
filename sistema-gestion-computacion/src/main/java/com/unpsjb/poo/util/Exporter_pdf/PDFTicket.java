@@ -4,13 +4,23 @@ import java.io.FileOutputStream;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import com.itextpdf.text.*;
-import com.itextpdf.text.pdf.*;
+import com.itextpdf.text.BaseColor;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.Phrase;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.PdfPCell;
+import com.itextpdf.text.pdf.PdfPTable;
+import com.itextpdf.text.pdf.PdfWriter;
 import com.unpsjb.poo.model.ItemCarrito;
 import com.unpsjb.poo.model.Venta;
 
 /**
- *  Ticket de venta mejorado - MUNDO PC
+ *  Ticket de venta - MUNDO PC
  * Diseño profesional con formato tipo recibo de comercio.
  */
 public class PDFTicket extends PDFExporter {
@@ -61,7 +71,7 @@ public class PDFTicket extends PDFExporter {
         titulo.setAlignment(Element.ALIGN_CENTER);
         document.add(titulo);
 
-        Paragraph subtitulo = new Paragraph(" Av. San Martín 1234 - Trelew\nTel: (0280) 123-4567", FONT_NORMAL);
+        Paragraph subtitulo = new Paragraph("Av. San Martín 1234 - Comodoro Rivadavia\nTel: (0280) 123-4567\n\n", FONT_NORMAL);
         subtitulo.setAlignment(Element.ALIGN_CENTER);
         subtitulo.setSpacingAfter(6);
         document.add(subtitulo);
@@ -70,13 +80,13 @@ public class PDFTicket extends PDFExporter {
         fechaVenta.setAlignment(Element.ALIGN_CENTER);
         document.add(fechaVenta);
 
-        if (venta.getIdVenta() > 0) {
-            Paragraph idVenta = new Paragraph("N° de Venta: " + venta.getIdVenta(), FONT_NORMAL);
-            idVenta.setAlignment(Element.ALIGN_CENTER);
-            document.add(idVenta);
+        if (venta.getCodigoVenta() != null && !venta.getCodigoVenta().isEmpty()) {
+            Paragraph codigoVenta = new Paragraph("N° de Venta: " + venta.getCodigoVenta(), FONT_NORMAL);
+            codigoVenta.setAlignment(Element.ALIGN_CENTER);
+            document.add(codigoVenta);
         }
 
-        String metodo = venta.getEstrategiaPago() != null ? venta.getEstrategiaPago().getNombreMetodoPago() : "Sin método";
+        String metodo = venta.getEstrategiaPago() != null ? venta.getEstrategiaPago().getNombreMetodoPago() : "Pago en Efectivo";
         Paragraph metodoPago = new Paragraph("Método de Pago: " + metodo + "\n\n", FONT_NORMAL);
         metodoPago.setAlignment(Element.ALIGN_CENTER);
         document.add(metodoPago);
@@ -120,22 +130,22 @@ public class PDFTicket extends PDFExporter {
     private void addProductRow(PdfPTable table, ItemCarrito item) {
         PdfPCell nombreCell = new PdfPCell(new Phrase(item.getProducto().getNombreProducto(), FONT_NORMAL));
         nombreCell.setBorder(Rectangle.NO_BORDER);
-        nombreCell.setPadding(2f);
+        nombreCell.setPadding(3f);
 
-        PdfPCell precioCell = new PdfPCell(new Phrase(String.format("$%.2f", item.getPrecioUnitario()), FONT_NORMAL));
+        PdfPCell precioCell = new PdfPCell(new Phrase("$" + String.format("%.2f", item.getPrecioUnitario()), FONT_NORMAL));
         precioCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         precioCell.setBorder(Rectangle.NO_BORDER);
-        precioCell.setPadding(2f);
+        precioCell.setPadding(3f);
 
         PdfPCell cantCell = new PdfPCell(new Phrase(String.valueOf(item.getCantidad()), FONT_NORMAL));
         cantCell.setHorizontalAlignment(Element.ALIGN_CENTER);
         cantCell.setBorder(Rectangle.NO_BORDER);
-        cantCell.setPadding(2f);
+        cantCell.setPadding(3f);
 
-        PdfPCell subtotalCell = new PdfPCell(new Phrase(String.format("$%.2f", item.getSubtotal()), FONT_NORMAL));
+        PdfPCell subtotalCell = new PdfPCell(new Phrase("$" + String.format("%.2f", item.getSubtotal()), FONT_NORMAL));
         subtotalCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
         subtotalCell.setBorder(Rectangle.NO_BORDER);
-        subtotalCell.setPadding(2f);
+        subtotalCell.setPadding(3f);
 
         table.addCell(nombreCell);
         table.addCell(precioCell);
@@ -155,12 +165,12 @@ public class PDFTicket extends PDFExporter {
         Paragraph totales = new Paragraph();
         totales.setAlignment(Element.ALIGN_RIGHT);
         totales.setLeading(12f);
-        totales.add(new Phrase("Subtotal: $" + String.format("%.2f", subtotalSinIva) + "\n", FONT_NORMAL));
+        totales.add(new Phrase("Subtotal sin IVA: $" + String.format("%.2f", subtotalSinIva) + "\n", FONT_NORMAL));
         totales.add(new Phrase("IVA (21%): $" + String.format("%.2f", iva) + "\n", FONT_NORMAL));
 
         if (comision > 0) {
             double montoComision = totalCarrito * comision;
-            totales.add(new Phrase("Comisión: $" + String.format("%.2f", montoComision) + "\n", FONT_NORMAL));
+            totales.add(new Phrase("Comisión (" + String.format("%.1f", comision * 100) + "%): $" + String.format("%.2f", montoComision) + "\n", FONT_NORMAL));
         }
 
         Paragraph total = new Paragraph("TOTAL: $" + String.format("%.2f", totalConComision) + "\n", FONT_BOLD);

@@ -14,10 +14,8 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 
-/**
- * Controlador sencillo para gestión de categorías
- * Maneja tanto la vista como el formulario en el mismo lugar
- */
+
+// Controlador para gestión de categorías
 public class CategoriasVistaControlador extends BaseControlador {
 
     @FXML private TableView<Categoria> tablaCategorias;
@@ -115,7 +113,7 @@ public class CategoriasVistaControlador extends BaseControlador {
     /** Agregar nueva categoría */
     @FXML
     private void agregarCategoria() {
-        crearVentanaPequena("/view/formularios/CategoriaForm.fxml", "Agregar Categoría");
+        crearVentana("/view/formularios/CategoriaForm.fxml", "Agregar Categoría");
         cargarCategorias(); // Recargar datos después de cerrar la ventana
     }
 
@@ -129,7 +127,8 @@ public class CategoriasVistaControlador extends BaseControlador {
         }
         // Abrir ventana y configurar el controlador
         VentanaVistaControlador.ResultadoVentana resultado = 
-            crearVentanaPequena("/view/formularios/CategoriaForm.fxml", "Modificar Categoría");
+            // Abrir ventana de modificación
+            crearVentana("/view/formularios/CategoriaForm.fxml", "Modificar Categoría");
         if (resultado != null) {
             CategoriaFormularioVistaControlador controlador = 
                 (CategoriaFormularioVistaControlador) resultado.getControlador(); 

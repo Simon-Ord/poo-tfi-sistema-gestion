@@ -79,11 +79,28 @@ public class Categoria {
     // ========================================
     // ===== MÉTODOS DE LÓGICA DE NEGOCIO =====
     // ========================================
+    // Activa esta categoría
+    public void activar() {
+        this.activo = true;
+    }
+    // Desactiva esta categoría
+    public void desactivar() {
+        this.activo = false;
+    }
 
-    /**
-     * Guarda esta categoría en la base de datos (persistencia de la instancia)
-     * @return true si se guardó correctamente
-     */
+    // Metodo para verificar si la categoria esta activa
+    public boolean estaActiva() {
+        return this.activo;
+    }
+    // Metodo para obtener el estado en texto
+    public String getEstadoTexto() {
+        return this.activo ? "Activa" : "Inactiva";
+    }
+    // ========================
+    // Acceso a Persistencia
+    // ========================
+    // ========================================
+    // Metodo para guardar la categoria (crear o actualizar)
     public boolean guardar() {
         if (this.idCategoria == 0) {
             // Es una categoría nueva, usar create
@@ -93,119 +110,45 @@ public class Categoria {
             return categoriaDAO.update(this);
         }
     }
-    
-    /**
-     * Actualiza esta categoría en la base de datos
-     * @return true si se actualizó correctamente
-     */
+    // Override del método actualizar para usar el DAO específico
     public boolean actualizar() {
         return categoriaDAO.update(this);
     }
-    
-    /**
-     * Crea una nueva categoría en la base de datos
-     * @return true si se creó correctamente
-     */
+    // Override del método crear para usar el DAO específico
     public boolean crear() {
         return categoriaDAO.create(this);
     }
-    
-    /**
-     * Elimina esta categoría (eliminación lógica - la marca como inactiva)
-     * @return true si se eliminó correctamente
-     */
+    // Override del método eliminar para usar el DAO específico
     public boolean eliminar() {
         this.desactivar();
         return categoriaDAO.update(this);
     }
-    
-    /**
-     * Activa esta categoría
-     */
-    public void activar() {
-        this.activo = true;
-    }
-    
-    /**
-     * Desactiva esta categoría
-     */
-    public void desactivar() {
-        this.activo = false;
-    }
-    
-    /**
-     * Cambia el estado de esta categoría
-     * @param activo nuevo estado
-     * @return true si se cambió correctamente
-     */
-    public boolean cambiarEstado(boolean activo) {
-        this.activo = activo;
-        return categoriaDAO.update(this);
-    }
-    
-    /**
-     * Verifica si esta categoría está activa
-     * @return true si está activa
-     */
-    public boolean estaActiva() {
-        return this.activo;
-    }
-    
-    /**
-     * Obtiene una representación amigable del estado
-     * @return "Activa" o "Inactiva"
-     */
-    public String getEstadoTexto() {
-        return this.activo ? "Activa" : "Inactiva";
-    }
-
-    // ===== MÉTODOS ESTÁTICOS PARA ACCESO A PERSISTENCIA =====
-    // El modelo encapsula el acceso al DAO
-    // El controlador NUNCA debe conocer el DAO directamente
-    
-    /**
-     * Obtiene todas las categorías activas desde la base de datos
-     * @return Lista de categorías activas
-     */
+    // Obtiene todas las categorías activas
     public static List<Categoria> obtenerTodas() {
         return categoriaDAO.findAll();
     }
-    
-    /**
-     * Obtiene todas las categorías (activas e inactivas) desde la base de datos
-     * @return Lista completa de categorías
-     */
+    // Obtiene todas las categorías, activas e inactivas
     public static List<Categoria> obtenerTodasCompleto() {
         List<Categoria> activas = categoriaDAO.findAll();
         // Nota: Necesitarías implementar findAllInactivas en el DAO si quieres incluir inactivas
         return activas;
     }
-    
-    /**
-     * Busca una categoría por su ID
-     * @param id ID de la categoría
-     * @return Categoría encontrada o null
-     */
+    // Obtiene una categoría por su ID
     public static Categoria obtenerPorId(int id) {
         return categoriaDAO.read(id).orElse(null);
     }
-    
-    /**
-     * Busca categorías por nombre (búsqueda parcial)
-     * @param nombre Nombre o parte del nombre a buscar
-     * @return Lista de categorías que coinciden
-     */
+        // Metodo para cambiar el estado de la categoria
+    public boolean cambiarEstado(boolean activo) {
+        this.activo = activo;
+        return categoriaDAO.update(this);
+    }
+    // Busca categorías por nombre (búsqueda parcial)
     public static List<Categoria> buscarPorNombre(String nombre) {
         return categoriaDAO.findAll().stream()
                 .filter(c -> c.getNombre().toLowerCase().contains(nombre.toLowerCase()))
                 .toList();
     }
-    
-    /**
-     * Verifica si una categoría está siendo utilizada por algún producto
-     * @param id ID de la categoría
-     * @return true si está en uso
-     */
+    // 
     public static boolean estaEnUso(int id) {
         // Implementar verificación en el DAO
         // Por ahora retorna false

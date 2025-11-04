@@ -56,7 +56,12 @@ public class ProductoFisico extends Producto {
                " - Fabricante: " + (fabricante != null ? fabricante.getNombre() : "N/A") +
                " ($" + precioProducto + ")";
     }
-
+    // ========================================
+    // Sobrescribe para cargar los datos específicos del producto físico
+    @Override
+    public Producto obtenerInstanciaCompleta() {
+        return ProductoFisico.obtenerPorId(this.idProducto);
+    }
     // ========================
     // Acceso a Persistencia
     // ========================
@@ -124,6 +129,48 @@ public class ProductoFisico extends Producto {
     public void procesarDatosEspecificos(ProductoFormularioVistaControlador controlador) {
         // Delego al controlador para que maneje los datos específicos de producto físico
         controlador.guardarDatosFisicos(this);
+    }
+    
+    // ========================================
+    // Genera cambios específicos de producto físico para auditoría
+    @Override
+    public String generarCambiosEspecificos(Producto original) {
+        ProductoFisico orig = (ProductoFisico) original;
+        StringBuilder sb = new StringBuilder();
+        if (this.fabricante != null && orig.getFabricante() != null &&
+            !this.fabricante.getNombre().equals(orig.getFabricante().getNombre())) {
+            sb.append("\n• Fabricante: ").append(orig.getFabricante().getNombre())
+              .append(" → ").append(this.fabricante.getNombre());
+        }
+        if (this.estadoFisico != null && orig.getEstadoFisico() != null &&
+            !this.estadoFisico.equals(orig.getEstadoFisico())) {
+            sb.append("\n• Estado: ").append(orig.getEstadoFisico())
+              .append(" → ").append(this.estadoFisico);
+        }
+        return sb.toString();
+    }
+    
+    // ========================================
+    // Clona producto físico con todos sus atributos
+    @Override
+    public Producto clonar() {
+        ProductoFisico copia = new ProductoFisico();
+        // Atributos base
+        copia.setIdProducto(this.idProducto);
+        copia.setNombreProducto(this.nombreProducto);
+        copia.setDescripcionProducto(this.descripcionProducto);
+        copia.setPrecioProducto(this.precioProducto);
+        copia.setStockProducto(this.stockProducto);
+        copia.setCodigoProducto(this.codigoProducto);
+        copia.setCategoria(this.categoria);
+        copia.setActivo(this.activo);
+        copia.setFechaCreacion(this.fechaCreacion);
+        // Atributos específicos
+        copia.setFabricante(this.fabricante);
+        copia.setEstadoFisico(this.estadoFisico);
+        copia.setGarantiaMeses(this.garantiaMeses);
+        copia.setTipoGarantia(this.tipoGarantia);
+        return copia;
     }
     // ========================================
 }

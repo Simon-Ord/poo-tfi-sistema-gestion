@@ -17,7 +17,7 @@ import com.unpsjb.poo.model.ItemCarrito;
 import com.unpsjb.poo.model.Venta;
 
 /**
- * Genera un PDF de factura o ticket para una venta.
+ * Genera un PDF de factura para una venta.
  */
 public class PDFFactura extends PDFExporter {
 
@@ -60,23 +60,29 @@ public class PDFFactura extends PDFExporter {
 
     // ============================= ENCABEZADO =============================
     private void addHeader(Document document) throws DocumentException {
-        Paragraph titulo = new Paragraph();
+        // Título principal con nombre de la empresa
+        Paragraph titulo = new Paragraph("MUNDO PC", FONT_TITLE);
         titulo.setAlignment(Element.ALIGN_CENTER);
-
-        String tipoDocumento = "FACTURA".equals(venta.getTipoFactura()) ? "FACTURA" : "TICKET DE VENTA";
-        titulo.add(new Phrase(tipoDocumento + "\n\n", FONT_TITLE));
         document.add(titulo);
 
+        // Información de la empresa
         Paragraph infoBusiness = new Paragraph();
-        infoBusiness.add(new Phrase("Sistema de Gestión de Computación\n", FONT_BOLD));
-        infoBusiness.add(new Phrase("Dirección: Calle Principal 123\n", FONT_NORMAL));
+        infoBusiness.setAlignment(Element.ALIGN_CENTER);
+        infoBusiness.add(new Phrase("Av. San Martín 1234 - Comodoro Rivadavia\n", FONT_NORMAL));
         infoBusiness.add(new Phrase("Tel: (0280) 123-4567\n\n", FONT_NORMAL));
         document.add(infoBusiness);
 
+        // Tipo de documento
+        String tipoDocumento = "FACTURA".equals(venta.getTipoFactura()) ? "FACTURA" : "TICKET DE VENTA";
+        Paragraph tipoDoc = new Paragraph(tipoDocumento + "\n", FONT_BOLD);
+        tipoDoc.setAlignment(Element.ALIGN_CENTER);
+        document.add(tipoDoc);
+
+        // Información de la venta
         Paragraph infoVenta = new Paragraph();
         infoVenta.add(new Phrase("Fecha: " + DATE_FORMAT.format(new Date()) + "\n", FONT_NORMAL));
 
-        // 🆕 Mostrar el código único de la venta (si existe)
+        // Mostrar el código único de la venta (si existe)
         if (venta.getCodigoVenta() != null && !venta.getCodigoVenta().isEmpty()) {
             infoVenta.add(new Phrase("Código de Venta: " + venta.getCodigoVenta() + "\n", FONT_NORMAL));
         }
@@ -119,24 +125,35 @@ public class PDFFactura extends PDFExporter {
         for (String header : headers) {
             PdfPCell cell = new PdfPCell(new Phrase(header, FONT_BOLD));
             cell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            cell.setPadding(5f);
+            cell.setBackgroundColor(new com.itextpdf.text.BaseColor(240, 240, 240));
             table.addCell(cell);
         }
     }
 
     private void addProductRow(PdfPTable table, ItemCarrito item) {
-        table.addCell(new Phrase(String.valueOf(item.getProducto().getCodigoProducto()), FONT_NORMAL));
-        table.addCell(new Phrase(item.getProducto().getNombreProducto(), FONT_NORMAL));
+        PdfPCell codigoCell = new PdfPCell(new Phrase(String.valueOf(item.getProducto().getCodigoProducto()), FONT_NORMAL));
+        codigoCell.setPadding(4f);
+        codigoCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        table.addCell(codigoCell);
+
+        PdfPCell nombreCell = new PdfPCell(new Phrase(item.getProducto().getNombreProducto(), FONT_NORMAL));
+        nombreCell.setPadding(4f);
+        table.addCell(nombreCell);
 
         PdfPCell precioCell = new PdfPCell(new Phrase("$ " + String.format("%.2f", item.getPrecioUnitario()), FONT_NORMAL));
         precioCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        precioCell.setPadding(4f);
         table.addCell(precioCell);
 
         PdfPCell cantCell = new PdfPCell(new Phrase(String.valueOf(item.getCantidad()), FONT_NORMAL));
         cantCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+        cantCell.setPadding(4f);
         table.addCell(cantCell);
 
         PdfPCell subtotalCell = new PdfPCell(new Phrase("$ " + String.format("%.2f", item.getSubtotal()), FONT_NORMAL));
         subtotalCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        subtotalCell.setPadding(4f);
         table.addCell(subtotalCell);
     }
 
@@ -155,31 +172,55 @@ public class PDFFactura extends PDFExporter {
         float[] widthsTotales = {3f, 2f};
         tableTotales.setWidths(widthsTotales);
 
-        tableTotales.addCell(new Phrase("Subtotal sin IVA:", FONT_NORMAL));
+        // Subtotal sin IVA
+        PdfPCell labelSubtotal = new PdfPCell(new Phrase("Subtotal sin IVA:", FONT_NORMAL));
+        labelSubtotal.setBorder(PdfPCell.NO_BORDER);
+        labelSubtotal.setPadding(3f);
+        tableTotales.addCell(labelSubtotal);
+
         PdfPCell cellSubtotal = new PdfPCell(new Phrase("$ " + String.format("%.2f", subtotalSinIva), FONT_NORMAL));
         cellSubtotal.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        cellSubtotal.setBorder(PdfPCell.NO_BORDER);
+        cellSubtotal.setPadding(3f);
         tableTotales.addCell(cellSubtotal);
 
-        tableTotales.addCell(new Phrase("IVA (21%):", FONT_NORMAL));
+        // IVA
+        PdfPCell labelIva = new PdfPCell(new Phrase("IVA (21%):", FONT_NORMAL));
+        labelIva.setBorder(PdfPCell.NO_BORDER);
+        labelIva.setPadding(3f);
+        tableTotales.addCell(labelIva);
+
         PdfPCell cellIva = new PdfPCell(new Phrase("$ " + String.format("%.2f", iva), FONT_NORMAL));
         cellIva.setHorizontalAlignment(Element.ALIGN_RIGHT);
+        cellIva.setBorder(PdfPCell.NO_BORDER);
+        cellIva.setPadding(3f);
         tableTotales.addCell(cellIva);
 
+        // Comisión si existe
         if (comision > 0) {
-            tableTotales.addCell(new Phrase("Comisión (" + String.format("%.1f", comision * 100) + "%):", FONT_NORMAL));
+            PdfPCell labelComision = new PdfPCell(new Phrase("Comisión (" + String.format("%.1f", comision * 100) + "%):", FONT_NORMAL));
+            labelComision.setBorder(PdfPCell.NO_BORDER);
+            labelComision.setPadding(3f);
+            tableTotales.addCell(labelComision);
+
             double montoComision = totalCarrito * comision;
             PdfPCell cellComision = new PdfPCell(new Phrase("$ " + String.format("%.2f", montoComision), FONT_NORMAL));
             cellComision.setHorizontalAlignment(Element.ALIGN_RIGHT);
+            cellComision.setBorder(PdfPCell.NO_BORDER);
+            cellComision.setPadding(3f);
             tableTotales.addCell(cellComision);
         }
 
+        // Total
         PdfPCell cellTotalLabel = new PdfPCell(new Phrase("TOTAL:", FONT_BOLD));
         cellTotalLabel.setBorder(PdfPCell.TOP);
+        cellTotalLabel.setPadding(5f);
         tableTotales.addCell(cellTotalLabel);
 
         PdfPCell cellTotal = new PdfPCell(new Phrase("$ " + String.format("%.2f", totalConComision), FONT_BOLD));
         cellTotal.setHorizontalAlignment(Element.ALIGN_RIGHT);
         cellTotal.setBorder(PdfPCell.TOP);
+        cellTotal.setPadding(5f);
         tableTotales.addCell(cellTotal);
 
         document.add(tableTotales);
@@ -187,16 +228,19 @@ public class PDFFactura extends PDFExporter {
 
     // ============================= PIE DE PÁGINA =============================
     private void addFooter(Document document) throws DocumentException {
-        Paragraph pie = new Paragraph("\n\n");
+        Paragraph pie = new Paragraph("\n\n¡Gracias por su compra en MUNDO PC!\n", FONT_BOLD);
         pie.setAlignment(Element.ALIGN_CENTER);
-        pie.add(new Phrase("¡Gracias por su compra!\n", FONT_BOLD));
+        document.add(pie);
 
-        // 🆕 Mostrar también el código único de venta en el pie del documento
+        // Mostrar también el código único de venta en el pie del documento
         if (venta.getCodigoVenta() != null && !venta.getCodigoVenta().isEmpty()) {
-            pie.add(new Phrase("Código de Control: " + venta.getCodigoVenta() + "\n", FONT_NORMAL));
+            Paragraph codigo = new Paragraph("Código de Control: " + venta.getCodigoVenta() + "\n", FONT_NORMAL);
+            codigo.setAlignment(Element.ALIGN_CENTER);
+            document.add(codigo);
         }
 
-        pie.add(new Phrase("Documento generado electrónicamente", FONT_NORMAL));
-        document.add(pie);
+        Paragraph legal = new Paragraph("Documento generado electrónicamente", FONT_NORMAL);
+        legal.setAlignment(Element.ALIGN_CENTER);
+        document.add(legal);
     }
 }

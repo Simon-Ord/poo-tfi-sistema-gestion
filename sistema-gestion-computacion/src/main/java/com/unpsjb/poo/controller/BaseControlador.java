@@ -54,12 +54,8 @@ public class BaseControlador {
             return null;
         }
     }
-    // Metodo para crear ventana con tamaño por defecto
+    // Metodo para crear ventana con tamaño por defecto (formularios)
     protected VentanaVistaControlador.ResultadoVentana crearVentana(String fxmlPath, String titulo) {
-        return crearVentana(fxmlPath, titulo, 640, 420);
-    }
-    // Metodo para crear ventana pequeña (tamaño típico de formulario)
-    protected VentanaVistaControlador.ResultadoVentana crearVentanaPequena(String fxmlPath, String titulo) {
         return crearVentana(fxmlPath, titulo, 400, 350);
     }
     // Metodo para cerrar ventana interna buscando el VentanaVistaControlador que tiene su nodo
@@ -70,7 +66,6 @@ public class BaseControlador {
             while (nodoActual != null && !nodoActual.getClass().equals(VentanaVistaControlador.class)) {
                 nodoActual = nodoActual.getParent();
             }
-            
             if (nodoActual != null) {
                 // Es una ventana interna, removerla del desktop
                 VentanaVistaControlador ventanaInterna = (VentanaVistaControlador) nodoActual;

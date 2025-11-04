@@ -53,6 +53,12 @@ public class ProductoDigital extends Producto{
         return "Producto Digital: " + nombreProducto + 
                " - Licencia: " + (tipoLicencia != null ? tipoLicencia : "N/A") +
                " ($" + precioProducto + ")";
+    }
+    // ========================================
+    // Sobrescribe para cargar los datos específicos del producto digital
+    @Override
+    public Producto obtenerInstanciaCompleta() {
+        return ProductoDigital.obtenerPorId(this.idProducto);
     }    
     // ========================
     // Acceso a Persistencia
@@ -63,8 +69,7 @@ public class ProductoDigital extends Producto{
     
     public static ProductoDigital obtenerPorId(int id) {
         return productoDigitalDAO.read(id).orElse(null);
-    }
-    
+    }    
     // Override del método guardar para usar el DAO específico
     @Override
     public boolean guardar() {
@@ -127,6 +132,48 @@ public class ProductoDigital extends Producto{
     @Override
     public void procesarDatosEspecificos(ProductoFormularioVistaControlador controlador) {
         controlador.guardarDatosDigitales(this);
+    }
+    
+    // ========================================
+    // Genera cambios específicos de producto digital para auditoría
+    @Override
+    public String generarCambiosEspecificos(Producto original) {
+        ProductoDigital orig = (ProductoDigital) original;
+        StringBuilder sb = new StringBuilder();
+        if (this.proveedorDigital != null && orig.getProveedorDigital() != null &&
+            !this.proveedorDigital.getNombre().equals(orig.getProveedorDigital().getNombre())) {
+            sb.append("\n• Proveedor: ").append(orig.getProveedorDigital().getNombre())
+              .append(" → ").append(this.proveedorDigital.getNombre());
+        }
+        if (this.tipoLicencia != null && orig.getTipoLicencia() != null &&
+            !this.tipoLicencia.equals(orig.getTipoLicencia())) {
+            sb.append("\n• Tipo de Licencia: ").append(orig.getTipoLicencia())
+              .append(" → ").append(this.tipoLicencia);
+        }
+        return sb.toString();
+    }
+    
+    // ========================================
+    // Clona producto digital con todos sus atributos
+    @Override
+    public Producto clonar() {
+        ProductoDigital copia = new ProductoDigital();
+        // Atributos base
+        copia.setIdProducto(this.idProducto);
+        copia.setNombreProducto(this.nombreProducto);
+        copia.setDescripcionProducto(this.descripcionProducto);
+        copia.setPrecioProducto(this.precioProducto);
+        copia.setStockProducto(this.stockProducto);
+        copia.setCodigoProducto(this.codigoProducto);
+        copia.setCategoria(this.categoria);
+        copia.setActivo(this.activo);
+        copia.setFechaCreacion(this.fechaCreacion);
+        // Atributos específicos
+        copia.setProveedorDigital(this.proveedorDigital);
+        copia.setTipoLicencia(this.tipoLicencia);
+        copia.setActivacionesMax(this.activacionesMax);
+        copia.setDuracionLicenciaDias(this.duracionLicenciaDias);
+        return copia;
     }
     // ========================================
 }

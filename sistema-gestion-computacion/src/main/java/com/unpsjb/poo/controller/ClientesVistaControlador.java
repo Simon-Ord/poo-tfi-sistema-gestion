@@ -12,6 +12,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 
 public class ClientesVistaControlador extends BaseControlador {
 
@@ -19,12 +20,14 @@ public class ClientesVistaControlador extends BaseControlador {
     @FXML private TableColumn<Cliente, String> colNombre;
     @FXML private TableColumn<Cliente, String> colCuit;
     @FXML private TableColumn<Cliente, String> colTelefono;
+    @FXML private TableColumn<Cliente, String> colDireccion;
     @FXML private TableColumn<Cliente, String> colEmail;
     @FXML private TableColumn<Cliente, String> colTipo;
     @FXML private TableColumn<Cliente, String> colActivo; 
     @FXML private TableColumn<Cliente, String> colEstado;
     
     @FXML private CheckBox chBoxInactivos;
+    @FXML private TextField txtBuscar;
 
     private final ObservableList<Cliente> listaClientes = FXCollections.observableArrayList();
 
@@ -35,15 +38,19 @@ public class ClientesVistaControlador extends BaseControlador {
         configurarColumnas();
         configurarColumnasEstado();
         configurarListeners();
-        cargarClientesDesdeBD();
+        buscarClientes(); // Carga inicial con búsqueda
     }
     
     private void configurarColumnas() {
         colNombre.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getNombre()));
         colCuit.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getCuit()));
         colTelefono.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getTelefono()));
+        colDireccion.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getDireccion()));
         colEmail.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getEmail()));
         colTipo.setCellValueFactory(data -> new javafx.beans.property.SimpleStringProperty(data.getValue().getTipo()));
+        
+        // Vincular la tabla con el ObservableList
+        tablaClientes.setItems(listaClientes);
     }
     
     private void configurarColumnasEstado() {
@@ -68,27 +75,61 @@ public class ClientesVistaControlador extends BaseControlador {
     }
     
     private void configurarListeners() {
+        // Listener para el checkbox de inactivos
         if (chBoxInactivos != null) {
             chBoxInactivos.selectedProperty().addListener((observable, oldValue, newValue) -> {
                 colEstado.setVisible(newValue);
-                cargarClientesDesdeBD();
+                buscarClientes();
             });
         }
+        
+        // Listener para el campo de búsqueda
+        if (txtBuscar != null) {
+            txtBuscar.textProperty().addListener((observable, oldValue, newValue) -> buscarClientes());
+        }
     }
-
-    private void cargarClientesDesdeBD() {
+    // ==================================
+    // BOTONES Y ACCIONES DEL CONTROLADOR
+    // ==================================
+    /** Buscar clientes */
+    @FXML
+    public void buscarClientes() {
+        String q = (txtBuscar != null && txtBuscar.getText() != null)
+                ? txtBuscar.getText().trim().toLowerCase()
+                : "";
+        // Usar búsqueda completa si el checkbox de inactivos está marcado
+        List<Cliente> resultados;
+        if (chBoxInactivos != null && chBoxInactivos.isSelected()) {
+            resultados = Cliente.buscarClientesCompleto(q);
+        } else {
+            resultados = Cliente.buscarClientes(q);
+        }
+        // Actualizar el ObservableList para que se reflejen los cambios en tiempo real
         listaClientes.clear();
-        List<Cliente> clientesBD = Cliente.obtenerTodos();
-        listaClientes.addAll(clientesBD);
-        tablaClientes.setItems(listaClientes);
+        listaClientes.addAll(resultados);
+    }
+    /** Limpiar búsqueda */
+    @FXML
+    private void limpiarBusqueda() {
+        if (txtBuscar != null) {
+            txtBuscar.clear(); 
+        }
     }
 
     // Botón: Agregar cliente
     @FXML
     private void agregarCliente() {
         try {
-            crearVentanaPequena("/view/ClienteForm.fxml", "Agregar Cliente");
-            cargarClientesDesdeBD();
+            VentanaVistaControlador.ResultadoVentana resultado = 
+                crearVentana("/view/ClienteForm.fxml", "Agregar Cliente");
+            
+            if (resultado != null) {
+                ClienteFormularioVistaControlador controlador = 
+                    resultado.getControlador(ClienteFormularioVistaControlador.class);
+                if (controlador != null) {
+                    controlador.setControladorPadre(this); // Pasar referencia
+                }
+            }
         } catch (Exception e) {
             mostrarAlerta("No se pudo abrir el formulario de cliente: " + e.getMessage());
             e.printStackTrace();
@@ -106,17 +147,16 @@ public class ClientesVistaControlador extends BaseControlador {
 
         try {
             VentanaVistaControlador.ResultadoVentana resultado = 
-                crearVentanaPequena("/view/ClienteForm.fxml", "Editar Cliente");
+                crearVentana("/view/ClienteForm.fxml", "Editar Cliente");
 
             if (resultado != null) {
                 ClienteFormularioVistaControlador controlador = 
                     resultado.getControlador(ClienteFormularioVistaControlador.class);
                 if (controlador != null) {
                     controlador.setClienteEditable(seleccionado);
+                    controlador.setControladorPadre(this); // Pasar referencia
                 }
             }
-
-            cargarClientesDesdeBD();
         } catch (Exception e) {
             mostrarAlerta("No se pudo abrir el formulario de edición: " + e.getMessage());
             e.printStackTrace();
@@ -148,7 +188,7 @@ private void eliminarCliente() {
                 : "Cliente reactivado correctamente.";
 
         mostrarAlerta(msg);
-        cargarClientesDesdeBD();
+        buscarClientes(); // Recargar con búsqueda
     } else {
         mostrarAlerta("No se pudo cambiar el estado del cliente.");
     }
