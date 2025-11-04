@@ -46,7 +46,7 @@ public class UsuarioFormularioVistaControlador {
             if (ok) {
                 mostrarAlerta("Usuario agregado correctamente.");
 
-                //  Ahora el registro de auditoría se hace con una sola línea:
+                //  Ahora el registro de auditoría se hace con una sola línea
                AuditoriaUtil.registrarAccion(
                     "CREAR USUARIO",
                     "usuario",

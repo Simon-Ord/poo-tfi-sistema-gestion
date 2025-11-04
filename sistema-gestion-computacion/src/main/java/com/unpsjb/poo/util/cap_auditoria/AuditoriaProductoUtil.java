@@ -1,73 +1,78 @@
 package com.unpsjb.poo.util.cap_auditoria;
 
 import com.unpsjb.poo.model.productos.Producto;
-import com.unpsjb.poo.model.productos.ProductoDigital;
-import com.unpsjb.poo.model.productos.ProductoFisico;
-import com.unpsjb.poo.util.Sesion;
 
+/**
+ * Auditoría específica para operaciones sobre PRODUCTOS.
+ * Aplica polimorfismo redefiniendo los métodos de AuditoriaBase.
+ */
 public class AuditoriaProductoUtil extends AuditoriaBase {
 
-    public static String generarResumenCambios(Producto original, Producto modificado) {
+    /** Registra la creación de un producto nuevo */
+    @Override
+    public void registrarCreacion(Object nuevo) {
+        if (!(nuevo instanceof Producto producto)) return;
+
+        String tipo = producto.getClass().getSimpleName();
+        String detalles = String.format(
+                "Creó un producto %s llamado '%s', precio $%.2f, stock %d.",
+                tipo,
+                producto.getNombreProducto(),
+                producto.getPrecioProducto(),
+                producto.getStockProducto()
+        );
+
+        registrarEvento("CREAR PRODUCTO", "producto", detalles);
+    }
+
+    /** Registra el cambio de estado (activo/inactivo) del producto */
+    public void registrarCambioEstado(Producto producto, boolean nuevoEstado) {
+        String estado = nuevoEstado ? "ACTIVO" : "INACTIVO";
+        registrarEvento(
+                "CAMBIAR ESTADO PRODUCTO",
+                "producto",
+                "Cambió el estado del producto '" + producto.getNombreProducto() + "' a " + estado + "."
+        );
+    }
+
+    /** Registra modificaciones detectadas entre dos versiones de un producto */
+    @Override
+    public void registrarAccionEspecifica(Object original, Object modificado) {
+        if (!(original instanceof Producto pOriginal) || !(modificado instanceof Producto pModificado)) return;
+
+        String cambios = generarResumenCambios(pOriginal, pModificado);
+        if (!cambios.isEmpty()) {
+            registrarEvento(
+                    "MODIFICAR PRODUCTO",
+                    "producto",
+                    "Modificó el producto '" + pOriginal.getNombreProducto() + "'." + cambios
+            );
+        }
+    }
+
+    /** Genera un resumen con los cambios detectados */
+    private static String generarResumenCambios(Producto original, Producto modificado) {
         StringBuilder sb = new StringBuilder();
 
-        if (!original.getNombreProducto().equals(modificado.getNombreProducto())) {
-            sb.append("\n• Nombre: '").append(original.getNombreProducto())
-              .append("' → '").append(modificado.getNombreProducto()).append("'");
-        }
+        comparar(sb, "Nombre", original.getNombreProducto(), modificado.getNombreProducto());
+        comparar(sb, "Precio", original.getPrecioProducto(), modificado.getPrecioProducto());
+        comparar(sb, "Stock", original.getStockProducto(), modificado.getStockProducto());
 
-        if (original.getPrecioProducto() != modificado.getPrecioProducto()) {
-            sb.append("\n• Precio: ").append(original.getPrecioProducto())
-              .append(" → ").append(modificado.getPrecioProducto());
-        }
+        if (original.getCategoria() != null && modificado.getCategoria() != null)
+            comparar(sb, "Categoría", original.getCategoria().getNombre(), modificado.getCategoria().getNombre());
 
-        if (original.getStockProducto() != modificado.getStockProducto()) {
-            sb.append("\n• Stock: ").append(original.getStockProducto())
-              .append(" → ").append(modificado.getStockProducto());
-        }
-
-        if (original.getCategoria() != null && modificado.getCategoria() != null &&
-            !original.getCategoria().getNombre().equals(modificado.getCategoria().getNombre())) {
-            sb.append("\n• Categoría: ").append(original.getCategoria().getNombre())
-              .append(" → ").append(modificado.getCategoria().getNombre());
-        }
-
-        if (original instanceof ProductoFisico && modificado instanceof ProductoFisico) {
-            ProductoFisico o = (ProductoFisico) original;
-            ProductoFisico m = (ProductoFisico) modificado;
-            if (!o.getFabricante().equals(m.getFabricante())) {
-                sb.append("\n• Fabricante: ").append(o.getFabricante())
-                  .append(" → ").append(m.getFabricante());
-            }
-        } else if (original instanceof ProductoDigital && modificado instanceof ProductoDigital) {
-            ProductoDigital o = (ProductoDigital) original;
-            ProductoDigital m = (ProductoDigital) modificado;
-            if (!o.getProveedorDigital().equals(m.getProveedorDigital())) {
-                sb.append("\n• Proveedor: ").append(o.getProveedorDigital())
-                  .append(" → ").append(m.getProveedorDigital());
-            }
-        }
+        // Llamada polimórfica (los subtipos pueden agregar más comparaciones)
+        sb.append(original.compararDatosEspecificos(modificado));
 
         return sb.toString();
     }
 
-    // la accion que hace cada hija
-
-    @Override
-    public void registrarAccionEspecifica(Object original, Object modificado) {
-        if (!(original instanceof Producto) || !(modificado instanceof Producto)) return;
-
-        Producto pOriginal = (Producto) original;
-        Producto pModificado = (Producto) modificado;
-        String cambios = generarResumenCambios(pOriginal, pModificado);
-
-        if (!cambios.isEmpty()) {
-            registrarEvento(
-                "MODIFICAR PRODUCTO",
-                "producto",
-                " modificó el producto '" + pOriginal.getNombreProducto() +
-                "'." + cambios
-            );
-        }
+    /** Método auxiliar para comparar valores */
+    private static void comparar(StringBuilder sb, String campo, Object o, Object n) {
+        if (o == null && n == null) return;
+        if (o == null || n == null || !o.equals(n))
+            sb.append("\n• ").append(campo).append(": '")
+              .append(o != null ? o : "null").append("' --> '")
+              .append(n != null ? n : "null").append("'");
     }
-    
 }

@@ -8,6 +8,7 @@ import com.unpsjb.poo.controller.ProductoFormularioVistaControlador;
 import com.unpsjb.poo.persistence.dao.impl.ProductoDAOImpl;
 
 public class Producto {
+
     protected int idProducto;
     protected String nombreProducto;
     protected String descripcionProducto;
@@ -187,4 +188,11 @@ public class Producto {
         return sb.toString();
     }
     // ========================================
+
+    public String compararDatosEspecificos(Producto otro) {
+    // Por defecto, no hay campos específicos que comparar.
+    return "";
+}
+
+
 }

@@ -9,9 +9,7 @@ import com.unpsjb.poo.model.productos.Producto;
 import com.unpsjb.poo.model.productos.ProductoDigital;
 import com.unpsjb.poo.model.productos.ProductoFisico;
 import com.unpsjb.poo.model.productos.ProveedorDigital;
-import com.unpsjb.poo.util.Sesion;
 import com.unpsjb.poo.util.cap_auditoria.AuditoriaProductoUtil;
-import com.unpsjb.poo.util.cap_auditoria.AuditoriaUtil;
 import com.unpsjb.poo.util.copias.CopiarProductoUtil;
 
 import javafx.fxml.FXML;
@@ -232,9 +230,7 @@ private void guardarProducto() {
             return;
         }
 
-        String usuario = (Sesion.getUsuarioActual() != null)
-                ? Sesion.getUsuarioActual().getNombre()
-                : "Desconocido";
+                
         String tipoSeleccionado = cbTipoProducto.getValue();
         boolean ok = false;
         String mensajeUsuario = "";
@@ -253,14 +249,12 @@ private void guardarProducto() {
             
             ok = nuevo.guardar();
             
-      // auditoria en la crearcon del prodcto se conecta con auditoriautuil
-            if (ok) {
-                String tipo = tipoSeleccionado.toUpperCase();
-                AuditoriaUtil.registrarAccion(
-                        "CREAR PRODUCTO", "producto",
-                        " creó un producto " + tipo + ": '" + nuevo.getNombreProducto() + "'.");
-                mensajeUsuario = "Se creó un nuevo producto " + tipo + ":\n" + nuevo.getNombreProducto();
-            }
+      // auditoria de crear producto 
+      AuditoriaProductoUtil auditor = new AuditoriaProductoUtil();
+      if (ok) { // si la creación fue exitosa
+        auditor.registrarCreacion(nuevo);
+}
+
         // ========================================================
         //  MODIFICACIÓN DE PRODUCTO EXISTENTE
         // ========================================================
@@ -275,20 +269,21 @@ private void guardarProducto() {
             };
 
             guardarDatosEnProducto(actualizado);
-            actualizado.procesarDatosEspecificos(this);
-            ok = actualizado.guardar();
+           actualizado.procesarDatosEspecificos(this);
+ok = actualizado.guardar();
 
-            if (ok) {
-                String resumen = AuditoriaProductoUtil.generarResumenCambios(original, actualizado);
-                if (!resumen.isEmpty()) {
-                 AuditoriaProductoUtil auditor = new AuditoriaProductoUtil();
-                auditor.registrarAccionEspecifica(productoOriginal, productoAEditar);
+if (ok) {
+    // Instanciamos la auditoría específica de productos
+    AuditoriaProductoUtil auditor = new AuditoriaProductoUtil();
+    
+    // 🔹 Llamada polimórfica: compara y registra si hubo cambios
+    auditor.registrarAccionEspecifica(original, actualizado);
 
-                    mensajeUsuario = "Producto modificado:\n" + resumen;
-                } else {
-                    mensajeUsuario = "No hubo cambios relevantes en el producto.";
-                }
-            }
+    mensajeUsuario = "Producto modificado correctamente.";
+} else {
+    mensajeUsuario = "Error al modificar el producto.";
+}
+
         }
 
         if (ok) {

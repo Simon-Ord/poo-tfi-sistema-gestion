@@ -4,8 +4,6 @@ import java.math.BigDecimal;
 import java.util.List;
 
 import com.unpsjb.poo.model.productos.Producto;
-import com.unpsjb.poo.util.Sesion;
-import com.unpsjb.poo.util.cap_auditoria.AuditoriaProductoUtil;
 import com.unpsjb.poo.util.cap_auditoria.AuditoriaUtil;
 
 import javafx.collections.FXCollections;
@@ -172,9 +170,6 @@ private void cambiarEstadoProducto() {
 
     if (ok) {
         // Registrar acción de auditoría
-        String usuario = (Sesion.getUsuarioActual() != null)
-                ? Sesion.getUsuarioActual().getNombre()
-                : "Desconocido";
 
         String nuevoEstado = seleccionado.isActivo() ? "ACTIVO" : "INACTIVO";
 
@@ -187,7 +182,7 @@ private void cambiarEstadoProducto() {
         );
 
         mostrarAlerta(" El producto cambió al estado: " + nuevoEstado);
-        buscarProductos(); // Usar buscarProductos() directamente
+        buscarProductos();
 
     } else {
         mostrarAlerta(" Error al cambiar el estado del producto.");
