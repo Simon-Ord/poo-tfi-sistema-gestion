@@ -60,8 +60,8 @@ public class AuditoriaProductoUtil extends AuditoriaBase {
         if (original.getCategoria() != null && modificado.getCategoria() != null)
             comparar(sb, "Categoría", original.getCategoria().getNombre(), modificado.getCategoria().getNombre());
 
-        // Llamada polimórfica (los subtipos pueden agregar más comparaciones)
-        sb.append(original.compararDatosEspecificos(modificado));
+        // Cada subclase genera sus cambios específicos
+        sb.append(modificado.generarCambiosEspecificos(original));
 
         return sb.toString();
     }
@@ -71,7 +71,7 @@ public class AuditoriaProductoUtil extends AuditoriaBase {
         if (o == null && n == null) return;
         if (o == null || n == null || !o.equals(n))
             sb.append("\n• ").append(campo).append(": '")
-              .append(o != null ? o : "null").append("' --> '")
-              .append(n != null ? n : "null").append("'");
+            .append(o != null ? o : "null").append("' --> '")
+            .append(n != null ? n : "null").append("'");
     }
 }

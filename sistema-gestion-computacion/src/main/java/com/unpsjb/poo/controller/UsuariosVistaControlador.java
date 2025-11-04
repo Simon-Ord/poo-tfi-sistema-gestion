@@ -73,11 +73,10 @@ public class UsuariosVistaControlador extends BaseControlador {
         ObservableList<Usuario> obsList = FXCollections.observableArrayList(lista);
         tablaUsuarios.setItems(obsList);
     }
-    
     @FXML
     private void agregarUsuario() {
         try {
-            var resultado = crearVentanaPequena("/view/UsuarioForm.fxml", "Agregar Nuevo Usuario");
+            var resultado = crearVentana("/view/UsuarioForm.fxml", "Agregar Nuevo Usuario");
 
             if (resultado != null && resultado.getVentana() != null) {
                 resultado.getVentana().parentProperty().addListener((obs, oldVal, newVal) -> {
@@ -92,8 +91,6 @@ public class UsuariosVistaControlador extends BaseControlador {
         mostrarAlerta("Error al abrir el formulario: " + e.getMessage());
     }
 }
-
-
     @FXML
     private void cambiarEstadoUsuario() {
         Usuario seleccionado = tablaUsuarios.getSelectionModel().getSelectedItem();
@@ -101,7 +98,6 @@ public class UsuariosVistaControlador extends BaseControlador {
             mostrarAlerta("Seleccione un usuario para cambiar su estado.");
             return;
         }
-
         boolean nuevoEstado = !seleccionado.isEstado();
         seleccionado.setEstado(nuevoEstado);
 

@@ -14,7 +14,7 @@ public class Producto {
     protected String descripcionProducto;
     protected int stockProducto;
     protected BigDecimal precioProducto;
-    private Categoria categoria;
+    protected Categoria categoria;
     protected int codigoProducto;
     protected boolean activo;
     protected Timestamp fechaCreacion;
@@ -23,7 +23,6 @@ public class Producto {
     private static final ProductoDAOImpl productoDAO = new ProductoDAOImpl();
     
     public Producto() {
-        // Constructor por defecto, lo implemento para el método Read en el DAO
         this.activo = true; // Por defecto los nuevos productos están activos
     }
 
@@ -57,10 +56,8 @@ public class Producto {
     public void setCodigoProducto (int codigoProducto) {this.codigoProducto = codigoProducto;}
 
     public boolean isActivo() {return activo;}
-    public void setActivo(boolean activo) {
-        this.activo = activo;
-    }
-
+    public void setActivo(boolean activo) {this.activo = activo;}
+    
     public Timestamp getFechaCreacion() {return fechaCreacion;}
     public void setFechaCreacion(Timestamp fechaCreacion) {this.fechaCreacion = fechaCreacion;}
 
@@ -86,7 +83,7 @@ public class Producto {
         this.activo = !this.activo;
     }
     // Desactiva el producto (eliminación lógica)
-     public void desactivar() {
+    public void desactivar() {
         this.activo = false;
     }
     // Verifica si hay stock suficiente para una cantidad requerida
@@ -166,8 +163,40 @@ public class Producto {
         return this.idProducto == 0 ? "GENERICO" : productoDAO.obtenerTipoProducto(this.idProducto);
     }
     // ========================================
+    // Sobrescribe para cargar los datos específicos del producto
+    public Producto obtenerInstanciaCompleta() {
+        return this;
+    }
+    // ========================================
     // Método base para procesar datos específicos del formulario
     public void procesarDatosEspecificos(ProductoFormularioVistaControlador controlador) {}
+    
+    // ========================================
+    // Las subclases sobrescriben para agregar sus atributos específicos
+    public String generarCambiosEspecificos(Producto original) {
+        return ""; // Por defecto, producto genérico no tiene cambios específicos
+    }
+    
+    // ========================================
+    // Las subclases sobrescriben para copiar sus atributos específicos para Auditoria
+    public Producto clonar() {
+        Producto copia = new Producto();
+        copiarAtributosBase(copia);
+        return copia;
+    }
+    
+    // Método auxiliar para copiar atributos base (reutilizable por subclases)
+    protected void copiarAtributosBase(Producto copia) {
+        copia.setIdProducto(this.idProducto);
+        copia.setNombreProducto(this.nombreProducto);
+        copia.setDescripcionProducto(this.descripcionProducto);
+        copia.setPrecioProducto(this.precioProducto);
+        copia.setStockProducto(this.stockProducto);
+        copia.setCodigoProducto(this.codigoProducto);
+        copia.setCategoria(this.categoria);
+        copia.setActivo(this.activo);
+        copia.setFechaCreacion(this.fechaCreacion);
+    }
     
     // ========================================
     // Detalle del producto para la UI

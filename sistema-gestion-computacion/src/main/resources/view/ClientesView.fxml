@@ -6,6 +6,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.control.Tooltip?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -32,23 +33,38 @@
             <VBox alignment="CENTER" prefWidth="750" spacing="15" 
                   style="-fx-background-color: rgba(255,255,255,0.1); -fx-background-radius: 15; -fx-border-color: rgba(255,255,255,0.2); -fx-border-radius: 15; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.5), 15, 0.3, 0, 4);">
 
-                <!-- Filtros -->
-                <HBox alignment="CENTER_LEFT" prefWidth="700" spacing="10">
-                    <CheckBox fx:id="chBoxInactivos" mnemonicParsing="false" text="Mostrar clientes inactivos" textFill="WHITE">
+                <!-- Filtros y búsqueda -->
+                <HBox alignment="CENTER_RIGHT" prefWidth="700" spacing="10">
+                    <HBox prefHeight="25.0" prefWidth="300.0">
+                        <children>
+                            <CheckBox fx:id="chBoxInactivos" mnemonicParsing="false" text="Mostrar clientes inactivos" textFill="WHITE">
+                                <tooltip>
+                                    <Tooltip text="Muestra también los clientes que están inactivos." />
+                                </tooltip>
+                            </CheckBox>
+                        </children>
+                    </HBox>
+                    <TextField fx:id="txtBuscar" prefWidth="250" promptText="Buscar por cualquier campo">
                         <tooltip>
-                            <Tooltip text="Muestra también los clientes que están inactivos." />
+                            <Tooltip text="Ingrese una palabra clave para buscar clientes por cualquier campo"/>
                         </tooltip>
-                    </CheckBox>
+                    </TextField>
+                    <Button onAction="#limpiarBusqueda" styleClass="btn-secundario" text="Limpiar">
+                        <tooltip>
+                            <Tooltip text="Borra el texto de búsqueda y muestra todos los clientes nuevamente."/>
+                        </tooltip>
+                    </Button>
                 </HBox>
 
                 <!-- Tabla de Clientes -->
                 <TableView fx:id="tablaClientes" prefHeight="330" prefWidth="700" style="-fx-background-color: transparent;">
                     <columns>
-                        <TableColumn fx:id="colNombre" prefWidth="160" text="Nombre" />
-                        <TableColumn fx:id="colCuit" prefWidth="100" text="CUIT" />
-                        <TableColumn fx:id="colTelefono" prefWidth="96.0" text="Teléfono" />
-                        <TableColumn fx:id="colEmail" prefWidth="153.0" text="Email" />
-                        <TableColumn fx:id="colTipo" prefWidth="130.0" text="Tipo de Cliente" />
+                        <TableColumn fx:id="colNombre" prefWidth="130" text="Nombre" />
+                        <TableColumn fx:id="colCuit" prefWidth="90" text="CUIT" />
+                        <TableColumn fx:id="colTelefono" prefWidth="85" text="Teléfono" />
+                        <TableColumn fx:id="colDireccion" prefWidth="120" text="Dirección" />
+                        <TableColumn fx:id="colEmail" prefWidth="130" text="Email" />
+                        <TableColumn fx:id="colTipo" prefWidth="95" text="Tipo" />
                         <TableColumn fx:id="colEstado" prefWidth="50" text="Estado" />
                     </columns>
                     <columnResizePolicy>

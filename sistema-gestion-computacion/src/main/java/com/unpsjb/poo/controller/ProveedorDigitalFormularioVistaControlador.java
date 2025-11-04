@@ -21,13 +21,9 @@ public class ProveedorDigitalFormularioVistaControlador {
     private ProductoFormularioVistaControlador controladorPadre = null;
 
     @FXML
-    public void initialize() {
-        // Inicialización si es necesaria
-    }
+    public void initialize() {}
 
-    /**
-     * Establece el proveedor digital a editar (para modo modificar)
-     */
+    // Establece el proveedor digital a editar (para modo modificar)
     public void setProveedorDigitalAEditar(ProveedorDigital proveedor) {
         this.proveedorAEditar = proveedor;
         if (proveedor != null && txtNombre != null) {
@@ -44,9 +40,8 @@ public class ProveedorDigitalFormularioVistaControlador {
         }
     }
 
-    /**
-     * Establece el controlador padre para actualizar la lista
-     */
+    
+    // Establece el controlador padre para actualizar la lista
     public void setControladorPadre(ProductoFormularioVistaControlador controlador) {
         this.controladorPadre = controlador;
     }
@@ -60,7 +55,6 @@ public class ProveedorDigitalFormularioVistaControlador {
             if (txtNombre != null) txtNombre.requestFocus();
             return;
         }
-
         try {
             boolean exito;
             
@@ -90,7 +84,6 @@ public class ProveedorDigitalFormularioVistaControlador {
             mostrarAlerta("Error: " + e.getMessage());
         }
     }
-
     @FXML
     private void cancelarProveedorDigital(ActionEvent event) {
         cerrarVentana(event);
@@ -102,7 +95,6 @@ public class ProveedorDigitalFormularioVistaControlador {
             BaseControlador.cerrarVentanaInterna(node);
         }
     }
-
     private void mostrarAlerta(String mensaje) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setTitle("Información");

@@ -1,6 +1,7 @@
 package com.unpsjb.poo.model.productos;
 
 import java.util.List;
+
 import com.unpsjb.poo.persistence.dao.impl.FabricanteDAOImpl;
 
 public class Fabricante {
@@ -20,6 +21,10 @@ public class Fabricante {
 
     @Override
     public String toString() {return nombreFabricante;}
+
+    // ========================
+    // Acceso a Persistencia
+    // ========================
     
     // Métodos de acceso a persistencia
     public static List<Fabricante> obtenerTodos() {

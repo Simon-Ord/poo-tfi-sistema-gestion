@@ -138,9 +138,9 @@ public class VentanaVistaControlador extends Region {
         
         // Estilo normal
         String estiloNormal = ESTILO_BOTON_CERRAR +
-                             "-fx-background-color: " + COLOR_CERRAR_NORMAL + ";" +
-                             "-fx-border-color: rgba(0,0,0,0.1);" +
-                             "-fx-border-width: 1px;";
+        "-fx-background-color: " + COLOR_CERRAR_NORMAL + ";" +
+        "-fx-border-color: rgba(0,0,0,0.1);" +
+        "-fx-border-width: 1px;";
         
         // Estilo hover
         String estiloHover = ESTILO_BOTON_CERRAR +

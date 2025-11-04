@@ -11,6 +11,8 @@ import java.util.Optional;
 
 import com.unpsjb.poo.model.productos.Categoria;
 import com.unpsjb.poo.model.productos.Producto;
+import com.unpsjb.poo.model.productos.ProductoDigital;
+import com.unpsjb.poo.model.productos.ProductoFisico;
 import com.unpsjb.poo.persistence.GestorDeConexion;
 import com.unpsjb.poo.persistence.dao.DAO;
 
@@ -348,8 +350,15 @@ public boolean delete(int id) {
     // Método auxiliar de mapeo
     // ========================
     private Producto mapResultSet(ResultSet rs) throws SQLException {
-        Producto p = new Producto();
-        p.setIdProducto(rs.getInt("id_producto")); 
+        int idProducto = rs.getInt("id_producto");
+        String tipo = obtenerTipoProducto(idProducto);
+        Producto p = switch (tipo) { 
+            case "FISICO" -> new ProductoFisico();
+            case "DIGITAL" -> new ProductoDigital();
+            default -> new Producto();
+        };
+        // Mapear atributos comunes
+        p.setIdProducto(idProducto); 
         p.setNombreProducto(rs.getString("nombre_producto"));
         p.setDescripcionProducto(rs.getString("descripcion_producto"));
         p.setStockProducto(rs.getInt("stock_producto"));

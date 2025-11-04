@@ -93,18 +93,19 @@ public class Cliente {
         return clienteDAO.buscarPorNombre(nombre);
     }
 
-    public Object getApellido() {
-        
-        throw new UnsupportedOperationException("Unimplemented method 'getApellido'");
+    // Busca clientes por cualquier campo (solo activos)
+    public static List<Cliente> buscarClientes(String termino) {
+        if (termino == null || termino.trim().isEmpty()) {
+            return obtenerTodos(); // Si no hay término, devolver todos
+        }
+        return clienteDAO.buscarClientes(termino.trim());
+    }
+    // Busca clientes por cualquier campo incluyendo inactivos
+    public static List<Cliente> buscarClientesCompleto(String termino) {
+        if (termino == null || termino.trim().isEmpty()) {
+            return obtenerTodos(); // Si no hay término, devolver todos
+        }
+        return clienteDAO.buscarClientesCompleto(termino.trim());
     }
 
-    public Object getIdCliente() {
-       
-        throw new UnsupportedOperationException("Unimplemented method 'getIdCliente'");
-    }
-
-    public void setIdCliente(Object idCliente) {
-     
-        throw new UnsupportedOperationException("Unimplemented method 'setIdCliente'");
-    }
 }

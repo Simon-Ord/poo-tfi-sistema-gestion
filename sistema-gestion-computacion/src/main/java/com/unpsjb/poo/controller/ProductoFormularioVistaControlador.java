@@ -10,7 +10,6 @@ import com.unpsjb.poo.model.productos.ProductoDigital;
 import com.unpsjb.poo.model.productos.ProductoFisico;
 import com.unpsjb.poo.model.productos.ProveedorDigital;
 import com.unpsjb.poo.util.cap_auditoria.AuditoriaProductoUtil;
-import com.unpsjb.poo.util.copias.CopiarProductoUtil;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
@@ -45,35 +44,24 @@ public class ProductoFormularioVistaControlador extends BaseControlador {
 
     @FXML
     private void initialize() {
-        try {
             cargarCategorias();
             configurarTipoProducto();
             cargarFabricantes();
             cargarProveedoresDigitales();
             configurarEnums();
-            txtCodigo.setEditable(false); // campo de código como solo lectura
-        } catch (Exception e) {
-            System.err.println("Error al inicializar el formulario de productos: " + e.getMessage());
-            e.printStackTrace();
-        }
+            txtCodigo.setEditable(false);
     }
-
     private void configurarTipoProducto() {
         cbTipoProducto.getItems().addAll("GENÉRICO", "FISICO", "DIGITAL");
         cbTipoProducto.setValue("GENÉRICO");
-        
         cbTipoProducto.valueProperty().addListener((obs, oldVal, newVal) -> {
             mostrarCamposSegunTipo(newVal);
         });
     }
-    
     private void configurarEnums() {
-        // Estados físicos
-        cbEstadoFisico.getItems().addAll("NUEVO", "USADO", "REACONDICIONADO");
-        // Tipos de garantía
-        cbTipoGarantia.getItems().addAll("FABRICANTE", "TIENDA");
-        // Tipos de licencia
-        cbTipoLicencia.getItems().addAll("PERPETUA", "SUSCRIPCION", "TRIAL");
+        cbEstadoFisico.getItems().addAll("NUEVO", "USADO", "REACONDICIONADO"); // Estados físicos
+        cbTipoGarantia.getItems().addAll("FABRICANTE", "TIENDA"); // Tipos de garantía
+        cbTipoLicencia.getItems().addAll("PERPETUA", "SUSCRIPCION", "TRIAL"); // Tipos de licencia
     }
     // Con el java.util.List.of() ahorro setters repetidos
     private void mostrarCamposSegunTipo(String tipo) {
@@ -83,7 +71,6 @@ public class ProductoFormularioVistaControlador extends BaseControlador {
                 lblProveedor, hboxProveedor, lblTipoLicencia, cbTipoLicencia,
                 lblActivaciones, txtActivacionesMax, lblDuracion, txtDuracionDias)
                 .forEach(node -> { node.setVisible(false); node.setManaged(false); });
-        
         // Mostrar campos según el tipo
         if ("FISICO".equals(tipo)) {
             java.util.List.of(lblFabricante, hboxFabricante, lblEstadoFisico, cbEstadoFisico, 
@@ -100,13 +87,11 @@ public class ProductoFormularioVistaControlador extends BaseControlador {
             ajustarTamañoVentana(300.0);
         }
     }
-    
     private void ajustarTamañoVentana(double altura) {
         if (vboxPrincipal != null) {
             vboxPrincipal.setPrefHeight(altura);
         }
     }
-
     public void cargarCategorias(){
         try {
             List<Categoria> categorias = Categoria.obtenerTodas();
@@ -121,7 +106,6 @@ public class ProductoFormularioVistaControlador extends BaseControlador {
             e.printStackTrace();
         }
     }
-    
     public void cargarFabricantes() {
         try {
             List<Fabricante> fabricantes = Fabricante.obtenerTodos();
@@ -133,7 +117,6 @@ public class ProductoFormularioVistaControlador extends BaseControlador {
             System.err.println("Error al cargar fabricantes: " + e.getMessage());
         }
     }
-    
     public void cargarProveedoresDigitales() {
         try {
             List<ProveedorDigital> proveedores = ProveedorDigital.obtenerTodos();
@@ -145,12 +128,12 @@ public class ProductoFormularioVistaControlador extends BaseControlador {
             System.err.println("Error al cargar proveedores digitales: " + e.getMessage());
         }
     }
-
+// ================================= FIN CARGA =================================
     public void setProducto(Producto p) {
         this.productoAEditar = p;
         if (p != null) {
             // Editando producto existente
-            this.productoOriginal = CopiarProductoUtil.copiarProducto(p);
+            this.productoOriginal = p.clonar();
             cargarDatosEnCampos(p);
             // Cambiar título a "Modificar"
             if (lblTitulo != null) {
@@ -166,13 +149,11 @@ public class ProductoFormularioVistaControlador extends BaseControlador {
             }
         }
     }
-
-    public void setProductoAEditar(Producto p) {setProducto(p);}
-
+    // Establecer el controlador padre para actualizar la lista
     public void setControladorPadre(ProductosVistaControlador productosVista) {
         this.productosVista = productosVista;
     }
-
+    // Cargar datos del producto en los campos del formulario
     private void cargarDatosEnCampos(Producto producto) {
         if (producto != null) {
             txtCodigo.setText(String.valueOf(producto.getCodigoProducto()));
@@ -181,7 +162,7 @@ public class ProductoFormularioVistaControlador extends BaseControlador {
             cbCategoria.setValue(producto.getCategoria());
             txtPrecio.setText(producto.getPrecioProducto() != null ? producto.getPrecioProducto().toPlainString() : "");
             txtStock.setText(String.valueOf(producto.getStockProducto()));
-            
+
             String tipo = producto.obtenerTipoProducto();
             if ("FISICO".equals(tipo)) {
                 cbTipoProducto.setValue("FISICO");
@@ -230,10 +211,10 @@ private void guardarProducto() {
             return;
         }
 
-                
         String tipoSeleccionado = cbTipoProducto.getValue();
-        boolean ok = false;
+        boolean ok;
         String mensajeUsuario = "";
+        
         // ========================================================
         // CREACIÓN DE NUEVO PRODUCTO
         // ========================================================
@@ -243,49 +224,44 @@ private void guardarProducto() {
                 case "DIGITAL" -> new ProductoDigital();
                 default -> new Producto();
             };
-
             guardarDatosEnProducto(nuevo);
-            nuevo.procesarDatosEspecificos(this); // Cada producto sabe cómo procesar sus datos específicos
+            nuevo.procesarDatosEspecificos(this); 
             
             ok = nuevo.guardar();
             
-      // auditoria de crear producto 
-      AuditoriaProductoUtil auditor = new AuditoriaProductoUtil();
-      if (ok) { // si la creación fue exitosa
-        auditor.registrarCreacion(nuevo);
-}
-
+            // Auditoría de crear producto 
+            if (ok) {
+                AuditoriaProductoUtil auditor = new AuditoriaProductoUtil();
+                auditor.registrarCreacion(nuevo);
+                String tipo = tipoSeleccionado.toUpperCase();
+                mensajeUsuario = "Se creó un nuevo producto " + tipo + ":\n" + nuevo.getNombreProducto();
+            }
+            
         // ========================================================
         //  MODIFICACIÓN DE PRODUCTO EXISTENTE
         // ========================================================
         } else {
-            // Clonar estado original antes de modificar
-            Producto original = CopiarProductoUtil.copiarProducto(productoOriginal);
+            // Polimorfismo: clonar estado original antes de modificar
+            Producto original = productoOriginal.clonar();
+            // Polimorfismo: cada subclase sabe cómo obtener su instancia completa desde BD
+            Producto actualizado = productoAEditar.obtenerInstanciaCompleta();
 
-            Producto actualizado = switch (productoAEditar.obtenerTipoProducto()) {
-                case "FISICO" -> ProductoFisico.obtenerPorId(productoAEditar.getIdProducto());
-                case "DIGITAL" -> ProductoDigital.obtenerPorId(productoAEditar.getIdProducto());
-                default -> productoAEditar;
-            };
-
+            // Cargar nuevos datos del formulario
             guardarDatosEnProducto(actualizado);
-           actualizado.procesarDatosEspecificos(this);
-ok = actualizado.guardar();
+            // Polimorfismo: cada subclase procesa sus datos específicos
+            actualizado.procesarDatosEspecificos(this);
+            
+            ok = actualizado.guardar();
 
-if (ok) {
-    // Instanciamos la auditoría específica de productos
-    AuditoriaProductoUtil auditor = new AuditoriaProductoUtil();
-    
-    // 🔹 Llamada polimórfica: compara y registra si hubo cambios
-    auditor.registrarAccionEspecifica(original, actualizado);
-
-    mensajeUsuario = "Producto modificado correctamente.";
-} else {
-    mensajeUsuario = "Error al modificar el producto.";
-}
-
+            if (ok) {
+                // Polimorfismo: auditoría compara y registra cambios automáticamente
+                AuditoriaProductoUtil auditor = new AuditoriaProductoUtil();
+                auditor.registrarAccionEspecifica(original, actualizado);
+                mensajeUsuario = "Producto modificado correctamente.";
+            } else {
+                mensajeUsuario = "Error al modificar el producto.";
+            }
         }
-
         if (ok) {
             mostrarAlerta(mensajeUsuario);
             if (productosVista != null) {
@@ -293,9 +269,8 @@ if (ok) {
             }
             cerrarVentana();
         } else {
-            mostrarAlerta("Error al guardar el producto. Ver consola.");
+            mostrarAlerta("Error al guardar el producto.");
         }
-
     } catch (NumberFormatException nfe) {
         mostrarAlerta("Formato numérico incorrecto (precio, stock, etc).");
     } catch (Exception e) {
@@ -351,7 +326,7 @@ if (ok) {
     // ==========================================
     @FXML public void agregarCategoria() {
         try {
-            crearVentanaPequena("/view/formularios/CategoriaForm.fxml", "Agregar Nueva Categoría");
+            crearVentana("/view/formularios/CategoriaForm.fxml", "Agregar Nueva Categoría");
             cargarCategorias();
         } catch (Exception e) {
             mostrarAlerta("Error al abrir el formulario: " + e.getMessage());
@@ -359,7 +334,7 @@ if (ok) {
     }
     @FXML private void agregarFabricante() {
         try {
-            VentanaVistaControlador.ResultadoVentana resultado = crearVentanaPequena("/view/formularios/FabricanteForm.fxml", "Agregar Nuevo Fabricante");
+            VentanaVistaControlador.ResultadoVentana resultado = crearVentana("/view/formularios/FabricanteForm.fxml", "Agregar Nuevo Fabricante");
             if (resultado != null && resultado.getControlador() != null) {
                 FabricanteFormularioVistaControlador controlador = (FabricanteFormularioVistaControlador) resultado.getControlador();
                 controlador.setControladorPadre(this);
@@ -375,7 +350,7 @@ if (ok) {
             return;
         }
         try {
-            VentanaVistaControlador.ResultadoVentana resultado = crearVentanaPequena("/view/formularios/FabricanteForm.fxml", "Modificar Fabricante");
+            VentanaVistaControlador.ResultadoVentana resultado = crearVentana("/view/formularios/FabricanteForm.fxml", "Modificar Fabricante");
             if (resultado != null && resultado.getControlador() != null) {
                 FabricanteFormularioVistaControlador controlador = (FabricanteFormularioVistaControlador) resultado.getControlador();
                 controlador.setFabricanteAEditar(seleccionado);
@@ -402,7 +377,7 @@ if (ok) {
     }
     @FXML private void agregarProveedorDigital() {
         try {
-            VentanaVistaControlador.ResultadoVentana resultado = crearVentanaPequena("/view/formularios/ProveedorDigitalForm.fxml", "Agregar Nuevo Proveedor Digital");
+            VentanaVistaControlador.ResultadoVentana resultado = crearVentana("/view/formularios/ProveedorDigitalForm.fxml", "Agregar Nuevo Proveedor Digital");
             if (resultado != null && resultado.getControlador() != null) {
                 ProveedorDigitalFormularioVistaControlador controlador = (ProveedorDigitalFormularioVistaControlador) resultado.getControlador();
                 controlador.setControladorPadre(this);
@@ -418,7 +393,7 @@ if (ok) {
             return;
         }
         try {
-            VentanaVistaControlador.ResultadoVentana resultado = crearVentanaPequena("/view/formularios/ProveedorDigitalForm.fxml", "Modificar Proveedor Digital");
+            VentanaVistaControlador.ResultadoVentana resultado = crearVentana("/view/formularios/ProveedorDigitalForm.fxml", "Modificar Proveedor Digital");
             if (resultado != null && resultado.getControlador() != null) {
                 ProveedorDigitalFormularioVistaControlador controlador = (ProveedorDigitalFormularioVistaControlador) resultado.getControlador();
                 controlador.setProveedorDigitalAEditar(seleccionado);
@@ -458,3 +433,4 @@ if (ok) {
         alert.showAndWait();
     }
 }
+

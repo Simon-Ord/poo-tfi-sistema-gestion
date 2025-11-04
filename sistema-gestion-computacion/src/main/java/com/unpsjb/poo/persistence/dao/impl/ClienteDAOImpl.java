@@ -146,4 +146,92 @@ public boolean delete(int id) {
         }
         return lista;
     }
+    // Método para buscar clientes activos por cualquier campo
+    public List<Cliente> buscarClientes(String termino) {
+        String sql = """
+            SELECT * FROM clientes 
+            WHERE activo = TRUE 
+            AND (LOWER(nombre) LIKE ? 
+                 OR LOWER(cuit) LIKE ? 
+                 OR LOWER(telefono) LIKE ? 
+                 OR LOWER(email) LIKE ? 
+                 OR LOWER(tipo) LIKE ?)
+            ORDER BY nombre
+            """;
+        
+        List<Cliente> clientes = new ArrayList<>();
+        String terminoBusqueda = "%" + termino.toLowerCase() + "%";
+        
+        try (Connection conexion = GestorDeConexion.getInstancia().getConexion();
+             PreparedStatement pstmt = conexion.prepareStatement(sql)) {
+            
+            // Setear el mismo término para todos los campos
+            pstmt.setString(1, terminoBusqueda);
+            pstmt.setString(2, terminoBusqueda);
+            pstmt.setString(3, terminoBusqueda);
+            pstmt.setString(4, terminoBusqueda);
+            pstmt.setString(5, terminoBusqueda);
+            
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Cliente c = new Cliente();
+                    c.setId(rs.getInt("id"));
+                    c.setNombre(rs.getString("nombre"));
+                    c.setCuit(rs.getString("cuit"));
+                    c.setTelefono(rs.getString("telefono"));
+                    c.setDireccion(rs.getString("direccion"));
+                    c.setEmail(rs.getString("email"));
+                    c.setTipo(rs.getString("tipo"));
+                    c.setActivo(rs.getBoolean("activo"));
+                    clientes.add(c);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al buscar clientes: " + e.getMessage());
+        }
+        return clientes;
+    }
+    // Método para buscar clientes incluyendo inactivos por cualquier campo
+    public List<Cliente> buscarClientesCompleto(String termino) {
+        String sql = """
+            SELECT * FROM clientes 
+            WHERE (LOWER(nombre) LIKE ? 
+                   OR LOWER(cuit) LIKE ? 
+                   OR LOWER(telefono) LIKE ? 
+                   OR LOWER(email) LIKE ? 
+                   OR LOWER(tipo) LIKE ?)
+            ORDER BY activo DESC, nombre
+            """;
+        List<Cliente> clientes = new ArrayList<>();
+        String terminoBusqueda = "%" + termino.toLowerCase() + "%";
+        
+        try (Connection conexion = GestorDeConexion.getInstancia().getConexion();
+             PreparedStatement pstmt = conexion.prepareStatement(sql)) {
+            
+            // Setear el mismo término para todos los campos
+            pstmt.setString(1, terminoBusqueda);
+            pstmt.setString(2, terminoBusqueda);
+            pstmt.setString(3, terminoBusqueda);
+            pstmt.setString(4, terminoBusqueda);
+            pstmt.setString(5, terminoBusqueda);
+            
+            try (ResultSet rs = pstmt.executeQuery()) {
+                while (rs.next()) {
+                    Cliente c = new Cliente();
+                    c.setId(rs.getInt("id"));
+                    c.setNombre(rs.getString("nombre"));
+                    c.setCuit(rs.getString("cuit"));
+                    c.setTelefono(rs.getString("telefono"));
+                    c.setDireccion(rs.getString("direccion"));
+                    c.setEmail(rs.getString("email"));
+                    c.setTipo(rs.getString("tipo"));
+                    c.setActivo(rs.getBoolean("activo"));
+                    clientes.add(c);
+                }
+            }
+        } catch (SQLException e) {
+            System.err.println("Error al buscar clientes completo: " + e.getMessage());
+        }
+        return clientes;
+    }
 }

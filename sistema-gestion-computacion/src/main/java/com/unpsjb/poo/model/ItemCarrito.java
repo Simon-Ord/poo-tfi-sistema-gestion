@@ -16,7 +16,7 @@ public class ItemCarrito {
         this.precioUnitario = precioUnitario;
     }
 
-    public BigDecimal getSubtotal() {                      //Devuelve el subtotal de manera precisa usando BigDecimal
+    public BigDecimal getSubtotal() { //Devuelve el subtotal de manera precisa usando BigDecimal
         return precioUnitario.multiply(BigDecimal.valueOf(cantidad));
     }
 
