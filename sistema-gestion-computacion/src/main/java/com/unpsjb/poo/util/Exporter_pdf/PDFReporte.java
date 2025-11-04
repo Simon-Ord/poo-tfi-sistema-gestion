@@ -66,7 +66,7 @@ public class PDFReporte extends PDFExportar {
     }
 
     /**
-     * 🔹 Encabezado con estilo
+     *  Encabezado con estilo
      */
     private void addHeader(PdfPTable table) {
         String[] headers = {"Fecha y Hora", "Usuario", "Acción", "Entidad", "Descripción / Detalles"};
@@ -85,7 +85,7 @@ public class PDFReporte extends PDFExportar {
     }
 
     /**
-     * 🔹 Fila con estilo alternado (blanco / gris claro)
+     *  Fila con estilo alternado (blanco / gris claro)
      */
     private void addRow(PdfPTable table, EventoAuditoria e) {
         Font normalFont = new Font(Font.FontFamily.HELVETICA, 10);

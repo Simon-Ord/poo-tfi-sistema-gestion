@@ -3,7 +3,7 @@ package com.unpsjb.poo.util.copias;
 import com.unpsjb.poo.model.Cliente;
 
 /**
- * 🧩 Utilidad para crear una copia profunda (clone) de un cliente.
+ *  Utilidad para crear una copia profunda (clone) de un cliente.
  * Se usa principalmente para comparar cambios antes y después
  * de una modificación en la auditoría.
  */

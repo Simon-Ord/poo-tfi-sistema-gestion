@@ -12,5 +12,7 @@ public abstract class PDFExportar {
      * @param filePath Ruta destino (con extensión .pdf)
      * @return true si el PDF se generó correctamente.
      */
+
+     
     public abstract boolean export(String filePath);
 }

@@ -138,7 +138,7 @@ private void eliminarCliente() {
     boolean ok = seleccionado.eliminar(); // este método ya cambia activo <-> inactivo en la BD
 
     if (ok) {
-        // 🔸 Registrar auditoría del cambio de estado
+        //  Registrar auditoría del cambio de estado
         AuditoriaClienteUtil auditor = new AuditoriaClienteUtil();
         auditor.registrarCambioEstado(seleccionado, !estadoAnterior);
 

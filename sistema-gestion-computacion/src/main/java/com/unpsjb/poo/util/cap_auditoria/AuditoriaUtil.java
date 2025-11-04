@@ -1,13 +1,7 @@
 package com.unpsjb.poo.util.cap_auditoria;
 
 /**
- * 🔹 Auditoría genérica para registrar acciones globales del sistema.
- *
- * Se usa cuando una acción no pertenece a una entidad específica:
- * - inicio/cierre de sesión
- * - cambios de configuración
- * - creación de usuarios
- * - backups, errores, etc.
+ * Auditoría genérica para registrar acciones globales del sistema.
  */
 public class AuditoriaUtil extends AuditoriaBase {
 

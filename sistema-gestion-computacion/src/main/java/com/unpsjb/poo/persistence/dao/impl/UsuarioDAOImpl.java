@@ -16,8 +16,7 @@ import com.unpsjb.poo.persistence.dao.DAO;
 public class UsuarioDAOImpl implements DAO<Usuario> {
     @Override
     public Optional<Usuario> read(int id) {
-        // Usuario uses String dni as primary key, not int id
-        // This method is not applicable for Usuario
+
         throw new UnsupportedOperationException("Usuario uses String dni as primary key. Use custom methods instead.");
     }
     // =======================================

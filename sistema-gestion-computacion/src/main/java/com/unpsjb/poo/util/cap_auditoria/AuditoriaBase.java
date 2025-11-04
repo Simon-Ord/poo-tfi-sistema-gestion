@@ -5,15 +5,7 @@ import com.unpsjb.poo.persistence.dao.ReportesDAO;
 import com.unpsjb.poo.util.Sesion;
 
 /**
- * 🔹 Clase base abstracta para todas las auditorías del sistema.
- *
- * Define el comportamiento común:
- *  - Obtener usuario actual
- *  - Registrar evento genérico
- *  - Métodos polimórficos para creación y modificación
- *
- * Aplica el PRINCIPIO DE POLIMORFISMO:
- * cada subclase define cómo audita sus propias entidades.
+ *  Clase base abstracta para todas las auditorías del sistema.
  */
 public abstract class AuditoriaBase {
 
@@ -37,15 +29,11 @@ public abstract class AuditoriaBase {
         reportesDAO.registrarEvento(evento);
     }
 
-    // ---------------------------------------------------------------------
-    // Métodos polimórficos a redefinir por las subclases
-    // ---------------------------------------------------------------------
-
     /** Cómo registrar una modificación (cada entidad define su versión) */
     public abstract void registrarAccionEspecifica(Object original, Object modificado);
 
-    /** Cómo registrar una creación (opcional, redefinido si aplica) */
+    /** Cómo registrar una creación (opcional) */
     public void registrarCreacion(Object nuevo) {
-        // Implementación vacía — las subclases la sobrescriben si la usan
+        
     }
 }

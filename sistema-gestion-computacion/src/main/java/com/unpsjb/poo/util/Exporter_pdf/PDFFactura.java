@@ -76,7 +76,6 @@ public class PDFFactura extends PDFExportar {
         Paragraph infoVenta = new Paragraph();
         infoVenta.add(new Phrase("Fecha: " + DATE_FORMAT.format(new Date()) + "\n", FONT_NORMAL));
 
-        // 🆕 Mostrar el código único de la venta (si existe)
         if (venta.getCodigoVenta() != null && !venta.getCodigoVenta().isEmpty()) {
             infoVenta.add(new Phrase("Código de Venta: " + venta.getCodigoVenta() + "\n", FONT_NORMAL));
         }
@@ -191,7 +190,6 @@ public class PDFFactura extends PDFExportar {
         pie.setAlignment(Element.ALIGN_CENTER);
         pie.add(new Phrase("¡Gracias por su compra!\n", FONT_BOLD));
 
-        // 🆕 Mostrar también el código único de venta en el pie del documento
         if (venta.getCodigoVenta() != null && !venta.getCodigoVenta().isEmpty()) {
             pie.add(new Phrase("Código de Control: " + venta.getCodigoVenta() + "\n", FONT_NORMAL));
         }

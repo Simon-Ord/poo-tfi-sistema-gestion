@@ -4,7 +4,6 @@ import com.unpsjb.poo.model.productos.Producto;
 
 /**
  * Auditoría específica para operaciones sobre PRODUCTOS.
- * Aplica polimorfismo redefiniendo los métodos de AuditoriaBase.
  */
 public class AuditoriaProductoUtil extends AuditoriaBase {
 
@@ -67,7 +66,7 @@ public class AuditoriaProductoUtil extends AuditoriaBase {
         return sb.toString();
     }
 
-    /** Método auxiliar para comparar valores */
+    /* Método auxiliar para comparar valores */
     private static void comparar(StringBuilder sb, String campo, Object o, Object n) {
         if (o == null && n == null) return;
         if (o == null || n == null || !o.equals(n))

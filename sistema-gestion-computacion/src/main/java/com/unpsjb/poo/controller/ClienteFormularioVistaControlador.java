@@ -39,7 +39,7 @@ public class ClienteFormularioVistaControlador {
             }
 
             if (clienteEditable == null) {
-                // Alta nueva
+
                 Cliente nuevo = new Cliente();
                 nuevo.setNombre(txtNombre.getText().trim());
                 nuevo.setCuit(txtCuit.getText().trim());
