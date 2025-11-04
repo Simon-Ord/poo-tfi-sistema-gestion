@@ -5,7 +5,7 @@ package com.unpsjb.poo.util.Exporter_pdf;
  * Las subclases concretas (como PDFReporte o PDFTicket)
  * definen la estructura específica de su documento.
  */
-public abstract class PDFExporter {
+public abstract class PDFExportar {
 
     /**
      * Genera un archivo PDF en la ruta indicada.

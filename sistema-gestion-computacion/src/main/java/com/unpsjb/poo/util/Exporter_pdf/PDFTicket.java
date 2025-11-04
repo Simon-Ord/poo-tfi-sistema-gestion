@@ -13,7 +13,7 @@ import com.unpsjb.poo.model.Venta;
  *  Ticket de venta mejorado - MUNDO PC
  * Diseño profesional con formato tipo recibo de comercio.
  */
-public class PDFTicket extends PDFExporter {
+public class PDFTicket extends PDFExportar {
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
     private static final Font FONT_TITLE = new Font(Font.FontFamily.HELVETICA, 14, Font.BOLD);

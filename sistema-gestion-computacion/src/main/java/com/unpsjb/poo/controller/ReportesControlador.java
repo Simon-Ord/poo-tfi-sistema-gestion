@@ -7,7 +7,7 @@ import javafx.scene.text.Text;
 
 
 import com.unpsjb.poo.model.EventoAuditoria;
-import com.unpsjb.poo.util.Exporter_pdf.PDFExporter;
+import com.unpsjb.poo.util.Exporter_pdf.PDFExportar;
 import com.unpsjb.poo.util.Exporter_pdf.PDFReporte;
 
 import java.sql.Timestamp;
@@ -127,18 +127,18 @@ public void exportarPDF() {
 
     //  Crear hilo para exportar sin bloquear la interfaz
     Thread hiloExportar = new Thread(() -> {
-        PDFExporter pdf = new PDFReporte(resultados);
+        PDFExportar pdf = new PDFReporte(resultados);
         boolean ok = pdf.export(filePath);
 
-        // 🖥️ Volver al hilo de la interfaz para mostrar mensaje
+        // Volver al hilo de la interfaz para mostrar mensaje
         javafx.application.Platform.runLater(() -> {
             mostrarAlerta(ok
-                    ? "Exportación completada correctamente.\nUbicación: " + filePath
+                    ? "Exportación completada correctamente.\nUbicacion: " + filePath
                     : " Error al exportar el PDF.");
         });
     });
 
-    // 🔹 Marcamos el hilo como daemon (no bloquea el cierre del programa)
+    // Marcamos el hilo como daemon (no bloquea el cierre del programa)
     hiloExportar.setDaemon(true);
     hiloExportar.start();
 }

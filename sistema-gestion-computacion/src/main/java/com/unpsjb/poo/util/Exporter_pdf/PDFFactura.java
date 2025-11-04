@@ -19,7 +19,7 @@ import com.unpsjb.poo.model.Venta;
 /**
  * Genera un PDF de factura o ticket para una venta.
  */
-public class PDFFactura extends PDFExporter {
+public class PDFFactura extends PDFExportar {
 
     private static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("dd/MM/yyyy HH:mm:ss");
     private static final Font FONT_TITLE = new Font(Font.FontFamily.HELVETICA, 18, Font.BOLD);

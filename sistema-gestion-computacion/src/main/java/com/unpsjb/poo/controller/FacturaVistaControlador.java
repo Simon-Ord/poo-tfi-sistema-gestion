@@ -15,7 +15,7 @@ import com.unpsjb.poo.model.PagoTarjeta;
 import com.unpsjb.poo.model.Venta;
 import com.unpsjb.poo.model.productos.Producto;
 import com.unpsjb.poo.util.cap_auditoria.AuditoriaVentaUtil;
-import com.unpsjb.poo.util.Exporter_pdf.PDFExporter;
+import com.unpsjb.poo.util.Exporter_pdf.PDFExportar;
 
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
@@ -429,7 +429,7 @@ private void actualizarListaProductos() {
     
     try {
         // Crear el generador de PDF según tipo de factura
-        PDFExporter pdfGenerator;
+        PDFExportar pdfGenerator;
         if ("FACTURA".equalsIgnoreCase(miVenta.getTipoFactura())) {
             pdfGenerator = new com.unpsjb.poo.util.Exporter_pdf.PDFFactura(miVenta);
         } else {
