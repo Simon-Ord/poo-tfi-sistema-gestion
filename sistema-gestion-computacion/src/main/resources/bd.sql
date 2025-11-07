@@ -70,4 +70,17 @@ SELECT * FROM clientes;
 SELECT * FROM productos;
 SELECT * FROM auditoria ORDER BY fecha_hora DESC;
 SELECT * FROM sesion333es ORDER BY fecha_inicio DESC;
+-- =============================================================
+-- TABLA DE PROVEEDORES (integrada)
+-- =============================================================
+
+CREATE TABLE IF NOT EXISTS proveedores (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    telefono VARCHAR(40),
+    email VARCHAR(100),
+    direccion VARCHAR(200),
+    activo BOOLEAN DEFAULT TRUE
+);
+
 

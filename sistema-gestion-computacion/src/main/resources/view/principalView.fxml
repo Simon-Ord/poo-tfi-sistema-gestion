@@ -64,9 +64,9 @@
                 <MenuButton fx:id="mnBtnProductos" mnemonicParsing="false" styleClass="menu-button-as-button" text="Productos">
                     <items>
                         <MenuItem fx:id="btnGestionProductos" mnemonicParsing="false" onAction="#productosAction" text="Gestión de productos" />
-                        <MenuItem fx:id="btnAgregarProducto" mnemonicParsing="false" onAction="#agregarProducto" text="Agregar producto" />
+                        
                         <MenuItem fx:id="btnGestionCategorias" mnemonicParsing="false" onAction="#categoriasAction" text="Gestión de categorias" />
-                        <MenuItem fx:id="btnAgregarCategoria" mnemonicParsing="false" onAction="#agregarCategoria" text="Agregar categoria" />
+                        
                     </items>
                <graphic>
                   <ImageView fitHeight="25.0" fitWidth="26.0" nodeOrientation="RIGHT_TO_LEFT" pickOnBounds="true" preserveRatio="true">
@@ -76,6 +76,22 @@
                   </ImageView>
                </graphic>
                 </MenuButton>
+
+            <!-- 🔹 BOTÓN PROVEEDORES -->
+        <Button fx:id="btnProveedores" mnemonicParsing="false" onAction="#proveedoresAction" text="Proveedores">
+                <HBox.margin>
+                    <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
+                </HBox.margin>
+            <graphic>
+                <ImageView fitHeight="25.0" fitWidth="26.0" pickOnBounds="true" preserveRatio="true">
+                  <image>
+                    <Image url="@../images/iconmonstr-delivery-2-240.png" />
+                    </image>
+                </ImageView>
+                </graphic>
+               </Button>
+
+
 
                 <!-- 🔹 BOTÓN FACTURAR -->
                 <Button fx:id="btnFacturar" mnemonicParsing="false" onAction="#facturarAction" text="Facturar">

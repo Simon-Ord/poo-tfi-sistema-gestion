@@ -170,6 +170,18 @@ public class PrincipalVistaControlador implements Initializable {
             new Alert(Alert.AlertType.ERROR, "Error al abrir la gestión de reportes: " + e.getMessage()).showAndWait();
         }
     }
+    // =====================
+    //  BOTÓN PROVEEDORES
+    // =====================
+    @FXML
+    private void proveedoresAction(ActionEvent event) {
+        try {
+            VentanaVistaControlador.crearVentana(desktop, "/view/proveedoresView.fxml", "Gestión de Proveedores", 800, 500);
+        } catch (Exception e) {
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Error al abrir la gestión de proveedores: " + e.getMessage()).showAndWait();
+        }
+    }
 
     // =====================
     //  CERRAR SESIÓN

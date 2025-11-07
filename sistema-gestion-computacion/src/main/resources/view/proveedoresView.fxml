@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="10" stylesheets="@css/styles.css"
+      xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.unpsjb.poo.controller.ProveedoresVistaControlador">
+
+    <padding>
+        <Insets bottom="20" left="20" right="20" top="20"/>
+    </padding>
+
+    <HBox spacing="10" alignment="CENTER_LEFT">
+        <Label text="Proveedores" styleClass="titulo"/>
+        <Region HBox.hgrow="ALWAYS"/>
+        <CheckBox fx:id="chBoxInactivos" text="Mostrar inactivos"/>
+    </HBox>
+
+    <TableView fx:id="tablaProveedores" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="colNombre" text="Nombre" prefWidth="200"/>
+            <TableColumn fx:id="colTelefono" text="Teléfono" prefWidth="120"/>
+            <TableColumn fx:id="colEmail" text="Email" prefWidth="200"/>
+            <TableColumn fx:id="colDireccion" text="Dirección" prefWidth="200"/>
+            <TableColumn fx:id="colEstado" text="Estado" prefWidth="80"/>
+        </columns>
+    </TableView>
+
+    <HBox spacing="10" alignment="CENTER">
+        <Button text="Agregar" onAction="#agregarProveedor"/>
+        <Button text="Editar" onAction="#editarProveedor"/>
+        <Button text="Eliminar" onAction="#eliminarProveedor"/>
+    </HBox>
+
+</VBox>

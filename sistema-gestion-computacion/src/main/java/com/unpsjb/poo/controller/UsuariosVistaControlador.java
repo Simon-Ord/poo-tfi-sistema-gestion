@@ -7,6 +7,7 @@ import com.unpsjb.poo.util.cap_auditoria.AuditoriaUtil;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.CheckBox;
@@ -117,6 +118,26 @@ public class UsuariosVistaControlador extends BaseControlador {
             mostrarAlerta("Error al abrir el formulario de modificación: " + e.getMessage());
         }
     }
+    @FXML
+    private void proveedoresAction(ActionEvent event) {
+        try {
+            var resultado = crearVentana("/view/proveedoresView.fxml", "Gestión de Proveedores");
+            if (resultado != null && resultado.getVentana() != null) {
+                resultado.getVentana().parentProperty().addListener((obs, oldVal, newVal) -> {
+                    if (newVal == null) {
+                        cargarUsuarios();
+                    }
+                });
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            mostrarAlerta("Error al abrir la gestión de proveedores: " + e.getMessage());
+        }
+    }
+
+
+
+
 
     @FXML
     private void cambiarEstadoUsuario() {
@@ -142,7 +163,7 @@ public class UsuariosVistaControlador extends BaseControlador {
             mostrarAlerta("Error al cambiar el estado del usuario.");
         }
     }
-
+    
     private void mostrarAlerta(String msg) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
         alert.setHeaderText(null);
