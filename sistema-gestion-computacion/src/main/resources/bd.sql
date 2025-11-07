@@ -1,4 +1,4 @@
--- Active: 1760980557043@@127.0.0.1@5432@tienda_computacion
+-- Active: 1761142317338@@127.0.0.1@5432@tienda_computacion
 -- =============================================================
 -- TABLAS PRINCIPALES DEL SISTEMA
 -- =============================================================
@@ -17,7 +17,6 @@ CREATE TABLE usuarios (
 -- TABLA DE CLIENTES
 -- ====================
 
-
 CREATE TABLE clientes (
     id SERIAL PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
@@ -29,9 +28,6 @@ CREATE TABLE clientes (
     activo BOOLEAN DEFAULT TRUE
 
 );
-
-
-DROP TABLE IF EXISTS clientes CASCADE;
 
 -- =============================================================
 -- TABLA DE AUDITORÍA 
@@ -64,7 +60,7 @@ CREATE TABLE sesiones (
 -- =============================================================
 
 INSERT INTO usuarios (dni, nombre, usuario, contraseña, rol, estado)
-VALUES ('1234', 'ALEXIS', '1', '1', 'ADMINISTRADOR', true);
+VALUES ('12', 'Marcos David', '1', '1', 'ADMINISTRADOR', true);
 
 -- =============================================================
 -- CONSULTAS DE PRUEBA
