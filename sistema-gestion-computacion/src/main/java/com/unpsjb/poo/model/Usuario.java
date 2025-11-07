@@ -37,7 +37,7 @@ public class Usuario {
 
     public String getContraseña() { return contraseña; }
     public void setContraseña(String contraseña) { 
-        this.contraseña = hashearContraseña(contraseña); 
+        this.contraseña = contraseña; // No hasheamos aquí, ya que podría venir de la BD
     }
 
     public String getRol() { return rol; }
@@ -45,6 +45,33 @@ public class Usuario {
 
     public boolean isEstado() { return estado; }
     public void setEstado(boolean estado) { this.estado = estado; }
+
+    private String email;
+
+    public String getEmail() { 
+    return email; 
+    }
+    public void setEmail(String email) { 
+    this.email = email; 
+    }
+    public boolean verificarContraseña(String contraseñaIngresada) {
+        System.out.println("DEBUG verificar - Contraseña ingresada: " + contraseñaIngresada);
+        System.out.println("DEBUG verificar - Contraseña almacenada en objeto: " + this.contraseña);
+        
+        // Primero intentamos verificar en texto plano (como en el login)
+        if (this.contraseña != null && this.contraseña.equals(contraseñaIngresada)) {
+            System.out.println("DEBUG verificar - Coincide en texto plano");
+            return true;
+        }
+        
+        // Si no coincide, intentamos con el hash
+        String hashIngresado = hashearContraseña(contraseñaIngresada);
+        System.out.println("DEBUG verificar - Hash de contraseña ingresada: " + hashIngresado);
+        
+        boolean coincideHash = this.contraseña != null && this.contraseña.equals(hashIngresado);
+        System.out.println("DEBUG verificar - Coincide con hash: " + coincideHash);
+        return coincideHash;
+    }
 
     // ===============================
     // Métodos de encriptación de contraseñas
@@ -93,12 +120,20 @@ public class Usuario {
     }
 
     public static Usuario verificarLogin(String usuarioIngresado, String contraseñaIngresada) {
+        System.out.println("DEBUG login - Contraseña ingresada: " + contraseñaIngresada);
         String contraseñaHasheada = hashearContraseña(contraseñaIngresada);
+        System.out.println("DEBUG login - Contraseña hasheada: " + contraseñaHasheada);
+        
         Usuario usuario = dao.verificarLogin(usuarioIngresado, contraseñaHasheada);        
-        // ESTO SE PODRIA SACAR SI NO TENEMOS MAS CONTRASEÑAS EN TEXTO PLANO
         if (usuario == null) {
+            System.out.println("DEBUG login - Intento con texto plano");
             usuario = dao.verificarLogin(usuarioIngresado, contraseñaIngresada);
         }
+        
+        if (usuario != null) {
+            System.out.println("DEBUG login - Contraseña en BD: " + usuario.getContraseña());
+        }
+        
         return usuario;
     }
 }

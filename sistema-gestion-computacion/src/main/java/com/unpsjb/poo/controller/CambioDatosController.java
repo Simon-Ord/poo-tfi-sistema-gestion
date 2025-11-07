@@ -10,38 +10,41 @@ import javafx.scene.control.TextField;
 
 public class CambioDatosController {
 
-    @FXML private TextField txtUsuarioActual;
-    @FXML private PasswordField txtContrasenaActual;
-    @FXML private PasswordField txtRepetirContrasena;
+    @FXML private TextField txtNuevoEmail;
+    @FXML private PasswordField txtConfirmarContrasena;  // Cambiado de txtRepetirContrasena a txtConfirmarContrasena
     @FXML private TextField txtNuevoNombre;
     @FXML private TextField txtNuevoUsuario;
     @FXML private PasswordField txtNuevaContrasena;
+    @FXML private PasswordField txtContrasenaActual;
+
 
     @FXML
     private void guardarCambios() {
         try {
-            String usuarioActual = txtUsuarioActual.getText().trim();
+            Usuario user = com.unpsjb.poo.util.Sesion.getUsuarioActual();
             String contrasenaActual = txtContrasenaActual.getText().trim();
-            String repetirContrasena = txtRepetirContrasena.getText().trim();
-
-            // Validar campos obligatorios
-            if (usuarioActual.isEmpty() || contrasenaActual.isEmpty() || repetirContrasena.isEmpty()) {
-                mostrarAlerta("Debes completar los campos de usuario y contraseña actual.");
+            String nuevaContrasena = txtNuevaContrasena.getText().trim();
+            String confirmarContrasena = txtConfirmarContrasena.getText().trim();
+            
+            System.out.println("DEBUG cambio - Usuario actual: " + user.getUsuario());
+            System.out.println("DEBUG cambio - Contraseña actual ingresada: " + contrasenaActual);
+            System.out.println("DEBUG cambio - Nueva contraseña: " + nuevaContrasena);
+            System.out.println("DEBUG cambio - Confirmar contraseña: " + confirmarContrasena);
+           
+            if (contrasenaActual.isEmpty()) {
+                mostrarAlerta("Debes ingresar tu contraseña actual.");
                 return;
             }
 
-            // Verificar que las contraseñas actuales coincidan
-            if (!contrasenaActual.equals(repetirContrasena)) {
-                mostrarAlerta("Las contraseñas actuales no coinciden.");
+
+            if (!user.verificarContraseña(contrasenaActual)) {
+                mostrarAlerta("La contraseña actual es incorrecta.");
                 return;
+            }
+            if (!txtNuevoEmail.getText().trim().isEmpty()) {
+                user.setEmail(txtNuevoEmail.getText().trim());
             }
 
-            // Verificar si el usuario existe
-            Usuario user = Usuario.verificarLogin(usuarioActual, contrasenaActual);
-            if (user == null) {
-                mostrarAlerta("Usuario o contraseña incorrectos.");
-                return;
-            }
 
             // Actualizar datos (solo si se ingresaron nuevos)
             if (!txtNuevoNombre.getText().trim().isEmpty()) {
@@ -50,8 +53,17 @@ public class CambioDatosController {
             if (!txtNuevoUsuario.getText().trim().isEmpty()) {
                 user.setUsuario(txtNuevoUsuario.getText().trim());
             }
-            if (!txtNuevaContrasena.getText().trim().isEmpty()) {
-                user.setContraseña(txtNuevaContrasena.getText().trim()); // Ahora hashea automáticamente
+            // Validar nueva contraseña solo si se ingresó una
+            if (!nuevaContrasena.isEmpty() || !confirmarContrasena.isEmpty()) {
+                if (nuevaContrasena.isEmpty() || confirmarContrasena.isEmpty()) {
+                    mostrarAlerta("Debes completar tanto la nueva contraseña como su confirmación.");
+                    return;
+                }
+                if (!nuevaContrasena.equals(confirmarContrasena)) {
+                    mostrarAlerta("Las nuevas contraseñas no coinciden.");
+                    return;
+                }
+                user.setContraseña(nuevaContrasena); // Guardamos en texto plano como está en la BD
             }
 
             boolean ok = user.actualizar();
@@ -85,7 +97,7 @@ public class CambioDatosController {
     }
 
     private void cerrarVentana() {
-        BaseControlador.cerrarVentanaInterna(txtUsuarioActual);
+        BaseControlador.cerrarVentanaInterna(txtNuevoNombre);
     }
 
     private void mostrarAlerta(String mensaje) {
