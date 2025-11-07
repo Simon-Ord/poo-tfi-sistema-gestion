@@ -34,6 +34,8 @@ public class PrincipalVistaControlador implements Initializable {
     @FXML private Button btnCerrarSesion;
     @FXML private Label lblNombreUsuario;
     @FXML private ImageView logoImage;
+    @FXML private Button btnMisDatos;
+
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -48,6 +50,8 @@ public class PrincipalVistaControlador implements Initializable {
                 btnUsuarios.setManaged(false);
                 btnReportes.setVisible(false);
                 btnReportes.setManaged(false);
+                btnMisDatos.setVisible(true);
+                btnMisDatos.setManaged(true);
 
             }
         } else {
@@ -79,6 +83,21 @@ public class PrincipalVistaControlador implements Initializable {
         } catch (Exception e) {
             e.printStackTrace();
             new Alert(Alert.AlertType.ERROR, "Error al abrir el formulario de modificar usuario: " + e.getMessage()).showAndWait();
+        }
+    }
+    @FXML
+    private void misDatosAction(ActionEvent event) {
+        try {
+            VentanaVistaControlador.crearVentana(
+                desktop,
+                "/view/cambioDatosView.fxml",
+                "Mis Datos",
+                450,
+                400
+            );
+        } catch (Exception e) {
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Error al abrir la ventana de Mis Datos: " + e.getMessage()).showAndWait();
         }
     }
 
