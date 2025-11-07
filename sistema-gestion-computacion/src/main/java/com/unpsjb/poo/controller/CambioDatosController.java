@@ -11,31 +11,42 @@ import javafx.scene.control.TextField;
 public class CambioDatosController {
 
     @FXML private TextField txtNuevoEmail;
-    @FXML private PasswordField txtConfirmarContrasena;  // Cambiado de txtRepetirContrasena a txtConfirmarContrasena
+    @FXML private PasswordField txtConfirmarContrasena;
     @FXML private TextField txtNuevoNombre;
     @FXML private TextField txtNuevoUsuario;
     @FXML private PasswordField txtNuevaContrasena;
     @FXML private PasswordField txtContrasenaActual;
 
+    private Usuario usuarioAModificar;
+    private boolean esAutoModificacion = true;
+
+    public void setUsuarioAModificar(Usuario usuario) {
+        this.usuarioAModificar = usuario;
+        this.esAutoModificacion = false;
+        txtContrasenaActual.setPromptText("Ingrese la contraseña actual del usuario");
+    }
+
 
     @FXML
     private void guardarCambios() {
         try {
-            Usuario user = com.unpsjb.poo.util.Sesion.getUsuarioActual();
+            Usuario user = esAutoModificacion ? com.unpsjb.poo.util.Sesion.getUsuarioActual() : usuarioAModificar;
             String contrasenaActual = txtContrasenaActual.getText().trim();
             String nuevaContrasena = txtNuevaContrasena.getText().trim();
             String confirmarContrasena = txtConfirmarContrasena.getText().trim();
             
-            System.out.println("DEBUG cambio - Usuario actual: " + user.getUsuario());
+            System.out.println("DEBUG cambio - Usuario a modificar: " + user.getUsuario());
+            System.out.println("DEBUG cambio - Es auto-modificación: " + esAutoModificacion);
             System.out.println("DEBUG cambio - Contraseña actual ingresada: " + contrasenaActual);
+            System.out.println("DEBUG cambio - Contraseña almacenada: " + user.getContraseña());
             System.out.println("DEBUG cambio - Nueva contraseña: " + nuevaContrasena);
             System.out.println("DEBUG cambio - Confirmar contraseña: " + confirmarContrasena);
            
+            // Siempre verificar la contraseña actual
             if (contrasenaActual.isEmpty()) {
-                mostrarAlerta("Debes ingresar tu contraseña actual.");
+                mostrarAlerta("Debe ingresar la contraseña actual del usuario.");
                 return;
             }
-
 
             if (!user.verificarContraseña(contrasenaActual)) {
                 mostrarAlerta("La contraseña actual es incorrecta.");
@@ -63,7 +74,7 @@ public class CambioDatosController {
                     mostrarAlerta("Las nuevas contraseñas no coinciden.");
                     return;
                 }
-                user.setContraseña(nuevaContrasena); // Guardamos en texto plano como está en la BD
+                user.setContraseña(nuevaContrasena);
             }
 
             boolean ok = user.actualizar();

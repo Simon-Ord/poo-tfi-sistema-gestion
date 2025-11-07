@@ -37,7 +37,8 @@ public class Usuario {
 
     public String getContraseña() { return contraseña; }
     public void setContraseña(String contraseña) { 
-        this.contraseña = contraseña; // No hasheamos aquí, ya que podría venir de la BD
+        // Guardamos la contraseña en texto plano para mantener consistencia con la BD
+        this.contraseña = contraseña;
     }
 
     public String getRol() { return rol; }

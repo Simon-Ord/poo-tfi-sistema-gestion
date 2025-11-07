@@ -102,6 +102,10 @@ public class UsuariosVistaControlador extends BaseControlador {
         try {
             var resultado = crearVentana("/view/CambioDatosView.fxml", "Modificar Usuario");
             if (resultado != null && resultado.getVentana() != null) {
+                // Obtener el controlador y pasar el usuario seleccionado
+                CambioDatosController controller = (CambioDatosController) resultado.getControlador();
+                controller.setUsuarioAModificar(seleccionado);
+                
                 resultado.getVentana().parentProperty().addListener((obs, oldVal, newVal) -> {
                     if (newVal == null) {
                         cargarUsuarios();
