@@ -92,6 +92,29 @@ public class UsuariosVistaControlador extends BaseControlador {
     }
 }
     @FXML
+    private void modificarUsuario() {
+        Usuario seleccionado = tablaUsuarios.getSelectionModel().getSelectedItem();
+        if (seleccionado == null) {
+            mostrarAlerta("Seleccione un usuario para modificar.");
+            return;
+        }
+        
+        try {
+            var resultado = crearVentana("/view/CambioDatosView.fxml", "Modificar Usuario");
+            if (resultado != null && resultado.getVentana() != null) {
+                resultado.getVentana().parentProperty().addListener((obs, oldVal, newVal) -> {
+                    if (newVal == null) {
+                        cargarUsuarios();
+                    }
+                });
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            mostrarAlerta("Error al abrir el formulario de modificación: " + e.getMessage());
+        }
+    }
+
+    @FXML
     private void cambiarEstadoUsuario() {
         Usuario seleccionado = tablaUsuarios.getSelectionModel().getSelectedItem();
         if (seleccionado == null) {

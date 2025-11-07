@@ -67,6 +67,13 @@
                         </tooltip>
                     </Button>
 
+
+                    <Button onAction="#modificarUsuario" styleClass="btn-accion" text="Modificar Usuario">
+                        <tooltip>
+                            <Tooltip text="Permite editar los datos del usuario seleccionado en la tabla." />
+                        </tooltip>
+                    </Button>
+                    
                     <!--  Botón: Activar / Desactivar Usuario -->
                     <Button onAction="#cambiarEstadoUsuario" styleClass="btn-accion" text="Activar/Desactivar Usuario">
                         <tooltip>
