@@ -35,6 +35,7 @@ public class PrincipalVistaControlador implements Initializable {
     @FXML private Label lblNombreUsuario;
     @FXML private ImageView logoImage;
     @FXML private Button btnMisDatos;
+    @FXML private Button btnProveedores;
 
 
     @Override
@@ -50,9 +51,10 @@ public class PrincipalVistaControlador implements Initializable {
                 btnUsuarios.setManaged(false);
                 btnReportes.setVisible(false);
                 btnReportes.setManaged(false);
+                btnProveedores.setVisible(false);
+                btnProveedores.setManaged(false);
                 btnMisDatos.setVisible(true);
                 btnMisDatos.setManaged(true);
-
             }
         } else {
             lblNombreUsuario.setText("Usuario: Desconocido");
