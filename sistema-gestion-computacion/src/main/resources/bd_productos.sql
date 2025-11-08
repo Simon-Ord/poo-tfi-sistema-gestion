@@ -1,4 +1,4 @@
--- Active: 1760980557043@@127.0.0.1@5432@tienda_computacion
+-- Active: 1761142317338@@127.0.0.1@5432@tienda_computacion
 -- ======================
 -- TABLA DE CATEGORÍA
 -- ======================
@@ -29,7 +29,7 @@ SELECT * FROM productos;
 -- =================================
 -- TABLA DE PROVEEDORES DIGITALES
 -- =================================
-CREATE TABLE proveedores_digitales (
+CREATE TABLE IF NOT EXISTS proveedores_digitales (
     id SERIAL PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL UNIQUE
 );
@@ -38,7 +38,7 @@ SELECT * FROM proveedores_digitales;
 -- ======================
 -- TABLA DE FABRICANTE
 -- ======================
-CREATE TABLE fabricantes (
+CREATE TABLE IF NOT EXISTS fabricantes (
     id SERIAL PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL UNIQUE
 );

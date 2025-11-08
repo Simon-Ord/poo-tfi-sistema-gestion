@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox spacing="10" stylesheets="@../css/styles.css"
+      xmlns="http://javafx.com/javafx/21"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="com.unpsjb.poo.controller.ProveedorFormularioVistaControlador">
+
+    <padding>
+        <Insets bottom="20" left="20" right="20" top="20"/>
+    </padding>
+
+    <Label text="Datos del Proveedor" styleClass="titulo"/>
+
+    <GridPane hgap="10" vgap="10">
+        <Label text="Nombre:" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+        <TextField fx:id="txtNombre" promptText="Nombre del proveedor" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+        <Label text="Teléfono:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+        <TextField fx:id="txtTelefono" promptText="Número de teléfono" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+        <Label text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+        <TextField fx:id="txtEmail" promptText="Correo electrónico" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+        <Label text="Dirección:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+        <TextField fx:id="txtDireccion" promptText="Dirección del proveedor" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+
+        <Label text="Tipo:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+        <ChoiceBox fx:id="cbTipo" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+    </GridPane>
+
+    <HBox spacing="10" alignment="CENTER">
+        <Button text="Guardar" onAction="#guardarProveedor"/>
+        <Button text="Cancelar" onAction="#cancelar"/>
+    </HBox>
+
+</VBox>

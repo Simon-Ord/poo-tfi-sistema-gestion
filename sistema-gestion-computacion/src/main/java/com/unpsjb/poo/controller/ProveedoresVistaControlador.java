@@ -18,6 +18,7 @@ public class ProveedoresVistaControlador extends BaseControlador {
     @FXML private TableColumn<Proveedor, String> colTelefono;
     @FXML private TableColumn<Proveedor, String> colEmail;
     @FXML private TableColumn<Proveedor, String> colDireccion;
+    @FXML private TableColumn<Proveedor, String> colTipo;
     @FXML private TableColumn<Proveedor, String> colEstado;
     @FXML private CheckBox chBoxInactivos;
 
@@ -34,6 +35,7 @@ public class ProveedoresVistaControlador extends BaseControlador {
         colTelefono.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getTelefono()));
         colEmail.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getEmail()));
         colDireccion.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getDireccion()));
+        colTipo.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getTipo() == null ? "FISICO" : c.getValue().getTipo()));
     }
 
     private void configurarColumnasEstado() {
@@ -68,8 +70,9 @@ public class ProveedoresVistaControlador extends BaseControlador {
     @FXML
     private void agregarProveedor() {
         try {
-            var resultado = crearVentana("/view/formularios/ProveedorDigitalForm.fxml", "Agregar Nuevo Proveedor");
+            var resultado = crearVentana("/view/formularios/ProveedorForm.fxml", "Agregar Nuevo Proveedor");
             if (resultado != null && resultado.getVentana() != null) {
+                // Si el formulario necesita el controlador padre o inicialización, se haría aquí
                 resultado.getVentana().parentProperty().addListener((obs, oldVal, newVal) -> {
                     if (newVal == null) {
                         cargarProveedores();
@@ -91,9 +94,13 @@ public class ProveedoresVistaControlador extends BaseControlador {
         }
 
         try {
-            var resultado = crearVentana("/view/formularios/ProveedorDigitalForm.fxml", "Editar Proveedor");
+            var resultado = crearVentana("/view/formularios/ProveedorForm.fxml", "Editar Proveedor");
             if (resultado != null) {
-                // TODO: Implementar la lógica de edición
+                // Pasar el proveedor seleccionado al controlador del formulario
+                Object ctrl = resultado.getControlador();
+                if (ctrl instanceof com.unpsjb.poo.controller.ProveedorFormularioVistaControlador) {
+                    ((com.unpsjb.poo.controller.ProveedorFormularioVistaControlador) ctrl).setProveedorAEditar(seleccionado);
+                }
                 resultado.getVentana().parentProperty().addListener((obs, oldVal, newVal) -> {
                     if (newVal == null) {
                         cargarProveedores();

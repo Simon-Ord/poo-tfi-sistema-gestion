@@ -80,7 +80,42 @@ CREATE TABLE IF NOT EXISTS proveedores (
     telefono VARCHAR(40),
     email VARCHAR(100),
     direccion VARCHAR(200),
+    tipo VARCHAR(50) DEFAULT 'FISICO' CHECK (tipo IN ('DIGITAL','FISICO')),
     activo BOOLEAN DEFAULT TRUE
 );
+
+-- =============================================================
+-- TABLA DE PROVEEDORES DIGITALES 
+-- =============================================================
+
+CREATE TABLE IF NOT EXISTS proveedores_digitales (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL
+);
+
+-- Migrar proveedores digitales desde la tabla unificada (si existen)
+INSERT INTO proveedores_digitales (id, nombre)
+SELECT id, nombre FROM proveedores WHERE tipo = 'DIGITAL'
+    AND NOT EXISTS (SELECT 1 FROM proveedores_digitales pd WHERE pd.id = proveedores.id);
+
+-- Actualizar secuencia para evitar conflictos en futuros INSERTs
+SELECT setval(pg_get_serial_sequence('proveedores_digitales','id'), COALESCE((SELECT MAX(id) FROM proveedores_digitales), 1), true);
+
+-- =============================================================
+-- TABLA DE FABRICANTES 
+-- =============================================================
+
+CREATE TABLE IF NOT EXISTS fabricantes (
+    id SERIAL PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL UNIQUE
+);
+
+-- Insertar fabricantes de ejemplo si no existen
+INSERT INTO fabricantes (nombre)
+SELECT v.name FROM (VALUES ('Dell'), ('HP'), ('Lenovo'), ('Asus'), ('Acer')) AS v(name)
+WHERE NOT EXISTS (SELECT 1 FROM fabricantes f WHERE f.nombre = v.name);
+
+-- Actualizar secuencia de fabricantes
+SELECT setval(pg_get_serial_sequence('fabricantes','id'), COALESCE((SELECT MAX(id) FROM fabricantes), 1), true);
 
 

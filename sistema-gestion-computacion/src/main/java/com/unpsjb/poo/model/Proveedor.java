@@ -9,6 +9,7 @@ public class Proveedor {
     private String telefono;
     private String email;
     private String direccion;
+    private String tipo; // DIGITAL or FISICO
     private boolean activo;
 
     private static final ProveedorDAOImpl dao = new ProveedorDAOImpl();
@@ -33,6 +34,9 @@ public class Proveedor {
 
     public String getDireccion() { return direccion; }
     public void setDireccion(String direccion) { this.direccion = direccion; }
+
+    public String getTipo() { return tipo; }
+    public void setTipo(String tipo) { this.tipo = tipo; }
 
     public boolean isActivo() { return activo; }
     public void setActivo(boolean activo) { this.activo = activo; }

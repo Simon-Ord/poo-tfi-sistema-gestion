@@ -30,12 +30,14 @@ public class ProveedorDAOImpl implements DAO<Proveedor> {
                 proveedor.setTelefono(rs.getString("telefono"));
                 proveedor.setEmail(rs.getString("email"));
                 proveedor.setDireccion(rs.getString("direccion"));
+                proveedor.setTipo(rs.getString("tipo"));
                 proveedor.setActivo(rs.getBoolean("activo"));
                 return Optional.of(proveedor);
             }
 
         } catch (SQLException e) {
-            System.err.println("Error al leer proveedor: " + e.getMessage());
+            System.err.println("Error al leer proveedor. SQL: " + sql + " - " + e.getMessage());
+            e.printStackTrace();
         }
         return Optional.empty();
     }
@@ -43,7 +45,7 @@ public class ProveedorDAOImpl implements DAO<Proveedor> {
     @Override
     public List<Proveedor> findAll() {
         List<Proveedor> proveedores = new ArrayList<>();
-        String sql = "SELECT * FROM proveedores";
+    String sql = "SELECT * FROM proveedores";
 
         try (Connection conn = GestorDeConexion.getInstancia().getConexion();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -57,12 +59,14 @@ public class ProveedorDAOImpl implements DAO<Proveedor> {
                 proveedor.setTelefono(rs.getString("telefono"));
                 proveedor.setEmail(rs.getString("email"));
                 proveedor.setDireccion(rs.getString("direccion"));
+                proveedor.setTipo(rs.getString("tipo"));
                 proveedor.setActivo(rs.getBoolean("activo"));
                 proveedores.add(proveedor);
             }
 
         } catch (SQLException e) {
-            System.err.println("Error al obtener proveedores: " + e.getMessage());
+            System.err.println("Error al obtener proveedores. SQL: " + sql + " - " + e.getMessage());
+            e.printStackTrace();
         }
 
         return proveedores;
@@ -70,7 +74,7 @@ public class ProveedorDAOImpl implements DAO<Proveedor> {
 
     public List<Proveedor> findAllActivos() {
         List<Proveedor> proveedores = new ArrayList<>();
-        String sql = "SELECT * FROM proveedores WHERE activo = true";
+    String sql = "SELECT * FROM proveedores WHERE activo = true";
 
         try (Connection conn = GestorDeConexion.getInstancia().getConexion();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
@@ -84,12 +88,14 @@ public class ProveedorDAOImpl implements DAO<Proveedor> {
                 proveedor.setTelefono(rs.getString("telefono"));
                 proveedor.setEmail(rs.getString("email"));
                 proveedor.setDireccion(rs.getString("direccion"));
+                proveedor.setTipo(rs.getString("tipo"));
                 proveedor.setActivo(rs.getBoolean("activo"));
                 proveedores.add(proveedor);
             }
 
         } catch (SQLException e) {
-            System.err.println("Error al obtener proveedores activos: " + e.getMessage());
+            System.err.println("Error al obtener proveedores activos. SQL: " + sql + " - " + e.getMessage());
+            e.printStackTrace();
         }
 
         return proveedores;
@@ -97,7 +103,7 @@ public class ProveedorDAOImpl implements DAO<Proveedor> {
 
     @Override
     public boolean create(Proveedor proveedor) {
-        String sql = "INSERT INTO proveedores (nombre, telefono, email, direccion, activo) VALUES (?, ?, ?, ?, ?)";
+    String sql = "INSERT INTO proveedores (nombre, telefono, email, direccion, tipo, activo) VALUES (?, ?, ?, ?, ?, ?)";
         try (Connection conn = GestorDeConexion.getInstancia().getConexion();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -105,18 +111,20 @@ public class ProveedorDAOImpl implements DAO<Proveedor> {
             stmt.setString(2, proveedor.getTelefono());
             stmt.setString(3, proveedor.getEmail());
             stmt.setString(4, proveedor.getDireccion());
-            stmt.setBoolean(5, proveedor.isActivo());
+            stmt.setString(5, proveedor.getTipo());
+            stmt.setBoolean(6, proveedor.isActivo());
 
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            System.err.println("Error al crear proveedor: " + e.getMessage());
+            System.err.println("Error al crear proveedor. SQL: " + sql + " - " + e.getMessage());
+            e.printStackTrace();
             return false;
         }
     }
 
     @Override
     public boolean update(Proveedor proveedor) {
-        String sql = "UPDATE proveedores SET nombre = ?, telefono = ?, email = ?, direccion = ?, activo = ? WHERE id = ?";
+    String sql = "UPDATE proveedores SET nombre = ?, telefono = ?, email = ?, direccion = ?, tipo = ?, activo = ? WHERE id = ?";
         try (Connection conn = GestorDeConexion.getInstancia().getConexion();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -124,12 +132,14 @@ public class ProveedorDAOImpl implements DAO<Proveedor> {
             stmt.setString(2, proveedor.getTelefono());
             stmt.setString(3, proveedor.getEmail());
             stmt.setString(4, proveedor.getDireccion());
-            stmt.setBoolean(5, proveedor.isActivo());
-            stmt.setInt(6, proveedor.getId());
+            stmt.setString(5, proveedor.getTipo());
+            stmt.setBoolean(6, proveedor.isActivo());
+            stmt.setInt(7, proveedor.getId());
 
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            System.err.println("Error al actualizar proveedor: " + e.getMessage());
+            System.err.println("Error al actualizar proveedor. SQL: " + sql + " - " + e.getMessage());
+            e.printStackTrace();
             return false;
         }
     }
@@ -148,7 +158,8 @@ public class ProveedorDAOImpl implements DAO<Proveedor> {
             stmt.setInt(1, id);
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
-            System.err.println("Error al eliminar proveedor: " + e.getMessage());
+            System.err.println("Error al eliminar proveedor. SQL: " + sql + " - " + e.getMessage());
+            e.printStackTrace();
             return false;
         }
     }

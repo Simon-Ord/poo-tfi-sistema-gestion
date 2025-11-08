@@ -24,7 +24,8 @@
             <TableColumn fx:id="colNombre" text="Nombre" prefWidth="200"/>
             <TableColumn fx:id="colTelefono" text="Teléfono" prefWidth="120"/>
             <TableColumn fx:id="colEmail" text="Email" prefWidth="200"/>
-            <TableColumn fx:id="colDireccion" text="Dirección" prefWidth="200"/>
+            <TableColumn fx:id="colDireccion" text="Dirección" prefWidth="160"/>
+            <TableColumn fx:id="colTipo" text="Tipo" prefWidth="100"/>
             <TableColumn fx:id="colEstado" text="Estado" prefWidth="80"/>
         </columns>
     </TableView>

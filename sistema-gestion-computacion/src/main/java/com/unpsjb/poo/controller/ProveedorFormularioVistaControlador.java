@@ -13,6 +13,7 @@ public class ProveedorFormularioVistaControlador {
     @FXML private TextField txtTelefono;
     @FXML private TextField txtEmail;
     @FXML private TextField txtDireccion;
+    @FXML private javafx.scene.control.ChoiceBox<String> cbTipo;
 
     private Proveedor proveedorAEditar;
 
@@ -29,6 +30,7 @@ public class ProveedorFormularioVistaControlador {
             proveedor.setTelefono(txtTelefono.getText().trim());
             proveedor.setEmail(txtEmail.getText().trim());
             proveedor.setDireccion(txtDireccion.getText().trim());
+            proveedor.setTipo(cbTipo.getValue() == null ? "FISICO" : cbTipo.getValue());
 
             boolean ok = proveedorAEditar != null ? proveedor.actualizar() : proveedor.guardar();
 
@@ -59,6 +61,15 @@ public class ProveedorFormularioVistaControlador {
             txtTelefono.setText(proveedor.getTelefono());
             txtEmail.setText(proveedor.getEmail());
             txtDireccion.setText(proveedor.getDireccion());
+            if (cbTipo != null) cbTipo.setValue(proveedor.getTipo() == null ? "FISICO" : proveedor.getTipo());
+        }
+    }
+
+    @FXML
+    private void initialize() {
+        if (cbTipo != null) {
+            cbTipo.getItems().addAll("DIGITAL", "FISICO");
+            cbTipo.setValue("FISICO");
         }
     }
 
