@@ -42,10 +42,12 @@
                 <!-- Tabla -->
                 <TableView fx:id="tablaUsuarios" prefHeight="330" prefWidth="700" style="-fx-background-color: transparent;">
                     <columns>
-                        <TableColumn fx:id="colDni" prefWidth="100" text="DNI" />
-                        <TableColumn fx:id="colNombre" prefWidth="200" text="Nombre y Apellido" />
+                        <TableColumn fx:id="colDni" prefWidth="120" text="DNI" />
+                        <TableColumn fx:id="colNombre" prefWidth="220" text="Nombre y Apellido" />
+                        <TableColumn fx:id="colUsuario" prefWidth="100" text="Usuario" />
+                        <TableColumn fx:id="colEmail" prefWidth="200" text="Email" />
                         <TableColumn fx:id="colRol" prefWidth="120" text="Rol" />
-                        <TableColumn fx:id="colEstado" prefWidth="50" text="Estado" />
+                        <TableColumn fx:id="colEstado" prefWidth="90" text="Estado" />
                     </columns>
                     <columnResizePolicy>
                         <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />

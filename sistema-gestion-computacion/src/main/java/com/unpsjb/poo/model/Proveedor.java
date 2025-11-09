@@ -10,6 +10,7 @@ public class Proveedor {
     private String email;
     private String direccion;
     private String tipo; // DIGITAL or FISICO
+    private String cuit;
     private boolean activo;
 
     private static final ProveedorDAOImpl dao = new ProveedorDAOImpl();
@@ -40,6 +41,9 @@ public class Proveedor {
 
     public boolean isActivo() { return activo; }
     public void setActivo(boolean activo) { this.activo = activo; }
+
+    public String getCuit() { return cuit; }
+    public void setCuit(String cuit) { this.cuit = cuit; }
 
     // Métodos de persistencia
     public boolean guardar() {

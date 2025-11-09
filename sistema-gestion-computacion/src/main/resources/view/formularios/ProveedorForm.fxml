@@ -28,8 +28,11 @@
         <Label text="Dirección:" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
         <TextField fx:id="txtDireccion" promptText="Dirección del proveedor" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
 
-        <Label text="Tipo:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
-        <ChoiceBox fx:id="cbTipo" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+        <Label text="CUIT:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+        <TextField fx:id="txtCuit" promptText="CUIT del proveedor" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+
+        <Label text="Tipo:" GridPane.columnIndex="0" GridPane.rowIndex="5" style="-fx-text-fill: white;"/>
+        <ChoiceBox fx:id="cbTipo" GridPane.columnIndex="1" GridPane.rowIndex="5"/>
     </GridPane>
 
     <HBox spacing="10" alignment="CENTER">

@@ -103,7 +103,7 @@ public class ProveedorDAOImpl implements DAO<Proveedor> {
 
     @Override
     public boolean create(Proveedor proveedor) {
-    String sql = "INSERT INTO proveedores (nombre, telefono, email, direccion, tipo, activo) VALUES (?, ?, ?, ?, ?, ?)";
+    String sql = "INSERT INTO proveedores (nombre, telefono, email, direccion, cuit, tipo, activo) VALUES (?, ?, ?, ?, ?, ?, ?)";
         try (Connection conn = GestorDeConexion.getInstancia().getConexion();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -111,8 +111,9 @@ public class ProveedorDAOImpl implements DAO<Proveedor> {
             stmt.setString(2, proveedor.getTelefono());
             stmt.setString(3, proveedor.getEmail());
             stmt.setString(4, proveedor.getDireccion());
-            stmt.setString(5, proveedor.getTipo());
-            stmt.setBoolean(6, proveedor.isActivo());
+            stmt.setString(5, proveedor.getCuit());
+            stmt.setString(6, proveedor.getTipo());
+            stmt.setBoolean(7, proveedor.isActivo());
 
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
@@ -124,7 +125,7 @@ public class ProveedorDAOImpl implements DAO<Proveedor> {
 
     @Override
     public boolean update(Proveedor proveedor) {
-    String sql = "UPDATE proveedores SET nombre = ?, telefono = ?, email = ?, direccion = ?, tipo = ?, activo = ? WHERE id = ?";
+    String sql = "UPDATE proveedores SET nombre = ?, telefono = ?, email = ?, direccion = ?, cuit = ?, tipo = ?, activo = ? WHERE id = ?";
         try (Connection conn = GestorDeConexion.getInstancia().getConexion();
              PreparedStatement stmt = conn.prepareStatement(sql)) {
 
@@ -132,9 +133,10 @@ public class ProveedorDAOImpl implements DAO<Proveedor> {
             stmt.setString(2, proveedor.getTelefono());
             stmt.setString(3, proveedor.getEmail());
             stmt.setString(4, proveedor.getDireccion());
-            stmt.setString(5, proveedor.getTipo());
-            stmt.setBoolean(6, proveedor.isActivo());
-            stmt.setInt(7, proveedor.getId());
+            stmt.setString(5, proveedor.getCuit());
+            stmt.setString(6, proveedor.getTipo());
+            stmt.setBoolean(7, proveedor.isActivo());
+            stmt.setInt(8, proveedor.getId());
 
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {

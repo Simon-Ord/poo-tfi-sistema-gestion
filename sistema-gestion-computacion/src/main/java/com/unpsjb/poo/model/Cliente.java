@@ -95,10 +95,8 @@ public class Cliente {
 
     // Busca clientes por cualquier campo (solo activos)
     public static List<Cliente> buscarClientes(String termino) {
-        if (termino == null || termino.trim().isEmpty()) {
-            return obtenerTodos(); // Si no hay término, devolver todos
-        }
-        return clienteDAO.buscarClientes(termino.trim());
+        // Siempre usar buscarClientes() que filtra por activo=true
+        return clienteDAO.buscarClientes(termino == null ? "" : termino.trim());
     }
     // Busca clientes por cualquier campo incluyendo inactivos
     public static List<Cliente> buscarClientesCompleto(String termino) {

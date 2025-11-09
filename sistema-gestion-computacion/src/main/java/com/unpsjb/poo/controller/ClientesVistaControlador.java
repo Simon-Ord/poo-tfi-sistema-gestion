@@ -54,33 +54,35 @@ public class ClientesVistaControlador extends BaseControlador {
     }
     
     private void configurarColumnasEstado() {
-        colEstado.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(""));
-        
+        // Mostrar texto "Activo" / "Inactivo" y colorear la celda
+        colEstado.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().isActivo() ? "Activo" : "Inactivo"));
+
         colEstado.setCellFactory(column -> {
             return new javafx.scene.control.TableCell<Cliente, String>() {
                 @Override
                 protected void updateItem(String item, boolean empty) {
                     super.updateItem(item, empty);
-                    if (empty) {
+                    if (empty || item == null) {
+                        setText(null);
                         setStyle("");
                     } else {
                         Cliente cliente = getTableView().getItems().get(getIndex());
                         String backgroundColor = cliente.isActivo() ? "rgba(40, 167, 69, 0.3)" : "rgba(220, 53, 69, 0.3)";
+                        setText(item);
                         setStyle("-fx-background-color: " + backgroundColor + ";");
                     }
                 }
             };
         });
-        colEstado.setVisible(false);
+        // La columna Estado siempre visible (muestra 'Activo'/'Inactivo')
+        colEstado.setVisible(true);
     }
     
     private void configurarListeners() {
         // Listener para el checkbox de inactivos
         if (chBoxInactivos != null) {
-            chBoxInactivos.selectedProperty().addListener((observable, oldValue, newValue) -> {
-                colEstado.setVisible(newValue);
-                buscarClientes();
-            });
+            // Recargar resultados cuando cambie el checkbox; la columna Estado permanece visible
+            chBoxInactivos.selectedProperty().addListener((observable, oldValue, newValue) -> buscarClientes());
         }
         
         // Listener para el campo de búsqueda

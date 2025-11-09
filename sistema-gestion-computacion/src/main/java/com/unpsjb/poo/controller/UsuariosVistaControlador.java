@@ -19,6 +19,8 @@ public class UsuariosVistaControlador extends BaseControlador {
     @FXML private TableView<Usuario> tablaUsuarios;
     @FXML private TableColumn<Usuario, String> colDni;
     @FXML private TableColumn<Usuario, String> colNombre;
+    @FXML private TableColumn<Usuario, String> colUsuario;
+    @FXML private TableColumn<Usuario, String> colEmail;
     @FXML private TableColumn<Usuario, String> colRol;
     @FXML private TableColumn<Usuario, Boolean> colActivo;
     @FXML private TableColumn<Usuario, String> colEstado;
@@ -36,41 +38,50 @@ public class UsuariosVistaControlador extends BaseControlador {
     private void configurarColumnas() {
         colDni.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getDni()));
         colNombre.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getNombre()));
+        colUsuario.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getUsuario()));
+        colEmail.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getEmail()));
         colRol.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getRol()));
     }
     
     private void configurarColumnasEstado() {
-        colEstado.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(""));
-        
+        // Mostrar texto "Activo" / "Inactivo" y colorear la celda
+        colEstado.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().isEstado() ? "Activo" : "Inactivo"));
+
         colEstado.setCellFactory(column -> {
             return new javafx.scene.control.TableCell<Usuario, String>() {
                 @Override
                 protected void updateItem(String item, boolean empty) {
                     super.updateItem(item, empty);
-                    if (empty) {
+                    if (empty || item == null) {
+                        setText(null);
                         setStyle("");
                     } else {
                         Usuario usuario = getTableView().getItems().get(getIndex());
                         String backgroundColor = usuario.isEstado() ? "rgba(40, 167, 69, 0.3)" : "rgba(220, 53, 69, 0.3)";
-                        setStyle("-fx-background-color: " + backgroundColor + ";");
+                        setText(item);
+                        // Centrar y asegurar contraste de texto
+                        setStyle("-fx-background-color: " + backgroundColor + "; -fx-alignment: CENTER; -fx-text-fill: black;");
                     }
                 }
             };
         });
-        colEstado.setVisible(false);
+        // La columna Estado siempre visible (muestra 'Activo'/'Inactivo')
+        colEstado.setVisible(true);
     }
     
     private void configurarListeners() {
         if (chBoxInactivos != null) {
-            chBoxInactivos.selectedProperty().addListener((observable, oldValue, newValue) -> {
-                colEstado.setVisible(newValue);
-                cargarUsuarios();
-            });
+            // Cuando cambia el checkbox recargamos la lista; la visibilidad de la columna se mantiene.
+            chBoxInactivos.selectedProperty().addListener((observable, oldValue, newValue) -> cargarUsuarios());
         }
     }
     @FXML
     private void cargarUsuarios() {
         List<Usuario> lista = Usuario.obtenerTodos();
+        // Si NO queremos ver inactivos, filtrar solo activos
+        if (chBoxInactivos != null && !chBoxInactivos.isSelected()) {
+            lista = lista.stream().filter(Usuario::isEstado).toList();
+        }
         ObservableList<Usuario> obsList = FXCollections.observableArrayList(lista);
         tablaUsuarios.setItems(obsList);
     }
