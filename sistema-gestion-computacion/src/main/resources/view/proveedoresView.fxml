@@ -19,14 +19,16 @@
         <CheckBox fx:id="chBoxInactivos" text="Mostrar proveedores inactivos"/>
     </HBox>
 
+    <!-- Removemos columnResizePolicy directo (causó error de carga); se aplicará desde el controlador -->
     <TableView fx:id="tablaProveedores" VBox.vgrow="ALWAYS">
         <columns>
-            <TableColumn fx:id="colNombre" text="Nombre" prefWidth="200"/>
-            <TableColumn fx:id="colTelefono" text="Teléfono" prefWidth="120"/>
-            <TableColumn fx:id="colEmail" text="Email" prefWidth="200"/>
-            <TableColumn fx:id="colDireccion" text="Dirección" prefWidth="160"/>
-            <TableColumn fx:id="colTipo" text="Tipo" prefWidth="100"/>
-            <TableColumn fx:id="colEstado" text="Estado" prefWidth="80"/>
+            <!-- Ajustamos anchos relativos: Nombre reducido para que quepan todos sin overflow -->
+            <TableColumn fx:id="colNombre" text="Nombre" prefWidth="160" maxWidth="180" minWidth="140"/>
+            <TableColumn fx:id="colTelefono" text="Teléfono" prefWidth="110" maxWidth="130" minWidth="90"/>
+            <TableColumn fx:id="colEmail" text="Email" prefWidth="180" maxWidth="220" minWidth="150"/>
+            <TableColumn fx:id="colDireccion" text="Dirección" prefWidth="140" maxWidth="170" minWidth="120"/>
+            <TableColumn fx:id="colTipo" text="Tipo" prefWidth="80" maxWidth="90" minWidth="70"/>
+            <TableColumn fx:id="colEstado" text="Estado" prefWidth="70" maxWidth="80" minWidth="60"/>
         </columns>
     </TableView>
 

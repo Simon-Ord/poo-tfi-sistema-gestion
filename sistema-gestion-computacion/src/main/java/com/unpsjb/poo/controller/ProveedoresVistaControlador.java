@@ -26,6 +26,10 @@ public class ProveedoresVistaControlador extends BaseControlador {
     @FXML
     public void initialize() {
         configurarColumnas();
+        // Aplicar política de resize aquí (antes estaba en FXML y causó error de carga)
+        if (tablaProveedores != null) {
+            tablaProveedores.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+        }
         configurarColumnasEstado();
         configurarListeners();
         cargarProveedores();
