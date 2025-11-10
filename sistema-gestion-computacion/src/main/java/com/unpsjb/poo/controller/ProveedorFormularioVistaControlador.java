@@ -13,6 +13,7 @@ public class ProveedorFormularioVistaControlador {
     @FXML private TextField txtTelefono;
     @FXML private TextField txtEmail;
     @FXML private TextField txtDireccion;
+    @FXML private TextField txtCuit;
     @FXML private javafx.scene.control.ChoiceBox<String> cbTipo;
 
     private Proveedor proveedorAEditar;
@@ -20,16 +21,18 @@ public class ProveedorFormularioVistaControlador {
     @FXML
     private void guardarProveedor() {
         try {
-            if (txtNombre.getText().trim().isEmpty()) {
+            if (safeTrim(txtNombre).isEmpty()) {
                 mostrarAlerta("El nombre es obligatorio.");
                 return;
             }
 
             Proveedor proveedor = proveedorAEditar != null ? proveedorAEditar : new Proveedor();
-            proveedor.setNombre(txtNombre.getText().trim());
-            proveedor.setTelefono(txtTelefono.getText().trim());
-            proveedor.setEmail(txtEmail.getText().trim());
-            proveedor.setDireccion(txtDireccion.getText().trim());
+            proveedor.setNombre(safeTrim(txtNombre));
+            proveedor.setTelefono(safeTrim(txtTelefono));
+            proveedor.setEmail(safeTrim(txtEmail));
+            proveedor.setDireccion(safeTrim(txtDireccion));
+            String cuitValor = safeTrim(txtCuit);
+            proveedor.setCuit(cuitValor.isEmpty() ? null : cuitValor);
             proveedor.setTipo(cbTipo.getValue() == null ? "FISICO" : cbTipo.getValue());
 
             boolean ok = proveedorAEditar != null ? proveedor.actualizar() : proveedor.guardar();
@@ -57,10 +60,11 @@ public class ProveedorFormularioVistaControlador {
     public void setProveedorAEditar(Proveedor proveedor) {
         this.proveedorAEditar = proveedor;
         if (proveedor != null) {
-            txtNombre.setText(proveedor.getNombre());
-            txtTelefono.setText(proveedor.getTelefono());
-            txtEmail.setText(proveedor.getEmail());
-            txtDireccion.setText(proveedor.getDireccion());
+            txtNombre.setText(proveedor.getNombre() == null ? "" : proveedor.getNombre());
+            txtTelefono.setText(proveedor.getTelefono() == null ? "" : proveedor.getTelefono());
+            txtEmail.setText(proveedor.getEmail() == null ? "" : proveedor.getEmail());
+            txtDireccion.setText(proveedor.getDireccion() == null ? "" : proveedor.getDireccion());
+            if (txtCuit != null) txtCuit.setText(proveedor.getCuit() == null ? "" : proveedor.getCuit());
             if (cbTipo != null) cbTipo.setValue(proveedor.getTipo() == null ? "FISICO" : proveedor.getTipo());
         }
     }
@@ -87,5 +91,12 @@ public class ProveedorFormularioVistaControlador {
         alert.setHeaderText(null);
         alert.setContentText(mensaje);
         alert.showAndWait();
+    }
+
+    // Utilidad para evitar NullPointerException cuando el TextField tiene texto null.
+    private String safeTrim(TextField tf) {
+        if (tf == null) return "";
+        String v = tf.getText();
+        return v == null ? "" : v.trim();
     }
 }

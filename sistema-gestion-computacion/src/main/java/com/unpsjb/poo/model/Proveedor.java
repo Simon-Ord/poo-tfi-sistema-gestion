@@ -1,6 +1,7 @@
 package com.unpsjb.poo.model;
 
 import java.util.List;
+
 import com.unpsjb.poo.persistence.dao.impl.ProveedorDAOImpl;
 
 public class Proveedor {
@@ -54,8 +55,21 @@ public class Proveedor {
         return dao.update(this);
     }
 
+    /**
+     * Alterna el estado activo/inactivo del proveedor en la base de datos.
+     * Devuelve true si la operación fue exitosa.
+     */
+    public boolean cambiarEstado() {
+        boolean ok = dao.toggleActivo(this.id);
+        if (ok) {
+            this.activo = !this.activo; // reflejar en memoria
+        }
+        return ok;
+    }
+
+    /** Método legado para compatibilidad con código previo */
     public boolean desactivar() {
-        return dao.eliminar(this.id);
+        return cambiarEstado();
     }
 
     public static List<Proveedor> obtenerTodos() {

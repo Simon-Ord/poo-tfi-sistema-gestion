@@ -1,8 +1,4 @@
--- Active: 1761142317338@@127.0.0.1@5432@tienda_computacion
--- =============================================================
--- TABLAS PRINCIPALES DEL SISTEMA
--- =============================================================
-
+=
 CREATE TABLE usuarios (
     dni VARCHAR(20) PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
@@ -80,6 +76,7 @@ CREATE TABLE IF NOT EXISTS proveedores (
     telefono VARCHAR(40),
     email VARCHAR(100),
     direccion VARCHAR(200),
+    cuit VARCHAR(20),
     tipo VARCHAR(50) DEFAULT 'FISICO' CHECK (tipo IN ('DIGITAL','FISICO')),
     activo BOOLEAN DEFAULT TRUE
 );
@@ -118,4 +115,4 @@ WHERE NOT EXISTS (SELECT 1 FROM fabricantes f WHERE f.nombre = v.name);
 -- Actualizar secuencia de fabricantes
 SELECT setval(pg_get_serial_sequence('fabricantes','id'), COALESCE((SELECT MAX(id) FROM fabricantes), 1), true);
 
-
+-- 

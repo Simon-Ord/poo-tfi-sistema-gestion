@@ -30,6 +30,7 @@ public class ProveedorDAOImpl implements DAO<Proveedor> {
                 proveedor.setTelefono(rs.getString("telefono"));
                 proveedor.setEmail(rs.getString("email"));
                 proveedor.setDireccion(rs.getString("direccion"));
+                proveedor.setCuit(rs.getString("cuit"));
                 proveedor.setTipo(rs.getString("tipo"));
                 proveedor.setActivo(rs.getBoolean("activo"));
                 return Optional.of(proveedor);
@@ -59,6 +60,7 @@ public class ProveedorDAOImpl implements DAO<Proveedor> {
                 proveedor.setTelefono(rs.getString("telefono"));
                 proveedor.setEmail(rs.getString("email"));
                 proveedor.setDireccion(rs.getString("direccion"));
+                proveedor.setCuit(rs.getString("cuit"));
                 proveedor.setTipo(rs.getString("tipo"));
                 proveedor.setActivo(rs.getBoolean("activo"));
                 proveedores.add(proveedor);
@@ -88,6 +90,7 @@ public class ProveedorDAOImpl implements DAO<Proveedor> {
                 proveedor.setTelefono(rs.getString("telefono"));
                 proveedor.setEmail(rs.getString("email"));
                 proveedor.setDireccion(rs.getString("direccion"));
+                proveedor.setCuit(rs.getString("cuit"));
                 proveedor.setTipo(rs.getString("tipo"));
                 proveedor.setActivo(rs.getBoolean("activo"));
                 proveedores.add(proveedor);
@@ -161,6 +164,20 @@ public class ProveedorDAOImpl implements DAO<Proveedor> {
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {
             System.err.println("Error al eliminar proveedor. SQL: " + sql + " - " + e.getMessage());
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    /** Alterna el estado activo/inactivo sin forzar a false siempre */
+    public boolean toggleActivo(int id) {
+        String sql = "UPDATE proveedores SET activo = NOT activo WHERE id = ?";
+        try (Connection conn = GestorDeConexion.getInstancia().getConexion();
+             PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setInt(1, id);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            System.err.println("Error al alternar estado de proveedor. SQL: " + sql + " - " + e.getMessage());
             e.printStackTrace();
             return false;
         }

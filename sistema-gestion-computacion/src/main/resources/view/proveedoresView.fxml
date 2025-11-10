@@ -16,7 +16,7 @@
     <HBox spacing="10" alignment="CENTER_LEFT">
         <Label text="Proveedores" styleClass="titulo"/>
         <Region HBox.hgrow="ALWAYS"/>
-        <CheckBox fx:id="chBoxInactivos" text="Mostrar inactivos"/>
+        <CheckBox fx:id="chBoxInactivos" text="Mostrar proveedores inactivos"/>
     </HBox>
 
     <TableView fx:id="tablaProveedores" VBox.vgrow="ALWAYS">
@@ -31,9 +31,9 @@
     </TableView>
 
     <HBox spacing="10" alignment="CENTER">
-        <Button text="Agregar" onAction="#agregarProveedor"/>
-        <Button text="Editar" onAction="#editarProveedor"/>
-        <Button text="Eliminar" onAction="#eliminarProveedor"/>
+        <Button text="Agregar Proveedor" onAction="#agregarProveedor"/>
+        <Button text="Editar Proveedor" onAction="#editarProveedor"/>
+        <Button text="Activar/Desactivar" onAction="#cambiarEstadoProveedor"/>
     </HBox>
 
 </VBox>

@@ -1,15 +1,16 @@
 package com.unpsjb.poo.controller;
 
-import javafx.fxml.FXML;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.Alert;
-import javafx.scene.control.CheckBox;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
+import java.util.List;
+
 import com.unpsjb.poo.model.Proveedor;
 import com.unpsjb.poo.util.cap_auditoria.AuditoriaUtil;
-import java.util.List;
+
+import javafx.collections.FXCollections;
+import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 
 public class ProveedoresVistaControlador extends BaseControlador {
 
@@ -39,9 +40,22 @@ public class ProveedoresVistaControlador extends BaseControlador {
     }
 
     private void configurarColumnasEstado() {
-        colEstado.setCellValueFactory(c -> {
-            boolean activo = c.getValue().isActivo();
-            return new javafx.beans.property.SimpleStringProperty(activo ? "Activo" : "Inactivo");
+        // Mostrar texto "Activo" / "Inactivo" y colorear la celda semejante a clientes/usuarios
+        colEstado.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().isActivo() ? "Activo" : "Inactivo"));
+        colEstado.setCellFactory(column -> new javafx.scene.control.TableCell<Proveedor,String>() {
+            @Override
+            protected void updateItem(String item, boolean empty) {
+                super.updateItem(item, empty);
+                if (empty || item == null) {
+                    setText(null);
+                    setStyle("");
+                } else {
+                    Proveedor proveedor = getTableView().getItems().get(getIndex());
+                    String backgroundColor = proveedor.isActivo() ? "rgba(40, 167, 69, 0.3)" : "rgba(220, 53, 69, 0.3)";
+                    setText(item);
+                    setStyle("-fx-background-color: " + backgroundColor + "; -fx-alignment: CENTER; -fx-text-fill: black;");
+                }
+            }
         });
     }
 
@@ -114,29 +128,31 @@ public class ProveedoresVistaControlador extends BaseControlador {
     }
 
     @FXML
-    private void eliminarProveedor() {
+    private void cambiarEstadoProveedor() {
         Proveedor seleccionado = tablaProveedores.getSelectionModel().getSelectedItem();
         if (seleccionado == null) {
-            mostrarAlerta("Seleccione un proveedor para eliminar.");
+            mostrarAlerta("Seleccione un proveedor para activar o desactivar.");
             return;
         }
 
         try {
-            boolean ok = seleccionado.desactivar();
+            boolean estadoAnterior = seleccionado.isActivo();
+            boolean ok = seleccionado.cambiarEstado();
             if (ok) {
+                String nuevoEstado = seleccionado.isActivo() ? "ACTIVO" : "INACTIVO";
                 AuditoriaUtil.registrarAccion(
-                    "ELIMINAR PROVEEDOR",
+                    "CAMBIAR ESTADO PROVEEDOR",
                     "proveedor",
-                    "Se eliminó al proveedor: " + seleccionado.getNombre()
+                    "Proveedor '" + seleccionado.getNombre() + "' pasó de " + (estadoAnterior?"ACTIVO":"INACTIVO") + " a " + nuevoEstado
                 );
                 cargarProveedores();
-                mostrarAlerta("Proveedor eliminado correctamente.");
+                mostrarAlerta(" El proveedor cambió al estado: " + nuevoEstado);
             } else {
-                mostrarAlerta("Error al eliminar el proveedor.");
+                mostrarAlerta(" Error al cambiar el estado del proveedor.");
             }
         } catch (Exception e) {
             e.printStackTrace();
-            mostrarAlerta("Error al eliminar el proveedor: " + e.getMessage());
+            mostrarAlerta("Error al cambiar estado del proveedor: " + e.getMessage());
         }
     }
 
