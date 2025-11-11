@@ -1,8 +1,10 @@
 =
+
 CREATE TABLE usuarios (
     dni VARCHAR(20) PRIMARY KEY,
     nombre VARCHAR(100) NOT NULL,
     usuario VARCHAR(50) UNIQUE NOT NULL,
+    email VARCHAR(120),
     contraseña VARCHAR(100) NOT NULL,
     rol VARCHAR(50) NOT NULL CHECK (rol IN ('ADMINISTRADOR', 'EMPLEADO')),
     estado BOOLEAN DEFAULT TRUE,

@@ -11,6 +11,13 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 
 public class ClienteFormularioVistaControlador {
+    // Validación de email (igual que en usuarios)
+    private boolean emailValido(String email) {
+        if (email == null) return false;
+        String e = email.trim();
+        if (e.isEmpty()) return false;
+        return e.matches("(?i)^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}$");
+    }
 
     @FXML private TextField txtNombre;
     @FXML private TextField txtCuit;
@@ -40,14 +47,21 @@ public class ClienteFormularioVistaControlador {
                 return;
             }
 
-            if (clienteEditable == null) {
 
+            String correo = txtEmail.getText() == null ? "" : txtEmail.getText().trim();
+            if (!emailValido(correo)) {
+                mostrarAlerta("Ingrese un email válido (ej: nombre@dominio.com)");
+                txtEmail.requestFocus();
+                return;
+            }
+
+            if (clienteEditable == null) {
                 Cliente nuevo = new Cliente();
                 nuevo.setNombre(txtNombre.getText().trim());
                 nuevo.setCuit(txtCuit.getText().trim());
                 nuevo.setTelefono(txtTelefono.getText().trim());
                 nuevo.setDireccion(txtDireccion.getText().trim());
-                nuevo.setEmail(txtEmail.getText().trim());
+                nuevo.setEmail(correo);
                 nuevo.setTipo(cbTipoCliente.getValue());
                 nuevo.setActivo(true);
 
@@ -56,7 +70,6 @@ public class ClienteFormularioVistaControlador {
                         facturaControlador.setClienteTemporal(nuevo);
                     }
                     new AuditoriaClienteUtil().registrarCreacion(nuevo);
-                    // Actualizar tabla de clientes si existe referencia
                     if (clientesVista != null) {
                         clientesVista.buscarClientes();
                     }
@@ -65,19 +78,16 @@ public class ClienteFormularioVistaControlador {
                     mostrarAlerta("Error al guardar cliente.");
                 }
             } else {
-                // Modificación
                 Cliente original = CopiarClienteUtil.copiarCliente(clienteEditable);
                 clienteEditable.setNombre(txtNombre.getText().trim());
                 clienteEditable.setCuit(txtCuit.getText().trim());
                 clienteEditable.setTelefono(txtTelefono.getText().trim());
                 clienteEditable.setDireccion(txtDireccion.getText().trim());
-                clienteEditable.setEmail(txtEmail.getText().trim());
+                clienteEditable.setEmail(correo);
                 clienteEditable.setTipo(cbTipoCliente.getValue());
 
                 if (clienteEditable.guardar()) {
-                    // auditoria usando el accion de cliente (polimorfismo)
                     new AuditoriaClienteUtil().registrarAccionEspecifica(original, clienteEditable);
-                    // Actualizar tabla de clientes si existe referencia
                     if (clientesVista != null) {
                         clientesVista.buscarClientes();
                     }

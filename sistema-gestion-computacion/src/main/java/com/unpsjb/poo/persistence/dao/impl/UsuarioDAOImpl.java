@@ -3,6 +3,7 @@ package com.unpsjb.poo.persistence.dao.impl;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
@@ -39,6 +40,10 @@ public class UsuarioDAOImpl implements DAO<Usuario> {
                 u.setContraseña(rs.getString("contraseña"));
                 u.setRol(rs.getString("rol"));
                 u.setEstado(rs.getBoolean("estado"));
+                // Mapear email si existe la columna en la BD
+                if (hasColumn(rs, "email")) {
+                    u.setEmail(rs.getString("email"));
+                }
                 lista.add(u);
             }
 
@@ -53,18 +58,31 @@ public class UsuarioDAOImpl implements DAO<Usuario> {
     // ==================================
     @Override
     public boolean create(Usuario usuario) {
-        String sql = "INSERT INTO usuarios (dni, nombre, usuario, contraseña, rol, estado) VALUES (?, ?, ?, ?, ?, ?)";
-        try (Connection conn = GestorDeConexion.getInstancia().getConexion();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, usuario.getDni());
-            stmt.setString(2, usuario.getNombre());
-            stmt.setString(3, usuario.getUsuario());
-            stmt.setString(4, usuario.getContraseña());
-            stmt.setString(5, usuario.getRol());
-            stmt.setBoolean(6, usuario.isEstado());
-
-            return stmt.executeUpdate() > 0;
+        // Primero intentamos insertar incluyendo el email; si la columna no existe, hacemos fallback sin email
+        String sqlConEmail = "INSERT INTO usuarios (dni, nombre, usuario, email, contraseña, rol, estado) VALUES (?, ?, ?, ?, ?, ?, ?)";
+        String sqlSinEmail = "INSERT INTO usuarios (dni, nombre, usuario, contraseña, rol, estado) VALUES (?, ?, ?, ?, ?, ?)";
+        try (Connection conn = GestorDeConexion.getInstancia().getConexion()) {
+            try (PreparedStatement stmt = conn.prepareStatement(sqlConEmail)) {
+                stmt.setString(1, usuario.getDni());
+                stmt.setString(2, usuario.getNombre());
+                stmt.setString(3, usuario.getUsuario());
+                stmt.setString(4, usuario.getEmail());
+                stmt.setString(5, usuario.getContraseña());
+                stmt.setString(6, usuario.getRol());
+                stmt.setBoolean(7, usuario.isEstado());
+                return stmt.executeUpdate() > 0;
+            } catch (SQLException e1) {
+                // Fallback si la columna email no existe
+                try (PreparedStatement stmt2 = conn.prepareStatement(sqlSinEmail)) {
+                    stmt2.setString(1, usuario.getDni());
+                    stmt2.setString(2, usuario.getNombre());
+                    stmt2.setString(3, usuario.getUsuario());
+                    stmt2.setString(4, usuario.getContraseña());
+                    stmt2.setString(5, usuario.getRol());
+                    stmt2.setBoolean(6, usuario.isEstado());
+                    return stmt2.executeUpdate() > 0;
+                }
+            }
         } catch (SQLException e) {
             System.err.println("Error SQL al insertar usuario: " + e.getMessage());
             return false;
@@ -75,18 +93,29 @@ public class UsuarioDAOImpl implements DAO<Usuario> {
     // ==================================
     @Override
     public boolean update(Usuario usuario) {
-        String sql = "UPDATE usuarios SET nombre = ?, usuario = ?, contraseña = ?, rol = ?, estado = ? WHERE dni = ?";
-        try (Connection conn = GestorDeConexion.getInstancia().getConexion();
-             PreparedStatement stmt = conn.prepareStatement(sql)) {
-
-            stmt.setString(1, usuario.getNombre());
-            stmt.setString(2, usuario.getUsuario());
-            stmt.setString(3, usuario.getContraseña());
-            stmt.setString(4, usuario.getRol());
-            stmt.setBoolean(5, usuario.isEstado());
-            stmt.setString(6, usuario.getDni());
-
-            return stmt.executeUpdate() > 0;
+        String sqlConEmail = "UPDATE usuarios SET nombre = ?, usuario = ?, email = ?, contraseña = ?, rol = ?, estado = ? WHERE dni = ?";
+        String sqlSinEmail = "UPDATE usuarios SET nombre = ?, usuario = ?, contraseña = ?, rol = ?, estado = ? WHERE dni = ?";
+        try (Connection conn = GestorDeConexion.getInstancia().getConexion()) {
+            try (PreparedStatement stmt = conn.prepareStatement(sqlConEmail)) {
+                stmt.setString(1, usuario.getNombre());
+                stmt.setString(2, usuario.getUsuario());
+                stmt.setString(3, usuario.getEmail());
+                stmt.setString(4, usuario.getContraseña());
+                stmt.setString(5, usuario.getRol());
+                stmt.setBoolean(6, usuario.isEstado());
+                stmt.setString(7, usuario.getDni());
+                return stmt.executeUpdate() > 0;
+            } catch (SQLException e1) {
+                try (PreparedStatement stmt2 = conn.prepareStatement(sqlSinEmail)) {
+                    stmt2.setString(1, usuario.getNombre());
+                    stmt2.setString(2, usuario.getUsuario());
+                    stmt2.setString(3, usuario.getContraseña());
+                    stmt2.setString(4, usuario.getRol());
+                    stmt2.setBoolean(5, usuario.isEstado());
+                    stmt2.setString(6, usuario.getDni());
+                    return stmt2.executeUpdate() > 0;
+                }
+            }
         } catch (SQLException e) {
             System.err.println("Error al modificar usuario: " + e.getMessage());
             return false;
@@ -135,6 +164,9 @@ public class UsuarioDAOImpl implements DAO<Usuario> {
                 u.setNombre(rs.getString("nombre"));
                 u.setUsuario(rs.getString("usuario"));
                 u.setContraseña(rs.getString("contraseña"));
+                if (hasColumn(rs, "email")) {
+                    u.setEmail(rs.getString("email"));
+                }
                 u.setRol(rs.getString("rol"));
                 u.setEstado(rs.getBoolean("estado"));
                 return u;
@@ -150,5 +182,21 @@ public class UsuarioDAOImpl implements DAO<Usuario> {
             }
         }
         return null;
+    }
+
+    // Utilidad: verificar si una columna existe en el ResultSet (para compatibilidad con BD sin 'email')
+    private boolean hasColumn(ResultSet rs, String column) {
+        try {
+            ResultSetMetaData meta = rs.getMetaData();
+            int count = meta.getColumnCount();
+            for (int i = 1; i <= count; i++) {
+                if (column.equalsIgnoreCase(meta.getColumnLabel(i))) {
+                    return true;
+                }
+            }
+        } catch (SQLException e) {
+            // Ignorar y considerar que no existe
+        }
+        return false;
     }
 }

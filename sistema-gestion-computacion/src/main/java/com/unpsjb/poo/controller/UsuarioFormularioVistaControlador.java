@@ -14,6 +14,7 @@ public class UsuarioFormularioVistaControlador {
     @FXML private TextField txtDni;
     @FXML private TextField txtNombre;
     @FXML private TextField txtUsuario;
+    @FXML private TextField txtEmail;
     @FXML private PasswordField txtContraseña;
     @FXML private ChoiceBox<String> cbRol;
 
@@ -22,12 +23,21 @@ public class UsuarioFormularioVistaControlador {
         cbRol.getItems().addAll("ADMINISTRADOR", "EMPLEADO");
     }
 
+    // MÉTODO DE VALIDACIÓN DEL EMAIL
+    private boolean emailValido(String email) {
+        if (email == null) return false;
+        String e = email.trim();
+        if (e.isEmpty()) return false;
+        return e.matches("(?i)^[A-Z0-9._%+-]+@[A-Z0-9.-]+\\.[A-Z]{2,}$");
+    }
+
+    // MÉTODO GUARDAR USUARIO
     @FXML
     private void guardarUsuario() {
         try {
             if (txtDni.getText().isEmpty() || txtNombre.getText().isEmpty()
-                    || txtUsuario.getText().isEmpty() || txtContraseña.getText().isEmpty()
-                    || cbRol.getValue() == null) {
+                    || txtUsuario.getText().isEmpty() || txtEmail.getText().isEmpty()
+                    || txtContraseña.getText().isEmpty() || cbRol.getValue() == null) {
                 mostrarAlerta("Todos los campos son obligatorios.");
                 return;
             }
@@ -36,10 +46,18 @@ public class UsuarioFormularioVistaControlador {
             nuevo.setDni(txtDni.getText().trim());
             nuevo.setNombre(txtNombre.getText().trim());
             nuevo.setUsuario(txtUsuario.getText().trim());
+            nuevo.setEmail(txtEmail.getText().trim());
             nuevo.setContraseña(txtContraseña.getText().trim()); // Ahora hashea automáticamente
             nuevo.setRol(cbRol.getValue());
             // nuevo.setEstado(true); 
 
+            // VALIDAR FORMATO DE EMAIL
+            String correo = txtEmail.getText() == null ? "" : txtEmail.getText().trim();
+            if (!emailValido(correo)) {
+                mostrarAlerta("Ingrese un email válido (ej: nombre@dominio.com)");
+                txtEmail.requestFocus();
+                return;
+            }
 
             boolean ok = nuevo.guardar();
 
@@ -56,7 +74,7 @@ public class UsuarioFormularioVistaControlador {
             } else {
                 mostrarAlerta("Error al guardar el usuario.");
             }
-
+            
         } catch (Exception e) {
             e.printStackTrace();
             mostrarAlerta("Error inesperado: " + e.getMessage());

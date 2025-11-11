@@ -39,7 +39,11 @@ public class UsuariosVistaControlador extends BaseControlador {
         colDni.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getDni()));
         colNombre.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getNombre()));
         colUsuario.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getUsuario()));
-        colEmail.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getEmail()));
+        // Mostrar cadena vacía si email es null (para usuarios antiguos sin email)
+        colEmail.setCellValueFactory(c -> {
+            String email = c.getValue().getEmail();
+            return new javafx.beans.property.SimpleStringProperty(email != null ? email : "");
+        });
         colRol.setCellValueFactory(c -> new javafx.beans.property.SimpleStringProperty(c.getValue().getRol()));
     }
     
@@ -145,9 +149,6 @@ public class UsuariosVistaControlador extends BaseControlador {
             mostrarAlerta("Error al abrir la gestión de proveedores: " + e.getMessage());
         }
     }
-
-
-
 
 
     @FXML

@@ -30,12 +30,15 @@
        <Label text="Usuario:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
        <TextField fx:id="txtUsuario" promptText="Ej: lfernandez" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
-        <Label text="Contraseña:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
-        <PasswordField fx:id="txtContraseña" promptText="Ej: ********" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+        <Label text="Email:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
+        <TextField fx:id="txtEmail" promptText="Ej: lfernandez@mail.com" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+
+        <Label text="Contraseña:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
+        <PasswordField fx:id="txtContraseña" promptText="Ej: ********" GridPane.columnIndex="1" GridPane.rowIndex="4" />
 
 
-        <Label text="Rol:" GridPane.columnIndex="0" GridPane.rowIndex="4" />
-        <ChoiceBox fx:id="cbRol" GridPane.columnIndex="1" GridPane.rowIndex="4" />
+        <Label text="Rol:" GridPane.columnIndex="0" GridPane.rowIndex="5" />
+        <ChoiceBox fx:id="cbRol" GridPane.columnIndex="1" GridPane.rowIndex="5" />
       <columnConstraints>
          <ColumnConstraints />
          <ColumnConstraints />
