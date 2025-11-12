@@ -326,8 +326,11 @@ private void guardarProducto() {
     // ==========================================
     @FXML public void agregarCategoria() {
         try {
-            crearVentana("/view/formularios/CategoriaForm.fxml", "Agregar Nueva Categoría");
-            cargarCategorias();
+            VentanaVistaControlador.ResultadoVentana resultado = crearVentana("/view/formularios/CategoriaForm.fxml", "Agregar Nueva Categoría");
+            if (resultado != null && resultado.getControlador() != null) {
+                CategoriaFormularioVistaControlador controlador = (CategoriaFormularioVistaControlador) resultado.getControlador();
+                controlador.setControladorPadre(this);
+            }
         } catch (Exception e) {
             mostrarAlerta("Error al abrir el formulario: " + e.getMessage());
         }
@@ -431,6 +434,20 @@ private void guardarProducto() {
         alert.setHeaderText(null);
         alert.setContentText(mensaje);
         alert.showAndWait();
+    }
+
+    // Callback desde el formulario de categorías para refrescar inmediatamente
+    public void onCategoriaGuardada(Categoria categoriaNueva) {
+        cargarCategorias();
+        if (categoriaNueva != null && cbCategoria != null) {
+            // Seleccionar la categoría recién creada/actualizada si está en la lista
+            for (Categoria c : cbCategoria.getItems()) {
+                if (c.getId() == categoriaNueva.getId()) {
+                    cbCategoria.setValue(c);
+                    break;
+                }
+            }
+        }
     }
 }
 

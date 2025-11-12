@@ -18,6 +18,7 @@ public class CategoriaFormularioVistaControlador {
     @FXML private Label lblTitulo;
 
     private Categoria categoriaAEditar = null;
+    private ProductoFormularioVistaControlador controladorPadre; // para notificar al formulario de producto
 
     @FXML
     public void initialize() {
@@ -43,6 +44,11 @@ public class CategoriaFormularioVistaControlador {
         }
     }
 
+    // Establecer el controlador padre para poder refrescar la lista en el formulario de producto
+    public void setControladorPadre(ProductoFormularioVistaControlador padre) {
+        this.controladorPadre = padre;
+    }
+
     @FXML
     private void guardarCategoria(ActionEvent event) {
         String nombre = txtNombre != null ? txtNombre.getText() : null;
@@ -60,10 +66,16 @@ public class CategoriaFormularioVistaControlador {
                 // Modo editar
                 categoriaAEditar.setNombre(nombre.trim());
                 exito = categoriaAEditar.actualizar();
+                if (exito && controladorPadre != null) {
+                    controladorPadre.onCategoriaGuardada(categoriaAEditar);
+                }
             } else {
                 // Modo crear
                 Categoria nueva = new Categoria(nombre.trim());
                 exito = nueva.guardar();
+                if (exito && controladorPadre != null) {
+                    controladorPadre.onCategoriaGuardada(nueva);
+                }
             }
 
             if (exito) {

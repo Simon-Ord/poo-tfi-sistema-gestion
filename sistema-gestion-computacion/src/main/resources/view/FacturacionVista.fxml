@@ -33,21 +33,25 @@
 
                         <Label styleClass="titulo" text="Agregar Productos al Carrito" />
 
-                        <GridPane hgap="12" styleClass="panel-info" vgap="10">
-                            <Label styleClass="label-form" text="Código del Producto:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-                            <TextField fx:id="txtCodigoProducto" prefWidth="250" promptText="Ej: PRD001" styleClass="text-field-custom" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+                                <GridPane hgap="12" styleClass="panel-info" vgap="10">
+                                     <Label styleClass="label-form" text="Código del Producto:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
+                                     <TextField fx:id="txtCodigoProducto" prefWidth="250" promptText="Ej: PRD001" styleClass="text-field-custom" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
-                            <Label styleClass="label-form" text="Cantidad:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
-                            <TextField fx:id="txtCantidad" prefWidth="250" promptText="Ej: 5" styleClass="text-field-custom" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                     <columnConstraints>
-                        <ColumnConstraints />
-                        <ColumnConstraints />
-                     </columnConstraints>
-                     <rowConstraints>
-                        <RowConstraints />
-                        <RowConstraints />
-                     </rowConstraints>
-                        </GridPane>
+                                     <!-- Stock disponible (se actualiza al ingresar código) -->
+                                     <Label fx:id="lblStockDisponible" styleClass="label-secondary" text="" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                                     <Label styleClass="label-form" text="Cantidad:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
+                                     <TextField fx:id="txtCantidad" prefWidth="250" promptText="Ej: 5" styleClass="text-field-custom" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                            <columnConstraints>
+                                <ColumnConstraints />
+                                <ColumnConstraints />
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints />
+                                <RowConstraints />
+                                <RowConstraints />
+                            </rowConstraints>
+                                </GridPane>
 
                         <HBox alignment="center" spacing="10">
                             <Button onAction="#handleAnadirItem" styleClass="btn-agregar" text="Añadir al Carrito" />

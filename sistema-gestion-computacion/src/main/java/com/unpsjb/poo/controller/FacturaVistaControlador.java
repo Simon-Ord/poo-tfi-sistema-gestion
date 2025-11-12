@@ -45,6 +45,7 @@ public class FacturaVistaControlador extends BaseControlador implements Initiali
     @FXML private TextField txtCantidad; 
     @FXML private TableView<ItemCarrito> carritoTable; 
     @FXML private Label lblTotalParcial; 
+    @FXML private Label lblStockDisponible; 
     
     // INYECCIÓN DE ELEMENTOS DEL PASO 2 - Datos de Venta
     @FXML private ComboBox <String> cbTipoFactura;
@@ -102,6 +103,10 @@ public class FacturaVistaControlador extends BaseControlador implements Initiali
     if (btnExportarPDF != null) {
         btnExportarPDF.setDisable(true);
     }
+    // e. Escuchar cambios en el código para mostrar stock disponible
+    if (txtCodigoProducto != null) {
+        txtCodigoProducto.textProperty().addListener((obs, oldV, newV) -> actualizarStockSegunCodigo(newV));
+    }
     manejarSolicitudesUIDelEstado();
 }
 //Recalcula el total del Carrito y actualiza el Label de la interfaz.
@@ -141,6 +146,11 @@ private void actualizarTotalParcial() {
                 actualizarTotalParcial();
                 txtCodigoProducto.clear();
                 txtCantidad.clear();
+                // Limpiar indicador de stock
+                if (lblStockDisponible != null) {
+                    lblStockDisponible.setText("");
+                    lblStockDisponible.setStyle("");
+                }
             } else {
                 mostrarAlerta("Error", "Producto no encontrado: " + codigo, Alert.AlertType.WARNING);
             }
@@ -150,10 +160,17 @@ private void actualizarTotalParcial() {
             mostrarAlerta("Error", "Error al agregar producto: " + e.getMessage(), Alert.AlertType.ERROR);
         }
     }
-    // Busca un producto por su código. Retorna null si no se encuentra.
+    // Busca un producto por su código exacto (solo activos). Retorna null si no se encuentra.
     private Producto buscarProductoPorCodigo(String codigo) {
-        List<Producto> resultados = Producto.buscarProductos(codigo);
-        return resultados.isEmpty() ? null : resultados.get(0);
+        if (codigo == null || codigo.trim().isEmpty()) return null;
+        // Pasar directamente al DAO especializado para evitar coincidencias parciales
+        try {
+            return new com.unpsjb.poo.persistence.dao.impl.ProductoDAOImpl()
+                    .findByCodigo(codigo.trim())
+                    .orElse(null);
+        } catch (Exception e) {
+            return null; // Silencioso: se maneja en quien llama.
+        }
     }
     // Maneja la acción de quitar un item del carrito
     @FXML public void handleQuitarItem() {
@@ -201,6 +218,7 @@ private void actualizarTotalParcial() {
     // Método llamado por CodigosListaControlador cuando se selecciona un producto
     public void setCodigoProductoSeleccionado(int codigo) {
         txtCodigoProducto.setText(String.valueOf(codigo));
+        actualizarStockSegunCodigo(String.valueOf(codigo));
     }
     // =============================================================================================================================================
     // MANEJO DE EVENTOS DE LA VISTA 2: FACTURA/TICKET
@@ -548,6 +566,30 @@ private void resetearEstadoVistas() {
     if (cbTipoFactura != null) cbTipoFactura.getSelectionModel().clearSelection();
     if (panelDatosCliente != null) panelDatosCliente.setVisible(false);
 }
+    
+    // Actualiza el label de stock disponible en función del código ingresado
+    private void actualizarStockSegunCodigo(String codigoIngresado) {
+        if (lblStockDisponible == null) return;
+        if (codigoIngresado == null || codigoIngresado.trim().isEmpty()) {
+            lblStockDisponible.setText("");
+            lblStockDisponible.setStyle("");
+            return;
+        }
+        try {
+            Producto p = buscarProductoPorCodigo(codigoIngresado.trim());
+            if (p != null) {
+                lblStockDisponible.setText("Stock: " + p.getStockProducto());
+                String color = p.getStockProducto() > 0 ? "-fx-text-fill: #41d16d;" : "-fx-text-fill: #ff6b6b;";
+                lblStockDisponible.setStyle(color);
+            } else {
+                lblStockDisponible.setText("Producto no encontrado");
+                lblStockDisponible.setStyle("-fx-text-fill: #ff6b6b;");
+            }
+        } catch (Exception ex) {
+            lblStockDisponible.setText("Error al buscar producto");
+            lblStockDisponible.setStyle("-fx-text-fill: #ff6b6b;");
+        }
+    }
     // -------------------------------------------------------------------------
     // MÉTODOS DE UTILIDAD
     // -------------------------------------------------------------------------
